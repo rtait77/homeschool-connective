@@ -39,9 +39,8 @@
 
   <section class="hero">
     <div class="hero-video-wrap">
-      <video id="hero-video" autoplay muted playsinline>
-        <source src="video-soup.mov" type="video/mp4" />
-      </video>
+      <video id="vid-a" autoplay muted playsinline></video>
+      <video id="vid-b" muted playsinline></video>
     </div>
     <div class="hero-inner">
       <h1>Learning That Feels Like <em>Playing</em></h1>
@@ -178,18 +177,30 @@
   </footer>
 
   <script>
-    const videos = [
-      'video-soup.mov',
-      'video-puzzle-hard.mov',
-      'video-drag-planets.mov'
-    ];
-    let current = 0;
-    const vid = document.getElementById('hero-video');
-    vid.addEventListener('ended', function() {
-      current = (current + 1) % videos.length;
-      vid.src = videos[current];
-      vid.play();
-    });
+    const videos = ['video-soup.mov', 'video-puzzle-hard.mov', 'video-drag-planets.mov'];
+    let idx = 0;
+    const vidA = document.getElementById('vid-a');
+    const vidB = document.getElementById('vid-b');
+
+    vidA.src = videos[0];
+    vidB.src = videos[1];
+    vidB.load();
+
+    let active = vidA, waiting = vidB;
+
+    function next() {
+      idx = (idx + 1) % videos.length;
+      const preloadIdx = (idx + 1) % videos.length;
+      waiting.style.opacity = '1';
+      waiting.play();
+      active.style.opacity = '0';
+      const temp = active; active = waiting; waiting = temp;
+      waiting.src = videos[preloadIdx];
+      waiting.load();
+    }
+
+    vidA.addEventListener('ended', next);
+    vidB.addEventListener('ended', next);
   </script>
 </body>
 </html>

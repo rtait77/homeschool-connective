@@ -158,8 +158,10 @@ nav {
 }
 
 .hero-video-wrap {
+  position: relative;
   width: 100%;
   line-height: 0;
+  background: #000;
 }
 
 .hero-video-wrap video {
@@ -168,6 +170,15 @@ nav {
   max-height: 55vh;
   object-fit: cover;
   display: block;
+  transition: opacity 0.15s;
+}
+
+#vid-b {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  opacity: 0;
 }
 
 .hero-inner {
