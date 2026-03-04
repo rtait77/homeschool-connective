@@ -167,7 +167,7 @@ nav {
 .hero-video-wrap video {
   width: 100%;
   height: auto;
-  max-height: 65vh;
+  max-height: 58vh;
   object-fit: cover;
   display: block;
   transition: opacity 0.15s;
