@@ -645,6 +645,25 @@ a.game-title-link:hover { color: var(--coral); }
 
 .subscribe-form button:hover { background: var(--teal-dark); }
 
+/* ── SENDER.NET FORM OVERRIDES ───────────────────────────── */
+
+.sender-form-field {
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.sender-form-field button,
+.sender-form-field [type="submit"] {
+  background: var(--teal) !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
+}
+
+.sender-form-field button:hover,
+.sender-form-field [type="submit"]:hover {
+  background: var(--teal-dark) !important;
+}
+
 /* ── BLOG POST PAGE ──────────────────────────────────────── */
 
 .article-container {
