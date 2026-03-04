@@ -164,6 +164,17 @@ nav {
   background: #000;
 }
 
+.hero-video-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, #ffffff);
+  pointer-events: none;
+}
+
 .hero-video-wrap video {
   width: 100%;
   height: auto;
