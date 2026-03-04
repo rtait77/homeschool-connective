@@ -180,7 +180,7 @@ nav {
   height: auto;
   max-height: 58vh;
   object-fit: cover;
-  object-position: center 8%;
+  object-position: center 10%;
   display: block;
   transition: opacity 0.15s;
 }
