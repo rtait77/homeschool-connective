@@ -52,7 +52,7 @@ export default function Navbar() {
               <Link
                 href={href}
                 className={`transition-colors hover:text-[#ed7c5a] ${
-                  pathname === href ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
+                  (href === '/' ? pathname === '/' : pathname.startsWith(href)) ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
                 }`}
               >
                 {label}
@@ -100,7 +100,7 @@ export default function Navbar() {
                   href={href}
                   onClick={() => setMenuOpen(false)}
                   className={`block py-2 transition-colors hover:text-[#ed7c5a] ${
-                    pathname === href ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
+                    (href === '/' ? pathname === '/' : pathname.startsWith(href)) ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
                   }`}
                 >
                   {label}

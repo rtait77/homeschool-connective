@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -51,9 +50,6 @@ export default function SignupPage() {
   return (
     <div className="max-w-[480px] mx-auto px-6 py-16">
       <div className="text-center mb-8">
-        <Link href="/">
-          <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={44} className="h-11 w-auto mx-auto mb-6" />
-        </Link>
         <h1 className="text-2xl font-extrabold mb-2">Start your free 7-day trial</h1>
         <p className="text-[#5c5c5c] text-sm">No credit card required. Full access to all games.</p>
       </div>

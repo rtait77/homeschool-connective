@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
@@ -36,9 +35,6 @@ export default function LoginPage() {
   return (
     <div className="max-w-[480px] mx-auto px-6 py-16">
       <div className="text-center mb-8">
-        <Link href="/">
-          <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={44} className="h-11 w-auto mx-auto mb-6" />
-        </Link>
         <h1 className="text-2xl font-extrabold mb-2">Welcome back!</h1>
         <p className="text-[#5c5c5c] text-sm">Log in to access your games.</p>
       </div>
