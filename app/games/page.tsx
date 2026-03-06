@@ -11,6 +11,7 @@ const games = [
     url: 'https://view.genially.com/68b468a36df9dbd6433fe511',
     topic: 'solar-system',
     mini: false,
+    types: [],
   },
   {
     title: 'Ordering the Planets',
@@ -19,6 +20,7 @@ const games = [
     url: 'https://view.genially.com/68164fbb7306f160f7843510',
     topic: 'solar-system',
     mini: false,
+    types: [],
   },
   {
     title: 'Planets Puzzle – Easy',
@@ -27,6 +29,7 @@ const games = [
     url: 'https://view.genially.com/699b8c77ce57456e07ab6ec6',
     topic: 'solar-system',
     mini: true,
+    types: ['puzzle'],
   },
   {
     title: 'Planets Puzzle – Medium',
@@ -35,6 +38,7 @@ const games = [
     url: 'https://view.genially.com/69a5d5b1282f9454912a042b',
     topic: 'solar-system',
     mini: true,
+    types: ['puzzle'],
   },
   {
     title: 'Planets Puzzle – Hard',
@@ -43,6 +47,7 @@ const games = [
     url: 'https://view.genially.com/69a5df176426fe803ea50975',
     topic: 'solar-system',
     mini: true,
+    types: ['puzzle'],
   },
   {
     title: 'Planets Puzzle – Very Hard',
@@ -51,32 +56,132 @@ const games = [
     url: 'https://view.genially.com/69a5df422695874f19c26146',
     topic: 'solar-system',
     mini: true,
+    types: ['puzzle'],
+  },
+  {
+    title: 'Dwarf Planets Word Search',
+    desc: 'Hunt for the names of dwarf planets hidden in the grid. How many can you find?',
+    thumb: '/thumb-word-search.png',
+    url: 'https://view.genially.com/69a8a17cf434d87dab6ea745',
+    topic: 'solar-system',
+    mini: true,
+    types: ['word-search'],
+  },
+  {
+    title: 'Find the Pair – Inner Planets',
+    desc: 'Match the inner planets to their clues in this fun memory-style matching game.',
+    thumb: '/thumb-find-pair-inner.png',
+    url: 'https://view.genially.com/69aa4a75a347d5c7ec89f688',
+    topic: 'solar-system',
+    mini: true,
+    types: ['matching'],
+  },
+  {
+    title: 'Find the Pair – Outer Planets',
+    desc: 'Test your memory with the outer planets in this matching card game.',
+    thumb: '/thumb-find-pair-outer.png',
+    url: 'https://view.genially.com/69aa4d04ff9600b3345ea524',
+    topic: 'solar-system',
+    mini: true,
+    types: ['matching'],
+  },
+  {
+    title: 'Find the Pair – The Planets',
+    desc: 'Match all the planets in this full solar system memory challenge.',
+    thumb: '/thumb-find-pair-planets.png',
+    url: 'https://view.genially.com/69aa4e62910b799784be2a4c',
+    topic: 'solar-system',
+    mini: true,
+    types: ['matching'],
+  },
+  {
+    title: 'Word Sort – Planet Types',
+    desc: 'Sort the planets into the correct categories — can you tell your rocky planets from your gas giants?',
+    thumb: '/thumb-word-sort.png',
+    url: 'https://view.genially.com/69aa439aa347d5c7ec863318',
+    topic: 'solar-system',
+    mini: true,
+    types: ['word-sort'],
   },
 ]
 
-const filters = [
-  { id: 'all', label: 'All' },
+const topics = [
+  { id: 'all', label: 'All Topics' },
   { id: 'solar-system', label: '🪐 Solar System' },
 ]
 
-export default function GamesPage() {
-  const [active, setActive] = useState('all')
+const typeFilters = [
+  { id: 'mini', label: 'Mini' },
+  { id: 'puzzle', label: 'Puzzles' },
+  { id: 'word-search', label: 'Word Search' },
+  { id: 'matching', label: 'Matching' },
+  { id: 'word-sort', label: 'Word Sort' },
+]
 
-  const filtered = active === 'all' ? games : games.filter(g => g.topic === active)
+export default function GamesPage() {
+  const [topic, setTopic] = useState('all')
+  const [topicOpen, setTopicOpen] = useState(false)
+  const [activeTypes, setActiveTypes] = useState<string[]>([])
+
+  function toggleType(id: string) {
+    setActiveTypes(prev =>
+      prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id]
+    )
+  }
+
+  const filtered = games.filter(g => {
+    const topicMatch = topic === 'all' || g.topic === topic
+    if (!topicMatch) return false
+    if (activeTypes.length === 0) return true
+    if (activeTypes.includes('mini') && g.mini) return true
+    return g.types.some(t => activeTypes.includes(t))
+  })
+
+  const fullGames = filtered.filter(g => !g.mini)
+  const miniGames = filtered.filter(g => g.mini)
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
       <h1 className="text-3xl font-extrabold mb-2">Games</h1>
       <p className="text-[#5c5c5c] mb-8">Browse all our interactive educational games. New games added regularly!</p>
 
-      {/* Filter buttons */}
-      <div className="flex flex-wrap gap-2 mb-10">
-        {filters.map(f => (
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 mb-10">
+
+        {/* Topic dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => setTopicOpen(o => !o)}
+            className="flex items-center gap-2 font-bold text-sm px-5 py-2 rounded-full border-2 border-[#ddd8cc] bg-white hover:border-[#55b6ca] transition-all"
+          >
+            {topics.find(t => t.id === topic)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {topicOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-xl shadow-lg z-10 min-w-[180px]">
+              {topics.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => { setTopic(t.id); setTopicOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-xl last:rounded-b-xl ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Divider */}
+        <span className="text-[#ddd8cc] hidden sm:block">|</span>
+
+        {/* Type filters */}
+        {typeFilters.map(f => (
           <button
             key={f.id}
-            onClick={() => setActive(f.id)}
-            className={`font-bold text-sm px-5 py-2 rounded-full border-2 transition-all ${
-              active === f.id
+            onClick={() => toggleType(f.id)}
+            className={`font-bold text-sm px-4 py-2 rounded-full border-2 transition-all ${
+              activeTypes.includes(f.id)
                 ? 'bg-[#55b6ca] border-[#55b6ca] text-white'
                 : 'bg-white border-[#ddd8cc] text-[#1c1c1c] hover:border-[#55b6ca] hover:text-[#238FA4]'
             }`}
@@ -86,39 +191,65 @@ export default function GamesPage() {
         ))}
       </div>
 
-      {/* Games grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((game) => (
-          <div key={game.title} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-            <a href={game.url} target="_blank" rel="noopener noreferrer">
-              <div className="relative h-44 w-full bg-[#e8e4dc]">
-                <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-                {game.mini && (
-                  <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-                    Mini
-                  </span>
-                )}
-              </div>
-            </a>
-            <div className="p-5 flex flex-col flex-1">
-              <a href={game.url} target="_blank" rel="noopener noreferrer" className="font-extrabold text-base hover:text-[#ed7c5a] transition-colors mb-2">
-                {game.title}
-              </a>
-              <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
-              <a href={game.url} target="_blank" rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-                ▶ Play Now
-              </a>
-            </div>
+      {/* Full games */}
+      {fullGames.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          {fullGames.map(game => (
+            <GameCard key={game.title} game={game} />
+          ))}
+        </div>
+      )}
+
+      {/* Mini games */}
+      {miniGames.length > 0 && (
+        <>
+          {fullGames.length > 0 && (
+            <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mb-4">Mini Games</p>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {miniGames.map(game => (
+              <GameCard key={game.title} game={game} />
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
+
+      {filtered.length === 0 && (
+        <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your filters. Try selecting different options!</p>
+      )}
 
       {/* Coming Soon */}
       <div className="mt-12 bg-white rounded-[14px] p-8 text-center border-2 border-dashed border-[#ddd8cc]">
         <p className="text-2xl mb-2">🌊 🦋 🌿</p>
         <h2 className="text-lg font-extrabold mb-2">More Topics Coming Soon</h2>
         <p className="text-[#5c5c5c] text-sm">Marine Biology, Weather, Plants, and more are in the works. Subscribe to our newsletter to be the first to know!</p>
+      </div>
+    </div>
+  )
+}
+
+function GameCard({ game }: { game: typeof games[0] }) {
+  return (
+    <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+      <a href={game.url} target="_blank" rel="noopener noreferrer">
+        <div className="relative h-44 w-full bg-[#e8e4dc]">
+          <Image src={game.thumb} alt={game.title} fill className="object-cover" />
+          {game.mini && (
+            <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+              Mini
+            </span>
+          )}
+        </div>
+      </a>
+      <div className="p-5 flex flex-col flex-1">
+        <a href={game.url} target="_blank" rel="noopener noreferrer" className="font-extrabold text-base hover:text-[#ed7c5a] transition-colors mb-2">
+          {game.title}
+        </a>
+        <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
+        <a href={game.url} target="_blank" rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+          ▶ Play Now
+        </a>
       </div>
     </div>
   )
