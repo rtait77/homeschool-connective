@@ -18,7 +18,7 @@ const games = [
   {
     title: 'Ordering the Planets',
     desc: 'Click the planets in order from the Sun. Watch them line up one by one as you get each correct, then finish with a drag-and-drop challenge!',
-    thumb: '/thumb-otp.png',
+    thumb: '/ordering-the-planets-thumbnail.png',
     url: 'https://view.genially.com/68164fbb7306f160f7843510',
     topic: 'solar-system',
     mini: false,
@@ -107,7 +107,7 @@ const games = [
   },
   {
     title: 'Mission to Mars',
-    desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Includes voiceover narration, a gamified quiz, and a rover puzzle.',
+    desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
     url: 'https://view.genially.com/699e69be43a96797318311da',
     topic: 'solar-system',

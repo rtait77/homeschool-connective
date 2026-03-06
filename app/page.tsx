@@ -47,7 +47,7 @@ export default function HomePage() {
             {/* Free Game */}
             <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
               <div className="relative h-44 w-full bg-[#e8e4dc]">
-                <Image src="/thumb-otp.png" alt="Ordering the Planets" fill className="object-cover" />
+                <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
               </div>
               <div className="p-5 flex flex-col flex-1">
                 <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Game</p>
@@ -136,7 +136,7 @@ export default function HomePage() {
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Interactive Lessons</p>
             <h2 className="text-2xl font-extrabold mb-4">Bite-Sized Lessons That Stick</h2>
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Our interactive lessons break big topics into small, manageable chunks — with voiceover narration to guide the way.</p>
-            <p className="text-[#5c5c5c] leading-relaxed">Each lesson ends with a gamified quiz and hands-on puzzle to reinforce what kids have just learned.</p>
+            <p className="text-[#5c5c5c] leading-relaxed">Each lesson is packed with interactive activities to reinforce what kids have just learned.</p>
           </div>
         </div>
       </section>
