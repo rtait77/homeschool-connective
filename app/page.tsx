@@ -135,8 +135,8 @@ export default function HomePage() {
           <div className="md:w-1/2">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Interactive Lessons</p>
             <h2 className="text-2xl font-extrabold mb-4">Bite-Sized Lessons That Stick</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our interactive lessons break big topics into small, manageable chunks — with voiceover narration to guide the way.</p>
-            <p className="text-[#5c5c5c] leading-relaxed">Each lesson is packed with interactive activities to reinforce what kids have just learned.</p>
+            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our lessons break big topics down into small, manageable chunks — with voiceover narration to guide kids through each one.</p>
+            <p className="text-[#5c5c5c] leading-relaxed">Each lesson uses elements like animations, drag-and-drop, and sound effects (varies by lesson).</p>
           </div>
         </div>
       </section>
