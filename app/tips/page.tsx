@@ -1,7 +1,7 @@
 const posts = [
   {
     href: '/tips/why-play-is-important',
-    img: null,
+    img: '/blog-play-blocks.avif',
     date: 'November 11, 2025',
     tag: 'Game-Based Learning',
     title: 'Why Play is Important',
@@ -9,7 +9,7 @@ const posts = [
   },
   {
     href: '/tips/homeschooling-101',
-    img: null,
+    img: '/blog-101-coloring.avif',
     date: 'November 11, 2025',
     tag: 'Homeschool Planning',
     title: 'Homeschooling 101',
@@ -17,7 +17,7 @@ const posts = [
   },
   {
     href: '/tips/learning-styles',
-    img: null,
+    img: '/blog-ls-infographic.avif',
     date: 'November 11, 2025',
     tag: 'Homeschool Planning',
     title: 'Learning Styles',
@@ -25,7 +25,7 @@ const posts = [
   },
   {
     href: '/tips/homeschool-beginnings',
-    img: null,
+    img: '/blog-beginnings-mel-family.avif',
     date: 'November 10, 2025',
     tag: 'Our Story',
     title: 'Homeschool Beginnings',
@@ -33,7 +33,7 @@ const posts = [
   },
   {
     href: '/tips/homeschooling-methods',
-    img: null,
+    img: '/blog-methods-coloring.avif',
     date: 'November 11, 2025',
     tag: 'Homeschool Planning',
     title: 'Homeschooling Methods',
@@ -41,13 +41,15 @@ const posts = [
   },
   {
     href: '/tips/deschooling',
-    img: null,
+    img: '/blog-deschooling-kids-log.avif',
     date: 'November 11, 2025',
     tag: 'Homeschool Planning',
     title: 'Deschooling',
     excerpt: 'Deschooling is the process of adjusting to a learning environment outside of traditional schooling. It involves both children and parents transitioning from structured conventional methods...',
   },
 ]
+
+import Image from 'next/image'
 
 export default function TipsPage() {
   return (
@@ -59,7 +61,9 @@ export default function TipsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
             <div key={post.href} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="h-40 bg-[#f5f1e9] flex items-center justify-center text-4xl">📚</div>
+              <div className="relative h-40 w-full bg-[#f5f1e9]">
+                <Image src={post.img} alt={post.title} fill className="object-cover" />
+              </div>
               <div className="p-5 flex flex-col flex-1">
                 <p className="text-xs text-[#5c5c5c] mb-1">{post.date}</p>
                 <p className="text-xs font-bold text-[#238FA4] uppercase tracking-wide mb-2">{post.tag}</p>
