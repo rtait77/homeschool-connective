@@ -1,0 +1,102 @@
+'use client'
+
+import { useState } from 'react'
+import { createBrowserClient } from '@supabase/ssr'
+import Link from 'next/link'
+import Image from 'next/image'
+
+export default function SignupPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [done, setDone] = useState(false)
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  async function handleSignup(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/api/start-trial`,
+      },
+    })
+
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+    } else {
+      setDone(true)
+    }
+  }
+
+  if (done) {
+    return (
+      <div className="max-w-[480px] mx-auto px-6 py-24 text-center">
+        <div className="text-5xl mb-6">📬</div>
+        <h1 className="text-2xl font-extrabold mb-4">Check your email!</h1>
+        <p className="text-[#5c5c5c]">We sent a confirmation link to <strong>{email}</strong>. Click it to activate your 7-day free trial.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="max-w-[480px] mx-auto px-6 py-16">
+      <div className="text-center mb-8">
+        <Link href="/">
+          <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={44} className="h-11 w-auto mx-auto mb-6" />
+        </Link>
+        <h1 className="text-2xl font-extrabold mb-2">Start your free 7-day trial</h1>
+        <p className="text-[#5c5c5c] text-sm">No credit card required. Full access to all games.</p>
+      </div>
+
+      <form onSubmit={handleSignup} className="bg-white rounded-2xl p-8 flex flex-col gap-4" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
+        <div>
+          <label className="block text-sm font-bold mb-1">Email</label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full border border-[#ddd8cc] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#55b6ca]"
+            placeholder="you@email.com"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-bold mb-1">Password</label>
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="w-full border border-[#ddd8cc] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#55b6ca]"
+            placeholder="At least 6 characters"
+            minLength={6}
+          />
+        </div>
+
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
+        >
+          {loading ? 'Creating account...' : 'Start 7 Day Free Trial'}
+        </button>
+
+        <p className="text-center text-xs text-[#5c5c5c]">
+          Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link>
+        </p>
+      </form>
+    </div>
+  )
+}

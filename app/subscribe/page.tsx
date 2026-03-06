@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null)
@@ -18,8 +19,23 @@ export default function SubscribePage() {
 
   return (
     <div className="max-w-[900px] mx-auto px-6 py-16">
-      <h1 className="text-3xl font-extrabold text-center mb-2">Join Homeschool Connective</h1>
-      <p className="text-center text-[#5c5c5c] mb-12">Get full access to all games, resources, and new content as it's added.</p>
+      <h1 className="text-3xl font-extrabold text-center mb-2">Get Full Access</h1>
+      <p className="text-center text-[#5c5c5c] mb-4">All games, all topics, new content added regularly.</p>
+
+      {/* Free trial CTA */}
+      <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center mb-10">
+        <h2 className="text-xl font-extrabold mb-2">Try it free for 7 days</h2>
+        <p className="text-[#5c5c5c] text-sm mb-6">No credit card required. Full access to all games. Cancel anytime.</p>
+        <Link
+          href="/signup"
+          className="inline-block bg-[#ed7c5a] text-white font-bold px-10 py-4 rounded-lg text-base hover:opacity-90 transition"
+        >
+          Start 7 Day Free Trial
+        </Link>
+        <p className="text-xs text-[#5c5c5c] mt-4">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
+      </div>
+
+      <p className="text-center text-sm text-[#5c5c5c] mb-8">After your trial, choose a plan:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Monthly */}

@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { createBrowserClient } from '@supabase/ssr'
 
 const links = [
   { href: '/', label: 'Home' },
@@ -11,12 +12,31 @@ const links = [
   { href: '/tips', label: 'Homeschool Tips' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
-  { href: '/subscribe', label: 'Subscribe' },
 ]
 
 export default function Navbar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -39,9 +59,26 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          <li>
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="bg-[#f5f1e9] text-[#1c1c1c] px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#ede9e0] transition"
+              >
+                Log Out
+              </button>
+            ) : (
+              <Link
+                href="/signup"
+                className="bg-[#ed7c5a] text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition"
+              >
+                Start Free Trial
+              </Link>
+            )}
+          </li>
         </ul>
 
-        {/* Mobile hamburger button */}
+        {/* Mobile hamburger */}
         <button
           className="md:hidden flex flex-col gap-[5px] p-2"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -70,6 +107,24 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            <li className="pt-2">
+              {user ? (
+                <button
+                  onClick={() => { handleLogout(); setMenuOpen(false) }}
+                  className="w-full text-left py-2 font-bold text-[#1c1c1c] hover:text-[#ed7c5a] transition"
+                >
+                  Log Out
+                </button>
+              ) : (
+                <Link
+                  href="/signup"
+                  onClick={() => setMenuOpen(false)}
+                  className="block py-2 text-[#ed7c5a]"
+                >
+                  Start Free Trial
+                </Link>
+              )}
+            </li>
           </ul>
         </div>
       )}
