@@ -60,9 +60,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Games */}
+      {/* Games */}
       <section className="max-w-[1100px] mx-auto px-6 py-14">
         <h2 className="text-[1.75rem] font-extrabold mb-8">Play Now</h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {featuredGames.map((game) => (
             <div key={game.title} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
@@ -85,6 +86,7 @@ export default function HomePage() {
           ))}
         </div>
 
+        {/* Mini Games */}
         <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mt-10 mb-4">Mini Games</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {miniGames.map((game) => (
@@ -101,8 +103,12 @@ export default function HomePage() {
           ))}
         </div>
 
-        <div className="flex gap-4 mt-8">
-          <Link href="/games" className="inline-flex items-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
+        {/* Blurb + CTA */}
+        <div className="mt-10 flex flex-col md:flex-row md:items-center gap-6">
+          <p className="text-[#5c5c5c] text-sm leading-relaxed flex-1">
+            Research shows that interactive, game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.
+          </p>
+          <Link href="/games" className="flex-shrink-0 inline-flex items-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
             See all games →
           </Link>
         </div>
