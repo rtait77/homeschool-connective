@@ -1,19 +1,8 @@
 @import "tailwindcss";
 
-@theme inline {
-  --color-coral: #ed7c5a;
-  --color-coral-dark: #d4623f;
-  --color-teal: #55b6ca;
-  --color-teal-dark: #3a9aae;
-  --color-sand: #f5f1e9;
-  --color-text: #1c1c1c;
-  --color-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --font-sans: 'Nunito', sans-serif;
-}
-
 body {
-  background-color: #f5f1e9;
+  background-color: #ffffff;
   color: #1c1c1c;
   font-family: 'Nunito', sans-serif;
+  line-height: 1.6;
 }
