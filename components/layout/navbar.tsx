@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 
 const links = [
   { href: '/', label: 'Home' },
@@ -14,6 +15,7 @@ const links = [
 
 export default function Navbar() {
   const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
@@ -21,6 +23,8 @@ export default function Navbar() {
         <Link href="/">
           <Image src="/Logo.png" alt="Homeschool Connective" width={180} height={48} className="h-12 w-auto" priority />
         </Link>
+
+        {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-6 font-bold text-sm">
           {links.map(({ href, label }) => (
             <li key={href}>
@@ -35,7 +39,39 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
+        {/* Mobile hamburger button */}
+        <button
+          className="md:hidden flex flex-col gap-[5px] p-2"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-6 h-[2px] bg-[#1c1c1c] transition-all ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+          <span className={`block w-6 h-[2px] bg-[#1c1c1c] transition-all ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-6 h-[2px] bg-[#1c1c1c] transition-all ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t border-[#eee] px-4 pb-4">
+          <ul className="flex flex-col gap-1 font-bold text-sm pt-2">
+            {links.map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`block py-2 transition-colors hover:text-[#ed7c5a] ${
+                    pathname === href ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </nav>
   )
 }
