@@ -68,7 +68,7 @@ export default function Page() {
         <cite className="not-italic font-bold text-sm text-[#1c1c1c]">— Bec • Co-Founder of Homeschool Connective</cite>
       </blockquote>
 
-      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-full rounded-xl" />
+      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-[70%] mx-auto block rounded-xl" />
 
       <div className="mt-10 pt-8 border-t border-[#ddd8cc]">
         <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>

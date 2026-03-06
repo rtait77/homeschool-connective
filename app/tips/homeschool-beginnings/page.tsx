@@ -26,7 +26,7 @@ export default function Page() {
       <p className="mb-4 leading-relaxed">It was tough at times—especially since I struggled with reading myself due to dyslexia (more on that in another post). But we kept at it. I learned alongside my kids. We made mistakes, adjusted, and grew stronger as a family.</p>
       <p className="mb-8 leading-relaxed">Fast forward to today, and that little boy is now a helicopter mechanic, a Sergeant in the Army National Guard, and a regional commander for the Civil Air Patrol. My other three kids have all found careers they're passionate about and are doing well. And now, I have the joy of homeschooling the next generation—my granddaughter. Homeschooling changed the course of our lives in ways I never expected. It wasn't always easy, but it was worth every single moment.</p>
 
-      <img src="/blog-beginnings-mel-family.avif" alt="Mel's homeschool family" className="w-full rounded-xl mb-10" />
+      <img src="/blog-beginnings-mel-family.avif" alt="Mel's homeschool family" className="w-[70%] mx-auto block rounded-xl mb-10" />
 
       <h2 className="text-xl font-extrabold mb-4">Hi! I'm Bec!</h2>
       <p className="mb-4 leading-relaxed">I have homeschooled all 3 of my children (still homeschooling the two youngest), and it's been an incredible journey of ups and downs, laughter and tears, productive days and lazy days...and I'm grateful for all the "bad" days just as much as the good ones.</p>
@@ -35,11 +35,11 @@ export default function Page() {
       <p className="mb-4 leading-relaxed">The last straw for me was when they came home and said, "I hate Science." I said, "Wait, what? How can you hate Science?" After some digging, I learned that all the class had done for Science was watch a potato grow for 3 days and take notes. That was it! Around this time, I was seeing more posts from my homeschooling friend, so I reached out to her and asked questions like "Do you get tired of being around your kids all day?" and "Do your kids have any friends?" She was very kind and patient and answered all of my questions with love, rather than annoyance.</p>
       <p className="mb-8 leading-relaxed">We did a trial run for a couple weeks, it went well, and we decided to withdraw our child from public school and start homeschooling that fall for 6th Grade. We never looked back. Even with the lack of support in the beginning, we knew this was the right decision for our family, and we are all so glad that my husband and I listened to our gut.</p>
 
-      <img src="/blog-beginnings-bec-family.avif" alt="Bec's homeschool family" className="w-full rounded-xl mb-8" />
+      <img src="/blog-beginnings-bec-family.avif" alt="Bec's homeschool family" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
       <p className="mb-8 leading-relaxed text-lg">We hope you enjoyed reading about our homeschooling beginnings. Stay tuned for more blog posts as we share more of our experiences, curriculum we've used, and supplements we enjoy like board games!</p>
 
-      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-full rounded-xl" />
+      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-[70%] mx-auto block rounded-xl" />
 
       <div className="mt-10 pt-8 border-t border-[#ddd8cc]">
         <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>

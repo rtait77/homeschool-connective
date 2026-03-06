@@ -15,7 +15,7 @@ export default function Page() {
 
       <p className="mb-6 leading-relaxed">Homeschooling provides a distinctive and adaptable educational path, enabling parents to customize their child's learning to fit their unique needs and passions. In this customized learning adventure, play stands out as a crucial element, playing a significant role in a child's growth and education. Let's explore the importance of integrating play into homeschooling and its benefits for enhancing the learning experience.</p>
 
-      <img src="/blog-play-girl-puzzle.avif" alt="Child playing" className="w-full rounded-xl mb-8" />
+      <img src="/blog-play-girl-puzzle.avif" alt="Child playing" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
       <h2 className="text-xl font-extrabold mb-4">The Educational Benefits of Play</h2>
 
@@ -28,7 +28,7 @@ export default function Page() {
       <h3 className="font-extrabold mb-2">3. Hands-On Learning</h3>
       <p className="mb-8 leading-relaxed">Homeschooling provides an ideal environment for hands-on learning, and play is a perfect vehicle for this. Activities like building models, conducting experiments, and creating art projects allow children to learn by doing. This experiential learning helps solidify concepts and makes abstract ideas more tangible and understandable.</p>
 
-      <img src="/blog-play-kids-tractor.avif" alt="Children playing outside" className="w-full rounded-xl mb-8" />
+      <img src="/blog-play-kids-tractor.avif" alt="Children playing outside" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
       <h2 className="text-xl font-extrabold mb-4">Social and Emotional Growth</h2>
 
@@ -41,7 +41,7 @@ export default function Page() {
       <h3 className="font-extrabold mb-2">3. Family Bonding</h3>
       <p className="mb-8 leading-relaxed">Play also strengthens family bonds. When parents engage in play with their children, it fosters a sense of closeness and trust. This bonding time is crucial in a homeschooling environment where parents are both educators and caregivers. It helps create a positive and supportive learning atmosphere.</p>
 
-      <img src="/blog-play-kids-climbing.avif" alt="Children playing on climbing equipment" className="w-full rounded-xl mb-8" />
+      <img src="/blog-play-kids-climbing.avif" alt="Children playing on climbing equipment" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
       <h2 className="text-xl font-extrabold mb-4">Physical Health and Well-Being</h2>
 
@@ -51,7 +51,7 @@ export default function Page() {
       <h3 className="font-extrabold mb-2">2. Stress Relief</h3>
       <p className="mb-8 leading-relaxed">Play provides a natural outlet for stress relief. Homeschooling can sometimes be intense, with a strong focus on academics. Play breaks allow children to relax and recharge, reducing stress and preventing burnout. This balance between work and play is essential for maintaining a positive attitude toward learning.</p>
 
-      <img src="/blog-play-blocks.avif" alt="Child playing with blocks" className="w-full rounded-xl mb-8" />
+      <img src="/blog-play-blocks.avif" alt="Child playing with blocks" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
       <h2 className="text-xl font-extrabold mb-4">Enhancing Motivation and Engagement</h2>
 
@@ -61,7 +61,7 @@ export default function Page() {
       <h3 className="font-extrabold mb-2">2. Personalized Learning</h3>
       <p className="mb-8 leading-relaxed">Homeschooling allows for personalized learning plans, and play can be tailored to suit each child's interests and learning style. Whether it's through educational games, interactive simulations, or creative projects, play can make learning more relevant and meaningful. This personalized approach can help children grasp complex concepts more effectively.</p>
 
-      <img src="/blog-play-pattern-blocks.avif" alt="Child playing with pattern blocks" className="w-full rounded-xl mb-8" />
+      <img src="/blog-play-pattern-blocks.avif" alt="Child playing with pattern blocks" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
       <h2 className="text-xl font-extrabold mb-4">Practical Tips for Incorporating Play into Homeschooling</h2>
 
@@ -85,7 +85,7 @@ export default function Page() {
         <p className="leading-relaxed">Play is not just a break from learning; it is a vital component of a well-rounded homeschooling education. It nurtures cognitive, social, emotional, and physical development, making learning more effective and enjoyable. By embracing the power of play, homeschooling families can create a rich, dynamic, and balanced educational experience that fosters a lifelong love of learning.</p>
       </div>
 
-      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-full rounded-xl" />
+      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-[70%] mx-auto block rounded-xl" />
 
       <div className="mt-10 pt-8 border-t border-[#ddd8cc]">
         <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
