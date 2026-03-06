@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import NewsletterSection from '@/components/newsletter-section'
 
 export default function HomePage() {
   return (
@@ -153,12 +154,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="bg-[#3d3d3d] py-14 px-6 text-center">
-        <div className="max-w-2xl mx-auto">
-          <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
-        </div>
-      </section>
+      <NewsletterSection />
     </>
   )
 }

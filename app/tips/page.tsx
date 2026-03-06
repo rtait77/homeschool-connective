@@ -50,6 +50,7 @@ const posts = [
 ]
 
 import Image from 'next/image'
+import NewsletterSection from '@/components/newsletter-section'
 
 export default function TipsPage() {
   return (
@@ -79,11 +80,7 @@ export default function TipsPage() {
         </div>
       </div>
 
-      <section className="bg-[#3d3d3d] py-14 px-6">
-        <div className="max-w-2xl mx-auto">
-          <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
-        </div>
-      </section>
+      <NewsletterSection />
     </>
   )
 }
