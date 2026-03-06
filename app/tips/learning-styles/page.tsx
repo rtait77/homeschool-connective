@@ -32,15 +32,9 @@ export default function Page() {
         </a>
       </div>
 
-      <div className="flex justify-center mb-8">
-        <div className="relative w-full max-w-[500px] h-72 rounded-xl overflow-hidden">
-          <Image src="/blog-ls-infographic.avif" alt="Learning Styles infographic" fill className="object-contain" />
-        </div>
-      </div>
+      <img src="/blog-ls-infographic.avif" alt="Learning Styles infographic" className="w-full max-w-[500px] mx-auto block rounded-xl mb-8" />
 
-      <div className="relative w-full h-40 rounded-xl overflow-hidden">
-        <Image src="/blog-thanks.avif" alt="Thanks for reading" fill className="object-cover" />
-      </div>
+      <img src="/blog-thanks.avif" alt="Thanks for reading" className="w-full rounded-xl" />
 
       <div className="mt-10 pt-8 border-t border-[#ddd8cc]">
         <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
