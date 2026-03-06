@@ -1,28 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-const featuredGames = [
-  {
-    title: 'Solar System Sizzle',
-    desc: 'Learn three facts about each object in the solar system through themed drag-and-drop meals. First stop: Sunshine Soup!',
-    thumb: '/thumb-sss.png',
-    url: 'https://view.genially.com/68b468a36df9dbd6433fe511',
-  },
-  {
-    title: 'Ordering the Planets',
-    desc: 'Click the planets in order from the Sun. Watch them line up one by one as you get each correct, then finish with a drag-and-drop challenge!',
-    thumb: '/thumb-otp.png',
-    url: 'https://view.genially.com/68164fbb7306f160f7843510',
-  },
-]
-
-const miniGames = [
-  { title: 'Planets Puzzle – Easy', thumb: '/thumb-puzzle-easy.png', url: 'https://view.genially.com/699b8c77ce57456e07ab6ec6' },
-  { title: 'Planets Puzzle – Medium', thumb: '/thumb-puzzle-medium.png', url: 'https://view.genially.com/69a5d5b1282f9454912a042b' },
-  { title: 'Planets Puzzle – Hard', thumb: '/thumb-puzzle-hard.png', url: 'https://view.genially.com/69a5df176426fe803ea50975' },
-  { title: 'Planets Puzzle – Very Hard', thumb: '/thumb-puzzle-vhard.png', url: 'https://view.genially.com/69a5df422695874f19c26146' },
-]
-
 export default function HomePage() {
   return (
     <>
@@ -50,8 +28,8 @@ export default function HomePage() {
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-8">Interactive, game-based learning for homeschoolers and educators</p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/games" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-              Browse Our Games
+            <Link href="/signup" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+              Start 7 Day Free Trial
             </Link>
             <Link href="/about" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
               About Us
@@ -60,54 +38,58 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Games */}
-      <section className="max-w-[1100px] mx-auto px-6 py-14">
-        <h2 className="text-[1.75rem] font-extrabold mb-8">Play Now</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {featuredGames.map((game, i) => (
-            <div key={game.title} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-48 w-full bg-[#e8e4dc]">
-                <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-              </div>
-              <div className="p-5 flex flex-col flex-1">
-                <p className="font-extrabold text-lg mb-2">{game.title}</p>
-                <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
-                {i === 0 ? (
-                  <a href={game.url} target="_blank" rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-                    ▶ Play Now
-                  </a>
-                ) : (
-                  <Link href="/signup"
-                    className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
-                    Start Free Trial
-                  </Link>
-                )}
-              </div>
-            </div>
-          ))}
+      {/* Free Game */}
+      <section className="max-w-[700px] mx-auto px-6 py-14 text-center">
+        <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Try it free — no account needed</p>
+        <h2 className="text-2xl font-extrabold mb-8">Play a Free Game</h2>
+        <div className="bg-white rounded-[14px] overflow-hidden text-left" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+          <div className="relative h-56 w-full bg-[#e8e4dc]">
+            <Image src="/thumb-otp.png" alt="Ordering the Planets" fill className="object-cover" />
+          </div>
+          <div className="p-6">
+            <h3 className="font-extrabold text-lg mb-2">Ordering the Planets</h3>
+            <p className="text-sm text-[#5c5c5c] mb-5">Click the planets in order from the Sun. Watch them line up one by one as you get each correct, then finish with a drag-and-drop challenge!</p>
+            <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+              ▶ Play Now
+            </a>
+          </div>
         </div>
+      </section>
 
-        {/* Mini Games */}
-        <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mt-10 mb-4">Mini Games</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {miniGames.map((game) => (
-            <Link key={game.title} href="/signup"
-              className="bg-white rounded-[14px] overflow-hidden hover:shadow-lg transition-shadow"
-              style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-32 w-full bg-[#e8e4dc]">
-                <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-              </div>
-              <div className="p-3">
-                <p className="font-bold text-sm">{game.title}</p>
-              </div>
-            </Link>
-          ))}
+      {/* Feature: Full Games */}
+      <section className="bg-[#f5f1e9] py-14 px-6">
+        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
+          <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
+            <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
+          </div>
+          <div className="md:w-1/2">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Full Games</p>
+            <h2 className="text-2xl font-extrabold mb-4">Immersive Learning Adventures</h2>
+            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our full-length games take kids on multi-step learning journeys. Through drag-and-drop challenges, interactive scenarios, and engaging activities, kids build real knowledge — while having a blast.</p>
+            <p className="text-[#5c5c5c] leading-relaxed">Each game is designed around a specific topic, making it easy to fit into your homeschool curriculum or use as a fun supplement to any lesson.</p>
+          </div>
         </div>
+      </section>
 
-        {/* Blurb + CTA */}
-        <div className="mt-10 flex flex-col md:flex-row md:items-center gap-6">
+      {/* Feature: Mini Games */}
+      <section className="py-14 px-6">
+        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row-reverse items-center gap-10">
+          <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
+            <Image src="/thumb-puzzle-easy.png" alt="Mini Games" fill className="object-cover" />
+          </div>
+          <div className="md:w-1/2">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Mini Games</p>
+            <h2 className="text-2xl font-extrabold mb-4">Quick Wins, Big Learning</h2>
+            <p className="text-[#5c5c5c] leading-relaxed mb-4">Short on time? Our mini games are perfect for a quick learning boost. Puzzles, word searches, matching games, and word sorts that kids can complete in just a few minutes — but won't want to stop playing!</p>
+            <p className="text-[#5c5c5c] leading-relaxed">Mini games are a great way to reinforce what kids have already learned, or to introduce a new topic in a low-pressure, fun way.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Blurb + CTA */}
+      <section className="bg-[#f5f1e9] py-14 px-6">
+        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-center gap-6">
           <p className="text-[#5c5c5c] text-sm leading-relaxed flex-1">
             Research shows that interactive, game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.
           </p>

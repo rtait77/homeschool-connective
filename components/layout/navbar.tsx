@@ -9,6 +9,7 @@ import { createBrowserClient } from '@supabase/ssr'
 const links = [
   { href: '/', label: 'Home' },
   { href: '/games', label: 'Games' },
+  { href: '/pricing', label: 'Pricing' },
   { href: '/tips', label: 'Homeschool Tips' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },

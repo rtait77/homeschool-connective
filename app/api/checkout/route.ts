@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     payment_method_types: ['card'],
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/subscribe/success`,
-    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/subscribe`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/pricing`,
   })
 
   return NextResponse.json({ url: session.url })
