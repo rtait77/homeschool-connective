@@ -78,7 +78,7 @@ export default function TipsPage() {
         </div>
       </div>
 
-      <section className="bg-[#f5f1e9] py-14 px-6">
+      <section className="bg-[#3d3d3d] py-14 px-6">
         <div className="max-w-2xl mx-auto">
           <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
         </div>

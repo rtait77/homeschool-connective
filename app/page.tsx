@@ -115,7 +115,7 @@ export default function HomePage() {
       </section>
 
       {/* Newsletter */}
-      <section className="bg-[#f5f1e9] py-14 px-6 text-center">
+      <section className="bg-[#3d3d3d] py-14 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
         </div>
