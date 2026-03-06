@@ -65,22 +65,25 @@ export default function HomePage() {
         <h2 className="text-[1.75rem] font-extrabold mb-8">Play Now</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {featuredGames.map((game) => (
+          {featuredGames.map((game, i) => (
             <div key={game.title} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <a href={game.url} target="_blank" rel="noopener noreferrer">
-                <div className="relative h-48 w-full bg-[#e8e4dc]">
-                  <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-                </div>
-              </a>
+              <div className="relative h-48 w-full bg-[#e8e4dc]">
+                <Image src={game.thumb} alt={game.title} fill className="object-cover" />
+              </div>
               <div className="p-5 flex flex-col flex-1">
-                <a href={game.url} target="_blank" rel="noopener noreferrer" className="font-extrabold text-lg hover:text-[#ed7c5a] transition-colors mb-2">
-                  {game.title}
-                </a>
+                <p className="font-extrabold text-lg mb-2">{game.title}</p>
                 <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
-                <a href={game.url} target="_blank" rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-                  ▶ Play Now
-                </a>
+                {i === 0 ? (
+                  <a href={game.url} target="_blank" rel="noopener noreferrer"
+                    className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+                    ▶ Play Now
+                  </a>
+                ) : (
+                  <Link href="/signup"
+                    className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
+                    Start Free Trial
+                  </Link>
+                )}
               </div>
             </div>
           ))}
@@ -90,7 +93,7 @@ export default function HomePage() {
         <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mt-10 mb-4">Mini Games</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {miniGames.map((game) => (
-            <a key={game.title} href={game.url} target="_blank" rel="noopener noreferrer"
+            <Link key={game.title} href="/signup"
               className="bg-white rounded-[14px] overflow-hidden hover:shadow-lg transition-shadow"
               style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -99,7 +102,7 @@ export default function HomePage() {
               <div className="p-3">
                 <p className="font-bold text-sm">{game.title}</p>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 

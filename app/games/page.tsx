@@ -1,7 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { createBrowserClient } from '@supabase/ssr'
 
 const games = [
   {
@@ -122,6 +124,34 @@ export default function GamesPage() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
   const [activeTypes, setActiveTypes] = useState<string[]>([])
+  const [hasAccess, setHasAccess] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  useEffect(() => {
+    async function checkAccess() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setAuthChecked(true); return }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('trial_end, subscription_status')
+        .eq('id', user.id)
+        .single()
+
+      const status = profile?.subscription_status
+      const trialEnd = profile?.trial_end ? new Date(profile.trial_end) : null
+      const trialActive = trialEnd && trialEnd > new Date()
+
+      setHasAccess(status === 'active' || !!trialActive)
+      setAuthChecked(true)
+    }
+    checkAccess()
+  }, [])
 
   function toggleType(id: string) {
     setActiveTypes(prev =>
@@ -144,6 +174,19 @@ export default function GamesPage() {
     <div className="max-w-[1100px] mx-auto px-6 py-14">
       <h1 className="text-3xl font-extrabold mb-2">Games</h1>
       <p className="text-[#5c5c5c] mb-8">Browse all our interactive educational games. New games added regularly!</p>
+
+      {/* Paywall banner */}
+      {authChecked && !hasAccess && (
+        <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to play all games</p>
+            <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
+          </div>
+          <Link href="/signup" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
+            Start 7 Day Free Trial
+          </Link>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-10">
@@ -195,7 +238,7 @@ export default function GamesPage() {
       {fullGames.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {fullGames.map(game => (
-            <GameCard key={game.title} game={game} />
+            <GameCard key={game.title} game={game} hasAccess={hasAccess} />
           ))}
         </div>
       )}
@@ -208,7 +251,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {miniGames.map(game => (
-              <GameCard key={game.title} game={game} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} />
             ))}
           </div>
         </>
@@ -228,28 +271,31 @@ export default function GamesPage() {
   )
 }
 
-function GameCard({ game }: { game: typeof games[0] }) {
+function GameCard({ game, hasAccess }: { game: typeof games[0], hasAccess: boolean }) {
   return (
     <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-      <a href={game.url} target="_blank" rel="noopener noreferrer">
-        <div className="relative h-44 w-full bg-[#e8e4dc]">
-          <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-          {game.mini && (
-            <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-              Mini
-            </span>
-          )}
-        </div>
-      </a>
+      <div className="relative h-44 w-full bg-[#e8e4dc]">
+        <Image src={game.thumb} alt={game.title} fill className="object-cover" />
+        {game.mini && (
+          <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+            Mini
+          </span>
+        )}
+      </div>
       <div className="p-5 flex flex-col flex-1">
-        <a href={game.url} target="_blank" rel="noopener noreferrer" className="font-extrabold text-base hover:text-[#ed7c5a] transition-colors mb-2">
-          {game.title}
-        </a>
+        <p className="font-extrabold text-base mb-2">{game.title}</p>
         <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
-        <a href={game.url} target="_blank" rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-          ▶ Play Now
-        </a>
+        {hasAccess ? (
+          <a href={game.url} target="_blank" rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+            ▶ Play Now
+          </a>
+        ) : (
+          <Link href="/signup"
+            className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
+            Start Free Trial
+          </Link>
+        )}
       </div>
     </div>
   )

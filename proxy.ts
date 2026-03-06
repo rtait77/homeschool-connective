@@ -27,31 +27,6 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const isGamesRoute = request.nextUrl.pathname.startsWith('/games')
-
-  if (isGamesRoute) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/signup', request.url))
-    }
-
-    // Check trial/subscription status
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('trial_end, subscription_status')
-      .eq('id', user.id)
-      .single()
-
-    const status = profile?.subscription_status
-    const trialEnd = profile?.trial_end ? new Date(profile.trial_end) : null
-    const trialActive = trialEnd && trialEnd > new Date()
-
-    if (status === 'active' || trialActive) {
-      return response
-    }
-
-    return NextResponse.redirect(new URL('/subscribe', request.url))
-  }
-
   return response
 }
 

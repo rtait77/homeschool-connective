@@ -69,10 +69,10 @@ export default function Navbar() {
               </button>
             ) : (
               <Link
-                href="/signup"
-                className="bg-[#ed7c5a] text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition"
+                href="/login"
+                className="bg-[#f5f1e9] text-[#1c1c1c] px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#ede9e0] transition"
               >
-                Start Free Trial
+                Log In
               </Link>
             )}
           </li>
@@ -117,11 +117,11 @@ export default function Navbar() {
                 </button>
               ) : (
                 <Link
-                  href="/signup"
+                  href="/login"
                   onClick={() => setMenuOpen(false)}
-                  className="block py-2 text-[#ed7c5a]"
+                  className="block py-2 font-bold text-[#1c1c1c] hover:text-[#ed7c5a] transition"
                 >
-                  Start Free Trial
+                  Log In
                 </Link>
               )}
             </li>
