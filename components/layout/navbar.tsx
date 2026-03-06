@@ -12,7 +12,6 @@ const links = [
   { href: '/pricing', label: 'Pricing' },
   { href: '/tips', label: 'Homeschool Tips' },
   { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
 ]
 
 export default function Navbar() {

@@ -38,23 +38,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Free Game */}
+      {/* Free Samples */}
       <section className="bg-[#f5f1e9] px-6 py-14">
-        <div className="max-w-[700px] mx-auto text-center">
-        <p className="font-extrabold text-lg mb-8">Try a game — no account needed</p>
-        <div className="bg-white rounded-[14px] overflow-hidden text-left" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-          <div className="relative h-56 w-full bg-[#e8e4dc]">
-            <Image src="/thumb-otp.png" alt="Ordering the Planets" fill className="object-cover" />
+        <div className="max-w-[1100px] mx-auto">
+          <p className="font-extrabold text-lg mb-8 text-center">Try it free — no account needed</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {/* Free Game */}
+            <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-44 w-full bg-[#e8e4dc]">
+                <Image src="/thumb-otp.png" alt="Ordering the Planets" fill className="object-cover" />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Game</p>
+                <h3 className="font-extrabold text-base mb-2">Ordering the Planets</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">Click the planets in order from the Sun. Watch them line up one by one, then finish with a drag-and-drop challenge!</p>
+                <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+                  ▶ Play Now
+                </a>
+              </div>
+            </div>
+
+            {/* Free Mini Game */}
+            <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-44 w-full bg-[#e8e4dc]">
+                <Image src="/thumb-puzzle-easy.png" alt="Planets Puzzle" fill className="object-cover" />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Mini Game</p>
+                <h3 className="font-extrabold text-base mb-2">Planets Puzzle – Easy</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">Piece together the planets of the solar system in this beginner-friendly jigsaw puzzle.</p>
+                <a href="https://view.genially.com/699b8c77ce57456e07ab6ec6" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+                  ▶ Play Now
+                </a>
+              </div>
+            </div>
+
+            {/* Free Lesson */}
+            <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-44 w-full bg-[#e8e4dc]">
+                <Image src="/thumb-lesson-mars.png" alt="Mission to Mars" fill className="object-cover" />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Lesson</p>
+                <h3 className="font-extrabold text-base mb-2">Mission to Mars</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Includes a gamified quiz and rover puzzle.</p>
+                <a href="https://view.genially.com/699e69be43a96797318311da" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+                  ▶ Start Lesson
+                </a>
+              </div>
+            </div>
+
           </div>
-          <div className="p-6">
-            <h3 className="font-extrabold text-lg mb-2">Ordering the Planets</h3>
-            <p className="text-sm text-[#5c5c5c] mb-5">Click the planets in order from the Sun. Watch them line up one by one as you get each correct, then finish with a drag-and-drop challenge!</p>
-            <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-              ▶ Play Now
-            </a>
-          </div>
-        </div>
         </div>
       </section>
 
@@ -88,8 +126,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Blurb + CTA */}
+      {/* Feature: Lessons */}
       <section className="py-14 px-6">
+        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
+          <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
+            <Image src="/thumb-lesson-mars.png" alt="Interactive Lessons" fill className="object-cover" />
+          </div>
+          <div className="md:w-1/2">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Interactive Lessons</p>
+            <h2 className="text-2xl font-extrabold mb-4">Bite-Sized Lessons That Stick</h2>
+            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our interactive lessons break big topics into small, manageable chunks — with voiceover narration to guide the way.</p>
+            <p className="text-[#5c5c5c] leading-relaxed">Each lesson ends with a gamified quiz and hands-on puzzle to reinforce what kids have just learned.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Blurb + CTA */}
+      <section className="bg-[#f5f1e9] py-14 px-6">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-center gap-6">
           <p className="text-base leading-relaxed flex-1">
             Game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.

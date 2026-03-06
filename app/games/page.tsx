@@ -105,6 +105,15 @@ const games = [
     mini: true,
     types: ['word-sort'],
   },
+  {
+    title: 'Mission to Mars',
+    desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Includes voiceover narration, a gamified quiz, and a rover puzzle.',
+    thumb: '/thumb-lesson-mars.png',
+    url: 'https://view.genially.com/699e69be43a96797318311da',
+    topic: 'solar-system',
+    mini: false,
+    types: ['lesson'],
+  },
 ]
 
 const topics = [
@@ -113,6 +122,7 @@ const topics = [
 ]
 
 const typeFilters = [
+  { id: 'lesson', label: 'Lessons' },
   { id: 'mini', label: 'Mini' },
   { id: 'puzzle', label: 'Puzzles' },
   { id: 'word-search', label: 'Word Search' },
@@ -167,8 +177,9 @@ export default function GamesPage() {
     return g.types.some(t => activeTypes.includes(t))
   })
 
-  const fullGames = filtered.filter(g => !g.mini)
+  const fullGames = filtered.filter(g => !g.mini && !g.types.includes('lesson'))
   const miniGames = filtered.filter(g => g.mini)
+  const lessons = filtered.filter(g => g.types.includes('lesson'))
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
@@ -257,6 +268,20 @@ export default function GamesPage() {
         </>
       )}
 
+      {/* Lessons */}
+      {lessons.length > 0 && (
+        <>
+          {(fullGames.length > 0 || miniGames.length > 0) && (
+            <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mb-4 mt-10">Lessons</p>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {lessons.map(game => (
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} />
+            ))}
+          </div>
+        </>
+      )}
+
       {filtered.length === 0 && (
         <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your filters. Try selecting different options!</p>
       )}
@@ -288,7 +313,7 @@ function GameCard({ game, hasAccess }: { game: typeof games[0], hasAccess: boole
         {hasAccess ? (
           <a href={game.url} target="_blank" rel="noopener noreferrer"
             className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-            ▶ Play Now
+            {game.types.includes('lesson') ? '▶ Start Lesson' : '▶ Play Now'}
           </a>
         ) : (
           <Link href="/signup"
