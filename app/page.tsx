@@ -67,8 +67,8 @@ export default function HomePage() {
           <div className="md:w-1/2">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Educational Games</p>
             <h2 className="text-2xl font-extrabold mb-4">Immersive Learning Adventures</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our full-length games take kids on multi-step learning journeys. Through drag-and-drop challenges, interactive scenarios, and engaging activities, kids build real knowledge — while having a blast.</p>
-            <p className="text-[#5c5c5c] leading-relaxed">Each game is designed around a specific topic, making it easy to fit into your homeschool curriculum or use as a fun supplement to any lesson.</p>
+            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our educational games use drag-and-drop challenges, voiceover narration, and bite-sized facts to teach kids real content — not just trivia.</p>
+            <p className="text-[#5c5c5c] leading-relaxed">Each game is built around a specific topic so it fits right into your homeschool curriculum or works as a fun stand-alone lesson.</p>
           </div>
         </div>
       </section>
@@ -82,7 +82,7 @@ export default function HomePage() {
           <div className="md:w-1/2">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Mini Games</p>
             <h2 className="text-2xl font-extrabold mb-4">Quick Wins, Big Learning</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-4">Short on time? Our mini games are perfect for a quick learning boost. Puzzles, word searches, matching games, and word sorts that kids can complete in just a few minutes — but won't want to stop playing!</p>
+            <p className="text-[#5c5c5c] leading-relaxed mb-4">Short on time? Our mini games are perfect for a quick learning boost. Puzzles, word searches, matching games, and word sorts that kids can complete in just a few minutes.</p>
             <p className="text-[#5c5c5c] leading-relaxed">Mini games are a great way to reinforce what kids have already learned, or to introduce a new topic in a low-pressure, fun way.</p>
           </div>
         </div>
@@ -91,8 +91,8 @@ export default function HomePage() {
       {/* Blurb + CTA */}
       <section className="py-14 px-6">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-center gap-6">
-          <p className="text-[#5c5c5c] text-sm leading-relaxed flex-1">
-            Research shows that interactive, game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.
+          <p className="text-base leading-relaxed flex-1">
+            Game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.
           </p>
           <Link href="/games" className="flex-shrink-0 inline-flex items-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
             See all games →
