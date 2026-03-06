@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import NewsletterSection from '@/components/newsletter-section'
 
 export default function HomePage() {
   return (
@@ -154,7 +153,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <NewsletterSection />
     </>
   )
 }

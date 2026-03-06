@@ -3,7 +3,13 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="bg-[#f5f1e9] border-t border-[#ddd8cc] mt-6">
+    <>
+    <section className="bg-[#3d3d3d] py-14 px-6 text-center">
+      <div className="max-w-2xl mx-auto">
+        <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
+      </div>
+    </section>
+    <footer className="bg-[#f5f1e9] border-t border-[#ddd8cc]">
       <div className="max-w-[1100px] mx-auto px-6 py-9 flex flex-col items-center gap-4">
         <div className="w-full flex justify-center">
           <Image src="/Logo.png" alt="Homeschool Connective" width={180} height={108} className="h-[72px] w-auto" />
@@ -17,5 +23,6 @@ export default function Footer() {
         <p className="text-xs text-[#5c5c5c]">© 2026 Homeschool Connective, LLC. All rights reserved.</p>
       </div>
     </footer>
+    </>
   )
 }

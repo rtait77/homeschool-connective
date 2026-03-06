@@ -50,7 +50,6 @@ const posts = [
 ]
 
 import Image from 'next/image'
-import NewsletterSection from '@/components/newsletter-section'
 
 export default function TipsPage() {
   return (
@@ -80,7 +79,6 @@ export default function TipsPage() {
         </div>
       </div>
 
-      <NewsletterSection />
     </>
   )
 }
