@@ -11,6 +11,7 @@ const links = [
   { href: '/tips', label: 'Homeschool Tips' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
+  { href: '/subscribe', label: 'Subscribe' },
 ]
 
 export default function Navbar() {
