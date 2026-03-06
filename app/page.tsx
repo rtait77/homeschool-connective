@@ -39,9 +39,9 @@ export default function HomePage() {
       </section>
 
       {/* Free Game */}
-      <section className="max-w-[700px] mx-auto px-6 py-14 text-center">
-        <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Try it free — no account needed</p>
-        <h2 className="text-2xl font-extrabold mb-8">Play a Free Game</h2>
+      <section className="bg-[#f5f1e9] px-6 py-14">
+        <div className="max-w-[700px] mx-auto text-center">
+        <p className="font-extrabold text-lg mb-8">Try a game — no account needed</p>
         <div className="bg-white rounded-[14px] overflow-hidden text-left" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
           <div className="relative h-56 w-full bg-[#e8e4dc]">
             <Image src="/thumb-otp.png" alt="Ordering the Planets" fill className="object-cover" />
@@ -55,16 +55,17 @@ export default function HomePage() {
             </a>
           </div>
         </div>
+        </div>
       </section>
 
       {/* Feature: Full Games */}
-      <section className="bg-[#f5f1e9] py-14 px-6">
+      <section className="py-14 px-6">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
           <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
             <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
           </div>
           <div className="md:w-1/2">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Full Games</p>
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Educational Games</p>
             <h2 className="text-2xl font-extrabold mb-4">Immersive Learning Adventures</h2>
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Our full-length games take kids on multi-step learning journeys. Through drag-and-drop challenges, interactive scenarios, and engaging activities, kids build real knowledge — while having a blast.</p>
             <p className="text-[#5c5c5c] leading-relaxed">Each game is designed around a specific topic, making it easy to fit into your homeschool curriculum or use as a fun supplement to any lesson.</p>
@@ -73,7 +74,7 @@ export default function HomePage() {
       </section>
 
       {/* Feature: Mini Games */}
-      <section className="py-14 px-6">
+      <section className="bg-[#f5f1e9] py-14 px-6">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row-reverse items-center gap-10">
           <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
             <Image src="/thumb-puzzle-easy.png" alt="Mini Games" fill className="object-cover" />
@@ -88,7 +89,7 @@ export default function HomePage() {
       </section>
 
       {/* Blurb + CTA */}
-      <section className="bg-[#f5f1e9] py-14 px-6">
+      <section className="py-14 px-6">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-center gap-6">
           <p className="text-[#5c5c5c] text-sm leading-relaxed flex-1">
             Research shows that interactive, game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.
