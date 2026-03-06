@@ -61,12 +61,13 @@ export default function TipsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
             <div key={post.href} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
-                <Image src={post.img} alt={post.title} fill className="object-cover object-center" />
-              </div>
+              <a href={post.href}>
+                <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
+                  <Image src={post.img} alt={post.title} fill className="object-cover object-center" />
+                </div>
+              </a>
               <div className="p-5 flex flex-col flex-1">
                 <p className="text-xs text-[#5c5c5c] mb-1">{post.date}</p>
-                <p className="text-xs font-bold text-[#238FA4] uppercase tracking-wide mb-2">{post.tag}</p>
                 <h3 className="font-extrabold text-base mb-2">
                   <a href={post.href} className="hover:text-[#ed7c5a] transition-colors">{post.title}</a>
                 </h3>
