@@ -1,10 +1,16 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function Footer() {
+  const pathname = usePathname()
+  const showNewsletter = pathname === '/' || pathname === '/tips'
+
   return (
     <>
-    <section className="bg-[#3d3d3d] py-14 px-6 text-center">
+    <section className="bg-[#3d3d3d] py-14 px-6 text-center" style={{ display: showNewsletter ? '' : 'none' }}>
       <div className="max-w-2xl mx-auto">
         <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
       </div>
