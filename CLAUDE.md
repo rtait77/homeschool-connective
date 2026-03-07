@@ -10,7 +10,13 @@
 - Keep explanations human — avoid jargon unless explaining something important
 - Prefer concise, direct responses. No AI fluff.
 - When something is already decided (stack, design, pricing), execute — don't re-litigate
-- Rebecca pushes code via GitHub Desktop, not the terminal
+- Claude handles all git commits and pushes via terminal (gh CLI is authenticated)
+
+**Design & copy decisions:** Make a reasonable call, then ask Rebecca's opinion before shipping.
+
+**After every change:** Provide a short summary of what changed and a checklist of what to test in the browser.
+
+**Context discipline:** Always read CLAUDE.md and memory before starting work. Never suggest tools or services that are already in the stack (e.g. Sender.net is the email provider — already integrated, do not suggest alternatives). If unsure whether something exists, check the codebase first.
 
 ## What This Is
 
