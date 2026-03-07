@@ -25,7 +25,7 @@ export default function SubscribePage() {
       {/* Free trial CTA */}
       <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center mb-10">
         <h2 className="text-xl font-extrabold mb-2">Try it free for 7 days</h2>
-        <p className="text-[#5c5c5c] text-sm mb-6">No credit card required. Full access to all games. Cancel anytime.</p>
+        <p className="text-[#5c5c5c] text-sm mb-6">No credit card required. Full access to all games and lessons. Cancel anytime.</p>
         <Link
           href="/signup"
           className="inline-block bg-[#ed7c5a] text-white font-bold px-10 py-4 rounded-lg text-base hover:opacity-90 transition"
@@ -44,7 +44,7 @@ export default function SubscribePage() {
           <p className="text-4xl font-extrabold text-[#ed7c5a] mb-1">$5</p>
           <p className="text-sm text-[#5c5c5c] mb-6">per month</p>
           <ul className="text-sm text-[#5c5c5c] space-y-2 mb-8 text-left w-full">
-            <li>✓ Full access to all games</li>
+            <li>✓ Full access to all games and lessons</li>
             <li>✓ New content as it's added</li>
             <li>✓ Cancel anytime</li>
           </ul>
@@ -65,7 +65,7 @@ export default function SubscribePage() {
           <p className="text-sm opacity-80 mb-1">per year</p>
           <p className="text-sm font-bold mb-6">Save $10 vs monthly!</p>
           <ul className="text-sm opacity-90 space-y-2 mb-8 text-left w-full">
-            <li>✓ Full access to all games</li>
+            <li>✓ Full access to all games and lessons</li>
             <li>✓ New content as it's added</li>
             <li>✓ Best value</li>
           </ul>

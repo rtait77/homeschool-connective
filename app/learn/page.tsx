@@ -183,14 +183,14 @@ export default function GamesPage() {
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
-      <h1 className="text-3xl font-extrabold mb-2">Games</h1>
-      <p className="text-[#5c5c5c] mb-8">Browse all our interactive educational games. New games added regularly!</p>
+      <h1 className="text-3xl font-extrabold mb-2">Learn</h1>
+      <p className="text-[#5c5c5c] mb-8">Browse our games and lessons. New content added regularly!</p>
 
       {/* Paywall banner */}
       {authChecked && !hasAccess && (
         <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to play all games</p>
+            <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games and lessons</p>
             <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
           </div>
           <Link href="/signup" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
