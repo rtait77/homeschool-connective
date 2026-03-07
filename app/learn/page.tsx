@@ -288,9 +288,9 @@ export default function GamesPage() {
 
       {/* Coming Soon */}
       <div className="mt-12 bg-white rounded-[14px] p-8 text-center border-2 border-dashed border-[#ddd8cc]">
-        <p className="text-2xl mb-2">🌊 🦋 🌿</p>
+        <p className="text-2xl mb-2">🌊 🪸 🐠</p>
         <h2 className="text-lg font-extrabold mb-2">More Topics Coming Soon</h2>
-        <p className="text-[#5c5c5c] text-sm">Marine Biology, Weather, Plants, and more are in the works. Subscribe to our newsletter to be the first to know!</p>
+        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in the works. Subscribe to our newsletter to be the first to know!</p>
       </div>
     </div>
   )
