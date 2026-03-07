@@ -126,28 +126,30 @@ export default function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {favoriteGames.map(game => (
-              <FavoriteCard key={game.title} game={game} onRemove={() => toggleFavorite(game.title)} />
+              <FavoriteCard key={game.title} game={game} isFavorited={true} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         )}
       </div>
 
-      {/* CTA */}
-      <div className="bg-[#f5f1e9] rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <p className="font-extrabold text-lg mb-1">Ready to learn?</p>
-          <p className="text-sm text-[#5c5c5c]">Browse all games and lessons — heart the ones you love to save them here.</p>
+      {/* All Games */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-extrabold">All Games & Lessons</h2>
+          <Link href="/learn" className="text-sm font-bold text-[#238FA4] hover:underline">Browse with filters →</Link>
         </div>
-        <Link href="/learn" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
-          Start Learning →
-        </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {allGames.map(game => (
+            <FavoriteCard key={game.title} game={game} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+          ))}
+        </div>
       </div>
 
     </div>
   )
 }
 
-function FavoriteCard({ game, onRemove }: { game: Game, onRemove: () => void }) {
+function FavoriteCard({ game, isFavorited, onToggleFavorite }: { game: Game, isFavorited: boolean, onToggleFavorite: () => void }) {
   return (
     <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
       <div className="relative h-44 w-full bg-[#e8e4dc]">
@@ -160,10 +162,10 @@ function FavoriteCard({ game, onRemove }: { game: Game, onRemove: () => void }) 
             className="flex-1 inline-flex items-center justify-center font-bold text-sm px-4 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
             {game.types.includes('lesson') ? '▶ Start Lesson' : '▶ Play Now'}
           </a>
-          <button onClick={onRemove}
-            className="px-3 py-2.5 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-red-300 hover:text-red-400 transition-all text-sm"
-            title="Remove from favorites">
-            ♥
+          <button onClick={onToggleFavorite}
+            className={`px-3 py-2.5 rounded-lg border-2 transition-all text-base ${isFavorited ? 'border-[#ed7c5a] text-[#ed7c5a] bg-[#fff5f2]' : 'border-[#ddd8cc] text-[#5c5c5c] hover:border-[#ed7c5a] hover:text-[#ed7c5a]'}`}
+            title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
+            {isFavorited ? '♥' : '♡'}
           </button>
         </div>
       </div>

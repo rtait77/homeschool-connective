@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(true)
   const router = useRouter()
 
   const supabase = createBrowserClient(
@@ -53,14 +54,23 @@ export default function LoginPage() {
         </div>
         <div>
           <label className="block text-sm font-bold mb-1">Password</label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className="w-full border border-[#ddd8cc] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#55b6ca]"
-            placeholder="Your password"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              className="w-full border border-[#ddd8cc] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#55b6ca]"
+              placeholder="Your password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(p => !p)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5c5c5c] hover:text-[#1c1c1c] text-xs font-bold"
+            >
+              {showPassword ? 'Hide' : 'Show'}
+            </button>
+          </div>
         </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
