@@ -136,6 +136,8 @@ export default function GamesPage() {
   const [activeTypes, setActiveTypes] = useState<string[]>([])
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
+  const [favorites, setFavorites] = useState<string[]>([])
+  const [userId, setUserId] = useState<string | null>(null)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -146,6 +148,8 @@ export default function GamesPage() {
     async function checkAccess() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setAuthChecked(true); return }
+
+      setUserId(user.id)
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -159,9 +163,26 @@ export default function GamesPage() {
 
       setHasAccess(status === 'active' || !!trialActive)
       setAuthChecked(true)
+
+      const { data: favData } = await supabase
+        .from('favorites')
+        .select('game_title')
+        .eq('user_id', user.id)
+      setFavorites(favData?.map(f => f.game_title) ?? [])
     }
     checkAccess()
   }, [])
+
+  async function toggleFavorite(title: string) {
+    if (!userId) return
+    if (favorites.includes(title)) {
+      await supabase.from('favorites').delete().eq('user_id', userId).eq('game_title', title)
+      setFavorites(prev => prev.filter(f => f !== title))
+    } else {
+      await supabase.from('favorites').insert({ user_id: userId, game_title: title })
+      setFavorites(prev => [...prev, title])
+    }
+  }
 
   function toggleType(id: string) {
     setActiveTypes(prev =>
@@ -249,7 +270,7 @@ export default function GamesPage() {
       {fullGames.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {fullGames.map(game => (
-            <GameCard key={game.title} game={game} hasAccess={hasAccess} />
+            <GameCard key={game.title} game={game} hasAccess={hasAccess} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
         </div>
       )}
@@ -262,7 +283,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {miniGames.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         </>
@@ -276,7 +297,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {lessons.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         </>
@@ -296,7 +317,7 @@ export default function GamesPage() {
   )
 }
 
-function GameCard({ game, hasAccess }: { game: typeof games[0], hasAccess: boolean }) {
+function GameCard({ game, hasAccess, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, isFavorited: boolean, onToggleFavorite: () => void }) {
   return (
     <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
       <div className="relative h-44 w-full bg-[#e8e4dc]">
@@ -311,10 +332,17 @@ function GameCard({ game, hasAccess }: { game: typeof games[0], hasAccess: boole
         <p className="font-extrabold text-base mb-2">{game.title}</p>
         <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
         {hasAccess ? (
-          <a href={game.url} target="_blank" rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-            {game.types.includes('lesson') ? '▶ Start Lesson' : '▶ Play Now'}
-          </a>
+          <div className="mt-4 flex gap-2">
+            <a href={game.url} target="_blank" rel="noopener noreferrer"
+              className="flex-1 inline-flex items-center justify-center font-bold text-sm px-4 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+              {game.types.includes('lesson') ? '▶ Start Lesson' : '▶ Play Now'}
+            </a>
+            <button onClick={onToggleFavorite}
+              className={`px-3 py-2.5 rounded-lg border-2 transition-all text-base ${isFavorited ? 'border-[#ed7c5a] text-[#ed7c5a] bg-[#fff5f2]' : 'border-[#ddd8cc] text-[#5c5c5c] hover:border-[#ed7c5a] hover:text-[#ed7c5a]'}`}
+              title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
+              {isFavorited ? '♥' : '♡'}
+            </button>
+          </div>
         ) : (
           <Link href="/signup"
             className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">

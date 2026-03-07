@@ -6,10 +6,17 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 
-const links = [
+const guestLinks = [
   { href: '/', label: 'Home' },
   { href: '/learn', label: 'Learn' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/tips', label: 'Homeschool Tips' },
+  { href: '/about', label: 'About' },
+]
+
+const memberLinks = [
+  { href: '/dashboard', label: 'Dashboard' },
+  { href: '/learn', label: 'Learn' },
   { href: '/tips', label: 'Homeschool Tips' },
   { href: '/about', label: 'About' },
 ]
@@ -47,7 +54,7 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-6 font-bold text-sm">
-          {links.map(({ href, label }) => (
+          {(user ? memberLinks : guestLinks).map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
@@ -94,7 +101,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-[#eee] px-4 pb-4">
           <ul className="flex flex-col gap-1 font-bold text-sm pt-2">
-            {links.map(({ href, label }) => (
+            {(user ? memberLinks : guestLinks).map(({ href, label }) => (
               <li key={href}>
                 <Link
                   href={href}

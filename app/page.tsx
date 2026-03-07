@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import HeroButtons from '@/components/hero-buttons'
 
 export default function HomePage() {
   return (
@@ -27,14 +28,7 @@ export default function HomePage() {
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-8">Interactive, game-based learning for homeschoolers and educators</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/signup" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-              Start 7 Day Free Trial
-            </Link>
-            <Link href="/about" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
-              About Us
-            </Link>
-          </div>
+          <HeroButtons />
         </div>
       </section>
 
