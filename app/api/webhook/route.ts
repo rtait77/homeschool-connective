@@ -20,17 +20,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 })
   }
 
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session
-    const userId = session.metadata?.supabase_user_id
-    const customerId = session.customer as string
-    const subscriptionId = session.subscription as string
+  if (event.type === 'customer.subscription.created') {
+    const subscription = event.data.object as Stripe.Subscription
+    const userId = subscription.metadata?.supabase_user_id
+    const customerId = subscription.customer as string
 
-    if (userId) {
+    if (userId && subscription.status === 'active') {
       await supabase.from('profiles').update({
         subscription_status: 'active',
         stripe_customer_id: customerId,
-        stripe_subscription_id: subscriptionId,
+        stripe_subscription_id: subscription.id,
       }).eq('id', userId)
     }
   }
@@ -38,10 +37,9 @@ export async function POST(req: NextRequest) {
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
-    const status = subscription.status
 
     await supabase.from('profiles')
-      .update({ subscription_status: status })
+      .update({ subscription_status: subscription.status })
       .eq('stripe_customer_id', customerId)
   }
 
