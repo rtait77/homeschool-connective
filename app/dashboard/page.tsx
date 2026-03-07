@@ -132,14 +132,18 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* All Games */}
+      {/* New Games */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-extrabold">All Games & Lessons</h2>
-          <Link href="/learn" className="text-sm font-bold text-[#238FA4] hover:underline">Browse with filters →</Link>
+          <h2 className="text-xl font-extrabold">New Games & Lessons</h2>
+          <Link href="/learn" className="text-sm font-bold text-[#238FA4] hover:underline">Browse all →</Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {allGames.map(game => (
+          {[
+            allGames.find(g => g.title === 'Solar System Sizzle')!,
+            allGames.find(g => g.title === 'Mission to Mars')!,
+            allGames.find(g => g.title === 'Find the Pair – The Planets')!,
+          ].map(game => (
             <FavoriteCard key={game.title} game={game} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
         </div>
