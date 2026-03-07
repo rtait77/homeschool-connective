@@ -35,7 +35,7 @@ export default function HomePage() {
       {/* Free Samples */}
       <section className="bg-[#f5f1e9] px-6 py-14">
         <div className="max-w-[1100px] mx-auto">
-          <p className="font-extrabold text-lg mb-8 text-center">Try it free — no account needed</p>
+          <p className="font-extrabold text-lg mb-8 text-center">Try these free — no account needed</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             {/* Free Game */}
