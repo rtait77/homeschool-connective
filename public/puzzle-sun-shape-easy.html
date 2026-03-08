@@ -428,6 +428,17 @@ function setup() {
   const cc = document.getElementById('confettiCanvas');
   cc.width = canvas.width; cc.height = canvas.height;
 
+  // Scale canvas display to fit on screen (canvas pixel size is larger than the board due to tab padding)
+  const maxDispW = window.innerWidth - 32;
+  const maxDispH = window.innerHeight - 200;
+  const dispScale = Math.min(1, maxDispW / canvas.width, maxDispH / canvas.height);
+  const dispW = Math.round(canvas.width  * dispScale);
+  const dispH = Math.round(canvas.height * dispScale);
+  canvas.style.width  = dispW + 'px';
+  canvas.style.height = dispH + 'px';
+  cc.style.width  = dispW + 'px';
+  cc.style.height = dispH + 'px';
+
   analyzeImage();
 
   const tabs = genTabs();
