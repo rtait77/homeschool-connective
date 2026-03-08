@@ -60,7 +60,7 @@
     #playBtn svg    { width: 18px; height: 18px; fill: white; margin-left: 2px; }
 
     #musicBtn {
-      background: rgba(255,255,255,0.12);
+      background: #ed7c5a;
       border: none;
       border-radius: 50%;
       width: 36px;
@@ -73,9 +73,10 @@
       transition: transform 0.1s, background 0.15s;
       margin-left: auto;
     }
-    #musicBtn:hover { background: rgba(255,255,255,0.22); }
-    #musicBtn svg   { width: 18px; height: 18px; fill: #ccc; }
-    #musicBtn.playing svg { fill: #FFD700; }
+    #musicBtn:hover { background: #d4623f; transform: scale(1.08); }
+    #musicBtn svg   { width: 18px; height: 18px; fill: white; }
+    #musicBtn.playing { background: #FFD700; }
+    #musicBtn.playing:hover { background: #e6c200; }
 
     .instructions-text {
       font-size: 0.92rem;
@@ -393,7 +394,7 @@ function setup() {
   const aspect = img.naturalWidth / img.naturalHeight;
   const availW = Math.min(window.innerWidth - 16, 1200);
   const availH = window.innerHeight - 120;
-  const BR = 0.22; // border ratio each side
+  const BR = 0.17; // border ratio each side
 
   const maxBoardW  = availW * (1 - 2*BR);
   const boardH_fromW = maxBoardW / aspect;
