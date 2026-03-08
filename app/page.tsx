@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import HeroButtons from '@/components/hero-buttons'
+import HeroVideo from '@/components/hero-video'
 
 export default function HomePage() {
   return (
@@ -8,16 +9,7 @@ export default function HomePage() {
       {/* Hero */}
       <section className="border-b border-[#ddd8cc]">
         <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
-          <video
-            autoPlay
-            muted
-            playsInline
-            loop
-            className="w-full block"
-            style={{ maxHeight: '58vh', objectFit: 'cover', objectPosition: 'center 40%' }}
-          >
-            <source src="/hero-video.mp4" type="video/mp4" />
-          </video>
+          <HeroVideo />
           <div
             className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{ height: '40%', background: 'linear-gradient(to bottom, transparent, #ffffff)' }}
