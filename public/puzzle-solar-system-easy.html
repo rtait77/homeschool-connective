@@ -116,8 +116,8 @@
     #resetBtn:active { transform: translate(-50%, -50%) scale(0.93); }
     #resetBtn svg { width: 36px; height: 36px; fill: white; }
     @keyframes popIn {
-      0%   { opacity: 0; transform: translateX(-50%) scale(0.5); }
-      100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
   </style>
 </head>
@@ -143,21 +143,25 @@
   </button>
 </div>
 
-<audio id="voiceover" src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
-<audio id="snapSound" src="/puzzle-snap.mp3" preload="auto"></audio>
-<audio id="completeVoice" src="/puzzle-complete.mp3" preload="auto"></audio>
-<audio id="bgMusic" src="/puzzle-bg-music.mp3" loop preload="auto"></audio>
+<audio id="voiceover"  src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
+<audio id="snapSound"  src="/puzzle-snap.mp3"              preload="auto"></audio>
+<audio id="bgMusic"    src="/puzzle-bg-music.mp3" loop     preload="auto"></audio>
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 const ROWS = 3, COLS = 3;
-const SNAP_DIST  = 30;   // px — how close to snap
-const TAB_BUMP   = 0.14; // fraction of edge length the tab protrudes
+const SNAP_DIST = 28;
+const TAB_BUMP  = 0.14;
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let canvas, ctx, img;
-let boardX, boardY, boardW, boardH, pieceW, pieceH;
-let pieces = [], dragging = null, dragOX = 0, dragOY = 0, maxZ = 0;
+let boardW, boardH, pieceW, pieceH;
+let pieces = [];
+let groups  = {};   // id → Set of piece indices
+let nextGID = 0;
+let dragging = null;  // { groupId }
+let dragLastX = 0, dragLastY = 0;
+let maxZ = 0;
 let audioCtx = null;
 
 // ─── AUDIO ────────────────────────────────────────────────────────────────────
@@ -165,218 +169,193 @@ function getAC() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
 }
-
 function playSnap() {
-  try {
-    const sfx = document.getElementById('snapSound');
-    sfx.currentTime = 0;
-    sfx.play().catch(() => {});
-  } catch(e) {}
+  try { const s = document.getElementById('snapSound'); s.currentTime = 0; s.play().catch(()=>{}); } catch(e){}
 }
-
 function playWin() {
   try {
     const ac = getAC();
-    [523, 659, 784, 1047, 1318].forEach((freq, i) => {
-      const osc = ac.createOscillator(), gain = ac.createGain();
-      osc.connect(gain); gain.connect(ac.destination);
-      osc.type = 'sine'; osc.frequency.value = freq;
+    [523,659,784,1047,1318].forEach((f,i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type = 'sine'; o.frequency.value = f;
       const t = ac.currentTime + i * 0.13;
-      gain.gain.setValueAtTime(0.22, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
-      osc.start(t); osc.stop(t + 0.55);
+      g.gain.setValueAtTime(0.22, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      o.start(t); o.stop(t + 0.55);
     });
-  } catch(e) {}
+  } catch(e){}
+}
+
+// ─── GROUP SYSTEM ─────────────────────────────────────────────────────────────
+function createGroup(idx) {
+  const id = nextGID++;
+  groups[id] = new Set([idx]);
+  pieces[idx].groupId = id;
+}
+
+function mergeGroups(idA, idB) {
+  if (idA === idB) return;
+  groups[idB].forEach(i => { pieces[i].groupId = idA; groups[idA].add(i); });
+  delete groups[idB];
+}
+
+function checkWin() {
+  return Object.keys(groups).length === 1;
 }
 
 // ─── TAB GENERATION ───────────────────────────────────────────────────────────
-// hTabs[r][c] = direction of tab between row r and row r+1, at col c  (+1 or -1)
-// vTabs[r][c] = direction of tab between col c and col c+1, at row r  (+1 or -1)
 function genTabs() {
   const h = [], v = [];
-  for (let r = 0; r < ROWS-1; r++) {
-    h[r] = [];
-    for (let c = 0; c < COLS; c++) h[r][c] = Math.random() < 0.5 ? 1 : -1;
-  }
-  for (let r = 0; r < ROWS; r++) {
-    v[r] = [];
-    for (let c = 0; c < COLS-1; c++) v[r][c] = Math.random() < 0.5 ? 1 : -1;
-  }
-  return { h, v };
+  for (let r = 0; r < ROWS-1; r++) { h[r]=[]; for (let c=0;c<COLS;c++) h[r][c]=Math.random()<.5?1:-1; }
+  for (let r = 0; r < ROWS;   r++) { v[r]=[]; for (let c=0;c<COLS-1;c++) v[r][c]=Math.random()<.5?1:-1; }
+  return {h,v};
 }
-
-function pieceTabs(r, c, { h, v }) {
+function pieceTabs(r, c, {h,v}) {
   return {
-    top:    r === 0       ? 0 : -h[r-1][c],
-    bottom: r === ROWS-1  ? 0 :  h[r][c],
-    left:   c === 0       ? 0 : -v[r][c-1],
-    right:  c === COLS-1  ? 0 :  v[r][c],
+    top:    r===0      ? 0 : -h[r-1][c],
+    bottom: r===ROWS-1 ? 0 :  h[r][c],
+    left:   c===0      ? 0 : -v[r][c-1],
+    right:  c===COLS-1 ? 0 :  v[r][c],
   };
 }
 
 // ─── JIGSAW PATH ──────────────────────────────────────────────────────────────
-// Draws one edge from (x1,y1) to (x2,y2).
-// type +1 = tab sticking OUTWARD, -1 = indent, 0 = flat.
-// Uses the right-hand perpendicular (outward for clockwise CW traversal in canvas).
-function jigsawEdge(ctx2d, x1, y1, x2, y2, type) {
-  if (type === 0) { ctx2d.lineTo(x2, y2); return; }
-
-  const dx = x2 - x1, dy = y2 - y1;
-  const len = Math.sqrt(dx*dx + dy*dy);
-  // Right-hand perpendicular in canvas coords (outward when traversing CW)
-  const px = dy / len, py = -dx / len;
-  const h = len * TAB_BUMP * type; // positive = outward
-
-  // Tab occupies middle 40% of edge (30%–70%)
-  const A = 0.30, B = 0.42, MID = 0.50, D = 0.58, E = 0.70;
-
-  const ax = x1+dx*A,   ay = y1+dy*A;
-  const bx = x1+dx*B,   by = y1+dy*B;
-  const mx = x1+dx*MID, my = y1+dy*MID;
-  const dx2= x1+dx*D,   dy2= y1+dy*D;
-  const ex = x1+dx*E,   ey = y1+dy*E;
-
-  ctx2d.lineTo(ax, ay);
-  // Rising side
-  ctx2d.bezierCurveTo(
-    ax + px*h*0.3, ay + py*h*0.3,
-    bx + px*h,     by + py*h,
-    mx + px*h*1.1, my + py*h*1.1
-  );
-  // Falling side
-  ctx2d.bezierCurveTo(
-    dx2 + px*h,     dy2 + py*h,
-    ex  + px*h*0.3, ey  + py*h*0.3,
-    ex, ey
-  );
-  ctx2d.lineTo(x2, y2);
+function jigsawEdge(c2, x1, y1, x2, y2, type) {
+  if (type===0) { c2.lineTo(x2,y2); return; }
+  const dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
+  const px=dy/len, py=-dx/len;
+  const hh=len*TAB_BUMP*type;
+  const A=.30,B=.42,M=.50,D=.58,E=.70;
+  const ax=x1+dx*A,ay=y1+dy*A, bx=x1+dx*B,by=y1+dy*B;
+  const mx=x1+dx*M,my=y1+dy*M, dx2=x1+dx*D,dy2=y1+dy*D;
+  const ex=x1+dx*E,ey=y1+dy*E;
+  c2.lineTo(ax,ay);
+  c2.bezierCurveTo(ax+px*hh*.3,ay+py*hh*.3, bx+px*hh,by+py*hh, mx+px*hh*1.1,my+py*hh*1.1);
+  c2.bezierCurveTo(dx2+px*hh,dy2+py*hh, ex+px*hh*.3,ey+py*hh*.3, ex,ey);
+  c2.lineTo(x2,y2);
 }
-
-// Build full jigsaw piece path at origin (0,0) → (pw, ph)
-function makePath(ctx2d, pw, ph, tabs) {
-  ctx2d.beginPath();
-  ctx2d.moveTo(0, 0);
-  jigsawEdge(ctx2d,  0,  0, pw,  0, tabs.top);    // top:    L → R
-  jigsawEdge(ctx2d, pw,  0, pw, ph, tabs.right);   // right:  T → B
-  jigsawEdge(ctx2d, pw, ph,  0, ph, tabs.bottom);  // bottom: R → L
-  jigsawEdge(ctx2d,  0, ph,  0,  0, tabs.left);    // left:   B → T
-  ctx2d.closePath();
+function makePath(c2, pw, ph, tabs) {
+  c2.beginPath(); c2.moveTo(0,0);
+  jigsawEdge(c2,  0, 0, pw,  0, tabs.top);
+  jigsawEdge(c2, pw, 0, pw, ph, tabs.right);
+  jigsawEdge(c2, pw,ph,  0, ph, tabs.bottom);
+  jigsawEdge(c2,  0,ph,  0,  0, tabs.left);
+  c2.closePath();
 }
 
 // ─── HIT TEST ─────────────────────────────────────────────────────────────────
-// Tests whether (mx, my) is inside piece's jigsaw shape.
-// Converts to local coords so no transform needed on the test canvas.
 function hitTest(piece, mx, my) {
-  const lx = mx - piece.x, ly = my - piece.y;
   const tc = document.createElement('canvas').getContext('2d');
   makePath(tc, pieceW, pieceH, piece.tabs);
-  return tc.isPointInPath(lx, ly);
+  return tc.isPointInPath(mx - piece.x, my - piece.y);
 }
-
 function pieceAt(mx, my) {
-  // Topmost (highest zIndex) unlocked piece first
-  const sorted = pieces.filter(p => !p.locked).sort((a, b) => b.zIndex - a.zIndex);
+  const sorted = [...pieces].sort((a,b) => b.zIndex - a.zIndex);
   for (const p of sorted) {
-    const buf = Math.max(pieceW, pieceH) * TAB_BUMP * 1.5;
-    if (mx < p.x - buf || mx > p.x + pieceW + buf) continue;
-    if (my < p.y - buf || my > p.y + pieceH + buf) continue;
+    const buf = Math.max(pieceW,pieceH)*TAB_BUMP*1.5;
+    if (mx<p.x-buf||mx>p.x+pieceW+buf||my<p.y-buf||my>p.y+pieceH+buf) continue;
     if (hitTest(p, mx, my)) return p;
   }
   return null;
 }
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
-function drawBoard() {
-  // Draw jigsaw piece outlines as placement guides
-  for (const piece of pieces) {
-    ctx.save();
-    ctx.translate(piece.targetX, piece.targetY);
-    makePath(ctx, pieceW, pieceH, piece.tabs);
-    ctx.strokeStyle = piece.locked ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.22)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.restore();
-  }
+// ─── SNAP LOGIC ───────────────────────────────────────────────────────────────
+function trySnap(movedGID) {
+  const movedPieces = [...groups[movedGID]];
+  const ADJ = [
+    { dr:-1, dc: 0, ox: 0,      oy:  pieceH },
+    { dr: 1, dc: 0, ox: 0,      oy: -pieceH },
+    { dr: 0, dc:-1, ox: pieceW, oy:  0      },
+    { dr: 0, dc: 1, ox:-pieceW, oy:  0      },
+  ];
 
+  for (const idx of movedPieces) {
+    const piece = pieces[idx];
+    for (const {dr,dc,ox,oy} of ADJ) {
+      const nr = piece.row+dr, nc = piece.col+dc;
+      if (nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
+      const neighbor = pieces.find(p=>p.row===nr&&p.col===nc);
+      if (!neighbor || neighbor.groupId === movedGID) continue;
+
+      const expX = neighbor.x + ox, expY = neighbor.y + oy;
+      if (Math.abs(piece.x-expX)<SNAP_DIST && Math.abs(piece.y-expY)<SNAP_DIST) {
+        const sdx = expX-piece.x, sdy = expY-piece.y;
+        // Move entire moved group to snap position
+        groups[movedGID].forEach(i => { pieces[i].x += sdx; pieces[i].y += sdy; });
+        // Clamp after snap
+        clampGroup(movedGID, 0, 0);
+        const nGID = neighbor.groupId;
+        mergeGroups(movedGID, nGID);
+        playSnap();
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
+// ─── BOUNDS ───────────────────────────────────────────────────────────────────
+function clampGroup(gid, dx, dy) {
+  const cw = canvas.width, ch = canvas.height;
+  const tab = Math.max(pieceW,pieceH)*TAB_BUMP;
+  for (const i of groups[gid]) {
+    const p = pieces[i];
+    if (p.x+dx < -tab)         dx = -tab - p.x;
+    if (p.x+dx+pieceW > cw+tab) dx = cw+tab - pieceW - p.x;
+    if (p.y+dy < -tab)         dy = -tab - p.y;
+    if (p.y+dy+pieceH > ch+tab) dy = ch+tab - pieceH - p.y;
+  }
+  return {dx, dy};
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
 function drawPiece(piece) {
   ctx.save();
   ctx.translate(piece.x, piece.y);
-
-  // Drop shadow for floating pieces
-  if (!piece.locked) {
-    ctx.shadowColor   = 'rgba(0,0,0,0.55)';
-    ctx.shadowBlur    = 14;
-    ctx.shadowOffsetX = 4;
-    ctx.shadowOffsetY = 4;
-  }
-
-  // Clip to jigsaw shape and draw image
+  ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=12; ctx.shadowOffsetX=3; ctx.shadowOffsetY=3;
   ctx.save();
   makePath(ctx, pieceW, pieceH, piece.tabs);
   ctx.clip();
-
-  // Draw the full board image offset so the correct tile shows at (0,0)
-  // Tabs outside (0,0)→(pw,ph) will show the correct adjacent image content
-  ctx.shadowColor = 'transparent';
-  ctx.drawImage(img, -piece.col * pieceW, -piece.row * pieceH, boardW, boardH);
+  ctx.shadowColor='transparent';
+  ctx.drawImage(img, -piece.col*pieceW, -piece.row*pieceH, boardW, boardH);
   ctx.restore();
-
-  // Reset shadow before stroke
-  ctx.shadowColor = 'transparent';
-  ctx.shadowBlur  = 0;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 0;
-
-  // Outline
+  ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
   makePath(ctx, pieceW, pieceH, piece.tabs);
-  ctx.strokeStyle = piece.locked ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)';
-  ctx.lineWidth   = piece.locked ? 0.5 : 1.5;
-  ctx.stroke();
-
+  ctx.strokeStyle='rgba(255,255,255,0.65)'; ctx.lineWidth=1.5; ctx.stroke();
   ctx.restore();
 }
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBoard();
-
-  // Locked pieces first, then by zIndex
-  const sorted = [...pieces].sort((a, b) => {
-    if (a.locked !== b.locked) return a.locked ? -1 : 1;
-    return a.zIndex - b.zIndex;
-  });
-  sorted.forEach(drawPiece);
+  [...pieces].sort((a,b)=>a.zIndex-b.zIndex).forEach(drawPiece);
 }
 
 // ─── SCATTER ──────────────────────────────────────────────────────────────────
 function scatter() {
   const cw = canvas.width, ch = canvas.height;
-  const lm = boardX, tm = boardY; // margin sizes
+  const bW = canvas._bW, bH = canvas._bH;
+  const jitter = () => (Math.random()-0.5) * 8;
 
-  // Build 9 slots: 3 top, 3 bottom, 2 left, 1 right
-  const jitter = () => (Math.random() - 0.5) * 10;
   const slots = [
-    // Top (3) — spread across top margin
-    { x: lm + 0 * (boardW/3) + jitter(), y: (tm - pieceH) / 2 + jitter() },
-    { x: lm + 1 * (boardW/3) + jitter(), y: (tm - pieceH) / 2 + jitter() },
-    { x: lm + 2 * (boardW/3) + jitter(), y: (tm - pieceH) / 2 + jitter() },
-    // Bottom (3)
-    { x: lm + 0 * (boardW/3) + jitter(), y: boardY + boardH + (tm - pieceH) / 2 + jitter() },
-    { x: lm + 1 * (boardW/3) + jitter(), y: boardY + boardH + (tm - pieceH) / 2 + jitter() },
-    { x: lm + 2 * (boardW/3) + jitter(), y: boardY + boardH + (tm - pieceH) / 2 + jitter() },
-    // Left (2)
-    { x: (lm - pieceW) / 2 + jitter(), y: boardY + 0 * (boardH/2) + jitter() },
-    { x: (lm - pieceW) / 2 + jitter(), y: boardY + 1 * (boardH/2) + jitter() },
-    // Right (1) — centred vertically
-    { x: boardX + boardW + (lm - pieceW) / 2 + jitter(), y: boardY + boardH/3 + jitter() },
+    // Top 3
+    { x: bW + 0*(pieceW+8) + jitter(), y: (bH-pieceH)/2 + jitter() },
+    { x: bW + 1*(pieceW+8) + jitter(), y: (bH-pieceH)/2 + jitter() },
+    { x: bW + 2*(pieceW+8) + jitter(), y: (bH-pieceH)/2 + jitter() },
+    // Bottom 3
+    { x: bW + 0*(pieceW+8) + jitter(), y: ch - bH + (bH-pieceH)/2 + jitter() },
+    { x: bW + 1*(pieceW+8) + jitter(), y: ch - bH + (bH-pieceH)/2 + jitter() },
+    { x: bW + 2*(pieceW+8) + jitter(), y: ch - bH + (bH-pieceH)/2 + jitter() },
+    // Left 2
+    { x: (bW-pieceW)/2 + jitter(), y: bH + 0*(pieceH+8) + jitter() },
+    { x: (bW-pieceW)/2 + jitter(), y: bH + 1*(pieceH+8) + jitter() },
+    // Right 1
+    { x: cw - bW + (bW-pieceW)/2 + jitter(), y: bH + pieceH/2 + jitter() },
   ];
 
-  const shuffled = [...pieces].sort(() => Math.random() - 0.5);
-  shuffled.forEach((piece, i) => {
-    piece.x = Math.max(2, Math.min(cw - pieceW - 2, slots[i].x));
-    piece.y = Math.max(2, Math.min(ch - pieceH - 2, slots[i].y));
+  [...pieces].sort(()=>Math.random()-.5).forEach((piece, i) => {
+    piece.x = Math.max(2, Math.min(cw-pieceW-2, slots[i].x));
+    piece.y = Math.max(2, Math.min(ch-pieceH-2, slots[i].y));
     piece.zIndex = i;
   });
 }
@@ -387,49 +366,37 @@ function setup() {
   ctx    = canvas.getContext('2d');
 
   const aspect = img.naturalWidth / img.naturalHeight;
-  const availW = Math.min(window.innerWidth - 32, 1300);
+  const availW = Math.min(window.innerWidth - 32, 1100);
   const availH = window.innerHeight - 150;
+  const BR = 0.22; // border ratio each side
 
-  // Board in center, pieces in margins all around.
-  // margin = 1 piece wide/tall + padding.
-  // canvasW = boardW * 5/3 + 40  →  boardW = (availW - 40) * 3/5
-  // canvasH = boardH * 5/3 + 40  →  boardH = (availH - 40) * 3/5
-  const boardW_fromW = (availW - 40) * 3 / 5;
-  const boardH_fromW = boardW_fromW / aspect;
-  const boardH_fromH = (availH - 40) * 3 / 5;
+  const maxBoardW  = availW * (1 - 2*BR);
+  const boardH_fromW = maxBoardW / aspect;
+  const boardH_fromH = availH * (1 - 2*BR);
   boardH = Math.floor(Math.min(boardH_fromW, boardH_fromH));
   boardW = Math.floor(boardH * aspect);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
-  const lm = Math.floor(pieceW + 20); // left margin
-  const tm = Math.floor(pieceH + 20); // top margin
+  const bW = Math.ceil(pieceW * 1.15);
+  const bH = Math.ceil(pieceH * 1.15);
+  canvas.width  = boardW + 2*bW;
+  canvas.height = boardH + 2*bH;
+  canvas._bW = bW;
+  canvas._bH = bH;
 
-  canvas.width  = lm + boardW + lm;
-  canvas.height = tm + boardH + tm;
-  boardX = lm;
-  boardY = tm;
+  const cc = document.getElementById('confettiCanvas');
+  cc.width = canvas.width; cc.height = canvas.height;
 
   const tabs = genTabs();
-  pieces = [];
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      pieces.push({
-        row: r, col: c,
-        tabs: pieceTabs(r, c, tabs),
-        x: 0, y: 0,
-        targetX: boardX + c * pieceW,
-        targetY: boardY + r * pieceH,
-        locked: false,
-        zIndex: 0,
-      });
+  groups = {}; nextGID = 0; pieces = [];
+  for (let r=0; r<ROWS; r++) {
+    for (let c=0; c<COLS; c++) {
+      const idx = pieces.length;
+      pieces.push({ row:r, col:c, tabs:pieceTabs(r,c,tabs), x:0, y:0, zIndex:0, groupId:-1 });
+      createGroup(idx);
     }
   }
-
-  // Size confetti canvas to match
-  const cc = document.getElementById('confettiCanvas');
-  cc.width  = canvas.width;
-  cc.height = canvas.height;
 
   scatter();
   render();
@@ -438,164 +405,119 @@ function setup() {
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 function getPos(e) {
-  const rect   = canvas.getBoundingClientRect();
-  const scaleX = canvas.width  / rect.width;
-  const scaleY = canvas.height / rect.height;
-  const src    = e.touches ? e.touches[0] : e;
-  return {
-    x: (src.clientX - rect.left) * scaleX,
-    y: (src.clientY - rect.top)  * scaleY,
-  };
+  const rect=canvas.getBoundingClientRect();
+  const sx=canvas.width/rect.width, sy=canvas.height/rect.height;
+  const src=e.touches?e.touches[0]:e;
+  return { x:(src.clientX-rect.left)*sx, y:(src.clientY-rect.top)*sy };
 }
 
 function onDown(e) {
   e.preventDefault();
-  const { x, y } = getPos(e);
-  const piece = pieceAt(x, y);
+  const {x,y} = getPos(e);
+  const piece = pieceAt(x,y);
   if (!piece) return;
-  dragging = piece;
-  dragOX = x - piece.x;
-  dragOY = y - piece.y;
-  piece.zIndex = ++maxZ;
+  dragging = { groupId: piece.groupId };
+  dragLastX = x; dragLastY = y;
+  const z = ++maxZ;
+  groups[piece.groupId].forEach(i => pieces[i].zIndex = z);
   canvas.style.cursor = 'grabbing';
   render();
 }
 
 function onMove(e) {
-  const { x, y } = getPos(e);
+  const {x,y} = getPos(e);
   if (dragging) {
     e.preventDefault();
-    dragging.x = x - dragOX;
-    dragging.y = y - dragOY;
+    let dx = x - dragLastX, dy = y - dragLastY;
+    ({dx, dy} = clampGroup(dragging.groupId, dx, dy));
+    groups[dragging.groupId].forEach(i => { pieces[i].x += dx; pieces[i].y += dy; });
+    dragLastX = x; dragLastY = y;
     render();
   } else {
-    canvas.style.cursor = pieceAt(x, y) ? 'grab' : 'default';
+    canvas.style.cursor = pieceAt(x,y) ? 'grab' : 'default';
   }
 }
 
 function onUp() {
   if (!dragging) return;
-  const dx = dragging.x - dragging.targetX;
-  const dy = dragging.y - dragging.targetY;
-
-  if (Math.abs(dx) < SNAP_DIST && Math.abs(dy) < SNAP_DIST) {
-    dragging.x = dragging.targetX;
-    dragging.y = dragging.targetY;
-    dragging.locked = true;
-    playSnap();
-
-    if (pieces.every(p => p.locked)) {
-      setTimeout(() => {
-        playWin();
-        launchConfetti();
-        document.getElementById('resetBtn').classList.add('show');
-      }, 250);
-    }
+  trySnap(dragging.groupId);
+  render();
+  if (checkWin()) {
+    setTimeout(() => {
+      playWin();
+      launchConfetti();
+      document.getElementById('resetBtn').classList.add('show');
+    }, 250);
   }
-
   dragging = null;
   canvas.style.cursor = 'default';
-  render();
 }
 
 function attachEvents() {
   canvas.addEventListener('mousedown',  onDown);
   window.addEventListener('mousemove',  onMove);
   window.addEventListener('mouseup',    onUp);
-  canvas.addEventListener('touchstart', onDown, { passive: false });
-  window.addEventListener('touchmove',  onMove, { passive: false });
+  canvas.addEventListener('touchstart', onDown, {passive:false});
+  window.addEventListener('touchmove',  onMove, {passive:false});
   window.addEventListener('touchend',   onUp);
 }
 
 // ─── CONFETTI ─────────────────────────────────────────────────────────────────
-const CONFETTI_COLORS = ['#FFD700', '#ed7c5a', '#55b6ca', '#ffffff', '#c084fc', '#86efac'];
-let confettiParticles = [], confettiRAF = null;
+const CONFETTI_COLORS = ['#FFD700','#ed7c5a','#55b6ca','#ffffff','#c084fc','#86efac'];
+let confettiParticles=[], confettiRAF=null;
 
 function launchConfetti() {
   const cc = document.getElementById('confettiCanvas');
-  cc.width  = canvas.width;
-  cc.height = canvas.height;
-  const ctx2 = cc.getContext('2d');
-
-  confettiParticles = Array.from({ length: 120 }, () => ({
-    x:     Math.random() * cc.width,
-    y:     Math.random() * -cc.height * 0.5,
-    w:     6 + Math.random() * 6,
-    h:     10 + Math.random() * 6,
-    color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
-    angle: Math.random() * Math.PI * 2,
-    spin:  (Math.random() - 0.5) * 0.2,
-    vx:    (Math.random() - 0.5) * 2.5,
-    vy:    2 + Math.random() * 3,
-    alpha: 1,
+  cc.width = canvas.width; cc.height = canvas.height;
+  const c2 = cc.getContext('2d');
+  confettiParticles = Array.from({length:120}, ()=>({
+    x: Math.random()*cc.width, y: Math.random()*-cc.height*0.5,
+    w: 6+Math.random()*6, h: 10+Math.random()*6,
+    color: CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)],
+    angle: Math.random()*Math.PI*2, spin: (Math.random()-.5)*0.2,
+    vx: (Math.random()-.5)*2.5, vy: 2+Math.random()*3, alpha: 1,
   }));
-
   if (confettiRAF) cancelAnimationFrame(confettiRAF);
-
   function animate() {
-    ctx2.clearRect(0, 0, cc.width, cc.height);
-    let alive = false;
+    c2.clearRect(0,0,cc.width,cc.height);
+    let alive=false;
     for (const p of confettiParticles) {
-      p.x     += p.vx;
-      p.y     += p.vy;
-      p.angle += p.spin;
-      if (p.y > cc.height * 0.7) p.alpha -= 0.025;
-      if (p.alpha <= 0) continue;
-      alive = true;
-      ctx2.save();
-      ctx2.globalAlpha = p.alpha;
-      ctx2.translate(p.x, p.y);
-      ctx2.rotate(p.angle);
-      ctx2.fillStyle = p.color;
-      ctx2.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-      ctx2.restore();
+      p.x+=p.vx; p.y+=p.vy; p.angle+=p.spin;
+      if (p.y>cc.height*0.7) p.alpha-=0.025;
+      if (p.alpha<=0) continue;
+      alive=true;
+      c2.save(); c2.globalAlpha=p.alpha; c2.translate(p.x,p.y); c2.rotate(p.angle);
+      c2.fillStyle=p.color; c2.fillRect(-p.w/2,-p.h/2,p.w,p.h); c2.restore();
     }
-    if (alive) confettiRAF = requestAnimationFrame(animate);
-    else ctx2.clearRect(0, 0, cc.width, cc.height);
+    if (alive) confettiRAF=requestAnimationFrame(animate);
   }
   animate();
 }
 
 // ─── RESET ────────────────────────────────────────────────────────────────────
 function resetPuzzle() {
-  // Hide reset button and clear confetti
   document.getElementById('resetBtn').classList.remove('show');
   const cc = document.getElementById('confettiCanvas');
-  cc.getContext('2d').clearRect(0, 0, cc.width, cc.height);
-  if (confettiRAF) { cancelAnimationFrame(confettiRAF); confettiRAF = null; }
-
-  // Unlock all pieces and re-scatter
-  pieces.forEach(p => { p.locked = false; p.zIndex = 0; });
-  maxZ = 0;
-  scatter();
-  render();
+  cc.getContext('2d').clearRect(0,0,cc.width,cc.height);
+  if (confettiRAF) { cancelAnimationFrame(confettiRAF); confettiRAF=null; }
+  groups={}; nextGID=0; maxZ=0;
+  const tabs = genTabs();
+  pieces.forEach((p,i) => { p.tabs=pieceTabs(p.row,p.col,tabs); p.zIndex=0; createGroup(i); });
+  scatter(); render();
 }
-
 document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
 
 // ─── VOICEOVER ────────────────────────────────────────────────────────────────
 document.getElementById('playBtn').addEventListener('click', () => {
-  const audio = document.getElementById('voiceover');
-  audio.currentTime = 0;
-  audio.play().catch(() => {});
+  const a = document.getElementById('voiceover'); a.currentTime=0; a.play().catch(()=>{});
 });
 
-// ─── BACKGROUND MUSIC ─────────────────────────────────────────────────────────
-const bgMusic  = document.getElementById('bgMusic');
-const musicBtn = document.getElementById('musicBtn');
-let musicOn = false;
-
+// ─── MUSIC ────────────────────────────────────────────────────────────────────
+const bgMusic=document.getElementById('bgMusic'), musicBtn=document.getElementById('musicBtn');
+let musicOn=false;
 musicBtn.addEventListener('click', () => {
-  if (musicOn) {
-    bgMusic.pause();
-    musicOn = false;
-    musicBtn.classList.remove('playing');
-  } else {
-    bgMusic.volume = 0.35;
-    bgMusic.play().catch(() => {});
-    musicOn = true;
-    musicBtn.classList.add('playing');
-  }
+  if (musicOn) { bgMusic.pause(); musicOn=false; musicBtn.classList.remove('playing'); }
+  else { bgMusic.volume=0.35; bgMusic.play().catch(()=>{}); musicOn=true; musicBtn.classList.add('playing'); }
 });
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
