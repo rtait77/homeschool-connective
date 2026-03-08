@@ -356,28 +356,26 @@ function render() {
 // ─── SCATTER ──────────────────────────────────────────────────────────────────
 function scatter() {
   const cw = canvas.width, ch = canvas.height;
-  const bW = canvas._bW, bH = canvas._bH;
-  const jitter = () => (Math.random()-0.5) * 8;
+  const pad = Math.max(pieceW, pieceH) * TAB_BUMP + 4;
+  const minX = pad, maxX = cw - pieceW - pad;
+  const minY = pad, maxY = ch - pieceH - pad;
+  const cellW = (maxX - minX) / COLS;
+  const cellH = (maxY - minY) / ROWS;
 
-  const slots = [
-    // Top 3
-    { x: bW + 0*(pieceW+8) + jitter(), y: (bH-pieceH)/2 + jitter() },
-    { x: bW + 1*(pieceW+8) + jitter(), y: (bH-pieceH)/2 + jitter() },
-    { x: bW + 2*(pieceW+8) + jitter(), y: (bH-pieceH)/2 + jitter() },
-    // Bottom 3
-    { x: bW + 0*(pieceW+8) + jitter(), y: ch - bH + (bH-pieceH)/2 + jitter() },
-    { x: bW + 1*(pieceW+8) + jitter(), y: ch - bH + (bH-pieceH)/2 + jitter() },
-    { x: bW + 2*(pieceW+8) + jitter(), y: ch - bH + (bH-pieceH)/2 + jitter() },
-    // Left 2
-    { x: (bW-pieceW)/2 + jitter(), y: bH + 0*(pieceH+8) + jitter() },
-    { x: (bW-pieceW)/2 + jitter(), y: bH + 1*(pieceH+8) + jitter() },
-    // Right 1
-    { x: cw - bW + (bW-pieceW)/2 + jitter(), y: bH + pieceH/2 + jitter() },
-  ];
-
-  [...pieces].sort(()=>Math.random()-.5).forEach((piece, i) => {
-    piece.x = Math.max(2, Math.min(cw-pieceW-2, slots[i].x));
-    piece.y = Math.max(2, Math.min(ch-pieceH-2, slots[i].y));
+  // Place one piece per grid cell so they don't all land on top of each other
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cx = minX + c * cellW + Math.random() * Math.max(0, cellW - pieceW);
+      const cy = minY + r * cellH + Math.random() * Math.max(0, cellH - pieceH);
+      cells.push({ x: cx, y: cy });
+    }
+  }
+  // Shuffle cell assignments
+  cells.sort(() => Math.random() - 0.5);
+  pieces.forEach((piece, i) => {
+    piece.x = Math.round(cells[i].x);
+    piece.y = Math.round(cells[i].y);
     piece.zIndex = i;
   });
 }
