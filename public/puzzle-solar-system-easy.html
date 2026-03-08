@@ -584,6 +584,9 @@ musicBtn.addEventListener('click', () => {
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
 img = new Image();
+// Unlock Web Audio on first touch (required by iOS/Android)
+document.addEventListener('touchstart', () => getAC().resume(), { once: true, passive: true });
+
 img.onload  = setup;
 img.onerror = () => alert('Could not load puzzle image. Make sure the dev server is running.');
 img.src = '/puzzle-sun.png';
