@@ -357,18 +357,6 @@ function drawPiece(piece) {
   ctx.drawImage(piece.offscreen, piece.x - piece.extra, piece.y - piece.extra);
   ctx.restore();
 
-  // Draw inner-edge jigsaw outlines only (outer edges have no tab = no visible line needed)
-  ctx.save();
-  ctx.translate(piece.x, piece.y);
-  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-  ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  if (piece.tabs.top)    { ctx.moveTo(0,  0);  jigsawEdge(ctx, 0,  0,  pieceW, 0,      piece.tabs.top); }
-  if (piece.tabs.right)  { ctx.moveTo(pieceW,0); jigsawEdge(ctx, pieceW,0, pieceW,pieceH, piece.tabs.right); }
-  if (piece.tabs.bottom) { ctx.moveTo(pieceW,pieceH); jigsawEdge(ctx, pieceW,pieceH,0,pieceH, piece.tabs.bottom); }
-  if (piece.tabs.left)   { ctx.moveTo(0,pieceH); jigsawEdge(ctx, 0,pieceH,0,0,        piece.tabs.left); }
-  ctx.stroke();
-  ctx.restore();
 }
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
