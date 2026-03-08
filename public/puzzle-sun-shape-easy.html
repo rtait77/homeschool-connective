@@ -98,6 +98,13 @@
     #musicBtn.playing:hover { background: #e6c200; }
     .instr-text { font-size: 0.88rem; color: #ddd; line-height: 1.45; flex: 1; }
     #canvasWrap { position: relative; }
+    .image-credit {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      margin-top: 8px;
+      text-align: center;
+      letter-spacing: 0.03em;
+    }
     canvas { display: block; touch-action: none; cursor: default; }
     #confettiCanvas {
       position: absolute; top: 0; left: 0;
@@ -158,6 +165,7 @@
     <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
   </button>
 </div>
+<p class="image-credit">Image Credit: NASA</p>
 
 <audio id="factAudio"  src="/sun-fact-easy.mp3"        preload="auto"></audio>
 <audio id="voiceover" src="/puzzle-instructions.mp3"    preload="auto"></audio>
@@ -415,10 +423,9 @@ function setup() {
   const availW = Math.min(window.innerWidth - 32, 1200);
   const availH = window.innerHeight - 220; // account for header, title, instructions bar
 
-  // Canvas = board + 2 * (pieceSize * padding). For ROWS=COLS=2 with padding=0.50:
-  // canvas = board * 1.50. Size board so the canvas fits the viewport.
-  const pad = 0.50;
-  const canvasRatio = 1 + pad * 2 / ROWS; // 1.50 for ROWS=2
+  // Canvas = board + 2 * (pieceSize * padding). Reduce padding so board fills more of the screen.
+  const pad = 0.18;
+  const canvasRatio = 1 + pad * 2 / ROWS; // ~1.18 for ROWS=2
   const maxSide = Math.floor(Math.min(availW, availH) / canvasRatio * 0.97);
   boardW = boardH = maxSide;
   pieceW = boardW / COLS;
