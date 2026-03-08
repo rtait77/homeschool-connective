@@ -298,18 +298,6 @@ function drawBoard() {
     ctx.restore();
   }
 
-  // Divider between board and tray
-  const tx = canvas._trayX - 8;
-  ctx.save();
-  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([6, 6]);
-  ctx.beginPath();
-  ctx.moveTo(tx, boardY);
-  ctx.lineTo(tx, boardY + boardH);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.restore();
 }
 
 function drawPiece(piece) {
@@ -364,13 +352,31 @@ function render() {
 
 // ─── SCATTER ──────────────────────────────────────────────────────────────────
 function scatter() {
-  const trayX = canvas._trayX, trayW = canvas._trayW;
-  const ch = canvas.height;
-  const shuffled = [...pieces].sort(() => Math.random() - 0.5);
+  const cw = canvas.width, ch = canvas.height;
+  const lm = boardX, tm = boardY; // margin sizes
 
+  // Build 9 slots: 3 top, 3 bottom, 2 left, 1 right
+  const jitter = () => (Math.random() - 0.5) * 10;
+  const slots = [
+    // Top (3) — spread across top margin
+    { x: lm + 0 * (boardW/3) + jitter(), y: (tm - pieceH) / 2 + jitter() },
+    { x: lm + 1 * (boardW/3) + jitter(), y: (tm - pieceH) / 2 + jitter() },
+    { x: lm + 2 * (boardW/3) + jitter(), y: (tm - pieceH) / 2 + jitter() },
+    // Bottom (3)
+    { x: lm + 0 * (boardW/3) + jitter(), y: boardY + boardH + (tm - pieceH) / 2 + jitter() },
+    { x: lm + 1 * (boardW/3) + jitter(), y: boardY + boardH + (tm - pieceH) / 2 + jitter() },
+    { x: lm + 2 * (boardW/3) + jitter(), y: boardY + boardH + (tm - pieceH) / 2 + jitter() },
+    // Left (2)
+    { x: (lm - pieceW) / 2 + jitter(), y: boardY + 0 * (boardH/2) + jitter() },
+    { x: (lm - pieceW) / 2 + jitter(), y: boardY + 1 * (boardH/2) + jitter() },
+    // Right (1) — centred vertically
+    { x: boardX + boardW + (lm - pieceW) / 2 + jitter(), y: boardY + boardH/3 + jitter() },
+  ];
+
+  const shuffled = [...pieces].sort(() => Math.random() - 0.5);
   shuffled.forEach((piece, i) => {
-    piece.x = trayX + Math.random() * Math.max(0, trayW - pieceW);
-    piece.y = 10 + Math.random() * Math.max(0, ch - pieceH - 20);
+    piece.x = Math.max(2, Math.min(cw - pieceW - 2, slots[i].x));
+    piece.y = Math.max(2, Math.min(ch - pieceH - 2, slots[i].y));
     piece.zIndex = i;
   });
 }
@@ -380,27 +386,29 @@ function setup() {
   canvas = document.getElementById('gameCanvas');
   ctx    = canvas.getContext('2d');
 
-  // Board on left, tray on right — total canvas = 2×boardW + gap
-  const aspect  = img.naturalWidth / img.naturalHeight;
-  const availW  = Math.min(window.innerWidth - 32, 1100);
-  const availH  = window.innerHeight - 150;
-  // Board takes left half; gap of 16px between board and tray
-  const GAP = 16;
-  boardW = Math.floor((availW - GAP) / 2);
-  boardH = Math.floor(Math.min(boardW / aspect, availH - 20));
-  boardW = Math.floor(boardH * aspect); // recalc in case height was the limit
+  const aspect = img.naturalWidth / img.naturalHeight;
+  const availW = Math.min(window.innerWidth - 32, 1300);
+  const availH = window.innerHeight - 150;
+
+  // Board in center, pieces in margins all around.
+  // margin = 1 piece wide/tall + padding.
+  // canvasW = boardW * 5/3 + 40  →  boardW = (availW - 40) * 3/5
+  // canvasH = boardH * 5/3 + 40  →  boardH = (availH - 40) * 3/5
+  const boardW_fromW = (availW - 40) * 3 / 5;
+  const boardH_fromW = boardW_fromW / aspect;
+  const boardH_fromH = (availH - 40) * 3 / 5;
+  boardH = Math.floor(Math.min(boardH_fromW, boardH_fromH));
+  boardW = Math.floor(boardH * aspect);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
-  const trayW = boardW;
-  canvas.width  = boardW + GAP + trayW + 10;
-  canvas.height = boardH + 20;
-  boardX = 5;
-  boardY = 10;
+  const lm = Math.floor(pieceW + 20); // left margin
+  const tm = Math.floor(pieceH + 20); // top margin
 
-  // Tray bounds (right side)
-  canvas._trayX = boardX + boardW + GAP;
-  canvas._trayW = trayW;
+  canvas.width  = lm + boardW + lm;
+  canvas.height = tm + boardH + tm;
+  boardX = lm;
+  boardY = tm;
 
   const tabs = genTabs();
   pieces = [];
