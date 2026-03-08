@@ -71,6 +71,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Sun Circle Puzzle – Easy',
+    desc: 'A fun circular jigsaw — put the Sun back together in 4 pieces. Perfect for little space explorers!',
+    thumb: '/thumb-sun-circle-easy.png',
+    url: '/puzzle-sun-circle-easy.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['puzzle'],
+    newTab: false,
+  },
+  {
     title: 'Dwarf Planets Word Search',
     desc: 'Hunt for the names of dwarf planets hidden in the grid. How many can you find?',
     thumb: '/thumb-word-search.png',

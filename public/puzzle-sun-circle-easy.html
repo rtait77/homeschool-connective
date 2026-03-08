@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Sun – Circle Puzzle (Easy)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: url('/space-bg.png') center center / cover no-repeat fixed;
+      font-family: 'Nunito', sans-serif;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #backBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.75);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin-bottom: 10px;
+      transition: color 0.15s;
+    }
+    #backBtn:hover { color: white; }
+
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 800;
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 14px;
+      text-shadow: 0 0 24px rgba(255,215,0,0.35);
+    }
+
+    .instructions-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50px;
+      padding: 10px 20px;
+      max-width: 640px;
+      width: 100%;
+    }
+
+    #playBtn {
+      background: #ed7c5a;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, background 0.15s;
+    }
+    #playBtn:hover  { background: #d4623f; transform: scale(1.08); }
+    #playBtn:active { transform: scale(0.95); }
+    #playBtn svg    { width: 18px; height: 18px; fill: white; margin-left: 2px; }
+    #playBtn.playing { animation: voicePulse 1s ease-in-out infinite; }
+    #playBtn.playing svg { margin-left: 0; }
+    @keyframes voicePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(237,124,90,0.55); }
+      50%      { box-shadow: 0 0 0 10px rgba(237,124,90,0); }
+    }
+
+    #musicBtn {
+      background: #ed7c5a;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, background 0.15s;
+      margin-left: auto;
+    }
+    #musicBtn:hover { background: #d4623f; transform: scale(1.08); }
+    #musicBtn svg   { width: 18px; height: 18px; fill: white; }
+    #musicBtn.playing { background: #FFD700; }
+    #musicBtn.playing svg { fill: #1c1c1c; }
+    #musicBtn.playing:hover { background: #e6c200; }
+
+    .instructions-text {
+      font-size: 0.92rem;
+      color: #ddd;
+      line-height: 1.45;
+    }
+
+    #canvasWrap { position: relative; }
+    canvas { display: block; touch-action: none; cursor: default; }
+
+    #confettiCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #resetBtn {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(5, 10, 26, 0.75);
+      border: 3px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      width: 72px;
+      height: 72px;
+      cursor: pointer;
+      z-index: 11;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation-fill-mode: forwards;
+    }
+    #resetBtn.show { display: flex; }
+    #resetBtn:hover  { background: rgba(237,124,90,0.85); border-color: white; }
+    #resetBtn:active { transform: translate(-50%, -50%) scale(0.93); }
+    #resetBtn svg { width: 36px; height: 36px; fill: white; }
+    @keyframes popIn {
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+<a id="backBtn" href="/learn">← Back to Games</a>
+<h1>The Sun – Circle Puzzle</h1>
+
+<div class="instructions-bar">
+  <button id="playBtn" title="Play instructions">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+  <span class="instructions-text">Put the Sun back together! Drag the pieces and snap them into place.</span>
+  <button id="musicBtn" title="Toggle music">
+    <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+  </button>
+</div>
+
+<div id="canvasWrap">
+  <canvas id="gameCanvas"></canvas>
+  <canvas id="confettiCanvas"></canvas>
+  <button id="resetBtn" title="Reset puzzle">
+    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+  </button>
+</div>
+
+<audio id="voiceover"  src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
+<audio id="bgMusic"    src="/puzzle-bg-music.mp3" loop     preload="auto"></audio>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const ROWS = 2, COLS = 2;
+const SNAP_DIST = 18;
+const TAB_BUMP  = 0.30;
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let canvas, ctx, img;
+let boardW, boardH, pieceW, pieceH;
+let pieces = [];
+let groups  = {};
+let nextGID = 0;
+let dragging = null;
+let dragLastX = 0, dragLastY = 0;
+let maxZ = 0;
+let audioCtx = null;
+
+// ─── AUDIO ────────────────────────────────────────────────────────────────────
+function getAC() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playSnap() {
+  try {
+    const ac = getAC();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(520, ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(260, ac.currentTime + 0.07);
+    g.gain.setValueAtTime(0.28, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.14);
+    o.start(ac.currentTime); o.stop(ac.currentTime + 0.14);
+  } catch(e) {}
+}
+function playWin() {
+  try {
+    const ac = getAC();
+    [523,659,784,1047,1318].forEach((f,i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.connect(g); g.connect(ac.destination);
+      o.type = 'sine'; o.frequency.value = f;
+      const t = ac.currentTime + i * 0.13;
+      g.gain.setValueAtTime(0.22, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      o.start(t); o.stop(t + 0.55);
+    });
+  } catch(e){}
+}
+
+// ─── GROUP SYSTEM ─────────────────────────────────────────────────────────────
+function createGroup(idx) {
+  const id = nextGID++;
+  groups[id] = new Set([idx]);
+  pieces[idx].groupId = id;
+}
+function mergeGroups(idA, idB) {
+  if (idA === idB) return;
+  groups[idB].forEach(i => { pieces[i].groupId = idA; groups[idA].add(i); });
+  delete groups[idB];
+}
+function checkWin() {
+  return Object.keys(groups).length === 1;
+}
+
+// ─── TAB GENERATION ───────────────────────────────────────────────────────────
+function randEdge() {
+  return {
+    dir: Math.random() < 0.5 ? 1 : -1,
+    pos: 0.36 + Math.random() * 0.28,
+    bh:  0.20 + Math.random() * 0.08,
+  };
+}
+function genTabs() {
+  const h = [], v = [];
+  for (let r = 0; r < ROWS-1; r++) { h[r]=[]; for (let c=0;c<COLS;c++) h[r][c]=randEdge(); }
+  for (let r = 0; r < ROWS;   r++) { v[r]=[]; for (let c=0;c<COLS-1;c++) v[r][c]=randEdge(); }
+  return {h,v};
+}
+function pieceTabs(r, c, {h,v}) {
+  const flip = e => e ? {...e, dir:-e.dir, pos:1-e.pos} : null;
+  return {
+    top:    r===0      ? null : flip(h[r-1][c]),
+    bottom: r===ROWS-1 ? null : h[r][c],
+    left:   c===0      ? null : flip(v[r][c-1]),
+    right:  c===COLS-1 ? null : v[r][c],
+  };
+}
+
+// ─── JIGSAW EDGE ──────────────────────────────────────────────────────────────
+function jigsawEdge(c2, x1, y1, x2, y2, edge) {
+  if (!edge) { c2.lineTo(x2, y2); return; }
+  const { dir, pos, bh } = edge;
+  const ddx = x2-x1, ddy = y2-y1, len = Math.sqrt(ddx*ddx+ddy*ddy);
+  const ex = ddx/len, ey = ddy/len;
+  const nx = ey*dir, ny = -ex*dir;
+  const p = (t, h) => [x1+ex*len*t+nx*len*h, y1+ey*len*t+ny*len*h];
+
+  const k  = 0.552;
+  const nh = bh * 0.30;
+  const R  = bh - nh;
+  const nw = R * 0.52;
+
+  c2.lineTo(...p(pos - nw, 0));
+  c2.lineTo(...p(pos - nw, nh));
+  c2.lineTo(...p(pos - R,  nh));
+  c2.bezierCurveTo(...p(pos-R, nh+R*k), ...p(pos-R*k, bh), ...p(pos,   bh));
+  c2.bezierCurveTo(...p(pos+R*k, bh),   ...p(pos+R, nh+R*k), ...p(pos+R,  nh));
+  c2.lineTo(...p(pos + nw, nh));
+  c2.lineTo(...p(pos + nw, 0));
+  c2.lineTo(x2, y2);
+}
+
+// ─── CIRCULAR PIECE PATH ──────────────────────────────────────────────────────
+// Each piece is a quadrant: 2 internal jigsaw edges + 1 circular arc.
+// Arc direction chosen so path encloses the correct quarter of the circle.
+function makeCircPath(c2, pw, ph, tabs, row, col) {
+  c2.beginPath();
+  if (row === 0 && col === 0) {
+    // top-left: right↓, bottom←, arc NW (west→north, CW)
+    c2.moveTo(pw, 0);
+    jigsawEdge(c2, pw, 0,  pw, ph, tabs.right);
+    jigsawEdge(c2, pw, ph, 0,  ph, tabs.bottom);
+    c2.arc(pw, ph, pw, Math.PI, -Math.PI / 2, false);
+  } else if (row === 0 && col === 1) {
+    // top-right: arc NE (north→east, CW), bottom←, left↑
+    c2.moveTo(0, 0);
+    c2.arc(0, ph, pw, -Math.PI / 2, 0, false);
+    jigsawEdge(c2, pw, ph, 0,  ph, tabs.bottom);
+    jigsawEdge(c2, 0,  ph, 0,  0,  tabs.left);
+  } else if (row === 1 && col === 0) {
+    // bottom-left: top→, right↓, arc SW (south→west, CW)
+    c2.moveTo(0, 0);
+    jigsawEdge(c2, 0,  0,  pw, 0,  tabs.top);
+    jigsawEdge(c2, pw, 0,  pw, ph, tabs.right);
+    c2.arc(pw, 0, pw, Math.PI / 2, Math.PI, false);
+  } else {
+    // bottom-right: arc SE (east→south, CW), left↑, top→
+    c2.moveTo(pw, 0);
+    c2.arc(0, 0, pw, 0, Math.PI / 2, false);
+    jigsawEdge(c2, 0,  ph, 0,  0,  tabs.left);
+    jigsawEdge(c2, 0,  0,  pw, 0,  tabs.top);
+  }
+  c2.closePath();
+}
+
+// ─── HIT TEST ─────────────────────────────────────────────────────────────────
+function hitTest(piece, mx, my) {
+  const tc = document.createElement('canvas').getContext('2d');
+  makeCircPath(tc, pieceW, pieceH, piece.tabs, piece.row, piece.col);
+  return tc.isPointInPath(mx - piece.x, my - piece.y);
+}
+function pieceAt(mx, my) {
+  const sorted = [...pieces].sort((a,b) => b.zIndex - a.zIndex);
+  for (const p of sorted) {
+    const buf = Math.max(pieceW,pieceH)*TAB_BUMP*1.5;
+    if (mx<p.x-buf||mx>p.x+pieceW+buf||my<p.y-buf||my>p.y+pieceH+buf) continue;
+    if (hitTest(p, mx, my)) return p;
+  }
+  return null;
+}
+
+// ─── SNAP LOGIC ───────────────────────────────────────────────────────────────
+function trySnap(movedGID) {
+  const movedPieces = [...groups[movedGID]];
+  const ADJ = [
+    { dr:-1, dc: 0, ox: 0,      oy:  pieceH },
+    { dr: 1, dc: 0, ox: 0,      oy: -pieceH },
+    { dr: 0, dc:-1, ox: pieceW, oy:  0      },
+    { dr: 0, dc: 1, ox:-pieceW, oy:  0      },
+  ];
+  for (const idx of movedPieces) {
+    const piece = pieces[idx];
+    for (const {dr,dc,ox,oy} of ADJ) {
+      const nr = piece.row+dr, nc = piece.col+dc;
+      if (nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
+      const neighbor = pieces.find(p=>p.row===nr&&p.col===nc);
+      if (!neighbor || neighbor.groupId === movedGID) continue;
+      const expX = neighbor.x + ox, expY = neighbor.y + oy;
+      if (Math.abs(piece.x-expX)<SNAP_DIST && Math.abs(piece.y-expY)<SNAP_DIST) {
+        const sdx = expX-piece.x, sdy = expY-piece.y;
+        groups[movedGID].forEach(i => { pieces[i].x += sdx; pieces[i].y += sdy; });
+        clampGroup(movedGID, 0, 0);
+        mergeGroups(movedGID, neighbor.groupId);
+        playSnap();
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ─── BOUNDS ───────────────────────────────────────────────────────────────────
+function clampGroup(gid, dx, dy) {
+  const cw = canvas.width, ch = canvas.height;
+  const ox = pieceW * 0.30;
+  const oy = pieceH * 0.30;
+  for (const i of groups[gid]) {
+    const p = pieces[i];
+    if (p.x+dx < -ox)           dx = -ox - p.x;
+    if (p.x+dx+pieceW > cw+ox)  dx = cw+ox - pieceW - p.x;
+    if (p.y+dy < -oy)           dy = -oy - p.y;
+    if (p.y+dy+pieceH > ch+oy)  dy = ch+oy - pieceH - p.y;
+  }
+  return {dx, dy};
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function drawPiece(piece) {
+  ctx.save();
+  ctx.translate(piece.x, piece.y);
+  ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=16; ctx.shadowOffsetX=3; ctx.shadowOffsetY=3;
+  ctx.save();
+  makeCircPath(ctx, pieceW, pieceH, piece.tabs, piece.row, piece.col);
+  ctx.clip();
+  ctx.shadowColor='transparent';
+  ctx.drawImage(img, -piece.col*pieceW, -piece.row*pieceH, boardW, boardH);
+  ctx.restore();
+  ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+  makeCircPath(ctx, pieceW, pieceH, piece.tabs, piece.row, piece.col);
+  ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.restore();
+}
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  [...pieces].sort((a,b)=>a.zIndex-b.zIndex).forEach(drawPiece);
+}
+
+// ─── SCATTER ──────────────────────────────────────────────────────────────────
+function scatter() {
+  const cw = canvas.width, ch = canvas.height;
+  const pad = Math.max(pieceW, pieceH) * TAB_BUMP + 4;
+  const minX = pad, maxX = cw - pieceW - pad;
+  const minY = pad, maxY = ch - pieceH - pad;
+  const cellW = (maxX - minX) / COLS;
+  const cellH = (maxY - minY) / ROWS;
+
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const cx = minX + c * cellW + Math.random() * Math.max(0, cellW - pieceW);
+      const cy = minY + r * cellH + Math.random() * Math.max(0, cellH - pieceH);
+      cells.push({ x: cx, y: cy });
+    }
+  }
+  cells.sort(() => Math.random() - 0.5);
+  pieces.forEach((piece, i) => {
+    piece.x = Math.round(cells[i].x);
+    piece.y = Math.round(cells[i].y);
+    piece.zIndex = i;
+  });
+}
+
+// ─── SETUP ────────────────────────────────────────────────────────────────────
+function setup() {
+  canvas = document.getElementById('gameCanvas');
+  ctx    = canvas.getContext('2d');
+
+  // Force square board (circle image is square)
+  const availW = Math.min(window.innerWidth - 16, 1200);
+  const availH = window.innerHeight - 120;
+  const BR = 0.17;
+  const maxSide = Math.min(availW * (1 - 2*BR), availH * (1 - 2*BR));
+  boardW = boardH = Math.floor(maxSide);
+  pieceW = boardW / COLS;
+  pieceH = boardH / ROWS;
+
+  const bW = Math.ceil(pieceW * 1.40);
+  const bH = Math.ceil(pieceH * 1.40);
+  canvas.width  = boardW + 2*bW;
+  canvas.height = boardH + 2*bH;
+
+  const cc = document.getElementById('confettiCanvas');
+  cc.width = canvas.width; cc.height = canvas.height;
+
+  const tabs = genTabs();
+  groups = {}; nextGID = 0; pieces = [];
+  for (let r=0; r<ROWS; r++) {
+    for (let c=0; c<COLS; c++) {
+      const idx = pieces.length;
+      pieces.push({ row:r, col:c, tabs:pieceTabs(r,c,tabs), x:0, y:0, zIndex:0, groupId:-1 });
+      createGroup(idx);
+    }
+  }
+
+  scatter();
+  render();
+  attachEvents();
+}
+
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+function getPos(e) {
+  const rect=canvas.getBoundingClientRect();
+  const sx=canvas.width/rect.width, sy=canvas.height/rect.height;
+  const src=e.touches?e.touches[0]:e;
+  return { x:(src.clientX-rect.left)*sx, y:(src.clientY-rect.top)*sy };
+}
+function onDown(e) {
+  e.preventDefault();
+  const {x,y} = getPos(e);
+  const piece = pieceAt(x,y);
+  if (!piece) return;
+  dragging = { groupId: piece.groupId };
+  dragLastX = x; dragLastY = y;
+  const z = ++maxZ;
+  groups[piece.groupId].forEach(i => pieces[i].zIndex = z);
+  canvas.style.cursor = 'grabbing';
+  render();
+}
+function onMove(e) {
+  const {x,y} = getPos(e);
+  if (dragging) {
+    e.preventDefault();
+    let dx = x - dragLastX, dy = y - dragLastY;
+    ({dx, dy} = clampGroup(dragging.groupId, dx, dy));
+    groups[dragging.groupId].forEach(i => { pieces[i].x += dx; pieces[i].y += dy; });
+    dragLastX = x; dragLastY = y;
+    const snapped = trySnap(dragging.groupId);
+    if (snapped && checkWin()) {
+      setTimeout(() => {
+        playWin();
+        launchConfetti();
+        document.getElementById('resetBtn').classList.add('show');
+      }, 250);
+      dragging = null;
+      canvas.style.cursor = 'default';
+    }
+    render();
+  } else {
+    canvas.style.cursor = pieceAt(x,y) ? 'grab' : 'default';
+  }
+}
+function onUp() {
+  if (!dragging) return;
+  dragging = null;
+  canvas.style.cursor = 'default';
+}
+function attachEvents() {
+  canvas.addEventListener('mousedown',  onDown);
+  window.addEventListener('mousemove',  onMove);
+  window.addEventListener('mouseup',    onUp);
+  canvas.addEventListener('touchstart', onDown, {passive:false});
+  window.addEventListener('touchmove',  onMove, {passive:false});
+  window.addEventListener('touchend',   onUp);
+}
+
+// ─── CONFETTI ─────────────────────────────────────────────────────────────────
+const CONFETTI_COLORS = ['#FFD700','#ed7c5a','#55b6ca','#ffffff','#c084fc','#86efac'];
+let confettiParticles=[], confettiRAF=null;
+function launchConfetti() {
+  const cc = document.getElementById('confettiCanvas');
+  cc.width = canvas.width; cc.height = canvas.height;
+  const c2 = cc.getContext('2d');
+  confettiParticles = Array.from({length:120}, ()=>({
+    x: Math.random()*cc.width, y: Math.random()*-cc.height*0.5,
+    w: 6+Math.random()*6, h: 10+Math.random()*6,
+    color: CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)],
+    angle: Math.random()*Math.PI*2, spin: (Math.random()-.5)*0.2,
+    vx: (Math.random()-.5)*2.5, vy: 2+Math.random()*3, alpha: 1,
+  }));
+  if (confettiRAF) cancelAnimationFrame(confettiRAF);
+  function animate() {
+    c2.clearRect(0,0,cc.width,cc.height);
+    let alive=false;
+    for (const p of confettiParticles) {
+      p.x+=p.vx; p.y+=p.vy; p.angle+=p.spin;
+      if (p.y>cc.height*0.7) p.alpha-=0.025;
+      if (p.alpha<=0) continue;
+      alive=true;
+      c2.save(); c2.globalAlpha=p.alpha; c2.translate(p.x,p.y); c2.rotate(p.angle);
+      c2.fillStyle=p.color; c2.fillRect(-p.w/2,-p.h/2,p.w,p.h); c2.restore();
+    }
+    if (alive) confettiRAF=requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+// ─── RESET ────────────────────────────────────────────────────────────────────
+function resetPuzzle() {
+  document.getElementById('resetBtn').classList.remove('show');
+  const cc = document.getElementById('confettiCanvas');
+  cc.getContext('2d').clearRect(0,0,cc.width,cc.height);
+  if (confettiRAF) { cancelAnimationFrame(confettiRAF); confettiRAF=null; }
+  groups={}; nextGID=0; maxZ=0;
+  const tabs = genTabs();
+  pieces.forEach((p,i) => { p.tabs=pieceTabs(p.row,p.col,tabs); p.zIndex=0; createGroup(i); });
+  scatter(); render();
+}
+document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
+
+// ─── VOICEOVER ────────────────────────────────────────────────────────────────
+const voiceover = document.getElementById('voiceover');
+const playBtn   = document.getElementById('playBtn');
+const playIcon  = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+const stopIcon  = `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`;
+let voiceOn = false;
+function stopVoice() {
+  voiceover.pause(); voiceover.currentTime = 0;
+  voiceOn = false; playBtn.classList.remove('playing'); playBtn.innerHTML = playIcon;
+}
+voiceover.addEventListener('ended', stopVoice);
+playBtn.addEventListener('click', () => {
+  if (voiceOn) { stopVoice(); }
+  else { voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML = stopIcon; }
+});
+
+// ─── MUSIC ────────────────────────────────────────────────────────────────────
+const bgMusic=document.getElementById('bgMusic'), musicBtn=document.getElementById('musicBtn');
+let musicOn=false;
+musicBtn.addEventListener('click', () => {
+  if (musicOn) { bgMusic.pause(); musicOn=false; musicBtn.classList.remove('playing'); }
+  else { bgMusic.volume=0.35; bgMusic.play().catch(()=>{}); musicOn=true; musicBtn.classList.add('playing'); }
+});
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('touchstart', () => getAC().resume(), { once: true, passive: true });
+
+img = new Image();
+img.onload  = setup;
+img.onerror = () => alert('Could not load puzzle image.');
+img.src = '/puzzle-sun-circle.png';
+</script>
+</body>
+</html>
