@@ -7,7 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: url('/space-bg.png') center center / cover no-repeat fixed;
       font-family: 'Nunito', sans-serif;
@@ -20,7 +19,6 @@
       user-select: none;
       -webkit-user-select: none;
     }
-
     #backBtn {
       display: inline-flex;
       align-items: center;
@@ -33,7 +31,6 @@
       transition: color 0.15s;
     }
     #backBtn:hover { color: white; }
-
     h1 {
       font-size: clamp(1.4rem, 4vw, 2rem);
       font-weight: 800;
@@ -42,7 +39,6 @@
       margin-bottom: 14px;
       text-shadow: 0 0 24px rgba(255,215,0,0.35);
     }
-
     .instructions-bar {
       display: flex;
       align-items: center;
@@ -54,18 +50,13 @@
       max-width: 640px;
       width: 100%;
     }
-
     #playBtn {
       background: #ed7c5a;
       border: none;
       border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      min-width: 42px;
+      width: 42px; height: 42px; min-width: 42px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: transform 0.1s, background 0.15s;
     }
     #playBtn:hover  { background: #d4623f; transform: scale(1.08); }
@@ -77,18 +68,13 @@
       0%, 100% { box-shadow: 0 0 0 0 rgba(237,124,90,0.55); }
       50%      { box-shadow: 0 0 0 10px rgba(237,124,90,0); }
     }
-
     #musicBtn {
       background: #ed7c5a;
       border: none;
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
+      width: 36px; height: 36px; min-width: 36px;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: transform 0.1s, background 0.15s;
       margin-left: auto;
     }
@@ -97,49 +83,34 @@
     #musicBtn.playing { background: #FFD700; }
     #musicBtn.playing svg { fill: #1c1c1c; }
     #musicBtn.playing:hover { background: #e6c200; }
-
-    .instructions-text {
-      font-size: 0.92rem;
-      color: #ddd;
-      line-height: 1.45;
-    }
-
+    .instructions-text { font-size: 0.92rem; color: #ddd; line-height: 1.45; }
     #canvasWrap { position: relative; }
     canvas { display: block; touch-action: none; cursor: default; }
-
     #confettiCanvas {
-      position: absolute;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 10;
+      position: absolute; top: 0; left: 0;
+      pointer-events: none; z-index: 10;
     }
-
     #resetBtn {
       display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%) scale(0);
-      background: rgba(5, 10, 26, 0.75);
+      background: rgba(5,10,26,0.75);
       border: 3px solid rgba(255,255,255,0.6);
       border-radius: 50%;
-      width: 72px;
-      height: 72px;
-      cursor: pointer;
-      z-index: 11;
-      align-items: center;
-      justify-content: center;
+      width: 72px; height: 72px;
+      cursor: pointer; z-index: 11;
+      align-items: center; justify-content: center;
       transition: background 0.15s, border-color 0.15s;
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
       animation-fill-mode: forwards;
     }
     #resetBtn.show { display: flex; }
     #resetBtn:hover  { background: rgba(237,124,90,0.85); border-color: white; }
-    #resetBtn:active { transform: translate(-50%, -50%) scale(0.93); }
+    #resetBtn:active { transform: translate(-50%,-50%) scale(0.93); }
     #resetBtn svg { width: 36px; height: 36px; fill: white; }
     @keyframes popIn {
-      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.5); }
+      100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
     }
   </style>
 </head>
@@ -166,24 +137,18 @@
   </button>
 </div>
 
-<audio id="voiceover"  src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
-<audio id="bgMusic"    src="/puzzle-bg-music.mp3" loop     preload="auto"></audio>
+<audio id="voiceover" src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
+<audio id="bgMusic"   src="/puzzle-bg-music.mp3" loop    preload="auto"></audio>
 
 <script>
-// ─── CONFIG ───────────────────────────────────────────────────────────────────
 const ROWS = 2, COLS = 2;
 const SNAP_DIST = 18;
 const TAB_BUMP  = 0.30;
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let canvas, ctx, img;
+let canvas, ctx, img, imgData;
 let boardW, boardH, pieceW, pieceH;
-let pieces = [];
-let groups  = {};
-let nextGID = 0;
-let dragging = null;
-let dragLastX = 0, dragLastY = 0;
-let maxZ = 0;
+let pieces = [], groups = {}, nextGID = 0;
+let dragging = null, dragLastX = 0, dragLastY = 0, maxZ = 0;
 let audioCtx = null;
 
 // ─── AUDIO ────────────────────────────────────────────────────────────────────
@@ -216,10 +181,10 @@ function playWin() {
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
       o.start(t); o.stop(t + 0.55);
     });
-  } catch(e){}
+  } catch(e) {}
 }
 
-// ─── GROUP SYSTEM ─────────────────────────────────────────────────────────────
+// ─── GROUPS ───────────────────────────────────────────────────────────────────
 function createGroup(idx) {
   const id = nextGID++;
   groups[id] = new Set([idx]);
@@ -230,17 +195,11 @@ function mergeGroups(idA, idB) {
   groups[idB].forEach(i => { pieces[i].groupId = idA; groups[idA].add(i); });
   delete groups[idB];
 }
-function checkWin() {
-  return Object.keys(groups).length === 1;
-}
+function checkWin() { return Object.keys(groups).length === 1; }
 
-// ─── TAB GENERATION ───────────────────────────────────────────────────────────
+// ─── TABS ─────────────────────────────────────────────────────────────────────
 function randEdge() {
-  return {
-    dir: Math.random() < 0.5 ? 1 : -1,
-    pos: 0.36 + Math.random() * 0.28,
-    bh:  0.20 + Math.random() * 0.08,
-  };
+  return { dir: Math.random() < 0.5 ? 1 : -1, pos: 0.36 + Math.random() * 0.28, bh: 0.20 + Math.random() * 0.08 };
 }
 function genTabs() {
   const h = [], v = [];
@@ -266,24 +225,19 @@ function jigsawEdge(c2, x1, y1, x2, y2, edge) {
   const ex = ddx/len, ey = ddy/len;
   const nx = ey*dir, ny = -ex*dir;
   const p = (t, h) => [x1+ex*len*t+nx*len*h, y1+ey*len*t+ny*len*h];
-
-  const k  = 0.552;
-  const nh = bh * 0.30;
-  const R  = bh - nh;
-  const nw = R * 0.52;
-
-  c2.lineTo(...p(pos - nw, 0));
-  c2.lineTo(...p(pos - nw, nh));
-  c2.lineTo(...p(pos - R,  nh));
-  c2.bezierCurveTo(...p(pos-R, nh+R*k), ...p(pos-R*k, bh), ...p(pos,   bh));
-  c2.bezierCurveTo(...p(pos+R*k, bh),   ...p(pos+R, nh+R*k), ...p(pos+R,  nh));
-  c2.lineTo(...p(pos + nw, nh));
-  c2.lineTo(...p(pos + nw, 0));
+  const k = 0.552, nh = bh*0.30, R = bh-nh, nw = R*0.52;
+  c2.lineTo(...p(pos-nw, 0));
+  c2.lineTo(...p(pos-nw, nh));
+  c2.lineTo(...p(pos-R,  nh));
+  c2.bezierCurveTo(...p(pos-R, nh+R*k), ...p(pos-R*k, bh), ...p(pos, bh));
+  c2.bezierCurveTo(...p(pos+R*k, bh),   ...p(pos+R, nh+R*k), ...p(pos+R, nh));
+  c2.lineTo(...p(pos+nw, nh));
+  c2.lineTo(...p(pos+nw, 0));
   c2.lineTo(x2, y2);
 }
 
-// ─── RECTANGULAR PIECE PATH ───────────────────────────────────────────────────
-// Standard jigsaw rectangle — the sun PNG's own transparency creates its shape.
+// ─── PIECE PATH ───────────────────────────────────────────────────────────────
+// Standard rectangular jigsaw — sun image's own alpha will mask the outer shape
 function makePath(c2, pw, ph, tabs) {
   c2.beginPath();
   c2.moveTo(0, 0);
@@ -294,39 +248,79 @@ function makePath(c2, pw, ph, tabs) {
   c2.closePath();
 }
 
+// ─── IMAGE ANALYSIS ───────────────────────────────────────────────────────────
+function analyzeImage() {
+  const oc = document.createElement('canvas');
+  oc.width = boardW; oc.height = boardH;
+  const oc2 = oc.getContext('2d');
+  oc2.drawImage(img, 0, 0, boardW, boardH);
+  imgData = oc2.getImageData(0, 0, boardW, boardH);
+}
+function getAlpha(bx, by) {
+  const x = Math.floor(bx), y = Math.floor(by);
+  if (x < 0 || y < 0 || x >= boardW || y >= boardH) return 0;
+  return imgData.data[(y * boardW + x) * 4 + 3];
+}
+
+// ─── PRE-RENDER ───────────────────────────────────────────────────────────────
+// Each piece is drawn to an offscreen canvas using destination-in compositing
+// so the outer edges follow the actual sun silhouette, not a rectangle.
+function preRenderPiece(piece) {
+  const EXTRA = Math.ceil(Math.max(pieceW, pieceH) * TAB_BUMP * 1.2);
+  const oc = document.createElement('canvas');
+  oc.width  = pieceW + EXTRA * 2;
+  oc.height = pieceH + EXTRA * 2;
+  const oc2 = oc.getContext('2d');
+  oc2.translate(EXTRA, EXTRA);
+
+  // 1. Clip to jigsaw shape and draw the image
+  oc2.save();
+  makePath(oc2, pieceW, pieceH, piece.tabs);
+  oc2.clip();
+  oc2.drawImage(img, -piece.col * pieceW, -piece.row * pieceH, boardW, boardH);
+  oc2.restore();
+
+  // 2. Mask to the sun's actual alpha — removes background from outer edges
+  oc2.globalCompositeOperation = 'destination-in';
+  oc2.drawImage(img, -piece.col * pieceW, -piece.row * pieceH, boardW, boardH);
+
+  piece.offscreen = oc;
+  piece.extra = EXTRA;
+}
+
 // ─── HIT TEST ─────────────────────────────────────────────────────────────────
+// Check both jigsaw path AND actual sun alpha so clicks in transparent areas don't register
 function hitTest(piece, mx, my) {
+  const lx = mx - piece.x, ly = my - piece.y;
   const tc = document.createElement('canvas').getContext('2d');
   makePath(tc, pieceW, pieceH, piece.tabs);
-  return tc.isPointInPath(mx - piece.x, my - piece.y);
+  if (!tc.isPointInPath(lx, ly)) return false;
+  return getAlpha(piece.col * pieceW + lx, piece.row * pieceH + ly) > 32;
 }
 function pieceAt(mx, my) {
   const sorted = [...pieces].sort((a,b) => b.zIndex - a.zIndex);
   for (const p of sorted) {
-    const buf = Math.max(pieceW,pieceH)*TAB_BUMP*1.5;
+    const buf = Math.max(pieceW,pieceH) * TAB_BUMP * 1.5;
     if (mx<p.x-buf||mx>p.x+pieceW+buf||my<p.y-buf||my>p.y+pieceH+buf) continue;
     if (hitTest(p, mx, my)) return p;
   }
   return null;
 }
 
-// ─── SNAP LOGIC ───────────────────────────────────────────────────────────────
+// ─── SNAP ─────────────────────────────────────────────────────────────────────
 function trySnap(movedGID) {
-  const movedPieces = [...groups[movedGID]];
   const ADJ = [
-    { dr:-1, dc: 0, ox: 0,      oy:  pieceH },
-    { dr: 1, dc: 0, ox: 0,      oy: -pieceH },
-    { dr: 0, dc:-1, ox: pieceW, oy:  0      },
-    { dr: 0, dc: 1, ox:-pieceW, oy:  0      },
+    {dr:-1,dc:0,ox:0,oy:pieceH},{dr:1,dc:0,ox:0,oy:-pieceH},
+    {dr:0,dc:-1,ox:pieceW,oy:0},{dr:0,dc:1,ox:-pieceW,oy:0},
   ];
-  for (const idx of movedPieces) {
+  for (const idx of [...groups[movedGID]]) {
     const piece = pieces[idx];
     for (const {dr,dc,ox,oy} of ADJ) {
       const nr = piece.row+dr, nc = piece.col+dc;
       if (nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
       const neighbor = pieces.find(p=>p.row===nr&&p.col===nc);
       if (!neighbor || neighbor.groupId === movedGID) continue;
-      const expX = neighbor.x + ox, expY = neighbor.y + oy;
+      const expX = neighbor.x+ox, expY = neighbor.y+oy;
       if (Math.abs(piece.x-expX)<SNAP_DIST && Math.abs(piece.y-expY)<SNAP_DIST) {
         const sdx = expX-piece.x, sdy = expY-piece.y;
         groups[movedGID].forEach(i => { pieces[i].x += sdx; pieces[i].y += sdy; });
@@ -340,17 +334,16 @@ function trySnap(movedGID) {
   return false;
 }
 
-// ─── BOUNDS ───────────────────────────────────────────────────────────────────
+// ─── CLAMP ────────────────────────────────────────────────────────────────────
 function clampGroup(gid, dx, dy) {
   const cw = canvas.width, ch = canvas.height;
-  const ox = pieceW * 0.30;
-  const oy = pieceH * 0.30;
+  const ox = pieceW * 0.30, oy = pieceH * 0.30;
   for (const i of groups[gid]) {
     const p = pieces[i];
-    if (p.x+dx < -ox)           dx = -ox - p.x;
-    if (p.x+dx+pieceW > cw+ox)  dx = cw+ox - pieceW - p.x;
-    if (p.y+dy < -oy)           dy = -oy - p.y;
-    if (p.y+dy+pieceH > ch+oy)  dy = ch+oy - pieceH - p.y;
+    if (p.x+dx < -ox)          dx = -ox - p.x;
+    if (p.x+dx+pieceW > cw+ox) dx = cw+ox - pieceW - p.x;
+    if (p.y+dy < -oy)          dy = -oy - p.y;
+    if (p.y+dy+pieceH > ch+oy) dy = ch+oy - pieceH - p.y;
   }
   return {dx, dy};
 }
@@ -358,47 +351,45 @@ function clampGroup(gid, dx, dy) {
 // ─── RENDER ───────────────────────────────────────────────────────────────────
 function drawPiece(piece) {
   ctx.save();
-  ctx.translate(piece.x, piece.y);
-  ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=16; ctx.shadowOffsetX=3; ctx.shadowOffsetY=3;
-  ctx.save();
-  makePath(ctx, pieceW, pieceH, piece.tabs);
-  ctx.clip();
-  ctx.shadowColor='transparent';
-  ctx.drawImage(img, -piece.col*pieceW, -piece.row*pieceH, boardW, boardH);
+  // Shadow follows the actual sun silhouette (offscreen canvas has transparent outer edges)
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 16;
+  ctx.shadowOffsetX = 3; ctx.shadowOffsetY = 3;
+  ctx.drawImage(piece.offscreen, piece.x - piece.extra, piece.y - piece.extra);
   ctx.restore();
-  ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
-  makePath(ctx, pieceW, pieceH, piece.tabs);
-  ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=1.5; ctx.stroke();
+
+  // Draw inner-edge jigsaw outlines only (outer edges have no tab = no visible line needed)
+  ctx.save();
+  ctx.translate(piece.x, piece.y);
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  if (piece.tabs.top)    { ctx.moveTo(0,  0);  jigsawEdge(ctx, 0,  0,  pieceW, 0,      piece.tabs.top); }
+  if (piece.tabs.right)  { ctx.moveTo(pieceW,0); jigsawEdge(ctx, pieceW,0, pieceW,pieceH, piece.tabs.right); }
+  if (piece.tabs.bottom) { ctx.moveTo(pieceW,pieceH); jigsawEdge(ctx, pieceW,pieceH,0,pieceH, piece.tabs.bottom); }
+  if (piece.tabs.left)   { ctx.moveTo(0,pieceH); jigsawEdge(ctx, 0,pieceH,0,0,        piece.tabs.left); }
+  ctx.stroke();
   ctx.restore();
 }
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  [...pieces].sort((a,b)=>a.zIndex-b.zIndex).forEach(drawPiece);
+  [...pieces].sort((a,b) => a.zIndex - b.zIndex).forEach(drawPiece);
 }
 
 // ─── SCATTER ──────────────────────────────────────────────────────────────────
 function scatter() {
   const cw = canvas.width, ch = canvas.height;
   const pad = Math.max(pieceW, pieceH) * TAB_BUMP + 4;
-  const minX = pad, maxX = cw - pieceW - pad;
-  const minY = pad, maxY = ch - pieceH - pad;
-  const cellW = (maxX - minX) / COLS;
-  const cellH = (maxY - minY) / ROWS;
-
+  const cellW = (cw - pieceW - pad*2) / COLS;
+  const cellH = (ch - pieceH - pad*2) / ROWS;
   const cells = [];
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const cx = minX + c * cellW + Math.random() * Math.max(0, cellW - pieceW);
-      const cy = minY + r * cellH + Math.random() * Math.max(0, cellH - pieceH);
-      cells.push({ x: cx, y: cy });
-    }
+  for (let r=0; r<ROWS; r++) for (let c=0; c<COLS; c++) {
+    cells.push({
+      x: pad + c*cellW + Math.random()*Math.max(0, cellW-pieceW),
+      y: pad + r*cellH + Math.random()*Math.max(0, cellH-pieceH),
+    });
   }
   cells.sort(() => Math.random() - 0.5);
-  pieces.forEach((piece, i) => {
-    piece.x = Math.round(cells[i].x);
-    piece.y = Math.round(cells[i].y);
-    piece.zIndex = i;
-  });
+  pieces.forEach((p, i) => { p.x = Math.round(cells[i].x); p.y = Math.round(cells[i].y); p.zIndex = i; });
 }
 
 // ─── SETUP ────────────────────────────────────────────────────────────────────
@@ -406,11 +397,10 @@ function setup() {
   canvas = document.getElementById('gameCanvas');
   ctx    = canvas.getContext('2d');
 
-  // Force square board (sun image is square)
   const availW = Math.min(window.innerWidth - 16, 1200);
   const availH = window.innerHeight - 120;
   const BR = 0.17;
-  const maxSide = Math.min(availW * (1 - 2*BR), availH * (1 - 2*BR));
+  const maxSide = Math.min(availW * (1-2*BR), availH * (1-2*BR));
   boardW = boardH = Math.floor(maxSide);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
@@ -423,16 +413,16 @@ function setup() {
   const cc = document.getElementById('confettiCanvas');
   cc.width = canvas.width; cc.height = canvas.height;
 
+  analyzeImage();
+
   const tabs = genTabs();
   groups = {}; nextGID = 0; pieces = [];
-  for (let r=0; r<ROWS; r++) {
-    for (let c=0; c<COLS; c++) {
-      const idx = pieces.length;
-      pieces.push({ row:r, col:c, tabs:pieceTabs(r,c,tabs), x:0, y:0, zIndex:0, groupId:-1 });
-      createGroup(idx);
-    }
+  for (let r=0; r<ROWS; r++) for (let c=0; c<COLS; c++) {
+    const idx = pieces.length;
+    pieces.push({ row:r, col:c, tabs:pieceTabs(r,c,tabs), x:0, y:0, zIndex:0, groupId:-1 });
+    createGroup(idx);
   }
-
+  pieces.forEach(preRenderPiece);
   scatter();
   render();
   attachEvents();
@@ -440,9 +430,9 @@ function setup() {
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────
 function getPos(e) {
-  const rect=canvas.getBoundingClientRect();
-  const sx=canvas.width/rect.width, sy=canvas.height/rect.height;
-  const src=e.touches?e.touches[0]:e;
+  const rect = canvas.getBoundingClientRect();
+  const sx = canvas.width/rect.width, sy = canvas.height/rect.height;
+  const src = e.touches ? e.touches[0] : e;
   return { x:(src.clientX-rect.left)*sx, y:(src.clientY-rect.top)*sy };
 }
 function onDown(e) {
@@ -461,30 +451,21 @@ function onMove(e) {
   const {x,y} = getPos(e);
   if (dragging) {
     e.preventDefault();
-    let dx = x - dragLastX, dy = y - dragLastY;
-    ({dx, dy} = clampGroup(dragging.groupId, dx, dy));
+    let dx = x-dragLastX, dy = y-dragLastY;
+    ({dx,dy} = clampGroup(dragging.groupId, dx, dy));
     groups[dragging.groupId].forEach(i => { pieces[i].x += dx; pieces[i].y += dy; });
     dragLastX = x; dragLastY = y;
     const snapped = trySnap(dragging.groupId);
     if (snapped && checkWin()) {
-      setTimeout(() => {
-        playWin();
-        launchConfetti();
-        document.getElementById('resetBtn').classList.add('show');
-      }, 250);
-      dragging = null;
-      canvas.style.cursor = 'default';
+      setTimeout(() => { playWin(); launchConfetti(); document.getElementById('resetBtn').classList.add('show'); }, 250);
+      dragging = null; canvas.style.cursor = 'default';
     }
     render();
   } else {
     canvas.style.cursor = pieceAt(x,y) ? 'grab' : 'default';
   }
 }
-function onUp() {
-  if (!dragging) return;
-  dragging = null;
-  canvas.style.cursor = 'default';
-}
+function onUp() { if (!dragging) return; dragging = null; canvas.style.cursor = 'default'; }
 function attachEvents() {
   canvas.addEventListener('mousedown',  onDown);
   window.addEventListener('mousemove',  onMove);
@@ -502,11 +483,11 @@ function launchConfetti() {
   cc.width = canvas.width; cc.height = canvas.height;
   const c2 = cc.getContext('2d');
   confettiParticles = Array.from({length:120}, ()=>({
-    x: Math.random()*cc.width, y: Math.random()*-cc.height*0.5,
-    w: 6+Math.random()*6, h: 10+Math.random()*6,
-    color: CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)],
-    angle: Math.random()*Math.PI*2, spin: (Math.random()-.5)*0.2,
-    vx: (Math.random()-.5)*2.5, vy: 2+Math.random()*3, alpha: 1,
+    x:Math.random()*cc.width, y:Math.random()*-cc.height*0.5,
+    w:6+Math.random()*6, h:10+Math.random()*6,
+    color:CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)],
+    angle:Math.random()*Math.PI*2, spin:(Math.random()-.5)*0.2,
+    vx:(Math.random()-.5)*2.5, vy:2+Math.random()*3, alpha:1,
   }));
   if (confettiRAF) cancelAnimationFrame(confettiRAF);
   function animate() {
@@ -533,7 +514,7 @@ function resetPuzzle() {
   if (confettiRAF) { cancelAnimationFrame(confettiRAF); confettiRAF=null; }
   groups={}; nextGID=0; maxZ=0;
   const tabs = genTabs();
-  pieces.forEach((p,i) => { p.tabs=pieceTabs(p.row,p.col,tabs); p.zIndex=0; createGroup(i); });
+  pieces.forEach((p,i) => { p.tabs=pieceTabs(p.row,p.col,tabs); p.zIndex=0; createGroup(i); preRenderPiece(p); });
   scatter(); render();
 }
 document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
@@ -545,13 +526,13 @@ const playIcon  = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
 const stopIcon  = `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`;
 let voiceOn = false;
 function stopVoice() {
-  voiceover.pause(); voiceover.currentTime = 0;
-  voiceOn = false; playBtn.classList.remove('playing'); playBtn.innerHTML = playIcon;
+  voiceover.pause(); voiceover.currentTime=0;
+  voiceOn=false; playBtn.classList.remove('playing'); playBtn.innerHTML=playIcon;
 }
 voiceover.addEventListener('ended', stopVoice);
 playBtn.addEventListener('click', () => {
   if (voiceOn) { stopVoice(); }
-  else { voiceover.volume=0.6; voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML = stopIcon; }
+  else { voiceover.volume=0.6; voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML=stopIcon; }
 });
 
 // ─── MUSIC ────────────────────────────────────────────────────────────────────
@@ -563,8 +544,7 @@ musicBtn.addEventListener('click', () => {
 });
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
-document.addEventListener('touchstart', () => getAC().resume(), { once: true, passive: true });
-
+document.addEventListener('touchstart', () => getAC().resume(), {once:true, passive:true});
 img = new Image();
 img.onload  = setup;
 img.onerror = () => alert('Could not load puzzle image.');
