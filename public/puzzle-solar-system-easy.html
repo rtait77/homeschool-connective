@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solar System Puzzle — Easy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(ellipse at center, #0d1b4b 0%, #050a1a 100%);
+      font-family: 'Nunito', sans-serif;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 800;
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 14px;
+      text-shadow: 0 0 24px rgba(255,215,0,0.35);
+    }
+
+    .instructions-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50px;
+      padding: 10px 20px;
+      max-width: 640px;
+      width: 100%;
+    }
+
+    #playBtn {
+      background: #ed7c5a;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, background 0.15s;
+    }
+    #playBtn:hover  { background: #d4623f; transform: scale(1.08); }
+    #playBtn:active { transform: scale(0.95); }
+    #playBtn svg    { width: 18px; height: 18px; fill: white; margin-left: 2px; }
+
+    .instructions-text {
+      font-size: 0.92rem;
+      color: #ddd;
+      line-height: 1.45;
+    }
+
+    #canvasWrap { cursor: grab; }
+    #canvasWrap.dragging { cursor: grabbing; }
+    canvas { display: block; touch-action: none; }
+
+    #completeBanner {
+      display: none;
+      margin-top: 18px;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 800;
+      color: #FFD700;
+      text-align: center;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes popIn {
+      0%   { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Solar System Puzzle</h1>
+
+<div class="instructions-bar">
+  <button id="playBtn" title="Play instructions">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+  <span class="instructions-text">Drag the pieces to solve the puzzle. When a piece is in the right spot, it will snap into place!</span>
+</div>
+
+<div id="canvasWrap">
+  <canvas id="gameCanvas"></canvas>
+</div>
+
+<div id="completeBanner">Great job! You solved the puzzle!</div>
+
+<audio id="voiceover" src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const ROWS = 3, COLS = 3;
+const SNAP_DIST  = 30;   // px — how close to snap
+const TAB_BUMP   = 0.14; // fraction of edge length the tab protrudes
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let canvas, ctx, img;
+let boardX, boardY, boardW, boardH, pieceW, pieceH;
+let pieces = [], dragging = null, dragOX = 0, dragOY = 0, maxZ = 0;
+let audioCtx = null;
+
+// ─── AUDIO ────────────────────────────────────────────────────────────────────
+function getAC() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playSnap() {
+  try {
+    const ac = getAC();
+    const osc = ac.createOscillator(), gain = ac.createGain();
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, ac.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, ac.currentTime + 0.09);
+    gain.gain.setValueAtTime(0.25, ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.09);
+    osc.start(); osc.stop(ac.currentTime + 0.09);
+  } catch(e) {}
+}
+
+function playWin() {
+  try {
+    const ac = getAC();
+    [523, 659, 784, 1047, 1318].forEach((freq, i) => {
+      const osc = ac.createOscillator(), gain = ac.createGain();
+      osc.connect(gain); gain.connect(ac.destination);
+      osc.type = 'sine'; osc.frequency.value = freq;
+      const t = ac.currentTime + i * 0.13;
+      gain.gain.setValueAtTime(0.22, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      osc.start(t); osc.stop(t + 0.55);
+    });
+  } catch(e) {}
+}
+
+// ─── TAB GENERATION ───────────────────────────────────────────────────────────
+// hTabs[r][c] = direction of tab between row r and row r+1, at col c  (+1 or -1)
+// vTabs[r][c] = direction of tab between col c and col c+1, at row r  (+1 or -1)
+function genTabs() {
+  const h = [], v = [];
+  for (let r = 0; r < ROWS-1; r++) {
+    h[r] = [];
+    for (let c = 0; c < COLS; c++) h[r][c] = Math.random() < 0.5 ? 1 : -1;
+  }
+  for (let r = 0; r < ROWS; r++) {
+    v[r] = [];
+    for (let c = 0; c < COLS-1; c++) v[r][c] = Math.random() < 0.5 ? 1 : -1;
+  }
+  return { h, v };
+}
+
+function pieceTabs(r, c, { h, v }) {
+  return {
+    top:    r === 0       ? 0 : -h[r-1][c],
+    bottom: r === ROWS-1  ? 0 :  h[r][c],
+    left:   c === 0       ? 0 : -v[r][c-1],
+    right:  c === COLS-1  ? 0 :  v[r][c],
+  };
+}
+
+// ─── JIGSAW PATH ──────────────────────────────────────────────────────────────
+// Draws one edge from (x1,y1) to (x2,y2).
+// type +1 = tab sticking OUTWARD, -1 = indent, 0 = flat.
+// Uses the right-hand perpendicular (outward for clockwise CW traversal in canvas).
+function jigsawEdge(ctx2d, x1, y1, x2, y2, type) {
+  if (type === 0) { ctx2d.lineTo(x2, y2); return; }
+
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.sqrt(dx*dx + dy*dy);
+  // Right-hand perpendicular in canvas coords (outward when traversing CW)
+  const px = dy / len, py = -dx / len;
+  const h = len * TAB_BUMP * type; // positive = outward
+
+  // Tab occupies middle 40% of edge (30%–70%)
+  const A = 0.30, B = 0.42, MID = 0.50, D = 0.58, E = 0.70;
+
+  const ax = x1+dx*A,   ay = y1+dy*A;
+  const bx = x1+dx*B,   by = y1+dy*B;
+  const mx = x1+dx*MID, my = y1+dy*MID;
+  const dx2= x1+dx*D,   dy2= y1+dy*D;
+  const ex = x1+dx*E,   ey = y1+dy*E;
+
+  ctx2d.lineTo(ax, ay);
+  // Rising side
+  ctx2d.bezierCurveTo(
+    ax + px*h*0.3, ay + py*h*0.3,
+    bx + px*h,     by + py*h,
+    mx + px*h*1.1, my + py*h*1.1
+  );
+  // Falling side
+  ctx2d.bezierCurveTo(
+    dx2 + px*h,     dy2 + py*h,
+    ex  + px*h*0.3, ey  + py*h*0.3,
+    ex, ey
+  );
+  ctx2d.lineTo(x2, y2);
+}
+
+// Build full jigsaw piece path at origin (0,0) → (pw, ph)
+function makePath(ctx2d, pw, ph, tabs) {
+  ctx2d.beginPath();
+  ctx2d.moveTo(0, 0);
+  jigsawEdge(ctx2d,  0,  0, pw,  0, tabs.top);    // top:    L → R
+  jigsawEdge(ctx2d, pw,  0, pw, ph, tabs.right);   // right:  T → B
+  jigsawEdge(ctx2d, pw, ph,  0, ph, tabs.bottom);  // bottom: R → L
+  jigsawEdge(ctx2d,  0, ph,  0,  0, tabs.left);    // left:   B → T
+  ctx2d.closePath();
+}
+
+// ─── HIT TEST ─────────────────────────────────────────────────────────────────
+// Tests whether (mx, my) is inside piece's jigsaw shape.
+// Converts to local coords so no transform needed on the test canvas.
+function hitTest(piece, mx, my) {
+  const lx = mx - piece.x, ly = my - piece.y;
+  const tc = document.createElement('canvas').getContext('2d');
+  makePath(tc, pieceW, pieceH, piece.tabs);
+  return tc.isPointInPath(lx, ly);
+}
+
+function pieceAt(mx, my) {
+  // Topmost (highest zIndex) unlocked piece first
+  const sorted = pieces.filter(p => !p.locked).sort((a, b) => b.zIndex - a.zIndex);
+  for (const p of sorted) {
+    const buf = Math.max(pieceW, pieceH) * TAB_BUMP * 1.5;
+    if (mx < p.x - buf || mx > p.x + pieceW + buf) continue;
+    if (my < p.y - buf || my > p.y + pieceH + buf) continue;
+    if (hitTest(p, mx, my)) return p;
+  }
+  return null;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function drawBoard() {
+  // Ghost image
+  ctx.save();
+  ctx.globalAlpha = 0.15;
+  ctx.drawImage(img, boardX, boardY, boardW, boardH);
+  ctx.globalAlpha = 1;
+  ctx.restore();
+
+  // Outer border
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(boardX, boardY, boardW, boardH);
+  ctx.restore();
+
+  // Grid guides
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+  ctx.setLineDash([5, 5]);
+  ctx.lineWidth = 1;
+  for (let r = 1; r < ROWS; r++) {
+    ctx.beginPath();
+    ctx.moveTo(boardX, boardY + r * pieceH);
+    ctx.lineTo(boardX + boardW, boardY + r * pieceH);
+    ctx.stroke();
+  }
+  for (let c = 1; c < COLS; c++) {
+    ctx.beginPath();
+    ctx.moveTo(boardX + c * pieceW, boardY);
+    ctx.lineTo(boardX + c * pieceW, boardY + boardH);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawPiece(piece) {
+  ctx.save();
+  ctx.translate(piece.x, piece.y);
+
+  // Drop shadow for floating pieces
+  if (!piece.locked) {
+    ctx.shadowColor   = 'rgba(0,0,0,0.55)';
+    ctx.shadowBlur    = 14;
+    ctx.shadowOffsetX = 4;
+    ctx.shadowOffsetY = 4;
+  }
+
+  // Clip to jigsaw shape and draw image
+  ctx.save();
+  makePath(ctx, pieceW, pieceH, piece.tabs);
+  ctx.clip();
+
+  // Draw the full board image offset so the correct tile shows at (0,0)
+  // Tabs outside (0,0)→(pw,ph) will show the correct adjacent image content
+  ctx.shadowColor = 'transparent';
+  ctx.drawImage(img, -piece.col * pieceW, -piece.row * pieceH, boardW, boardH);
+  ctx.restore();
+
+  // Reset shadow before stroke
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur  = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  // Outline
+  makePath(ctx, pieceW, pieceH, piece.tabs);
+  ctx.strokeStyle = piece.locked ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.75)';
+  ctx.lineWidth   = piece.locked ? 0.5 : 1.5;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBoard();
+
+  // Locked pieces first, then by zIndex
+  const sorted = [...pieces].sort((a, b) => {
+    if (a.locked !== b.locked) return a.locked ? -1 : 1;
+    return a.zIndex - b.zIndex;
+  });
+  sorted.forEach(drawPiece);
+}
+
+// ─── SCATTER ──────────────────────────────────────────────────────────────────
+function scatter() {
+  const trayTop = boardY + boardH + 28;
+  const cw = canvas.width;
+  const shuffled = [...pieces].sort(() => Math.random() - 0.5);
+  const colCount  = COLS;
+  const slotW = (cw - 20) / colCount;
+
+  shuffled.forEach((piece, i) => {
+    const col = i % colCount;
+    const row = Math.floor(i / colCount);
+    const baseX = 10 + col * slotW + (slotW - pieceW) * 0.5;
+    const baseY = trayTop + row * (pieceH + 24);
+    piece.x = Math.max(5, Math.min(cw - pieceW - 5, baseX + (Math.random() - 0.5) * slotW * 0.25));
+    piece.y = baseY + Math.random() * 16;
+    piece.zIndex = i;
+  });
+}
+
+// ─── SETUP ────────────────────────────────────────────────────────────────────
+function setup() {
+  canvas = document.getElementById('gameCanvas');
+  ctx    = canvas.getContext('2d');
+
+  const maxW   = Math.min(window.innerWidth - 32, 840);
+  const aspect = img.naturalWidth / img.naturalHeight;
+  boardW = maxW;
+  boardH = Math.round(boardW / aspect);
+  pieceW = boardW / COLS;
+  pieceH = boardH / ROWS;
+
+  const trayRows = Math.ceil((ROWS * COLS) / COLS);
+  canvas.width  = boardW + 20;
+  canvas.height = boardH + trayRows * (pieceH + 24) + 60;
+  boardX = 10;
+  boardY = 10;
+
+  const tabs = genTabs();
+  pieces = [];
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      pieces.push({
+        row: r, col: c,
+        tabs: pieceTabs(r, c, tabs),
+        x: 0, y: 0,
+        targetX: boardX + c * pieceW,
+        targetY: boardY + r * pieceH,
+        locked: false,
+        zIndex: 0,
+      });
+    }
+  }
+
+  scatter();
+  render();
+  attachEvents();
+}
+
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+function getPos(e) {
+  const rect   = canvas.getBoundingClientRect();
+  const scaleX = canvas.width  / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const src    = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - rect.left) * scaleX,
+    y: (src.clientY - rect.top)  * scaleY,
+  };
+}
+
+function onDown(e) {
+  e.preventDefault();
+  const { x, y } = getPos(e);
+  const piece = pieceAt(x, y);
+  if (!piece) return;
+  dragging = piece;
+  dragOX = x - piece.x;
+  dragOY = y - piece.y;
+  piece.zIndex = ++maxZ;
+  document.getElementById('canvasWrap').classList.add('dragging');
+  render();
+}
+
+function onMove(e) {
+  if (!dragging) return;
+  e.preventDefault();
+  const { x, y } = getPos(e);
+  dragging.x = x - dragOX;
+  dragging.y = y - dragOY;
+  render();
+}
+
+function onUp() {
+  if (!dragging) return;
+  const dx = dragging.x - dragging.targetX;
+  const dy = dragging.y - dragging.targetY;
+
+  if (Math.abs(dx) < SNAP_DIST && Math.abs(dy) < SNAP_DIST) {
+    dragging.x = dragging.targetX;
+    dragging.y = dragging.targetY;
+    dragging.locked = true;
+    playSnap();
+
+    if (pieces.every(p => p.locked)) {
+      setTimeout(() => {
+        playWin();
+        const banner = document.getElementById('completeBanner');
+        banner.style.display = 'block';
+      }, 250);
+    }
+  }
+
+  dragging = null;
+  document.getElementById('canvasWrap').classList.remove('dragging');
+  render();
+}
+
+function attachEvents() {
+  canvas.addEventListener('mousedown',  onDown);
+  window.addEventListener('mousemove',  onMove);
+  window.addEventListener('mouseup',    onUp);
+  canvas.addEventListener('touchstart', onDown, { passive: false });
+  window.addEventListener('touchmove',  onMove, { passive: false });
+  window.addEventListener('touchend',   onUp);
+}
+
+// ─── VOICEOVER ────────────────────────────────────────────────────────────────
+document.getElementById('playBtn').addEventListener('click', () => {
+  const audio = document.getElementById('voiceover');
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+});
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+img = new Image();
+img.onload  = setup;
+img.onerror = () => alert('Could not load puzzle image. Make sure the dev server is running.');
+img.src = '/puzzle-solar-system.png';
+</script>
+</body>
+</html>
