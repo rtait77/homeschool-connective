@@ -503,7 +503,17 @@ function onMove(e) {
     canvas.style.cursor = pieceAt(x,y) ? 'grab' : 'default';
   }
 }
-function onUp() { if (!dragging) return; dragging = null; canvas.style.cursor = 'default'; }
+function onUp() {
+  if (!dragging) return;
+  const snapped = trySnap(dragging.groupId);
+  if (snapped) {
+    if (checkWin()) {
+      setTimeout(() => { playWin(); launchConfetti(); document.getElementById('resetBtn').classList.add('show'); }, 250);
+    }
+    render();
+  }
+  dragging = null; canvas.style.cursor = 'default';
+}
 function attachEvents() {
   canvas.addEventListener('mousedown',  onDown);
   window.addEventListener('mousemove',  onMove);
