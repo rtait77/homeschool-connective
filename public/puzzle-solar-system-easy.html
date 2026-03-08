@@ -58,6 +58,12 @@
     #playBtn:hover  { background: #d4623f; transform: scale(1.08); }
     #playBtn:active { transform: scale(0.95); }
     #playBtn svg    { width: 18px; height: 18px; fill: white; margin-left: 2px; }
+    #playBtn.playing { animation: voicePulse 1s ease-in-out infinite; }
+    #playBtn.playing svg { margin-left: 0; }
+    @keyframes voicePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(237,124,90,0.55); }
+      50%      { box-shadow: 0 0 0 10px rgba(237,124,90,0); }
+    }
 
     #musicBtn {
       background: #ed7c5a;
@@ -327,13 +333,14 @@ function trySnap(movedGID) {
 // ─── BOUNDS ───────────────────────────────────────────────────────────────────
 function clampGroup(gid, dx, dy) {
   const cw = canvas.width, ch = canvas.height;
-  const tab = Math.max(pieceW,pieceH)*TAB_BUMP;
+  const ox = pieceW * 0.30;  // at most 30% of piece width can go off canvas edge
+  const oy = pieceH * 0.30;  // at most 30% of piece height can go off canvas edge
   for (const i of groups[gid]) {
     const p = pieces[i];
-    if (p.x+dx < -tab)         dx = -tab - p.x;
-    if (p.x+dx+pieceW > cw+tab) dx = cw+tab - pieceW - p.x;
-    if (p.y+dy < -tab)         dy = -tab - p.y;
-    if (p.y+dy+pieceH > ch+tab) dy = ch+tab - pieceH - p.y;
+    if (p.x+dx < -ox)           dx = -ox - p.x;
+    if (p.x+dx+pieceW > cw+ox)  dx = cw+ox - pieceW - p.x;
+    if (p.y+dy < -oy)           dy = -oy - p.y;
+    if (p.y+dy+pieceH > ch+oy)  dy = ch+oy - pieceH - p.y;
   }
   return {dx, dy};
 }
@@ -536,8 +543,21 @@ function resetPuzzle() {
 document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
 
 // ─── VOICEOVER ────────────────────────────────────────────────────────────────
-document.getElementById('playBtn').addEventListener('click', () => {
-  const a = document.getElementById('voiceover'); a.currentTime=0; a.play().catch(()=>{});
+const voiceover = document.getElementById('voiceover');
+const playBtn   = document.getElementById('playBtn');
+const playIcon  = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+const stopIcon  = `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`;
+let voiceOn = false;
+
+function stopVoice() {
+  voiceover.pause(); voiceover.currentTime = 0;
+  voiceOn = false; playBtn.classList.remove('playing'); playBtn.innerHTML = playIcon;
+}
+voiceover.addEventListener('ended', stopVoice);
+
+playBtn.addEventListener('click', () => {
+  if (voiceOn) { stopVoice(); }
+  else { voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML = stopIcon; }
 });
 
 // ─── MUSIC ────────────────────────────────────────────────────────────────────
