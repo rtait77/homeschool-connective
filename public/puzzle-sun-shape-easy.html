@@ -41,34 +41,27 @@
     }
     .instructions-bar {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 0;
       margin-bottom: 16px;
       background: rgba(255,255,255,0.08);
-      border-radius: 50px;
-      padding: 10px 20px;
+      border-radius: 20px;
+      padding: 10px 16px;
       max-width: 640px;
       width: 100%;
     }
-    #playBtn {
-      background: #ed7c5a;
-      border: none;
-      border-radius: 50%;
-      width: 42px; height: 42px; min-width: 42px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.1s, background 0.15s;
+    .instr-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 0;
     }
-    #playBtn:hover  { background: #d4623f; transform: scale(1.08); }
-    #playBtn:active { transform: scale(0.95); }
-    #playBtn svg    { width: 18px; height: 18px; fill: white; margin-left: 2px; }
-    #playBtn.playing { animation: voicePulse 1s ease-in-out infinite; }
-    #playBtn.playing svg { margin-left: 0; }
-    @keyframes voicePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(237,124,90,0.55); }
-      50%      { box-shadow: 0 0 0 10px rgba(237,124,90,0); }
+    .instr-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 4px;
     }
-    #musicBtn {
+    .audio-btn {
       background: #ed7c5a;
       border: none;
       border-radius: 50%;
@@ -76,14 +69,34 @@
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: transform 0.1s, background 0.15s;
+      flex-shrink: 0;
+    }
+    .audio-btn:hover  { background: #d4623f; transform: scale(1.08); }
+    .audio-btn:active { transform: scale(0.95); }
+    .audio-btn svg    { width: 16px; height: 16px; fill: white; margin-left: 2px; }
+    .audio-btn.playing { animation: voicePulse 1s ease-in-out infinite; }
+    .audio-btn.playing svg { margin-left: 0; }
+    @keyframes voicePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(237,124,90,0.55); }
+      50%      { box-shadow: 0 0 0 8px rgba(237,124,90,0); }
+    }
+    #musicBtn {
+      background: #ed7c5a;
+      border: none;
+      border-radius: 50%;
+      width: 32px; height: 32px; min-width: 32px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.1s, background 0.15s;
       margin-left: auto;
+      flex-shrink: 0;
     }
     #musicBtn:hover { background: #d4623f; transform: scale(1.08); }
-    #musicBtn svg   { width: 18px; height: 18px; fill: white; }
+    #musicBtn svg   { width: 16px; height: 16px; fill: white; }
     #musicBtn.playing { background: #FFD700; }
     #musicBtn.playing svg { fill: #1c1c1c; }
     #musicBtn.playing:hover { background: #e6c200; }
-    .instructions-text { font-size: 0.92rem; color: #ddd; line-height: 1.45; }
+    .instr-text { font-size: 0.88rem; color: #ddd; line-height: 1.45; flex: 1; }
     #canvasWrap { position: relative; }
     canvas { display: block; touch-action: none; cursor: default; }
     #confettiCanvas {
@@ -120,13 +133,22 @@
 <h1>The Sun Puzzle</h1>
 
 <div class="instructions-bar">
-  <button id="playBtn" title="Play instructions">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-  </button>
-  <span class="instructions-text">Put the Sun back together! Drag the pieces and snap them into place.</span>
-  <button id="musicBtn" title="Toggle music">
-    <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
-  </button>
+  <div class="instr-row">
+    <button id="factBtn" class="audio-btn" title="Play fun fact">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <span class="instr-text">Did you know… The Sun is a yellow dwarf star. It is a gigantic, glowing ball of hot gases that gives us light and warmth every day.</span>
+  </div>
+  <div class="instr-divider"></div>
+  <div class="instr-row">
+    <button id="playBtn" class="audio-btn" title="Play instructions">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <span class="instr-text">Put the pieces back together! Drag and snap them into place.</span>
+    <button id="musicBtn" title="Toggle music">
+      <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+    </button>
+  </div>
 </div>
 
 <div id="canvasWrap">
@@ -137,8 +159,9 @@
   </button>
 </div>
 
-<audio id="voiceover" src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
-<audio id="bgMusic"   src="/puzzle-bg-music.mp3" loop    preload="auto"></audio>
+<audio id="factAudio"  src="/sun-fact-easy.mp3"        preload="auto"></audio>
+<audio id="voiceover" src="/puzzle-instructions.mp3"    preload="auto"></audio>
+<audio id="bgMusic"   src="/puzzle-bg-music.mp3" loop   preload="auto"></audio>
 
 <script>
 const ROWS = 2, COLS = 2;
@@ -512,20 +535,32 @@ function resetPuzzle() {
 document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
 
 // ─── VOICEOVER ────────────────────────────────────────────────────────────────
-const voiceover = document.getElementById('voiceover');
-const playBtn   = document.getElementById('playBtn');
-const playIcon  = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
-const stopIcon  = `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`;
-let voiceOn = false;
-function stopVoice() {
-  voiceover.pause(); voiceover.currentTime=0;
-  voiceOn=false; playBtn.classList.remove('playing'); playBtn.innerHTML=playIcon;
+const playIcon = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+const stopIcon = `<svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>`;
+
+function makeAudioBtn(btnId, audioEl) {
+  const btn = document.getElementById(btnId);
+  let on = false;
+  function stop() {
+    audioEl.pause(); audioEl.currentTime = 0;
+    on = false; btn.classList.remove('playing'); btn.innerHTML = playIcon;
+  }
+  audioEl.addEventListener('ended', stop);
+  btn.addEventListener('click', () => {
+    if (on) { stop(); return; }
+    // Stop all other audio buttons first
+    document.querySelectorAll('.audio-btn').forEach(b => {
+      if (b !== btn) b.dispatchEvent(new CustomEvent('forceStop'));
+    });
+    audioEl.volume = 0.6; audioEl.currentTime = 0;
+    audioEl.play().catch(() => {});
+    on = true; btn.classList.add('playing'); btn.innerHTML = stopIcon;
+  });
+  btn.addEventListener('forceStop', stop);
 }
-voiceover.addEventListener('ended', stopVoice);
-playBtn.addEventListener('click', () => {
-  if (voiceOn) { stopVoice(); }
-  else { voiceover.volume=0.6; voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML=stopIcon; }
-});
+
+makeAudioBtn('factBtn',  document.getElementById('factAudio'));
+makeAudioBtn('playBtn',  document.getElementById('voiceover'));
 
 // ─── MUSIC ────────────────────────────────────────────────────────────────────
 const bgMusic=document.getElementById('bgMusic'), musicBtn=document.getElementById('musicBtn');
