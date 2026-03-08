@@ -150,8 +150,8 @@
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 const ROWS = 3, COLS = 3;
-const SNAP_DIST = 28;
-const TAB_BUMP  = 0.27;
+const SNAP_DIST = 11;
+const TAB_BUMP  = 0.30;
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let canvas, ctx, img;
@@ -215,57 +215,46 @@ function checkWin() {
 }
 
 // ─── TAB GENERATION ───────────────────────────────────────────────────────────
+function randEdge() {
+  return {
+    dir: Math.random() < 0.5 ? 1 : -1,
+    pos: 0.36 + Math.random() * 0.28,   // tab centre: 36–64% along edge
+    bw:  0.13 + Math.random() * 0.08,   // half base-width: 0.13–0.21
+    nw:  0.07 + Math.random() * 0.05,   // half neck-width: 0.07–0.12
+    bh:  0.22 + Math.random() * 0.08,   // protrusion height: 0.22–0.30
+  };
+}
 function genTabs() {
   const h = [], v = [];
-  for (let r = 0; r < ROWS-1; r++) { h[r]=[]; for (let c=0;c<COLS;c++) h[r][c]=Math.random()<.5?1:-1; }
-  for (let r = 0; r < ROWS;   r++) { v[r]=[]; for (let c=0;c<COLS-1;c++) v[r][c]=Math.random()<.5?1:-1; }
+  for (let r = 0; r < ROWS-1; r++) { h[r]=[]; for (let c=0;c<COLS;c++) h[r][c]=randEdge(); }
+  for (let r = 0; r < ROWS;   r++) { v[r]=[]; for (let c=0;c<COLS-1;c++) v[r][c]=randEdge(); }
   return {h,v};
 }
 function pieceTabs(r, c, {h,v}) {
+  const flip = e => e ? {...e, dir:-e.dir} : null;
   return {
-    top:    r===0      ? 0 : -h[r-1][c],
-    bottom: r===ROWS-1 ? 0 :  h[r][c],
-    left:   c===0      ? 0 : -v[r][c-1],
-    right:  c===COLS-1 ? 0 :  v[r][c],
+    top:    r===0      ? null : flip(h[r-1][c]),
+    bottom: r===ROWS-1 ? null : h[r][c],
+    left:   c===0      ? null : flip(v[r][c-1]),
+    right:  c===COLS-1 ? null : v[r][c],
   };
 }
 
 // ─── JIGSAW PATH ──────────────────────────────────────────────────────────────
-function jigsawEdge(c2, x1, y1, x2, y2, type) {
-  if (type === 0) { c2.lineTo(x2, y2); return; }
+function jigsawEdge(c2, x1, y1, x2, y2, edge) {
+  if (!edge) { c2.lineTo(x2, y2); return; }
+  const { dir, pos, bw, nw, bh } = edge;
   const ddx = x2-x1, ddy = y2-y1, len = Math.sqrt(ddx*ddx+ddy*ddy);
-  const ex = ddx/len, ey = ddy/len;       // unit along edge
-  const nx = ey*type, ny = -ex*type;      // outward unit normal × direction
-  // point at fraction t along edge, offset h outward (as fraction of len)
+  const ex = ddx/len, ey = ddy/len;
+  const nx = ey*dir,  ny = -ex*dir;
   const p = (t, h) => [x1+ex*len*t+nx*len*h, y1+ey*len*t+ny*len*h];
+  const NH = 0.05; // neck height (fixed proportion)
 
-  // Realistic jigsaw tab proportions
-  const BW = 0.17;  // half tab-base width
-  const NW = 0.09;  // half neck width (narrower = more realistic)
-  const BH = 0.26;  // tab protrusion height
-  const NH = 0.05;  // neck height before bulge
-
-  c2.lineTo(...p(0.5-BW, 0));                        // base left
-  c2.bezierCurveTo(
-    ...p(0.5-BW,       NH*0.3),                      // lift off
-    ...p(0.5-NW,       NH*0.9),                      // narrow into neck
-    ...p(0.5-NW,       NH)                           // neck top-left
-  );
-  c2.bezierCurveTo(
-    ...p(0.5-NW,       BH*0.62),                     // shoot upward
-    ...p(0.5-BW*0.65,  BH),                          // spread to tab top-left
-    ...p(0.5,          BH)                           // tab top centre
-  );
-  c2.bezierCurveTo(
-    ...p(0.5+BW*0.65,  BH),                          // tab top-right
-    ...p(0.5+NW,       BH*0.62),                     // come back down
-    ...p(0.5+NW,       NH)                           // neck top-right
-  );
-  c2.bezierCurveTo(
-    ...p(0.5+NW,       NH*0.9),                      // out of neck
-    ...p(0.5+BW,       NH*0.3),                      // back toward base
-    ...p(0.5+BW,       0)                            // base right
-  );
+  c2.lineTo(...p(pos-bw, 0));
+  c2.bezierCurveTo(...p(pos-bw, NH*0.3), ...p(pos-nw, NH*0.9), ...p(pos-nw, NH));
+  c2.bezierCurveTo(...p(pos-nw, bh*0.62), ...p(pos-bw*0.65, bh), ...p(pos, bh));
+  c2.bezierCurveTo(...p(pos+bw*0.65, bh), ...p(pos+nw, bh*0.62), ...p(pos+nw, NH));
+  c2.bezierCurveTo(...p(pos+nw, NH*0.9), ...p(pos+bw, NH*0.3), ...p(pos+bw, 0));
   c2.lineTo(x2, y2);
 }
 function makePath(c2, pw, ph, tabs) {
