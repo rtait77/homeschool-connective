@@ -349,7 +349,7 @@ export default function GamesPage() {
 
 function GameCard({ game, hasAccess, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, isFavorited: boolean, onToggleFavorite: () => void }) {
   return (
-    <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+    <div className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5]" style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}>
       <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
         {game.mini && (
