@@ -381,7 +381,7 @@ function trySnap(movedGID) {
 // ─── CLAMP ────────────────────────────────────────────────────────────────────
 function clampGroup(gid, dx, dy) {
   const cw = canvas.width, ch = canvas.height;
-  const ox = pieceW * 0.30, oy = pieceH * 0.30;
+  const ox = pieceW * 0.70, oy = pieceH * 0.70;
   for (const i of groups[gid]) {
     const p = pieces[i];
     if (p.x+dx < -ox)          dx = -ox - p.x;
@@ -430,21 +430,15 @@ function setup() {
   ctx    = canvas.getContext('2d');
 
   const headerH = document.getElementById('header').offsetHeight;
-  const availW = window.innerWidth;
-  const availH = window.innerHeight - headerH;
 
-  // Canvas = board + 2 * (pieceSize * padding). Keep padding small so board fills the space.
-  const pad = 0.18;
-  const canvasRatio = 1 + pad * 2 / ROWS; // ~1.18 for ROWS=2
-  const maxSide = Math.floor(Math.min(availW, availH) / canvasRatio * 0.99);
-  boardW = boardH = maxSide;
+  // Canvas fills the full viewport — edge to edge, giving maximum drag space
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight - headerH;
+
+  // Board is 65% of the smaller canvas dimension so pieces have room to scatter
+  boardW = boardH = Math.floor(Math.min(canvas.width, canvas.height) * 0.65);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
-
-  const bW = Math.ceil(pieceW * pad);
-  const bH = Math.ceil(pieceH * pad);
-  canvas.width  = boardW + 2*bW;
-  canvas.height = boardH + 2*bH;
 
   const cc = document.getElementById('confettiCanvas');
   cc.width = canvas.width; cc.height = canvas.height;
