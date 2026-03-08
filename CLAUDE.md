@@ -74,9 +74,10 @@ stripe listen --forward-to localhost:3000/api/webhook
 
 ## Database (Supabase)
 
-Key table: `public.profiles` — extends `auth.users`
-Key fields: `subscription_status`, `trial_started_at`, `trial_ends_at`, `stripe_customer_id`
-Access logic: user has access if `subscription_status = 'active'` OR `trial_ends_at > now()`
+Key tables: `public.profiles` (extends `auth.users`), `public.favorites`
+Key profile fields: `subscription_status`, `trial_end`, `stripe_customer_id`
+`subscription_status` allowed values: `free` | `trialing` | `active` | `canceled` | `inactive`
+Access logic: user has access if `subscription_status = 'active'` OR `trial_end > now()`
 
 ## Design System
 
