@@ -145,14 +145,13 @@
 </div>
 
 <audio id="voiceover"  src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
-<audio id="snapSound"  src="/puzzle-snap.mp3"              preload="auto"></audio>
 <audio id="bgMusic"    src="/puzzle-bg-music.mp3" loop     preload="auto"></audio>
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 const ROWS = 3, COLS = 3;
 const SNAP_DIST = 28;
-const TAB_BUMP  = 0.14;
+const TAB_BUMP  = 0.27;
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let canvas, ctx, img;
@@ -171,7 +170,17 @@ function getAC() {
   return audioCtx;
 }
 function playSnap() {
-  try { const s = document.getElementById('snapSound'); s.currentTime = 0; s.play().catch(()=>{}); } catch(e){}
+  try {
+    const ac = getAC();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(520, ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(260, ac.currentTime + 0.07);
+    g.gain.setValueAtTime(0.28, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.14);
+    o.start(ac.currentTime); o.stop(ac.currentTime + 0.14);
+  } catch(e) {}
 }
 function playWin() {
   try {
@@ -223,18 +232,41 @@ function pieceTabs(r, c, {h,v}) {
 
 // ─── JIGSAW PATH ──────────────────────────────────────────────────────────────
 function jigsawEdge(c2, x1, y1, x2, y2, type) {
-  if (type===0) { c2.lineTo(x2,y2); return; }
-  const dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
-  const px=dy/len, py=-dx/len;
-  const hh=len*TAB_BUMP*type;
-  const A=.30,B=.42,M=.50,D=.58,E=.70;
-  const ax=x1+dx*A,ay=y1+dy*A, bx=x1+dx*B,by=y1+dy*B;
-  const mx=x1+dx*M,my=y1+dy*M, dx2=x1+dx*D,dy2=y1+dy*D;
-  const ex=x1+dx*E,ey=y1+dy*E;
-  c2.lineTo(ax,ay);
-  c2.bezierCurveTo(ax+px*hh*.3,ay+py*hh*.3, bx+px*hh,by+py*hh, mx+px*hh*1.1,my+py*hh*1.1);
-  c2.bezierCurveTo(dx2+px*hh,dy2+py*hh, ex+px*hh*.3,ey+py*hh*.3, ex,ey);
-  c2.lineTo(x2,y2);
+  if (type === 0) { c2.lineTo(x2, y2); return; }
+  const ddx = x2-x1, ddy = y2-y1, len = Math.sqrt(ddx*ddx+ddy*ddy);
+  const ex = ddx/len, ey = ddy/len;       // unit along edge
+  const nx = ey*type, ny = -ex*type;      // outward unit normal × direction
+  // point at fraction t along edge, offset h outward (as fraction of len)
+  const p = (t, h) => [x1+ex*len*t+nx*len*h, y1+ey*len*t+ny*len*h];
+
+  // Realistic jigsaw tab proportions
+  const BW = 0.17;  // half tab-base width
+  const NW = 0.09;  // half neck width (narrower = more realistic)
+  const BH = 0.26;  // tab protrusion height
+  const NH = 0.05;  // neck height before bulge
+
+  c2.lineTo(...p(0.5-BW, 0));                        // base left
+  c2.bezierCurveTo(
+    ...p(0.5-BW,       NH*0.3),                      // lift off
+    ...p(0.5-NW,       NH*0.9),                      // narrow into neck
+    ...p(0.5-NW,       NH)                           // neck top-left
+  );
+  c2.bezierCurveTo(
+    ...p(0.5-NW,       BH*0.62),                     // shoot upward
+    ...p(0.5-BW*0.65,  BH),                          // spread to tab top-left
+    ...p(0.5,          BH)                           // tab top centre
+  );
+  c2.bezierCurveTo(
+    ...p(0.5+BW*0.65,  BH),                          // tab top-right
+    ...p(0.5+NW,       BH*0.62),                     // come back down
+    ...p(0.5+NW,       NH)                           // neck top-right
+  );
+  c2.bezierCurveTo(
+    ...p(0.5+NW,       NH*0.9),                      // out of neck
+    ...p(0.5+BW,       NH*0.3),                      // back toward base
+    ...p(0.5+BW,       0)                            // base right
+  );
+  c2.lineTo(x2, y2);
 }
 function makePath(c2, pw, ph, tabs) {
   c2.beginPath(); c2.moveTo(0,0);
@@ -379,8 +411,8 @@ function setup() {
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
-  const bW = Math.ceil(pieceW * 1.15);
-  const bH = Math.ceil(pieceH * 1.15);
+  const bW = Math.ceil(pieceW * 1.40);
+  const bH = Math.ceil(pieceH * 1.40);
   canvas.width  = boardW + 2*bW;
   canvas.height = boardH + 2*bH;
   canvas._bW = bW;
