@@ -61,6 +61,15 @@ const games = [
     types: ['puzzle'],
   },
   {
+    title: 'The Sun Puzzle – Easy',
+    desc: 'Put the Sun back together in this beginner-friendly jigsaw puzzle. Drag and snap the pieces into place!',
+    thumb: '/thumb-sun-puzzle-easy.png',
+    url: '/puzzle-solar-system-easy.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['puzzle'],
+  },
+  {
     title: 'Dwarf Planets Word Search',
     desc: 'Hunt for the names of dwarf planets hidden in the grid. How many can you find?',
     thumb: '/thumb-word-search.png',
