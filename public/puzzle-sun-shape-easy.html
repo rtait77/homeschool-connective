@@ -468,11 +468,11 @@ function getPos(e) {
 }
 function onDown(e) {
   e.preventDefault();
-  // Play a silent sound on first touch so iOS unlocks audio for the whole session
+  // Play a 1-frame silent buffer — the only technique iOS reliably accepts as an audio unlock
   const ac = getAC();
-  const g = ac.createGain(); g.gain.value = 0;
-  const o = ac.createOscillator(); o.connect(g); g.connect(ac.destination);
-  o.start(); o.stop(ac.currentTime + 0.001);
+  const buf = ac.createBuffer(1, 1, 22050);
+  const src = ac.createBufferSource();
+  src.buffer = buf; src.connect(ac.destination); src.start(0);
   const {x,y} = getPos(e);
   const piece = pieceAt(x,y);
   if (!piece) return;
