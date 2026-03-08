@@ -236,7 +236,10 @@ function mergeGroups(idA, idB) {
   groups[idB].forEach(i => { pieces[i].groupId = idA; groups[idA].add(i); });
   delete groups[idB];
 }
-function checkWin() { return Object.keys(groups).length === 1; }
+function checkWin() {
+  const gids = new Set(pieces.filter(p => !p.invisible).map(p => p.groupId));
+  return gids.size === 1;
+}
 
 // ─── TABS ─────────────────────────────────────────────────────────────────────
 function randEdge() {
@@ -454,6 +457,11 @@ function setup() {
     createGroup(idx);
   }
   pieces.forEach(preRenderPiece);
+  // Mark fully-transparent pieces (outside the sun's shape) so they don't block the win condition
+  pieces.forEach(p => {
+    const d = p.offscreen.getContext('2d').getImageData(0, 0, p.offscreen.width, p.offscreen.height).data;
+    p.invisible = !Array.from({length: d.length/4}, (_,i) => d[i*4+3]).some(a => a > 10);
+  });
   scatter();
   render();
   attachEvents();
