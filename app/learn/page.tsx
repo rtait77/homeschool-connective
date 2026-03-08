@@ -71,6 +71,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'The Sun Puzzle – Easy (v2)',
+    desc: 'Same puzzle, different piece style — the sun\'s own shape shows through the pieces. Which do you prefer?',
+    thumb: '/thumb-sun-circle-easy.png',
+    url: '/puzzle-sun-shape-easy.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['puzzle'],
+    newTab: false,
+  },
+  {
     title: 'Dwarf Planets Word Search',
     desc: 'Hunt for the names of dwarf planets hidden in the grid. How many can you find?',
     thumb: '/thumb-word-search.png',
