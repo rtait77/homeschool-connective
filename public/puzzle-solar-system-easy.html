@@ -160,33 +160,15 @@ function playSnap() {
     const ac = getAC();
     const t = ac.currentTime;
 
-    // Deep thud — low sine punch
-    const thud = ac.createOscillator(), thudGain = ac.createGain();
-    thud.type = 'sine';
-    thud.frequency.setValueAtTime(120, t);
-    thud.frequency.exponentialRampToValueAtTime(40, t + 0.18);
-    thudGain.gain.setValueAtTime(0.5, t);
-    thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-    thud.connect(thudGain); thudGain.connect(ac.destination);
-    thud.start(t); thud.stop(t + 0.18);
-
-    // Shimmer — high filtered noise that fades
-    const bufSize = ac.sampleRate * 0.3;
-    const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1);
-    const noise = ac.createBufferSource();
-    noise.buffer = buf;
-    const filter = ac.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.setValueAtTime(2800, t);
-    filter.frequency.exponentialRampToValueAtTime(800, t + 0.3);
-    filter.Q.value = 2.5;
-    const shimmerGain = ac.createGain();
-    shimmerGain.gain.setValueAtTime(0.18, t + 0.02);
-    shimmerGain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-    noise.connect(filter); filter.connect(shimmerGain); shimmerGain.connect(ac.destination);
-    noise.start(t + 0.02); noise.stop(t + 0.3);
+    // Laser blip — quick descending zap
+    const osc = ac.createOscillator(), gain = ac.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(1200, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.12);
+    gain.gain.setValueAtTime(0.25, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.connect(gain); gain.connect(ac.destination);
+    osc.start(t); osc.stop(t + 0.12);
   } catch(e) {}
 }
 
