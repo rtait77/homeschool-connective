@@ -194,6 +194,7 @@ let audioCtx = null;
 // ─── AUDIO ────────────────────────────────────────────────────────────────────
 function getAC() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
   return audioCtx;
 }
 function playSnap() {
@@ -467,6 +468,7 @@ function getPos(e) {
 }
 function onDown(e) {
   e.preventDefault();
+  getAC(); // unlock AudioContext on first touch (required on iOS)
   const {x,y} = getPos(e);
   const piece = pieceAt(x,y);
   if (!piece) return;
