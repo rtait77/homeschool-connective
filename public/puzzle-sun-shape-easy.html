@@ -468,11 +468,13 @@ function getPos(e) {
 }
 function onDown(e) {
   e.preventDefault();
-  // Play a 1-frame silent buffer — the only technique iOS reliably accepts as an audio unlock
+  // Unlock iOS audio: resume first, then play silent buffer once engine is running
   const ac = getAC();
-  const buf = ac.createBuffer(1, 1, 22050);
-  const src = ac.createBufferSource();
-  src.buffer = buf; src.connect(ac.destination); src.start(0);
+  ac.resume().then(() => {
+    const buf = ac.createBuffer(1, 1, 22050);
+    const src = ac.createBufferSource();
+    src.buffer = buf; src.connect(ac.destination); src.start(0);
+  }).catch(() => {});
   const {x,y} = getPos(e);
   const piece = pieceAt(x,y);
   if (!piece) return;
