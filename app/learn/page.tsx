@@ -360,7 +360,7 @@ function GameCard({ game, hasAccess, isFavorited, onToggleFavorite }: { game: ty
       </div>
       <div className="p-5 flex flex-col flex-1">
         <p className="font-extrabold text-base mb-2">{game.title}</p>
-        <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
+        {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
         {hasAccess ? (
           <div className="mt-4 flex gap-2">
             <a href={game.url} {...(game.newTab === false ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
