@@ -348,19 +348,23 @@ function render() {
 
 // ─── SCATTER ──────────────────────────────────────────────────────────────────
 function scatter() {
-  const trayTop = boardY + boardH + 28;
-  const cw = canvas.width;
+  const cw = canvas.width, ch = canvas.height;
   const shuffled = [...pieces].sort(() => Math.random() - 0.5);
-  const colCount  = COLS;
-  const slotW = (cw - 20) / colCount;
 
   shuffled.forEach((piece, i) => {
-    const col = i % colCount;
-    const row = Math.floor(i / colCount);
-    const baseX = 10 + col * slotW + (slotW - pieceW) * 0.5;
-    const baseY = trayTop + row * (pieceH + 20);
-    piece.x = Math.max(5, Math.min(cw - pieceW - 5, baseX + (Math.random() - 0.5) * slotW * 0.2));
-    piece.y = baseY + Math.random() * 12;
+    // Place randomly within canvas, but not sitting exactly on target
+    let x, y, tries = 0;
+    do {
+      x = Math.random() * (cw - pieceW - 10) + 5;
+      y = Math.random() * (ch - pieceH - 10) + 5;
+      tries++;
+    } while (
+      tries < 30 &&
+      Math.abs(x - piece.targetX) < pieceW * 0.6 &&
+      Math.abs(y - piece.targetY) < pieceH * 0.6
+    );
+    piece.x = x;
+    piece.y = y;
     piece.zIndex = i;
   });
 }
@@ -370,21 +374,16 @@ function setup() {
   canvas = document.getElementById('gameCanvas');
   ctx    = canvas.getContext('2d');
 
-  const aspect   = img.naturalWidth / img.naturalHeight;
-  const maxW     = Math.min(window.innerWidth - 32, 860);
-  // Size board so board + 2 tray rows + header (~140px) fits in viewport
-  // boardH + 2*(boardH/ROWS) + 80 <= window.innerHeight - 140
-  const availH   = window.innerHeight - 150;
-  const maxBoardH = (availH - 80) / (1 + 2 / ROWS);
-  const maxBoardFromW = maxW / aspect;
-  boardH = Math.floor(Math.min(maxBoardH, maxBoardFromW));
+  const aspect    = img.naturalWidth / img.naturalHeight;
+  const maxW      = Math.min(window.innerWidth - 32, 860);
+  const availH    = window.innerHeight - 150;
+  boardH = Math.floor(Math.min(availH - 20, maxW / aspect));
   boardW = Math.floor(boardH * aspect);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
-  const trayRows = Math.ceil((ROWS * COLS) / COLS);
   canvas.width  = boardW + 20;
-  canvas.height = boardH + trayRows * (pieceH + 20) + 60;
+  canvas.height = boardH + 20;
   boardX = 10;
   boardY = 10;
 
