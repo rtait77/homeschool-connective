@@ -130,7 +130,7 @@
 <body>
 
 <a id="backBtn" href="/learn">← Back to Games</a>
-<h1>The Sun Puzzle</h1>
+<h1>The Sun Puzzle – Easy</h1>
 
 <div class="instructions-bar">
   <div class="instr-row">
@@ -412,32 +412,25 @@ function setup() {
   canvas = document.getElementById('gameCanvas');
   ctx    = canvas.getContext('2d');
 
-  const availW = Math.min(window.innerWidth - 16, 1200);
-  const availH = window.innerHeight - 120;
-  const BR = 0.17;
-  const maxSide = Math.min(availW * (1-2*BR), availH * (1-2*BR));
-  boardW = boardH = Math.floor(maxSide);
+  const availW = Math.min(window.innerWidth - 32, 1200);
+  const availH = window.innerHeight - 220; // account for header, title, instructions bar
+
+  // Canvas = board + 2 * (pieceSize * padding). For ROWS=COLS=2 with padding=0.50:
+  // canvas = board * 1.50. Size board so the canvas fits the viewport.
+  const pad = 0.50;
+  const canvasRatio = 1 + pad * 2 / ROWS; // 1.50 for ROWS=2
+  const maxSide = Math.floor(Math.min(availW, availH) / canvasRatio * 0.97);
+  boardW = boardH = maxSide;
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
-  const bW = Math.ceil(pieceW * 1.40);
-  const bH = Math.ceil(pieceH * 1.40);
+  const bW = Math.ceil(pieceW * pad);
+  const bH = Math.ceil(pieceH * pad);
   canvas.width  = boardW + 2*bW;
   canvas.height = boardH + 2*bH;
 
   const cc = document.getElementById('confettiCanvas');
   cc.width = canvas.width; cc.height = canvas.height;
-
-  // Scale canvas display to fit on screen (canvas pixel size is larger than the board due to tab padding)
-  const maxDispW = window.innerWidth - 32;
-  const maxDispH = window.innerHeight - 200;
-  const dispScale = Math.min(1, maxDispW / canvas.width, maxDispH / canvas.height);
-  const dispW = Math.round(canvas.width  * dispScale);
-  const dispH = Math.round(canvas.height * dispScale);
-  canvas.style.width  = dispW + 'px';
-  canvas.style.height = dispH + 'px';
-  cc.style.width  = dispW + 'px';
-  cc.style.height = dispH + 'px';
 
   analyzeImage();
 
