@@ -225,14 +225,18 @@ function jigsawEdge(c2, x1, y1, x2, y2, edge) {
   const ex = ddx/len, ey = ddy/len;
   const nx = ey*dir, ny = -ex*dir;
   const p = (t, h) => [x1+ex*len*t+nx*len*h, y1+ey*len*t+ny*len*h];
-  const k = 0.552, nh = bh*0.30, R = bh-nh, nw = R*0.52;
-  c2.lineTo(...p(pos-nw, 0));
-  c2.lineTo(...p(pos-nw, nh));
-  c2.lineTo(...p(pos-R,  nh));
-  c2.bezierCurveTo(...p(pos-R, nh+R*k), ...p(pos-R*k, bh), ...p(pos, bh));
-  c2.bezierCurveTo(...p(pos+R*k, bh),   ...p(pos+R, nh+R*k), ...p(pos+R, nh));
-  c2.lineTo(...p(pos+nw, nh));
-  c2.lineTo(...p(pos+nw, 0));
+
+  // Classic knob: narrow stem with smooth S-curves into a round head, no straight shoulders
+  const k  = 0.552;
+  const sw = bh * 0.14;  // stem half-width
+  const R  = bh * 0.38;  // knob head radius
+  const nh = bh - R;     // height where knob head starts
+
+  c2.lineTo(...p(pos - sw, 0));
+  c2.bezierCurveTo(...p(pos - sw, nh * 0.5), ...p(pos - R, nh * 0.7), ...p(pos - R, nh));
+  c2.bezierCurveTo(...p(pos - R, nh + R*k),  ...p(pos - R*k, bh),     ...p(pos, bh));
+  c2.bezierCurveTo(...p(pos + R*k, bh),      ...p(pos + R, nh + R*k), ...p(pos + R, nh));
+  c2.bezierCurveTo(...p(pos + R, nh * 0.7),  ...p(pos + sw, nh * 0.5),...p(pos + sw, 0));
   c2.lineTo(x2, y2);
 }
 
