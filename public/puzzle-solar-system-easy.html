@@ -216,12 +216,10 @@ function checkWin() {
 
 // ─── TAB GENERATION ───────────────────────────────────────────────────────────
 function randEdge() {
-  const bw = 0.17 + Math.random() * 0.06;  // half base-width: 0.17–0.23
   return {
     dir: Math.random() < 0.5 ? 1 : -1,
-    pos: 0.36 + Math.random() * 0.28,       // tab centre: 36–64% along edge
-    bw,
-    bh: bw * (0.9 + Math.random() * 0.25),  // height ≈ width → circular tab
+    pos: 0.36 + Math.random() * 0.28,   // tab centre: 36–64% along edge
+    bh:  0.20 + Math.random() * 0.08,   // protrusion height: 20–28% of edge length
   };
 }
 function genTabs() {
@@ -231,7 +229,8 @@ function genTabs() {
   return {h,v};
 }
 function pieceTabs(r, c, {h,v}) {
-  const flip = e => e ? {...e, dir:-e.dir} : null;
+  // flip: invert dir AND mirror pos so the tab/indent always line up
+  const flip = e => e ? {...e, dir:-e.dir, pos:1-e.pos} : null;
   return {
     top:    r===0      ? null : flip(h[r-1][c]),
     bottom: r===ROWS-1 ? null : h[r][c],
@@ -243,21 +242,24 @@ function pieceTabs(r, c, {h,v}) {
 // ─── JIGSAW PATH ──────────────────────────────────────────────────────────────
 function jigsawEdge(c2, x1, y1, x2, y2, edge) {
   if (!edge) { c2.lineTo(x2, y2); return; }
-  const { dir, pos, bw, bh } = edge;
-  const nw = bw * 0.78;  // neck is only slightly narrower than base — gentle taper, not a finger
+  const { dir, pos, bh } = edge;
   const ddx = x2-x1, ddy = y2-y1, len = Math.sqrt(ddx*ddx+ddy*ddy);
   const ex = ddx/len, ey = ddy/len;
   const nx = ey*dir, ny = -ex*dir;
   const p = (t, h) => [x1+ex*len*t+nx*len*h, y1+ey*len*t+ny*len*h];
 
-  c2.lineTo(...p(pos-bw, 0));
-  // Gentle curve into neck
-  c2.bezierCurveTo(...p(pos-bw, bh*0.12), ...p(pos-nw, bh*0.22), ...p(pos-nw, bh*0.30));
-  // Sweep up and over the dome (round top)
-  c2.bezierCurveTo(...p(pos-nw, bh*0.82), ...p(pos-bw*0.55, bh), ...p(pos, bh));
-  c2.bezierCurveTo(...p(pos+bw*0.55, bh), ...p(pos+nw, bh*0.82), ...p(pos+nw, bh*0.30));
-  // Gentle curve out of neck back to edge
-  c2.bezierCurveTo(...p(pos+nw, bh*0.22), ...p(pos+bw, bh*0.12), ...p(pos+bw, 0));
+  const k  = 0.552;       // bezier magic number — approximates a quarter-circle
+  const nh = bh * 0.30;   // neck height (30% of total)
+  const R  = bh - nh;     // dome radius — circle sits from nh up to bh
+  const nw = R * 0.52;    // neck half-width (narrower than dome for classic jigsaw look)
+
+  c2.lineTo(...p(pos - nw, 0));                                                       // neck base
+  c2.lineTo(...p(pos - nw, nh));                                                      // neck top-left
+  c2.lineTo(...p(pos - R,  nh));                                                      // shoulder extends out to dome
+  c2.bezierCurveTo(...p(pos-R, nh+R*k), ...p(pos-R*k, bh), ...p(pos,   bh));        // left quarter-circle up
+  c2.bezierCurveTo(...p(pos+R*k, bh),   ...p(pos+R, nh+R*k), ...p(pos+R,  nh));     // right quarter-circle down
+  c2.lineTo(...p(pos + nw, nh));                                                      // shoulder back to neck
+  c2.lineTo(...p(pos + nw, 0));                                                       // neck base
   c2.lineTo(x2, y2);
 }
 function makePath(c2, pw, ph, tabs) {
@@ -389,8 +391,8 @@ function setup() {
   ctx    = canvas.getContext('2d');
 
   const aspect = img.naturalWidth / img.naturalHeight;
-  const availW = Math.min(window.innerWidth - 32, 1100);
-  const availH = window.innerHeight - 150;
+  const availW = Math.min(window.innerWidth - 16, 1200);
+  const availH = window.innerHeight - 120;
   const BR = 0.22; // border ratio each side
 
   const maxBoardW  = availW * (1 - 2*BR);
