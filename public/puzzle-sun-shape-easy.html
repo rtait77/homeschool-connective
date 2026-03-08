@@ -435,8 +435,8 @@ function setup() {
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight - headerH;
 
-  // Board is 85% of the smaller canvas dimension (as large as possible with scatter room)
-  boardW = boardH = Math.floor(Math.min(canvas.width, canvas.height) * 0.85);
+  // Board is 72% of the smaller canvas dimension — leaves room around edges to drag pieces
+  boardW = boardH = Math.floor(Math.min(canvas.width, canvas.height) * 0.72);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
