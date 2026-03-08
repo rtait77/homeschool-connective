@@ -110,6 +110,7 @@
       justify-content: center;
       transition: background 0.15s, border-color 0.15s;
       animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation-fill-mode: forwards;
     }
     #resetBtn.show { display: flex; }
     #resetBtn:hover  { background: rgba(237,124,90,0.85); border-color: white; }
@@ -432,6 +433,16 @@ function onMove(e) {
     ({dx, dy} = clampGroup(dragging.groupId, dx, dy));
     groups[dragging.groupId].forEach(i => { pieces[i].x += dx; pieces[i].y += dy; });
     dragLastX = x; dragLastY = y;
+    const snapped = trySnap(dragging.groupId);
+    if (snapped && checkWin()) {
+      setTimeout(() => {
+        playWin();
+        launchConfetti();
+        document.getElementById('resetBtn').classList.add('show');
+      }, 250);
+      dragging = null;
+      canvas.style.cursor = 'default';
+    }
     render();
   } else {
     canvas.style.cursor = pieceAt(x,y) ? 'grab' : 'default';
@@ -440,15 +451,6 @@ function onMove(e) {
 
 function onUp() {
   if (!dragging) return;
-  trySnap(dragging.groupId);
-  render();
-  if (checkWin()) {
-    setTimeout(() => {
-      playWin();
-      launchConfetti();
-      document.getElementById('resetBtn').classList.add('show');
-    }, 250);
-  }
   dragging = null;
   canvas.style.cursor = 'default';
 }
