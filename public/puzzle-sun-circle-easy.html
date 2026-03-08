@@ -572,7 +572,7 @@ function stopVoice() {
 voiceover.addEventListener('ended', stopVoice);
 playBtn.addEventListener('click', () => {
   if (voiceOn) { stopVoice(); }
-  else { voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML = stopIcon; }
+  else { voiceover.volume=0.6; voiceover.currentTime=0; voiceover.play().catch(()=>{}); voiceOn=true; playBtn.classList.add('playing'); playBtn.innerHTML = stopIcon; }
 });
 
 // ─── MUSIC ────────────────────────────────────────────────────────────────────

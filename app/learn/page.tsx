@@ -62,16 +62,6 @@ const games = [
   },
   {
     title: 'The Sun Puzzle – Easy',
-    desc: 'Put the Sun back together in this beginner-friendly jigsaw puzzle. Drag and snap the pieces into place!',
-    thumb: '/thumb-sun-puzzle-easy.png',
-    url: '/puzzle-solar-system-easy.html',
-    topic: 'solar-system',
-    mini: true,
-    types: ['puzzle'],
-    newTab: false,
-  },
-  {
-    title: 'Sun Circle Puzzle – Easy',
     desc: 'A fun circular jigsaw — put the Sun back together in 4 pieces. Perfect for little space explorers!',
     thumb: '/thumb-sun-circle-easy.png',
     url: '/puzzle-sun-circle-easy.html',
