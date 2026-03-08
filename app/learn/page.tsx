@@ -73,7 +73,7 @@ const games = [
   {
     title: 'The Sun Puzzle – Medium',
     desc: 'A 9-piece sun jigsaw — can you put it back together and learn a new fact along the way?',
-    thumb: '/The Sun with background.png',
+    thumb: '/the-sun-with-background.png',
     url: '/puzzle-sun-medium.html',
     topic: 'solar-system',
     mini: true,
@@ -83,7 +83,7 @@ const games = [
   {
     title: 'The Sun Puzzle – Hard',
     desc: 'Think you know the Sun? Take on the 16-piece challenge and test your skills!',
-    thumb: '/The Sun with background.png',
+    thumb: '/the-sun-with-background.png',
     url: '/puzzle-sun-hard.html',
     topic: 'solar-system',
     mini: true,
