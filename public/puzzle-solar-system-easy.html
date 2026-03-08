@@ -86,31 +86,37 @@
     #canvasWrap { position: relative; }
     canvas { display: block; touch-action: none; cursor: default; }
 
-    #completeBanner {
+    #confettiCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #resetBtn {
       display: none;
       position: absolute;
-      top: 38%;
+      bottom: 18%;
       left: 50%;
-      transform: translateX(-50%) scale(0);
-      background: rgba(5, 10, 26, 0.93);
-      border: 2px solid #FFD700;
-      border-radius: 20px;
-      padding: 18px 36px;
-      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      transform: translateX(-50%);
+      background: #ed7c5a;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 32px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
       font-weight: 800;
-      color: #FFD700;
-      text-align: center;
-      white-space: nowrap;
-      z-index: 10;
-      pointer-events: none;
-      animation: none;
+      cursor: pointer;
+      z-index: 11;
+      transition: transform 0.1s, background 0.15s;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
-    #completeBanner.show {
-      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
+    #resetBtn:hover  { background: #d4623f; transform: translateX(-50%) scale(1.05); }
+    #resetBtn:active { transform: translateX(-50%) scale(0.97); }
     @keyframes popIn {
-      0%   { transform: translateX(-50%) scale(0.4); opacity: 0; }
-      100% { transform: translateX(-50%) scale(1);   opacity: 1; }
+      0%   { opacity: 0; transform: translateX(-50%) scale(0.5); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
     }
   </style>
 </head>
@@ -130,7 +136,8 @@
 
 <div id="canvasWrap">
   <canvas id="gameCanvas"></canvas>
-  <div id="completeBanner">Great job! You solved the puzzle!</div>
+  <canvas id="confettiCanvas"></canvas>
+  <button id="resetBtn">Play Again</button>
 </div>
 
 <audio id="voiceover" src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
@@ -397,6 +404,11 @@ function setup() {
     }
   }
 
+  // Size confetti canvas to match
+  const cc = document.getElementById('confettiCanvas');
+  cc.width  = canvas.width;
+  cc.height = canvas.height;
+
   scatter();
   render();
   attachEvents();
@@ -453,10 +465,8 @@ function onUp() {
     if (pieces.every(p => p.locked)) {
       setTimeout(() => {
         playWin();
-        const banner = document.getElementById('completeBanner');
-        banner.style.display = 'block';
-        requestAnimationFrame(() => banner.classList.add('show'));
-        // Play great job voiceover after win jingle
+        launchConfetti();
+        document.getElementById('resetBtn').style.display = 'block';
         setTimeout(() => {
           const vo = document.getElementById('completeVoice');
           vo.currentTime = 0;
@@ -479,6 +489,72 @@ function attachEvents() {
   window.addEventListener('touchmove',  onMove, { passive: false });
   window.addEventListener('touchend',   onUp);
 }
+
+// ─── CONFETTI ─────────────────────────────────────────────────────────────────
+const CONFETTI_COLORS = ['#FFD700', '#ed7c5a', '#55b6ca', '#ffffff', '#c084fc', '#86efac'];
+let confettiParticles = [], confettiRAF = null;
+
+function launchConfetti() {
+  const cc = document.getElementById('confettiCanvas');
+  cc.width  = canvas.width;
+  cc.height = canvas.height;
+  const ctx2 = cc.getContext('2d');
+
+  confettiParticles = Array.from({ length: 120 }, () => ({
+    x:     Math.random() * cc.width,
+    y:     Math.random() * -cc.height * 0.5,
+    w:     6 + Math.random() * 6,
+    h:     10 + Math.random() * 6,
+    color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+    angle: Math.random() * Math.PI * 2,
+    spin:  (Math.random() - 0.5) * 0.2,
+    vx:    (Math.random() - 0.5) * 2.5,
+    vy:    2 + Math.random() * 3,
+    alpha: 1,
+  }));
+
+  if (confettiRAF) cancelAnimationFrame(confettiRAF);
+
+  function animate() {
+    ctx2.clearRect(0, 0, cc.width, cc.height);
+    let alive = false;
+    for (const p of confettiParticles) {
+      p.x     += p.vx;
+      p.y     += p.vy;
+      p.angle += p.spin;
+      if (p.y > cc.height * 0.7) p.alpha -= 0.025;
+      if (p.alpha <= 0) continue;
+      alive = true;
+      ctx2.save();
+      ctx2.globalAlpha = p.alpha;
+      ctx2.translate(p.x, p.y);
+      ctx2.rotate(p.angle);
+      ctx2.fillStyle = p.color;
+      ctx2.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx2.restore();
+    }
+    if (alive) confettiRAF = requestAnimationFrame(animate);
+    else ctx2.clearRect(0, 0, cc.width, cc.height);
+  }
+  animate();
+}
+
+// ─── RESET ────────────────────────────────────────────────────────────────────
+function resetPuzzle() {
+  // Hide reset button and clear confetti
+  document.getElementById('resetBtn').style.display = 'none';
+  const cc = document.getElementById('confettiCanvas');
+  cc.getContext('2d').clearRect(0, 0, cc.width, cc.height);
+  if (confettiRAF) { cancelAnimationFrame(confettiRAF); confettiRAF = null; }
+
+  // Unlock all pieces and re-scatter
+  pieces.forEach(p => { p.locked = false; p.zIndex = 0; });
+  maxZ = 0;
+  scatter();
+  render();
+}
+
+document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
 
 // ─── VOICEOVER ────────────────────────────────────────────────────────────────
 document.getElementById('playBtn').addEventListener('click', () => {
