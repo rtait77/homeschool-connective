@@ -135,6 +135,8 @@
 </div>
 
 <audio id="voiceover" src="/puzzle-easy-instructions.mp3" preload="auto"></audio>
+<audio id="snapSound" src="/puzzle-snap.mp3" preload="auto"></audio>
+<audio id="completeVoice" src="/puzzle-complete.mp3" preload="auto"></audio>
 <audio id="bgMusic" src="/puzzle-bg-music.mp3" loop preload="auto"></audio>
 
 <script>
@@ -157,19 +159,9 @@ function getAC() {
 
 function playSnap() {
   try {
-    const ac = getAC();
-    const t = ac.currentTime;
-
-    // Deep boop — soft rounded thump
-    const osc = ac.createOscillator(), gain = ac.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(280, t);
-    osc.frequency.exponentialRampToValueAtTime(140, t + 0.22);
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.35, t + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
-    osc.connect(gain); gain.connect(ac.destination);
-    osc.start(t); osc.stop(t + 0.22);
+    const sfx = document.getElementById('snapSound');
+    sfx.currentTime = 0;
+    sfx.play().catch(() => {});
   } catch(e) {}
 }
 
@@ -461,8 +453,13 @@ function onUp() {
         playWin();
         const banner = document.getElementById('completeBanner');
         banner.style.display = 'block';
-        // Trigger animation by adding class after display is set
         requestAnimationFrame(() => banner.classList.add('show'));
+        // Play great job voiceover after win jingle
+        setTimeout(() => {
+          const vo = document.getElementById('completeVoice');
+          vo.currentTime = 0;
+          vo.play().catch(() => {});
+        }, 900);
       }, 250);
     }
   }
