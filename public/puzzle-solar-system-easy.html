@@ -297,6 +297,19 @@ function drawBoard() {
     ctx.stroke();
     ctx.restore();
   }
+
+  // Divider between board and tray
+  const tx = canvas._trayX - 8;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([6, 6]);
+  ctx.beginPath();
+  ctx.moveTo(tx, boardY);
+  ctx.lineTo(tx, boardY + boardH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
 }
 
 function drawPiece(piece) {
@@ -351,23 +364,13 @@ function render() {
 
 // ─── SCATTER ──────────────────────────────────────────────────────────────────
 function scatter() {
-  const cw = canvas.width, ch = canvas.height;
+  const trayX = canvas._trayX, trayW = canvas._trayW;
+  const ch = canvas.height;
   const shuffled = [...pieces].sort(() => Math.random() - 0.5);
 
   shuffled.forEach((piece, i) => {
-    // Place randomly within canvas, but not sitting exactly on target
-    let x, y, tries = 0;
-    do {
-      x = Math.random() * (cw - pieceW - 10) + 5;
-      y = Math.random() * (ch - pieceH - 10) + 5;
-      tries++;
-    } while (
-      tries < 30 &&
-      Math.abs(x - piece.targetX) < pieceW * 0.6 &&
-      Math.abs(y - piece.targetY) < pieceH * 0.6
-    );
-    piece.x = x;
-    piece.y = y;
+    piece.x = trayX + Math.random() * Math.max(0, trayW - pieceW);
+    piece.y = 10 + Math.random() * Math.max(0, ch - pieceH - 20);
     piece.zIndex = i;
   });
 }
@@ -377,18 +380,27 @@ function setup() {
   canvas = document.getElementById('gameCanvas');
   ctx    = canvas.getContext('2d');
 
-  const aspect    = img.naturalWidth / img.naturalHeight;
-  const maxW      = Math.min(window.innerWidth - 32, 860);
-  const availH    = window.innerHeight - 150;
-  boardH = Math.floor(Math.min(availH - 20, maxW / aspect));
-  boardW = Math.floor(boardH * aspect);
+  // Board on left, tray on right — total canvas = 2×boardW + gap
+  const aspect  = img.naturalWidth / img.naturalHeight;
+  const availW  = Math.min(window.innerWidth - 32, 1100);
+  const availH  = window.innerHeight - 150;
+  // Board takes left half; gap of 16px between board and tray
+  const GAP = 16;
+  boardW = Math.floor((availW - GAP) / 2);
+  boardH = Math.floor(Math.min(boardW / aspect, availH - 20));
+  boardW = Math.floor(boardH * aspect); // recalc in case height was the limit
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
-  canvas.width  = boardW + 20;
+  const trayW = boardW;
+  canvas.width  = boardW + GAP + trayW + 10;
   canvas.height = boardH + 20;
-  boardX = 10;
+  boardX = 5;
   boardY = 10;
+
+  // Tray bounds (right side)
+  canvas._trayX = boardX + boardW + GAP;
+  canvas._trayW = trayW;
 
   const tabs = genTabs();
   pieces = [];
