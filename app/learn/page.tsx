@@ -573,7 +573,7 @@ export default function GamesPage() {
       )}
 
       {/* Search */}
-      <div className="relative mb-4">
+      <div className="relative mb-4 max-w-sm">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#aaa9a4] text-base pointer-events-none">🔍</span>
         <input
           type="search"
