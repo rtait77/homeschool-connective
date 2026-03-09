@@ -279,6 +279,35 @@
       /* ── Confetti ── */
       #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 
+      /* ── Mobile landscape ── */
+      @media (orientation: landscape) and (max-height: 500px) {
+        #header { padding: 5px 12px 3px; gap: 8px; }
+        h1 { font-size: 0.85rem; }
+        #gameArea {
+          flex: 1;
+          margin: 4px 8px 6px;
+          padding: 8px 20px 8px;
+          gap: 5px;
+          max-width: 100%;
+          min-height: 0;
+          overflow: hidden;
+        }
+        #topBar { gap: 4px; }
+        #attemptsDisplay { position: static; font-size: 0.7rem; }
+        #instruction { font-size: 0.7rem; }
+        #wordBank { height: 60px; min-height: 60px; max-height: 60px; flex-shrink: 0; overflow-y: auto; }
+        #categories {
+          flex: 1; min-height: 0;
+          display: grid;
+          grid-template-columns: repeat(${W.categories.length}, 1fr);
+          gap: 6px;
+        }
+        .category-zone { height: auto; min-height: 0; max-height: none; overflow-y: auto; }
+        .word-chip { font-size: 0.72rem; padding: 3px 8px; }
+        .category-label { font-size: 0.78rem; padding-bottom: 3px; }
+        #checkBtn { padding: 5px 20px; font-size: 0.78rem; }
+      }
+
       /* ── Mobile portrait ── */
       @media (orientation: portrait) and (max-width: 768px) {
         #header { flex-wrap: wrap; padding: 10px 12px 4px; gap: 6px; }
