@@ -425,6 +425,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Find a Pair – Dwarf Planets',
+    desc: 'Flip the cards and match each dwarf planet to its name. Pluto, Eris, Ceres, Makemake, and Haumea!',
+    thumb: '/thumb-find-pair-dwarf-planets.png',
+    url: '/matching-dwarf-planets.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['matching'],
+    newTab: false,
+  },
+  {
     title: 'Word Sort – Planet Types',
     desc: 'Sort the planets into the correct categories — can you tell your rocky planets from your gas giants?',
     thumb: '/thumb-word-sort.png',
