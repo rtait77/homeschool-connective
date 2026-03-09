@@ -723,10 +723,11 @@
   function initMusic() {
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
-    soundOn = false;
+    soundOn = true; // SFX always on
+    let musicPlaying = false;
     musicBtn.addEventListener('click', () => {
-      soundOn = !soundOn;
-      if (soundOn) {
+      musicPlaying = !musicPlaying;
+      if (musicPlaying) {
         bgMusic.volume = 0.35;
         bgMusic.play().catch(() => {});
         musicBtn.classList.add('playing');

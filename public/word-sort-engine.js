@@ -121,10 +121,9 @@
         display: flex; flex-direction: column;
         width: 100%; max-width: 920px;
         margin: 40px auto 20px;
-        padding-left: 28px; padding-right: 28px;
         align-self: center;
         background: #55b6ca; border-radius: 20px;
-        padding: 12px 14px; gap: 8px;
+        padding: 14px 48px 18px; gap: 10px;
       }
 
       /* ── Top bar: instruction + attempts ── */
@@ -133,11 +132,11 @@
         justify-content: center; flex-shrink: 0;
       }
       #instruction {
-        font-size: 0.8rem; font-weight: 700; color: #1c1c1c; text-align: center;
+        font-size: 0.95rem; font-weight: 700; color: #1c1c1c; text-align: center;
       }
       #attemptsDisplay {
         position: absolute; right: 0;
-        font-size: 0.8rem; font-weight: 800; color: #1c1c1c; white-space: nowrap;
+        font-size: 0.95rem; font-weight: 800; color: #1c1c1c; white-space: nowrap;
       }
 
       /* ── Attempts toast ── */
@@ -171,7 +170,7 @@
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 10px; padding: 8px 10px; height: 160px;
+        border-radius: 10px; padding: 10px 12px; height: 220px;
         display: flex; flex-direction: column; gap: 6px;
         transition: background 0.15s; overflow-y: auto;
       }
@@ -189,8 +188,8 @@
       /* ── Word chips ── */
       .word-chip {
         background: #e5e64d; color: #1c1c1c;
-        font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 800;
-        padding: 4px 12px; border-radius: 20px; border: 1.5px solid #1c1c1c;
+        font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800;
+        padding: 7px 18px; border-radius: 20px; border: 1.5px solid #1c1c1c;
         cursor: grab; white-space: nowrap;
         transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
         touch-action: none;
@@ -640,28 +639,11 @@
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
 
-    // Start as on — will play as soon as browser allows
-    soundOn = true;
-    bgMusic.volume = 0.35;
-
-    // Try immediate autoplay (works on some browsers/contexts)
-    bgMusic.play().then(() => {
-      musicBtn.classList.add('playing');
-    }).catch(() => {
-      // Blocked — start on first user interaction anywhere
-      function unlockAudio() {
-        if (!soundOn) return;
-        bgMusic.play().then(() => { musicBtn.classList.add('playing'); }).catch(() => {});
-        document.removeEventListener('pointerdown', unlockAudio);
-        document.removeEventListener('keydown', unlockAudio);
-      }
-      document.addEventListener('pointerdown', unlockAudio);
-      document.addEventListener('keydown', unlockAudio);
-    });
-
+    soundOn = true; // SFX always on
+    let musicPlaying = false;
     musicBtn.addEventListener('click', () => {
-      soundOn = !soundOn;
-      if (soundOn) {
+      musicPlaying = !musicPlaying;
+      if (musicPlaying) {
         bgMusic.volume = 0.35;
         bgMusic.play().catch(() => {});
         musicBtn.classList.add('playing');
