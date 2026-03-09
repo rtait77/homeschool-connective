@@ -154,9 +154,9 @@
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 10px; padding: 8px 10px; min-height: 60px;
+        border-radius: 10px; padding: 8px 10px; height: 140px;
         display: flex; flex-direction: column; gap: 6px;
-        transition: background 0.15s;
+        transition: background 0.15s; overflow-y: auto;
       }
       .category-zone.drag-over { background: #e8f8fb; }
       .category-label {
