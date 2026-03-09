@@ -472,6 +472,7 @@ export default function GamesPage() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
   const [activeTypes, setActiveTypes] = useState<string[]>([])
+  const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
@@ -531,9 +532,22 @@ export default function GamesPage() {
   const filtered = games.filter(g => {
     const topicMatch = topic === 'all' || g.topic === topic
     if (!topicMatch) return false
-    if (activeTypes.length === 0) return true
-    if (activeTypes.includes('mini') && g.mini) return true
-    return g.types.some(t => activeTypes.includes(t))
+    if (activeTypes.length > 0) {
+      const typeMatch = (activeTypes.includes('mini') && g.mini) || g.types.some(t => activeTypes.includes(t))
+      if (!typeMatch) return false
+    }
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      const haystack = [
+        g.title,
+        g.desc,
+        g.topic,
+        ...g.types,
+        g.mini ? 'mini' : '',
+      ].join(' ').toLowerCase()
+      if (!haystack.includes(q)) return false
+    }
+    return true
   })
 
   const fullGames = filtered.filter(g => !g.mini && !g.types.includes('lesson'))
@@ -557,6 +571,18 @@ export default function GamesPage() {
           </Link>
         </div>
       )}
+
+      {/* Search */}
+      <div className="relative mb-4">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#aaa9a4] text-base pointer-events-none">🔍</span>
+        <input
+          type="search"
+          placeholder="Search games… try &quot;sun puzzle&quot;, &quot;matching&quot;, &quot;easy&quot;"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white text-sm font-semibold placeholder-[#aaa9a4] focus:outline-none focus:border-[#55b6ca] transition-colors"
+        />
+      </div>
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-10">
@@ -642,7 +668,7 @@ export default function GamesPage() {
       )}
 
       {filtered.length === 0 && (
-        <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your filters. Try selecting different options!</p>
+        <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your search. Try different keywords or clear your filters!</p>
       )}
 
       {/* Coming Soon */}
