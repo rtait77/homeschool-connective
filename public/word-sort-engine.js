@@ -114,6 +114,14 @@
       @media (orientation: portrait) and (max-width: 768px) {
         #header { flex-wrap: wrap; padding: 10px 12px 4px; gap: 6px; }
         h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
+        #gameArea { margin: 8px 10px 14px; padding: 10px 12px 14px; gap: 8px; }
+        #topBar { flex-direction: column; align-items: center; gap: 2px; }
+        #attemptsDisplay { position: static; }
+        #instruction, #attemptsDisplay { font-size: 0.8rem; }
+        #wordBank { height: auto; min-height: 60px; max-height: 180px; }
+        .category-zone { height: 150px; min-height: 150px; max-height: 150px; }
+        .word-chip { font-size: 0.82rem; padding: 5px 11px; }
+        .category-label { font-size: 0.88rem; }
       }
 
       /* ── Blue game area ── */
