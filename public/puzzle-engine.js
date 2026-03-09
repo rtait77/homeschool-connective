@@ -399,16 +399,16 @@
     const oc2 = oc.getContext('2d');
     oc2.translate(EXTRA, EXTRA);
 
-    // 1. Clip to jigsaw shape and draw the image
     oc2.save();
     makePath(oc2, pieceW, pieceH, piece.tabs);
     oc2.clip();
+    // Fill with dark space color first so edge pieces are fully solid — no slivers
+    oc2.fillStyle = '#05091a';
+    oc2.fillRect(-EXTRA, -EXTRA, oc.width, oc.height);
+    // Draw the image on top (planet appears where it exists; space fill shows through elsewhere)
     oc2.drawImage(img, imgOffX - piece.col * pieceW, imgOffY - piece.row * pieceH, imgDrawW, imgDrawH);
     oc2.restore();
-
-    // 2. Mask to the image's actual alpha — removes background from outer edges
-    oc2.globalCompositeOperation = 'destination-in';
-    oc2.drawImage(img, imgOffX - piece.col * pieceW, imgOffY - piece.row * pieceH, imgDrawW, imgDrawH);
+    // No destination-in pass — every piece is fully opaque and grabbable
 
     piece.offscreen = oc;
     piece.extra = EXTRA;
@@ -419,8 +419,7 @@
     const lx = mx - piece.x, ly = my - piece.y;
     const tc = document.createElement('canvas').getContext('2d');
     makePath(tc, pieceW, pieceH, piece.tabs);
-    if (!tc.isPointInPath(lx, ly)) return false;
-    return getAlpha(piece.col * pieceW + lx, piece.row * pieceH + ly) > 32;
+    return tc.isPointInPath(lx, ly);
   }
   function pieceAt(mx, my) {
     const sorted = [...pieces].sort((a,b) => b.zIndex - a.zIndex);
@@ -555,13 +554,7 @@
       createGroup(idx);
     }
     pieces.forEach(preRenderPiece);
-    pieces.forEach(p => {
-      const d = p.offscreen.getContext('2d').getImageData(0, 0, p.offscreen.width, p.offscreen.height).data;
-      const total = d.length / 4;
-      let filled = 0;
-      for (let i = 0; i < total; i++) if (d[i * 4 + 3] > 20) filled++;
-      p.invisible = filled / total < 0.01;
-    });
+    pieces.forEach(p => { p.invisible = false; }); // all pieces are solid — none hidden
     scatter();
     render();
     attachEvents();
