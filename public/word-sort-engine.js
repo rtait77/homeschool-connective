@@ -119,7 +119,9 @@
       /* ── Blue game area ── */
       #gameArea {
         display: flex; flex-direction: column;
-        margin: 8px 48px 20px;
+        width: 100%; max-width: 460px;
+        margin: 8px auto 20px;
+        align-self: center;
         background: #55b6ca; border-radius: 20px;
         padding: 12px 14px; gap: 8px;
       }
