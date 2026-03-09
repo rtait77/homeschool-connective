@@ -294,27 +294,35 @@
 
   // ─── BBOX ─────────────────────────────────────────────────────────────────────
   function computeBBox() {
-    const oc = document.createElement('canvas');
-    oc.width = img.naturalWidth; oc.height = img.naturalHeight;
-    const oc2 = oc.getContext('2d');
-    oc2.drawImage(img, 0, 0);
-    const d = oc2.getImageData(0, 0, oc.width, oc.height).data;
-    let minX = oc.width, minY = oc.height, maxX = 0, maxY = 0;
-    for (let y = 0; y < oc.height; y++) {
-      for (let x = 0; x < oc.width; x++) {
-        if (d[(y * oc.width + x) * 4 + 3] > 20) {
-          if (x < minX) minX = x; if (x > maxX) maxX = x;
-          if (y < minY) minY = y; if (y > maxY) maxY = y;
+    // Fallback: use full image dimensions (no cropping)
+    bboxX = 0; bboxY = 0;
+    bboxIW = img.naturalWidth; bboxIH = img.naturalHeight;
+    bboxW = bboxIW; bboxH = bboxIH;
+    bboxAspect = bboxW / bboxH;
+    try {
+      const oc = document.createElement('canvas');
+      oc.width = img.naturalWidth; oc.height = img.naturalHeight;
+      const oc2 = oc.getContext('2d');
+      oc2.drawImage(img, 0, 0);
+      const d = oc2.getImageData(0, 0, oc.width, oc.height).data;
+      let minX = oc.width, minY = oc.height, maxX = 0, maxY = 0;
+      for (let y = 0; y < oc.height; y++) {
+        for (let x = 0; x < oc.width; x++) {
+          if (d[(y * oc.width + x) * 4 + 3] > 20) {
+            if (x < minX) minX = x; if (x > maxX) maxX = x;
+            if (y < minY) minY = y; if (y > maxY) maxY = y;
+          }
         }
       }
-    }
-    const PAD = Math.floor(Math.min(oc.width, oc.height) * 0.02);
-    minX = Math.max(0, minX - PAD); minY = Math.max(0, minY - PAD);
-    maxX = Math.min(oc.width - 1, maxX + PAD); maxY = Math.min(oc.height - 1, maxY + PAD);
-    bboxX = minX; bboxY = minY;
-    bboxW = maxX - minX + 1; bboxH = maxY - minY + 1;
-    bboxIW = oc.width; bboxIH = oc.height;
-    bboxAspect = bboxW / bboxH;
+      if (maxX > minX && maxY > minY) {
+        const PAD = Math.floor(Math.min(oc.width, oc.height) * 0.02);
+        minX = Math.max(0, minX - PAD); minY = Math.max(0, minY - PAD);
+        maxX = Math.min(oc.width - 1, maxX + PAD); maxY = Math.min(oc.height - 1, maxY + PAD);
+        bboxX = minX; bboxY = minY;
+        bboxW = maxX - minX + 1; bboxH = maxY - minY + 1;
+        bboxAspect = bboxW / bboxH;
+      }
+    } catch(e) { /* CORS or other error — fallback values already set above */ }
   }
 
   // ─── BOARD SIZING ─────────────────────────────────────────────────────────────
@@ -652,7 +660,7 @@
     initMusic();
 
     img = new Image();
-    img.crossOrigin = 'anonymous';
+    // No crossOrigin needed — images are same-origin
     img.onload = function() {
       computeBBox();
       setup();
