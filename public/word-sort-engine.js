@@ -119,7 +119,7 @@
       /* ── Blue game area ── */
       #gameArea {
         display: flex; flex-direction: column;
-        width: 100%; max-width: 460px;
+        width: 100%; max-width: 920px;
         margin: 8px auto 20px;
         align-self: center;
         background: #55b6ca; border-radius: 20px;
@@ -156,7 +156,7 @@
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 10px; padding: 8px 10px; height: 140px;
+        border-radius: 10px; padding: 8px 10px; height: 280px;
         display: flex; flex-direction: column; gap: 6px;
         transition: background 0.15s; overflow-y: auto;
       }
