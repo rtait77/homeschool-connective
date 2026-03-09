@@ -168,7 +168,7 @@
       }
       /* Back — red */
       .card-back {
-        background: #da2343;
+        background: #d52d5d;
         background-image:
           radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px),
           radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
