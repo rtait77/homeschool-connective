@@ -6,7 +6,7 @@
   const ROWS = Math.ceil(M.pairs.length * 2 / COLS);
   const GAP = 10;
   const PAD = 14;
-  const CARD_RATIO = 0.72; // width / height (portrait card)
+  const CARD_RATIO = 1.0; // square cards
 
   let audioCtx = null;
   let flipped = [];   // up to 2 { card, pairId } objects
@@ -174,30 +174,37 @@
       .card-back::after {
         content: '✦'; font-size: 2.2em; color: rgba(255,255,255,0.28);
       }
-      /* Front — dark space */
+      /* Front — planet image card (black bg) */
       .card-front {
-        background: #07102a;
         transform: rotateY(180deg);
         display: flex; flex-direction: column;
         align-items: center; justify-content: center;
-        border: 2px solid rgba(255,255,255,0.12); padding: 10px;
+        padding: 8px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.4);
       }
+      .card-front.image-card {
+        background: #000;
+        border: 2px solid rgba(255,255,255,0.12);
+      }
+      .card-front.name-card {
+        background: #fff;
+        border: 2px solid rgba(0,0,0,0.1);
+      }
       .card-front img {
-        width: 88%; height: 72%; object-fit: contain;
-        filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+        width: 92%; height: 92%; object-fit: contain;
       }
       .card-front .planet-name {
-        font-size: clamp(1rem, 3.5vw, 1.5rem); font-weight: 800;
-        color: #FFD700; text-align: center;
-        text-shadow: 0 0 16px rgba(255,215,0,0.55);
-        line-height: 1.2;
+        font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 800;
+        color: #000; text-align: center; line-height: 1.2;
       }
       /* Matched glow */
-      .card.matched .card-front {
+      .card.matched .card-front.image-card {
         border-color: #FFD700;
-        box-shadow: 0 0 20px rgba(255,215,0,0.45), 0 4px 20px rgba(0,0,0,0.4);
-        background: #0d1e42;
+        box-shadow: 0 0 20px rgba(255,215,0,0.5), 0 4px 20px rgba(0,0,0,0.4);
+      }
+      .card.matched .card-front.name-card {
+        border-color: #FFD700;
+        box-shadow: 0 0 20px rgba(255,215,0,0.5);
       }
 
       /* ── Confetti ── */
@@ -336,7 +343,9 @@
       back.className = 'card-face card-back';
 
       const front = document.createElement('div');
-      front.className = 'card-face card-front';
+      front.className = data.type === 'image'
+        ? 'card-face card-front image-card'
+        : 'card-face card-front name-card';
 
       if (data.type === 'image') {
         const img = document.createElement('img');
