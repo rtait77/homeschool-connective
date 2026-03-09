@@ -427,7 +427,7 @@ const games = [
   {
     title: 'Find a Pair – Dwarf Planets',
     desc: 'Flip the cards and match each dwarf planet to its name. Pluto, Eris, Ceres, Makemake, and Haumea!',
-    thumb: '/thumb-find-pair-dwarf-planets.png',
+    thumb: '/dwarf-planets-matching-game-thumbnail.png',
     url: '/matching-dwarf-planets.html',
     topic: 'solar-system',
     mini: true,
