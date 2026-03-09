@@ -509,10 +509,8 @@
     });
 
     placements[word] = droppedCat; // null if dropped on bank or outside
-    if (droppedCat === null) {
-      wordOrder = wordOrder.filter(w => w !== word);
-      wordOrder.push(word);
-    }
+    wordOrder = wordOrder.filter(w => w !== word);
+    wordOrder.push(word);
     render();
   }
 
