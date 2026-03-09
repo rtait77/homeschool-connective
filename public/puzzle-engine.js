@@ -326,6 +326,36 @@
   }
 
   // ─── BOARD SIZING ─────────────────────────────────────────────────────────────
+  function computeAdaptiveZoom(baseScale) {
+    // Zoom in until every piece cell center has image content (alpha > 20).
+    // This eliminates empty/tiny corner pieces for circular or irregular images.
+    let zoom = 1.0;
+    for (let iter = 0; iter < 30; iter++) {
+      const scale = baseScale * zoom;
+      const ox = Math.round(boardW / 2 - (bboxX + bboxW / 2) * scale);
+      const oy = Math.round(boardH / 2 - (bboxY + bboxH / 2) * scale);
+      const drawW = Math.round(bboxIW * scale);
+      const drawH = Math.round(bboxIH * scale);
+      const oc = document.createElement('canvas');
+      oc.width = boardW; oc.height = boardH;
+      const oc2 = oc.getContext('2d');
+      oc2.drawImage(img, ox, oy, drawW, drawH);
+      let d;
+      try { d = oc2.getImageData(0, 0, boardW, boardH).data; } catch(e) { return 1.0; }
+      let allOk = true;
+      for (let r = 0; r < ROWS && allOk; r++) {
+        for (let c = 0; c < COLS && allOk; c++) {
+          const cx = Math.floor((c + 0.5) * pieceW);
+          const cy = Math.floor((r + 0.5) * pieceH);
+          if (d[(cy * boardW + cx) * 4 + 3] < 20) allOk = false;
+        }
+      }
+      if (allOk) break;
+      zoom *= 1.08;
+    }
+    return zoom;
+  }
+
   function calcBoard() {
     const maxSize = Math.min(canvas.width, canvas.height) * 0.90;
     if (bboxAspect >= 1) {
@@ -337,11 +367,13 @@
     }
     pieceW = boardW / COLS;
     pieceH = boardH / ROWS;
-    const scale = boardW / bboxW;
+    const baseScale = boardW / bboxW;
+    const zoom = computeAdaptiveZoom(baseScale);
+    const scale = baseScale * zoom;
     imgDrawW = Math.round(bboxIW * scale);
     imgDrawH = Math.round(bboxIH * scale);
-    imgOffX = -Math.round(bboxX * scale);
-    imgOffY = -Math.round(bboxY * scale);
+    imgOffX = Math.round(boardW / 2 - (bboxX + bboxW / 2) * scale);
+    imgOffY = Math.round(boardH / 2 - (bboxY + bboxH / 2) * scale);
   }
 
   // ─── IMAGE ANALYSIS ───────────────────────────────────────────────────────────
@@ -528,7 +560,7 @@
       const total = d.length / 4;
       let filled = 0;
       for (let i = 0; i < total; i++) if (d[i * 4 + 3] > 20) filled++;
-      p.invisible = filled / total < 0.03;
+      p.invisible = filled / total < 0.01;
     });
     scatter();
     render();
