@@ -520,7 +520,7 @@
       const total = d.length / 4;
       let filled = 0;
       for (let i = 0; i < total; i++) if (d[i * 4 + 3] > 20) filled++;
-      p.invisible = filled / total < 0.12;
+      p.invisible = filled / total < 0.03;
     });
     scatter();
     render();
