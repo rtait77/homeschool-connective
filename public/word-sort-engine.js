@@ -111,24 +111,6 @@
         0%, 100% { transform: scale(1); }
         50% { transform: scale(1.18); }
       }
-      @media (orientation: portrait) and (max-width: 768px) {
-        #header { flex-wrap: wrap; padding: 10px 12px 4px; gap: 6px; }
-        h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
-        #gameArea {
-          margin: 8px 8px 14px;
-          padding: 10px 10px 14px; gap: 8px;
-          max-width: 100%;
-        }
-        #topBar { flex-direction: column; align-items: center; gap: 2px; }
-        #attemptsDisplay { position: static; }
-        #instruction, #attemptsDisplay { font-size: 0.75rem; }
-        #wordBank { height: auto; min-height: 60px; max-height: 160px; }
-        #categories { grid-template-columns: 1fr; }
-        .category-zone { height: 130px; min-height: 130px; max-height: 130px; }
-        .word-chip { font-size: 0.75rem; padding: 4px 10px; }
-        .category-label { font-size: 0.85rem; }
-        #checkBtn { width: 100%; }
-      }
 
       /* ── Blue game area ── */
       #gameArea {
@@ -296,6 +278,36 @@
 
       /* ── Confetti ── */
       #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+
+      /* ── Mobile portrait ── */
+      @media (orientation: portrait) and (max-width: 768px) {
+        #header { flex-wrap: wrap; padding: 10px 12px 4px; gap: 6px; }
+        h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
+        #gameArea {
+          flex: 1;
+          margin: 6px 8px 8px;
+          padding: 10px 12px 10px;
+          gap: 6px;
+          max-width: 100%;
+          min-height: 0;
+          overflow: hidden;
+        }
+        #topBar { flex-direction: row; flex-wrap: wrap; gap: 4px; justify-content: center; }
+        #attemptsDisplay { position: static; font-size: 0.72rem; }
+        #instruction { font-size: 0.72rem; }
+        #wordBank { height: 90px; min-height: 90px; max-height: 90px; flex-shrink: 0; }
+        #categories {
+          display: flex; flex-direction: column;
+          flex: 1; min-height: 0; gap: 6px;
+        }
+        .category-zone {
+          flex: 1; height: auto; min-height: 0; max-height: none;
+          overflow-y: auto;
+        }
+        .word-chip { font-size: 0.75rem; padding: 4px 10px; }
+        .category-label { font-size: 0.85rem; }
+        #checkBtn { width: 100%; }
+      }
     `;
     document.head.appendChild(style);
 
