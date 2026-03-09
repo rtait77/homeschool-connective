@@ -91,6 +91,12 @@
       #musicBtn.playing { background: #FFD700; }
       #musicBtn.playing svg { fill: #1c1c1c; }
       #musicBtn.playing:hover { background: #e6c200; }
+      @keyframes musicPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,215,0,0.7); }
+        50% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(255,215,0,0); }
+      }
+      #musicBtn.pulse { background: #FFD700; animation: musicPulse 1.1s ease-in-out infinite; }
+      #musicBtn.pulse svg { fill: #1c1c1c; }
       .image-credit {
         font-size: 0.75rem;
         color: rgba(255,255,255,0.6);
@@ -432,16 +438,25 @@
   }
 
   // ─── HIT TEST ─────────────────────────────────────────────────────────────────
+  // Checks a radius around the touch/click point so small edge pieces are easier to grab.
+  const TOUCH_R = 14;
   function hitTest(piece, mx, my) {
     const lx = mx - piece.x, ly = my - piece.y;
-    const tc = document.createElement('canvas').getContext('2d');
-    makePath(tc, pieceW, pieceH, piece.tabs);
-    if (!tc.isPointInPath(lx, ly)) return false;
-    // Pixel-perfect: only count as a hit if the pixel is actual planet (not transparent)
-    const px = Math.floor(lx + piece.extra);
-    const py = Math.floor(ly + piece.extra);
-    if (px < 0 || py < 0 || px >= piece.offscreen.width || py >= piece.offscreen.height) return false;
-    return piece.offscreen.getContext('2d').getImageData(px, py, 1, 1).data[3] > 20;
+    const px = Math.floor(lx + piece.extra), py = Math.floor(ly + piece.extra);
+    const ow = piece.offscreen.width, oh = piece.offscreen.height;
+    const sx = Math.max(0, px - TOUCH_R), sy = Math.max(0, py - TOUCH_R);
+    const ex = Math.min(ow - 1, px + TOUCH_R), ey = Math.min(oh - 1, py + TOUCH_R);
+    if (sx > ex || sy > ey) return false;
+    const data = piece.offscreen.getContext('2d').getImageData(sx, sy, ex-sx+1, ey-sy+1).data;
+    const w = ex - sx + 1;
+    for (let dy = 0; dy <= ey-sy; dy++) {
+      for (let dx = 0; dx <= ex-sx; dx++) {
+        const ddx = (sx+dx)-px, ddy = (sy+dy)-py;
+        if (ddx*ddx + ddy*ddy > TOUCH_R*TOUCH_R) continue;
+        if (data[(dy*w+dx)*4+3] > 20) return true;
+      }
+    }
+    return false;
   }
   function pieceAt(mx, my) {
     const sorted = [...pieces].sort((a,b) => b.zIndex - a.zIndex);
@@ -539,13 +554,26 @@
     cc.width = canvas.width; cc.height = canvas.height;
     calcBoard();
     pieces.forEach(p => { if (!p.invisible) preRenderPiece(p); });
-    const ox = Math.floor(pieceW * 0.5), oy = Math.floor(pieceH * 0.5);
+    // Restore positions from fractional coords, then re-align snapped groups from anchor
     pieces.forEach(p => {
       if (p.invisible) return;
       p.x = Math.round(p._fx * canvas.width);
       p.y = Math.round(p._fy * canvas.height);
-      p.x = Math.max(-ox, Math.min(canvas.width + ox - pieceW, p.x));
-      p.y = Math.max(-oy, Math.min(canvas.height + oy - pieceH, p.y));
+      p.x = Math.max(0, Math.min(canvas.width - pieceW, p.x));
+      p.y = Math.max(0, Math.min(canvas.height - pieceH, p.y));
+    });
+    const seenGroups = new Set();
+    pieces.forEach(p => {
+      if (p.invisible || seenGroups.has(p.groupId)) return;
+      seenGroups.add(p.groupId);
+      if (groups[p.groupId].size <= 1) return;
+      const members = [...groups[p.groupId]].map(i => pieces[i]).filter(m => !m.invisible);
+      if (members.length <= 1) return;
+      const anchor = members[0];
+      members.slice(1).forEach(m => {
+        m.x = anchor.x + (m.col - anchor.col) * pieceW;
+        m.y = anchor.y + (m.row - anchor.row) * pieceH;
+      });
     });
     render();
   }
@@ -591,12 +619,14 @@
   }
   function onDown(e) {
     e.preventDefault();
-    const ac = getAC();
-    ac.resume().then(() => {
+    // Unlock Web Audio synchronously within the user gesture (required for iOS snap sounds)
+    try {
+      const ac = getAC();
+      if (ac.state !== 'running') ac.resume();
       const buf = ac.createBuffer(1, 1, 22050);
       const src = ac.createBufferSource();
       src.buffer = buf; src.connect(ac.destination); src.start(0);
-    }).catch(() => {});
+    } catch(_e) {}
     const {x,y} = getPos(e);
     const piece = pieceAt(x,y);
     if (!piece) return;
@@ -693,9 +723,38 @@
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
     let musicOn = false;
-    musicBtn.addEventListener('click', () => {
-      if (musicOn) { bgMusic.pause(); musicOn=false; musicBtn.classList.remove('playing'); }
-      else { bgMusic.volume=0.35; bgMusic.play().catch(()=>{}); musicOn=true; musicBtn.classList.add('playing'); }
+
+    function startMusic() {
+      if (musicOn) return;
+      bgMusic.volume = 0.35;
+      bgMusic.play().then(() => {
+        musicOn = true;
+        musicBtn.classList.remove('pulse');
+        musicBtn.classList.add('playing');
+      }).catch(() => {});
+    }
+
+    // Try autoplay immediately
+    bgMusic.volume = 0.35;
+    bgMusic.play().then(() => {
+      musicOn = true;
+      musicBtn.classList.add('playing');
+    }).catch(() => {
+      // Autoplay blocked — pulse button to invite first interaction
+      musicBtn.classList.add('pulse');
+      musicBtn.title = 'Tap to start music';
+      const onFirst = () => { startMusic(); document.removeEventListener('pointerdown', onFirst); };
+      document.addEventListener('pointerdown', onFirst);
+    });
+
+    musicBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (musicOn) {
+        bgMusic.pause(); musicOn = false;
+        musicBtn.classList.remove('playing', 'pulse');
+      } else {
+        startMusic();
+      }
     });
   }
 
