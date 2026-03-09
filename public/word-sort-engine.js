@@ -536,7 +536,7 @@
     });
 
     if (anyCorrect) playCorrect();
-    if (wrongWords.length > 0) { playWrong(); showAttemptsToast(); }
+    if (wrongWords.length > 0) playWrong();
 
     // Mark correct ones immediately
     render();
@@ -566,6 +566,9 @@
           }, 200);
           return;
         }
+
+        // Not a win — show attempts toast
+        if (attemptsLeft > 0) showAttemptsToast();
 
         // Check loss
         if (attemptsLeft <= 0) {
