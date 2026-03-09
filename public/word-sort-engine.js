@@ -509,6 +509,10 @@
     });
 
     placements[word] = droppedCat; // null if dropped on bank or outside
+    if (droppedCat === null) {
+      wordOrder = wordOrder.filter(w => w !== word);
+      wordOrder.push(word);
+    }
     render();
   }
 
@@ -555,7 +559,11 @@
         if (chip) chip.classList.add('flying');
       });
       setTimeout(() => {
-        wrongWords.forEach(w => { placements[w] = null; });
+        wrongWords.forEach(w => {
+          placements[w] = null;
+          wordOrder = wordOrder.filter(x => x !== w);
+          wordOrder.push(w);
+        });
         render();
 
         // Check win
