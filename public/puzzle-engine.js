@@ -97,6 +97,33 @@
         text-align: center;
         letter-spacing: 0.03em;
       }
+      /* ── Landscape: collapse header into one compact row ── */
+      @media (orientation: landscape) and (max-height: 600px) {
+        #header {
+          flex-direction: row;
+          align-items: center;
+          padding: 6px 12px;
+          gap: 10px;
+        }
+        #backBtn {
+          margin-bottom: 0;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        .title-row {
+          margin-bottom: 0;
+          flex: 1;
+          justify-content: center;
+        }
+        h1 {
+          font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+          margin-bottom: 0;
+        }
+        .image-credit {
+          flex-shrink: 0;
+          white-space: nowrap;
+        }
+      }
       #canvasWrap { position: relative; flex-shrink: 0; }
       canvas { display: block; touch-action: none; cursor: default; }
       #confettiCanvas {
