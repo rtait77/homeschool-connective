@@ -91,12 +91,6 @@
       #musicBtn.playing { background: #FFD700; }
       #musicBtn.playing svg { fill: #1c1c1c; }
       #musicBtn.playing:hover { background: #e6c200; }
-      @keyframes musicPulse {
-        0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,215,0,0.7); }
-        50% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(255,215,0,0); }
-      }
-      #musicBtn.pulse { background: #FFD700; animation: musicPulse 1.1s ease-in-out infinite; }
-      #musicBtn.pulse svg { fill: #1c1c1c; }
       .image-credit {
         font-size: 0.75rem;
         color: rgba(255,255,255,0.6);
@@ -723,34 +717,9 @@
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
     let musicOn = false;
-
-    function markPlaying() {
-      musicOn = true;
-      musicBtn.classList.remove('pulse');
-      musicBtn.classList.add('playing');
-    }
-
-    bgMusic.volume = 0.35;
-    bgMusic.play().then(markPlaying).catch(() => {
-      // Autoplay blocked — pulse button to invite first interaction
-      musicBtn.classList.add('pulse');
-      musicBtn.title = 'Tap to start music';
-      function onFirstTouch(e) {
-        if (musicBtn.contains(e.target)) return; // let click handler deal with button taps
-        bgMusic.play().then(markPlaying).catch(() => {});
-        document.removeEventListener('pointerdown', onFirstTouch);
-      }
-      document.addEventListener('pointerdown', onFirstTouch);
-    });
-
-    musicBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (musicOn) {
-        bgMusic.pause(); musicOn = false;
-        musicBtn.classList.remove('playing', 'pulse');
-      } else {
-        bgMusic.play().then(markPlaying).catch(() => {});
-      }
+    musicBtn.addEventListener('click', () => {
+      if (musicOn) { bgMusic.pause(); musicOn = false; musicBtn.classList.remove('playing'); }
+      else { bgMusic.volume = 0.35; bgMusic.play().catch(() => {}); musicOn = true; musicBtn.classList.add('playing'); }
     });
   }
 
