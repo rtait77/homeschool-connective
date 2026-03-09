@@ -436,7 +436,12 @@
     const lx = mx - piece.x, ly = my - piece.y;
     const tc = document.createElement('canvas').getContext('2d');
     makePath(tc, pieceW, pieceH, piece.tabs);
-    return tc.isPointInPath(lx, ly);
+    if (!tc.isPointInPath(lx, ly)) return false;
+    // Pixel-perfect: only count as a hit if the pixel is actual planet (not transparent)
+    const px = Math.floor(lx + piece.extra);
+    const py = Math.floor(ly + piece.extra);
+    if (px < 0 || py < 0 || px >= piece.offscreen.width || py >= piece.offscreen.height) return false;
+    return piece.offscreen.getContext('2d').getImageData(px, py, 1, 1).data[3] > 20;
   }
   function pieceAt(mx, my) {
     const sorted = [...pieces].sort((a,b) => b.zIndex - a.zIndex);
@@ -479,13 +484,12 @@
   // ─── CLAMP ────────────────────────────────────────────────────────────────────
   function clampGroup(gid, dx, dy) {
     const cw = canvas.width, ch = canvas.height;
-    const ox = Math.floor(pieceW * 0.5), oy = Math.floor(pieceH * 0.5);
     for (const i of groups[gid]) {
       const p = pieces[i];
-      if (p.x+dx < -ox)          dx = -ox - p.x;
-      if (p.x+dx+pieceW > cw+ox) dx = cw+ox - pieceW - p.x;
-      if (p.y+dy < -oy)          dy = -oy - p.y;
-      if (p.y+dy+pieceH > ch+oy) dy = ch+oy - pieceH - p.y;
+      if (p.x+dx < 0)           dx = -p.x;
+      if (p.x+dx+pieceW > cw)   dx = cw - pieceW - p.x;
+      if (p.y+dy < 0)           dy = -p.y;
+      if (p.y+dy+pieceH > ch)   dy = ch - pieceH - p.y;
     }
     return {dx, dy};
   }
