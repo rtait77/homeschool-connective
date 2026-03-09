@@ -120,7 +120,7 @@
       #gameArea {
         display: flex; flex-direction: column;
         width: 100%; max-width: 920px;
-        margin: 8px auto 20px;
+        margin: 40px auto 20px;
         align-self: center;
         background: #55b6ca; border-radius: 20px;
         padding: 12px 14px; gap: 8px;
