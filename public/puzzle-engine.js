@@ -724,27 +724,23 @@
     const musicBtn = document.getElementById('musicBtn');
     let musicOn = false;
 
-    function startMusic() {
-      if (musicOn) return;
-      bgMusic.volume = 0.35;
-      bgMusic.play().then(() => {
-        musicOn = true;
-        musicBtn.classList.remove('pulse');
-        musicBtn.classList.add('playing');
-      }).catch(() => {});
+    function markPlaying() {
+      musicOn = true;
+      musicBtn.classList.remove('pulse');
+      musicBtn.classList.add('playing');
     }
 
-    // Try autoplay immediately
     bgMusic.volume = 0.35;
-    bgMusic.play().then(() => {
-      musicOn = true;
-      musicBtn.classList.add('playing');
-    }).catch(() => {
+    bgMusic.play().then(markPlaying).catch(() => {
       // Autoplay blocked — pulse button to invite first interaction
       musicBtn.classList.add('pulse');
       musicBtn.title = 'Tap to start music';
-      const onFirst = () => { startMusic(); document.removeEventListener('pointerdown', onFirst); };
-      document.addEventListener('pointerdown', onFirst);
+      function onFirstTouch(e) {
+        if (musicBtn.contains(e.target)) return; // let click handler deal with button taps
+        bgMusic.play().then(markPlaying).catch(() => {});
+        document.removeEventListener('pointerdown', onFirstTouch);
+      }
+      document.addEventListener('pointerdown', onFirstTouch);
     });
 
     musicBtn.addEventListener('click', (e) => {
@@ -753,7 +749,7 @@
         bgMusic.pause(); musicOn = false;
         musicBtn.classList.remove('playing', 'pulse');
       } else {
-        startMusic();
+        bgMusic.play().then(markPlaying).catch(() => {});
       }
     });
   }
