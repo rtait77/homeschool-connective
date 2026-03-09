@@ -360,7 +360,7 @@
 
   // ─── COVERAGE CHECK ───────────────────────────────────────────────────────────
   // Returns fraction of the piece cell (0–1) covered by planet pixels (alpha > 20).
-  const COVERAGE_THRESHOLD = 0.12;
+  const COVERAGE_THRESHOLD = 0.02;
   function getPieceCoverage(r, c) {
     const x0 = Math.floor(c * pieceW), y0 = Math.floor(r * pieceH);
     const x1 = Math.floor((c + 1) * pieceW), y1 = Math.floor((r + 1) * pieceH);
