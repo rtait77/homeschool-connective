@@ -378,7 +378,7 @@ function trySnap(movedGID) {
 // ─── CLAMP ────────────────────────────────────────────────────────────────────
 function clampGroup(gid, dx, dy) {
   const cw = canvas.width, ch = canvas.height;
-  const ox = 0, oy = 0;
+  const ox = Math.floor(pieceW * 0.5), oy = Math.floor(pieceH * 0.5);
   for (const i of groups[gid]) {
     const p = pieces[i];
     if (p.x+dx < -ox)          dx = -ox - p.x;
