@@ -157,7 +157,8 @@
         background: white; border: 2px dashed #1c1c1c;
         border-radius: 10px; padding: 8px 10px;
         display: flex; flex-wrap: wrap; gap: 6px;
-        min-height: 44px; align-content: flex-start;
+        height: 90px; align-content: flex-start;
+        overflow-y: auto;
         transition: background 0.15s;
         flex-shrink: 0;
       }
@@ -170,9 +171,10 @@
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 10px; padding: 10px 12px; height: 220px;
+        border-radius: 10px; padding: 10px 12px;
+        height: 220px; min-height: 220px; max-height: 220px;
         display: flex; flex-direction: column; gap: 6px;
-        transition: background 0.15s; overflow-y: auto;
+        transition: background 0.15s; overflow-y: auto; flex-shrink: 0;
       }
       .category-zone.drag-over { background: #e8f8fb; }
       .category-label {
