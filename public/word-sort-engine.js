@@ -157,7 +157,7 @@
         background: white; border: 2px dashed #1c1c1c;
         border-radius: 10px; padding: 8px 10px;
         display: flex; flex-wrap: wrap; gap: 6px;
-        height: 130px; align-content: flex-start;
+        height: 130px; align-content: center;
         overflow-y: auto;
         transition: background 0.15s;
         flex-shrink: 0;
