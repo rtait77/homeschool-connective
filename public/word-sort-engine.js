@@ -128,15 +128,29 @@
 
       /* ── Top bar: instruction + attempts ── */
       #topBar {
-        display: flex; align-items: center; justify-content: space-between;
-        flex-shrink: 0;
+        position: relative; display: flex; align-items: center;
+        justify-content: center; flex-shrink: 0;
       }
       #instruction {
-        font-size: 0.8rem; font-weight: 700; color: #1c1c1c;
+        font-size: 0.8rem; font-weight: 700; color: #1c1c1c; text-align: center;
       }
       #attemptsDisplay {
+        position: absolute; right: 0;
         font-size: 0.8rem; font-weight: 800; color: #1c1c1c; white-space: nowrap;
       }
+
+      /* ── Attempts toast ── */
+      #attemptToast {
+        position: fixed; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(10,10,30,0.88); color: white;
+        font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 800;
+        padding: 18px 36px; border-radius: 16px;
+        pointer-events: none; z-index: 50;
+        opacity: 0; transition: opacity 0.2s;
+        white-space: nowrap;
+      }
+      #attemptToast.show { opacity: 1; }
 
       /* ── Word bank ── */
       #wordBank {
@@ -363,6 +377,11 @@
     modal.appendChild(modalBox);
     document.body.appendChild(modal);
 
+    // Attempts toast
+    const toast = document.createElement('div');
+    toast.id = 'attemptToast';
+    document.body.appendChild(toast);
+
     // Confetti canvas
     const cc = document.createElement('canvas');
     cc.id = 'confettiCanvas';
@@ -517,7 +536,7 @@
     });
 
     if (anyCorrect) playCorrect();
-    if (wrongWords.length > 0) playWrong();
+    if (wrongWords.length > 0) { playWrong(); showAttemptsToast(); }
 
     // Mark correct ones immediately
     render();
@@ -557,6 +576,16 @@
         }
       }, 380);
     }, 450);
+  }
+
+  // ─── TOAST ────────────────────────────────────────────────────────────────
+  let toastTimer = null;
+  function showAttemptsToast() {
+    const toast = document.getElementById('attemptToast');
+    toast.textContent = `Attempts left: ${attemptsLeft}`;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
   }
 
   // ─── RESET ────────────────────────────────────────────────────────────────
