@@ -326,36 +326,6 @@
   }
 
   // ─── BOARD SIZING ─────────────────────────────────────────────────────────────
-  function computeAdaptiveZoom(baseScale) {
-    // Zoom in until every piece cell center has image content (alpha > 20).
-    // This eliminates empty/tiny corner pieces for circular or irregular images.
-    let zoom = 1.0;
-    for (let iter = 0; iter < 30; iter++) {
-      const scale = baseScale * zoom;
-      const ox = Math.round(boardW / 2 - (bboxX + bboxW / 2) * scale);
-      const oy = Math.round(boardH / 2 - (bboxY + bboxH / 2) * scale);
-      const drawW = Math.round(bboxIW * scale);
-      const drawH = Math.round(bboxIH * scale);
-      const oc = document.createElement('canvas');
-      oc.width = boardW; oc.height = boardH;
-      const oc2 = oc.getContext('2d');
-      oc2.drawImage(img, ox, oy, drawW, drawH);
-      let d;
-      try { d = oc2.getImageData(0, 0, boardW, boardH).data; } catch(e) { return 1.0; }
-      let allOk = true;
-      for (let r = 0; r < ROWS && allOk; r++) {
-        for (let c = 0; c < COLS && allOk; c++) {
-          const cx = Math.floor((c + 0.5) * pieceW);
-          const cy = Math.floor((r + 0.5) * pieceH);
-          if (d[(cy * boardW + cx) * 4 + 3] < 20) allOk = false;
-        }
-      }
-      if (allOk) break;
-      zoom *= 1.08;
-    }
-    return zoom;
-  }
-
   function calcBoard() {
     const maxSize = Math.min(canvas.width, canvas.height) * 0.90;
     if (bboxAspect >= 1) {
@@ -367,9 +337,7 @@
     }
     pieceW = boardW / COLS;
     pieceH = boardH / ROWS;
-    const baseScale = boardW / bboxW;
-    const zoom = computeAdaptiveZoom(baseScale);
-    const scale = baseScale * zoom;
+    const scale = boardW / bboxW;
     imgDrawW = Math.round(bboxIW * scale);
     imgDrawH = Math.round(bboxIH * scale);
     imgOffX = Math.round(boardW / 2 - (bboxX + bboxW / 2) * scale);
@@ -390,6 +358,22 @@
     return imgData.data[(y * boardW + x) * 4 + 3];
   }
 
+  // ─── COVERAGE CHECK ───────────────────────────────────────────────────────────
+  // Returns fraction of the piece cell (0–1) covered by planet pixels (alpha > 20).
+  const COVERAGE_THRESHOLD = 0.12;
+  function getPieceCoverage(r, c) {
+    const x0 = Math.floor(c * pieceW), y0 = Math.floor(r * pieceH);
+    const x1 = Math.floor((c + 1) * pieceW), y1 = Math.floor((r + 1) * pieceH);
+    let solid = 0, total = 0;
+    for (let y = y0; y < y1; y++) {
+      for (let x = x0; x < x1; x++) {
+        total++;
+        if (getAlpha(x, y) > 20) solid++;
+      }
+    }
+    return total > 0 ? solid / total : 0;
+  }
+
   // ─── PRE-RENDER ───────────────────────────────────────────────────────────────
   function preRenderPiece(piece) {
     const EXTRA = Math.ceil(Math.max(pieceW, pieceH) * TAB_BUMP * 1.2);
@@ -402,13 +386,9 @@
     oc2.save();
     makePath(oc2, pieceW, pieceH, piece.tabs);
     oc2.clip();
-    // Fill with dark space color first so edge pieces are fully solid — no slivers
-    oc2.fillStyle = '#05091a';
-    oc2.fillRect(-EXTRA, -EXTRA, oc.width, oc.height);
-    // Draw the image on top (planet appears where it exists; space fill shows through elsewhere)
+    // Draw only the planet — transparent pixels stay transparent (no background fill)
     oc2.drawImage(img, imgOffX - piece.col * pieceW, imgOffY - piece.row * pieceH, imgDrawW, imgDrawH);
     oc2.restore();
-    // No destination-in pass — every piece is fully opaque and grabbable
 
     piece.offscreen = oc;
     piece.extra = EXTRA;
@@ -444,7 +424,7 @@
         const nr = piece.row+dr, nc = piece.col+dc;
         if (nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
         const neighbor = pieces.find(p=>p.row===nr&&p.col===nc);
-        if (!neighbor || neighbor.groupId === movedGID) continue;
+        if (!neighbor || neighbor.invisible || neighbor.groupId === movedGID) continue;
         const expX = neighbor.x+ox, expY = neighbor.y+oy;
         if (Math.abs(piece.x-expX)<SNAP_DIST && Math.abs(piece.y-expY)<SNAP_DIST) {
           const sdx = expX-piece.x, sdy = expY-piece.y;
@@ -553,8 +533,9 @@
       pieces.push({ row:r, col:c, tabs:pieceTabs(r,c,tabs), x:0, y:0, zIndex:0, groupId:-1 });
       createGroup(idx);
     }
-    pieces.forEach(preRenderPiece);
-    pieces.forEach(p => { p.invisible = false; }); // all pieces are solid — none hidden
+    // Mark pieces that are mostly transparent (tiny edge slivers) as invisible
+    pieces.forEach(p => { p.invisible = getPieceCoverage(p.row, p.col) < COVERAGE_THRESHOLD; });
+    pieces.forEach(p => { if (!p.invisible) preRenderPiece(p); });
     scatter();
     render();
     attachEvents();
@@ -662,7 +643,7 @@
     if (confettiRAF) { cancelAnimationFrame(confettiRAF); confettiRAF=null; }
     groups={}; nextGID=0; maxZ=0;
     const tabs = genTabs();
-    pieces.forEach((p,i) => { p.tabs=pieceTabs(p.row,p.col,tabs); p.zIndex=0; createGroup(i); preRenderPiece(p); });
+    pieces.forEach((p,i) => { p.tabs=pieceTabs(p.row,p.col,tabs); p.zIndex=0; createGroup(i); if (!p.invisible) preRenderPiece(p); });
     scatter(); render();
   }
 
