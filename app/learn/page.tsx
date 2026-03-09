@@ -438,10 +438,11 @@ const games = [
     title: 'Word Sort – Planet Types',
     desc: 'Sort the planets into the correct categories — can you tell your rocky planets from your gas giants?',
     thumb: '/thumb-word-sort.png',
-    url: 'https://view.genially.com/69aa439aa347d5c7ec863318',
+    url: '/word-sort-planet-types.html',
     topic: 'solar-system',
     mini: true,
     types: ['word-sort'],
+    newTab: false,
   },
   {
     title: 'Mission to Mars',
