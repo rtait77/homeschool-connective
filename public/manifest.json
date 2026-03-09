@@ -1,0 +1,13 @@
+{
+  "name": "Homeschool Connective",
+  "short_name": "HC Games",
+  "description": "Interactive, game-based learning for homeschoolers.",
+  "start_url": "/learn",
+  "display": "standalone",
+  "background_color": "#f5f1e9",
+  "theme_color": "#ed7c5a",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

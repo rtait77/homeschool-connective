@@ -18,6 +18,15 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Homeschool Connective',
   description: 'Interactive, game-based learning for homeschoolers and educators.',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'HC Games',
+  },
+  icons: {
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({
