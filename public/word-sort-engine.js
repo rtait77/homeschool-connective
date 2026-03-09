@@ -77,6 +77,7 @@
         font-family: 'Nunito', sans-serif;
         background: url('/space-bg.png') center center / cover no-repeat fixed;
         user-select: none; -webkit-user-select: none;
+        -webkit-text-size-adjust: 100%; text-size-adjust: 100%;
       }
       body { display: flex; flex-direction: column; color: white; }
 
