@@ -107,7 +107,7 @@
         #backBtn { flex: 0 0 auto; margin-bottom: 0; }
         .title-row { flex: 1; justify-content: flex-end; margin-bottom: 0; }
         h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); margin-bottom: 0; }
-        .image-credit { flex: 0 0 100%; text-align: center; }
+        .image-credit { position: fixed; bottom: 8px; left: 0; right: 0; text-align: center; }
       }
       /* ── Compact single-row header ── */
       #header {
