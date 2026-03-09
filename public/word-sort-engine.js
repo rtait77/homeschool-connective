@@ -295,7 +295,7 @@
         #topBar { flex-direction: row; flex-wrap: wrap; gap: 4px; justify-content: center; }
         #attemptsDisplay { position: static; font-size: 0.72rem; }
         #instruction { font-size: 0.72rem; }
-        #wordBank { height: 90px; min-height: 90px; max-height: 90px; flex-shrink: 0; }
+        #wordBank { height: 140px; min-height: 140px; max-height: 140px; flex-shrink: 0; overflow-y: auto; }
         #categories {
           display: flex; flex-direction: column;
           flex: 1; min-height: 0; gap: 6px;
