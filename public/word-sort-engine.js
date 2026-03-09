@@ -119,9 +119,9 @@
       /* ── Blue game area ── */
       #gameArea {
         flex: 1; display: flex; flex-direction: column;
-        margin: 6px 20px 14px;
+        margin: 8px 48px 20px;
         background: #55b6ca; border-radius: 20px;
-        padding: 16px 18px; gap: 12px; overflow: hidden;
+        padding: 12px 14px; gap: 8px; overflow: hidden;
       }
 
       /* ── Top bar: instruction + attempts ── */
@@ -130,18 +130,18 @@
         flex-shrink: 0;
       }
       #instruction {
-        font-size: 0.9rem; font-weight: 700; color: #1c1c1c;
+        font-size: 0.8rem; font-weight: 700; color: #1c1c1c;
       }
       #attemptsDisplay {
-        font-size: 0.9rem; font-weight: 800; color: #1c1c1c; white-space: nowrap;
+        font-size: 0.8rem; font-weight: 800; color: #1c1c1c; white-space: nowrap;
       }
 
       /* ── Word bank ── */
       #wordBank {
         background: white; border: 2px dashed #1c1c1c;
-        border-radius: 12px; padding: 12px 14px;
-        display: flex; flex-wrap: wrap; gap: 8px;
-        min-height: 56px; align-content: flex-start;
+        border-radius: 10px; padding: 8px 10px;
+        display: flex; flex-wrap: wrap; gap: 6px;
+        min-height: 44px; align-content: flex-start;
         transition: background 0.15s;
         flex-shrink: 0;
       }
@@ -149,32 +149,32 @@
 
       /* ── Category grid ── */
       #categories {
-        display: grid; gap: 12px; flex: 1;
+        display: grid; gap: 8px; flex: 1;
         grid-template-columns: repeat(${W.categories.length}, 1fr);
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 12px; padding: 12px 14px;
-        display: flex; flex-direction: column; gap: 8px;
+        border-radius: 10px; padding: 8px 10px;
+        display: flex; flex-direction: column; gap: 6px;
         transition: background 0.15s;
         overflow: hidden;
       }
       .category-zone.drag-over { background: #e8f8fb; }
       .category-label {
-        font-size: 0.95rem; font-weight: 800; color: #1c1c1c;
-        text-align: center; padding-bottom: 8px;
+        font-size: 0.82rem; font-weight: 800; color: #1c1c1c;
+        text-align: center; padding-bottom: 6px;
         border-bottom: 1px solid #ddd;
       }
       .category-words {
-        display: flex; flex-wrap: wrap; gap: 8px;
-        justify-content: flex-end; align-content: flex-start; flex: 1;
+        display: flex; flex-wrap: wrap; gap: 6px;
+        justify-content: flex-start; align-content: flex-start; flex: 1;
       }
 
       /* ── Word chips ── */
       .word-chip {
         background: #e5e64d; color: #1c1c1c;
-        font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800;
-        padding: 6px 16px; border-radius: 20px; border: 1.5px solid #1c1c1c;
+        font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 800;
+        padding: 4px 12px; border-radius: 20px; border: 1.5px solid #1c1c1c;
         cursor: grab; white-space: nowrap;
         transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
         touch-action: none;
@@ -211,8 +211,8 @@
         display: flex; justify-content: center; flex-shrink: 0;
       }
       #checkBtn {
-        font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
-        padding: 10px 32px; border-radius: 10px; cursor: pointer;
+        font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 800;
+        padding: 8px 26px; border-radius: 10px; cursor: pointer;
         background: #ed7c5a; color: white; border: 2px solid #ed7c5a;
         transition: background 0.15s, color 0.15s;
       }
@@ -605,7 +605,26 @@
   function initMusic() {
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
-    soundOn = false;
+
+    // Start as on — will play as soon as browser allows
+    soundOn = true;
+    bgMusic.volume = 0.35;
+
+    // Try immediate autoplay (works on some browsers/contexts)
+    bgMusic.play().then(() => {
+      musicBtn.classList.add('playing');
+    }).catch(() => {
+      // Blocked — start on first user interaction anywhere
+      function unlockAudio() {
+        if (!soundOn) return;
+        bgMusic.play().then(() => { musicBtn.classList.add('playing'); }).catch(() => {});
+        document.removeEventListener('pointerdown', unlockAudio);
+        document.removeEventListener('keydown', unlockAudio);
+      }
+      document.addEventListener('pointerdown', unlockAudio);
+      document.addEventListener('keydown', unlockAudio);
+    });
+
     musicBtn.addEventListener('click', () => {
       soundOn = !soundOn;
       if (soundOn) {
