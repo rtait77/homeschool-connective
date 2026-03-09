@@ -101,7 +101,7 @@
       #header {
         flex-direction: row;
         align-items: center;
-        padding: 6px 12px;
+        padding: 14px 16px 6px;
         gap: 10px;
       }
       #backBtn {
