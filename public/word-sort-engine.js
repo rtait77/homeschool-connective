@@ -5,8 +5,8 @@
 
   let soundOn = false;
   let audioCtx = null;
-  let placements = {}; // word -> category index, or null = word bank
   let locked = new Set();
+  let placements = {}; // word -> category index, or null = word bank
   let wordOrder = [];
 
   const allWords = W.categories.flatMap(c => c.words);
@@ -39,7 +39,7 @@
       const o = ac.createOscillator(), g = ac.createGain();
       o.connect(g); g.connect(ac.destination);
       o.type = 'triangle'; o.frequency.value = 180;
-      g.gain.setValueAtTime(0.45, ac.currentTime);
+      g.gain.setValueAtTime(0.4, ac.currentTime);
       g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.3);
       o.start(ac.currentTime); o.stop(ac.currentTime + 0.3);
     } catch(e) {}
@@ -78,6 +78,7 @@
       }
       body { display: flex; flex-direction: column; }
 
+      /* ── Header ── */
       #header {
         width: 100%; display: flex; flex-direction: row;
         align-items: center; padding: 14px 16px 6px; gap: 10px; flex-shrink: 0;
@@ -113,83 +114,86 @@
         h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
       }
 
+      /* ── Game area ── */
       #gameArea {
         flex: 1; display: flex; flex-direction: column;
         align-items: center; justify-content: center;
-        padding: 12px 16px; gap: 12px; overflow: hidden;
-      }
-      #instruction {
-        font-size: 0.9rem; color: rgba(255,255,255,0.75); font-weight: 700;
+        padding: 16px 20px; gap: 14px; overflow: hidden;
       }
 
+      /* ── Word bank ── */
       #wordBank {
-        width: 100%; max-width: 780px;
-        background: rgba(255,255,255,0.08); border: 2px dashed rgba(255,255,255,0.3);
-        border-radius: 14px; padding: 12px 14px;
-        display: flex; flex-wrap: wrap; gap: 8px;
-        min-height: 58px; align-content: flex-start;
+        width: 100%; max-width: 820px;
+        background: rgba(255,255,255,0.12); border: 2px dashed rgba(255,255,255,0.35);
+        border-radius: 16px; padding: 14px 16px;
+        display: flex; flex-wrap: wrap; gap: 10px;
+        min-height: 62px; align-content: flex-start;
         transition: border-color 0.15s, background 0.15s;
       }
-      #wordBank.drag-over { border-color: #FFD700; background: rgba(255,215,0,0.1); }
+      #wordBank.drag-over { border-color: #FFD700; background: rgba(255,215,0,0.12); }
 
+      /* ── Categories ── */
       #categories {
-        width: 100%; max-width: 780px;
-        display: grid; gap: 12px;
+        width: 100%; max-width: 820px;
+        display: grid; gap: 14px;
         grid-template-columns: repeat(${W.categories.length}, 1fr);
       }
       .category-zone {
-        background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.25);
-        border-radius: 14px; padding: 12px 14px; min-height: 120px;
-        display: flex; flex-direction: column; gap: 8px;
+        background: #2a6478; border: 3px solid #3a8fa8;
+        border-radius: 16px; padding: 16px 18px; min-height: 180px;
+        display: flex; flex-direction: column; gap: 10px;
         transition: border-color 0.15s, background 0.15s;
       }
-      .category-zone.drag-over { border-color: #55b6ca; background: rgba(85,182,202,0.18); }
+      .category-zone.drag-over { border-color: #FFD700; background: #1e5268; }
       .category-label {
-        font-size: 0.82rem; font-weight: 800; color: rgba(255,255,255,0.85);
-        text-align: center; letter-spacing: 0.05em; text-transform: uppercase;
-        padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.15);
+        font-size: 1rem; font-weight: 800; color: white;
+        text-align: center; letter-spacing: 0.03em;
+        padding-bottom: 10px; border-bottom: 2px solid rgba(255,255,255,0.2);
       }
       .category-words {
         display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; flex: 1;
       }
 
+      /* ── Word chips ── */
       .word-chip {
         background: white; color: #1c1c1c;
-        font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800;
-        padding: 6px 16px; border-radius: 20px; border: 2px solid transparent;
-        cursor: grab; transition: transform 0.1s, box-shadow 0.1s, background 0.15s, border-color 0.15s;
+        font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
+        padding: 7px 18px; border-radius: 20px; border: 2px solid transparent;
+        cursor: grab; transition: transform 0.1s, box-shadow 0.1s, background 0.2s, border-color 0.2s;
         touch-action: none; white-space: nowrap;
       }
-      .word-chip:hover:not(.correct) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-      .word-chip.dragging { opacity: 0.25; cursor: grabbing; }
+      .word-chip:hover:not(.correct) { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+      .word-chip.dragging { opacity: 0.2; cursor: grabbing; }
       .word-chip.correct { background: #86efac; border-color: #22c55e; cursor: default; }
       .word-chip.incorrect { background: #fca5a5; border-color: #ef4444; animation: shake 0.4s ease; }
       @keyframes shake {
         0%,100% { transform: translateX(0); }
-        20%,60% { transform: translateX(-7px); }
-        40%,80% { transform: translateX(7px); }
+        20%,60% { transform: translateX(-8px); }
+        40%,80% { transform: translateX(8px); }
       }
 
+      /* ── Floating drag clone ── */
       #dragClone {
         position: fixed; pointer-events: none; z-index: 100; display: none;
         background: #FFD700; color: #1c1c1c;
-        font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800;
-        padding: 6px 16px; border-radius: 20px; border: 2px solid #e0b800;
+        font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
+        padding: 7px 18px; border-radius: 20px; border: 2px solid #e0b800;
         box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         transform: rotate(3deg) scale(1.08); white-space: nowrap;
       }
 
+      /* ── Reset button ── */
       #btnRow { display: flex; gap: 10px; }
-      .game-btn {
+      #resetBtn {
         font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 800;
-        padding: 10px 24px; border-radius: 10px; cursor: pointer;
-        transition: background 0.15s, color 0.15s, border-color 0.15s;
+        padding: 10px 28px; border-radius: 10px; cursor: pointer;
+        background: rgba(255,255,255,0.15); color: white;
+        border: 2px solid rgba(255,255,255,0.35);
+        transition: background 0.15s, border-color 0.15s;
       }
-      #checkBtn { background: #ed7c5a; color: white; border: 2px solid #ed7c5a; }
-      #checkBtn:hover { background: white; color: #ed7c5a; }
-      #resetBtn { background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.3); }
-      #resetBtn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+      #resetBtn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.55); }
 
+      /* ── Confetti ── */
       #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
     `;
     document.head.appendChild(style);
@@ -224,11 +228,6 @@
     const gameArea = document.createElement('div');
     gameArea.id = 'gameArea';
 
-    const instr = document.createElement('p');
-    instr.id = 'instruction';
-    instr.textContent = 'Drag each word to the correct category.';
-    gameArea.appendChild(instr);
-
     const wordBank = document.createElement('div');
     wordBank.id = 'wordBank';
     gameArea.appendChild(wordBank);
@@ -255,20 +254,13 @@
 
     const btnRow = document.createElement('div');
     btnRow.id = 'btnRow';
-
     const resetBtn = document.createElement('button');
     resetBtn.id = 'resetBtn';
-    resetBtn.className = 'game-btn';
     resetBtn.textContent = 'Reset';
     btnRow.appendChild(resetBtn);
-
-    const checkBtn = document.createElement('button');
-    checkBtn.id = 'checkBtn';
-    checkBtn.className = 'game-btn';
-    checkBtn.textContent = 'Check Answers';
-    btnRow.appendChild(checkBtn);
-
     gameArea.appendChild(btnRow);
+
+    document.body.appendChild(gameArea);
 
     const cc = document.createElement('canvas');
     cc.id = 'confettiCanvas';
@@ -284,9 +276,6 @@
     const clone = document.createElement('div');
     clone.id = 'dragClone';
     document.body.appendChild(clone);
-
-    gameArea.appendChild(document.createElement('div')); // spacer
-    document.body.appendChild(gameArea);
   }
 
   // ─── STATE ────────────────────────────────────────────────────────────────
@@ -305,16 +294,12 @@
   function render() {
     const wordBank = document.getElementById('wordBank');
     wordBank.innerHTML = '';
-    wordOrder.filter(w => placements[w] === null).forEach(w => {
-      wordBank.appendChild(makeChip(w));
-    });
+    wordOrder.filter(w => placements[w] === null).forEach(w => wordBank.appendChild(makeChip(w)));
 
     W.categories.forEach((_, i) => {
-      const wordsEl = document.querySelector(`.category-zone[data-cat-index="${i}"] .category-words`);
-      wordsEl.innerHTML = '';
-      wordOrder.filter(w => placements[w] === i).forEach(w => {
-        wordsEl.appendChild(makeChip(w));
-      });
+      const el = document.querySelector(`.category-zone[data-cat-index="${i}"] .category-words`);
+      el.innerHTML = '';
+      wordOrder.filter(w => placements[w] === i).forEach(w => el.appendChild(makeChip(w)));
     });
   }
 
@@ -376,65 +361,57 @@
     if (!dragging) return;
     const src = e.changedTouches ? e.changedTouches[0] : e;
     const { clientX: x, clientY: y } = src;
+    const word = dragging;
 
     document.getElementById('dragClone').style.display = 'none';
     document.querySelectorAll('.category-zone, #wordBank').forEach(z => z.classList.remove('drag-over'));
 
-    let placed = false;
+    // Find drop target
+    let droppedCatIndex = null;
     document.querySelectorAll('.category-zone').forEach(z => {
       const r = z.getBoundingClientRect();
       if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-        placements[dragging] = parseInt(z.dataset.catIndex);
-        placed = true;
+        droppedCatIndex = parseInt(z.dataset.catIndex);
       }
     });
-    if (!placed) {
-      const r = document.getElementById('wordBank').getBoundingClientRect();
-      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-        placements[dragging] = null;
-      }
-    }
 
     dragging = null;
-    render();
+
+    if (droppedCatIndex === null) {
+      // Dropped outside any zone — return to bank
+      placements[word] = null;
+      render();
+      return;
+    }
+
+    // Check immediately
+    const correct = W.categories[droppedCatIndex].words.includes(word);
+    if (correct) {
+      placements[word] = droppedCatIndex;
+      locked.add(word);
+      playCorrect();
+      render();
+      if (locked.size === allWords.length) {
+        setTimeout(() => { playWin(); launchConfetti(); }, 300);
+      }
+    } else {
+      // Show briefly in the wrong zone, shake, then return to bank
+      placements[word] = droppedCatIndex;
+      render();
+      playWrong();
+      const chip = document.querySelector(`.word-chip[data-word="${word}"]`);
+      if (chip) chip.classList.add('incorrect');
+      setTimeout(() => {
+        placements[word] = null;
+        render();
+      }, 600);
+    }
   }
 
   window.addEventListener('mousemove', onDragMove);
   window.addEventListener('touchmove', onDragMove, { passive: false });
   window.addEventListener('mouseup', onDragEnd);
   window.addEventListener('touchend', onDragEnd);
-
-  // ─── CHECK ANSWERS ────────────────────────────────────────────────────────
-  function checkAnswers() {
-    let anyNew = false;
-    let anyWrong = false;
-
-    W.categories.forEach((c, i) => {
-      wordOrder.filter(w => placements[w] === i && !locked.has(w)).forEach(w => {
-        if (c.words.includes(w)) {
-          locked.add(w);
-          anyNew = true;
-        } else {
-          anyWrong = true;
-          // Flash red then remove class after animation
-          const chip = document.querySelector(`.word-chip[data-word="${w}"]`);
-          if (chip) {
-            chip.classList.add('incorrect');
-            setTimeout(() => chip && chip.classList.remove('incorrect'), 500);
-          }
-        }
-      });
-    });
-
-    if (anyNew) playCorrect();
-    if (anyWrong) playWrong();
-
-    if (locked.size === allWords.length) {
-      setTimeout(() => { playWin(); launchConfetti(); }, 300);
-    }
-
-    render();
-  }
 
   // ─── RESET ────────────────────────────────────────────────────────────────
   function reset() {
@@ -500,7 +477,6 @@
     initState();
     render();
     initMusic();
-    document.getElementById('checkBtn').addEventListener('click', checkAnswers);
     document.getElementById('resetBtn').addEventListener('click', reset);
   }
 
