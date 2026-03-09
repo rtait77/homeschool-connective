@@ -121,6 +121,7 @@
         display: flex; flex-direction: column;
         width: 100%; max-width: 920px;
         margin: 40px auto 20px;
+        padding-left: 28px; padding-right: 28px;
         align-self: center;
         background: #55b6ca; border-radius: 20px;
         padding: 12px 14px; gap: 8px;
@@ -170,13 +171,13 @@
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 10px; padding: 8px 10px; height: 280px;
+        border-radius: 10px; padding: 8px 10px; height: 160px;
         display: flex; flex-direction: column; gap: 6px;
         transition: background 0.15s; overflow-y: auto;
       }
       .category-zone.drag-over { background: #e8f8fb; }
       .category-label {
-        font-size: 0.82rem; font-weight: 800; color: #1c1c1c;
+        font-size: 1rem; font-weight: 800; color: #1c1c1c;
         text-align: center; padding-bottom: 6px;
         border-bottom: 1px solid #ddd;
       }
