@@ -2,7 +2,7 @@
   'use strict';
 
   const M = window.MATCHING;
-  const COLS = 4;
+  const COLS = M.cols || 4;
   const ROWS = Math.ceil(M.pairs.length * 2 / COLS);
   const GAP = 10;
   const PAD = 14;
