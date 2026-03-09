@@ -97,6 +97,18 @@
         text-align: center;
         letter-spacing: 0.03em;
       }
+      /* ── Portrait mobile: back left, title right, credit below ── */
+      @media (orientation: portrait) and (max-width: 768px) {
+        #header {
+          flex-wrap: wrap;
+          padding: 10px 12px 4px;
+          gap: 6px;
+        }
+        #backBtn { flex: 0 0 auto; margin-bottom: 0; }
+        .title-row { flex: 1; justify-content: flex-end; margin-bottom: 0; }
+        h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); margin-bottom: 0; }
+        .image-credit { flex: 0 0 100%; text-align: center; }
+      }
       /* ── Compact single-row header ── */
       #header {
         flex-direction: row;
