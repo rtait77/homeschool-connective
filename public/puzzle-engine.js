@@ -98,7 +98,7 @@
         letter-spacing: 0.03em;
       }
       /* ── Landscape: collapse header into one compact row ── */
-      @media (orientation: landscape) and (max-height: 600px) {
+      @media (orientation: landscape) {
         #header {
           flex-direction: row;
           align-items: center;
