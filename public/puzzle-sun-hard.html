@@ -440,7 +440,7 @@ function setup() {
   canvas.height = window.innerHeight - headerH;
 
   // Board is 72% of the smaller canvas dimension — leaves room around edges to drag pieces
-  boardW = boardH = Math.floor(Math.min(canvas.width, canvas.height) * 0.72);
+  boardW = boardH = Math.floor(Math.min(canvas.width, canvas.height) * 0.90);
   pieceW = boardW / COLS;
   pieceH = boardH / ROWS;
 
