@@ -114,14 +114,20 @@
       @media (orientation: portrait) and (max-width: 768px) {
         #header { flex-wrap: wrap; padding: 10px 12px 4px; gap: 6px; }
         h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
-        #gameArea { margin: 8px 10px 14px; padding: 10px 12px 14px; gap: 8px; }
+        #gameArea {
+          margin: 8px 8px 14px;
+          padding: 10px 10px 14px; gap: 8px;
+          max-width: 100%;
+        }
         #topBar { flex-direction: column; align-items: center; gap: 2px; }
         #attemptsDisplay { position: static; }
-        #instruction, #attemptsDisplay { font-size: 0.8rem; }
-        #wordBank { height: auto; min-height: 60px; max-height: 180px; }
-        .category-zone { height: 150px; min-height: 150px; max-height: 150px; }
-        .word-chip { font-size: 0.82rem; padding: 5px 11px; }
-        .category-label { font-size: 0.88rem; }
+        #instruction, #attemptsDisplay { font-size: 0.75rem; }
+        #wordBank { height: auto; min-height: 60px; max-height: 160px; }
+        #categories { grid-template-columns: 1fr; }
+        .category-zone { height: 130px; min-height: 130px; max-height: 130px; }
+        .word-chip { font-size: 0.75rem; padding: 4px 10px; }
+        .category-label { font-size: 0.85rem; }
+        #checkBtn { width: 100%; }
       }
 
       /* ── Blue game area ── */
