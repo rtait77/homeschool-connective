@@ -118,10 +118,10 @@
 
       /* ── Blue game area ── */
       #gameArea {
-        flex: 1; display: flex; flex-direction: column;
+        display: flex; flex-direction: column;
         margin: 8px 48px 20px;
         background: #55b6ca; border-radius: 20px;
-        padding: 12px 14px; gap: 8px; overflow: hidden;
+        padding: 12px 14px; gap: 8px;
       }
 
       /* ── Top bar: instruction + attempts ── */
@@ -149,15 +149,14 @@
 
       /* ── Category grid ── */
       #categories {
-        display: grid; gap: 8px; flex: 1;
+        display: grid; gap: 8px;
         grid-template-columns: repeat(${W.categories.length}, 1fr);
       }
       .category-zone {
         background: white; border: 2px solid #1c1c1c;
-        border-radius: 10px; padding: 8px 10px;
+        border-radius: 10px; padding: 8px 10px; min-height: 60px;
         display: flex; flex-direction: column; gap: 6px;
         transition: background 0.15s;
-        overflow: hidden;
       }
       .category-zone.drag-over { background: #e8f8fb; }
       .category-label {
