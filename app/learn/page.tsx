@@ -521,6 +521,13 @@ export default function GamesPage() {
 
       setUserId(user.id)
 
+      // Admin always has full access
+      if (user.email === 'support@homeschoolconnective.com') {
+        setHasAccess(true)
+        setAuthChecked(true)
+        return
+      }
+
       const { data: profile } = await supabase
         .from('profiles')
         .select('trial_end, subscription_status')
