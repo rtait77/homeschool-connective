@@ -475,6 +475,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Word Sort – Jupiter/Saturn Moons',
+    desc: 'Sort the moons into the right planet — do you know which moons belong to Jupiter and which to Saturn?',
+    thumb: '/word-sort-jupiter-saturn-moons-thumbnail.png',
+    url: '/word-sort-jupiter-saturn-moons.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['word-sort'],
+    newTab: false,
+  },
+  {
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
