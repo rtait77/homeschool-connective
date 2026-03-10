@@ -35,6 +35,10 @@ export default function DashboardPage() {
   const [status, setStatus] = useState('')
   const [trialEnd, setTrialEnd] = useState<Date | null>(null)
   const [favorites, setFavorites] = useState<string[]>([])
+  const [billingLoading, setBillingLoading] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [hasStripe, setHasStripe] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -50,12 +54,13 @@ export default function DashboardPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('trial_end, subscription_status')
+        .select('trial_end, subscription_status, stripe_customer_id')
         .eq('id', user.id)
         .single()
 
       setStatus(profile?.subscription_status ?? '')
       setTrialEnd(profile?.trial_end ? new Date(profile.trial_end) : null)
+      setHasStripe(!!profile?.stripe_customer_id)
 
       const { data: favData } = await supabase
         .from('favorites')
@@ -78,6 +83,26 @@ export default function DashboardPage() {
     } else {
       await supabase.from('favorites').insert({ user_id: user.id, game_title: title })
       setFavorites(prev => [...prev, title])
+    }
+  }
+
+  async function openBillingPortal() {
+    setBillingLoading(true)
+    const res = await fetch('/api/billing-portal', { method: 'POST' })
+    const { url, error } = await res.json()
+    if (url) window.location.href = url
+    else { alert(error || 'Could not open billing portal.'); setBillingLoading(false) }
+  }
+
+  async function deleteAccount() {
+    setDeleteLoading(true)
+    const res = await fetch('/api/delete-account', { method: 'POST' })
+    if (res.ok) {
+      await supabase.auth.signOut()
+      router.push('/')
+    } else {
+      alert('Something went wrong. Please contact support@homeschoolconnective.com.')
+      setDeleteLoading(false)
     }
   }
 
@@ -130,6 +155,92 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Your Account */}
+      <div className="mb-12">
+        <h2 className="text-xl font-extrabold mb-4">Your Account</h2>
+        <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5] flex flex-col gap-5" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+
+          {/* Account info */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Email</p>
+              <p className="font-semibold text-sm">{email}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Plan</p>
+              {isActive && <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>}
+              {isTrialing && <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">{daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial</span>}
+              {!isActive && !isTrialing && <span className="text-sm text-[#5c5c5c]">No active plan</span>}
+            </div>
+          </div>
+
+          <hr className="border-[#e2ddd5]" />
+
+          {/* Billing portal */}
+          {hasStripe ? (
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="font-bold text-sm mb-0.5">Billing & Subscription</p>
+                <p className="text-xs text-[#5c5c5c]">Update your payment method, view invoices, or cancel your subscription.</p>
+              </div>
+              <button
+                onClick={openBillingPortal}
+                disabled={billingLoading}
+                className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#55b6ca] text-[#55b6ca] hover:bg-[#55b6ca] hover:text-white transition disabled:opacity-50 whitespace-nowrap"
+              >
+                {billingLoading ? 'Loading...' : 'Manage Billing'}
+              </button>
+            </div>
+          ) : isTrialing ? (
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="font-bold text-sm mb-0.5">Subscribe</p>
+                <p className="text-xs text-[#5c5c5c]">Keep access after your trial ends.</p>
+              </div>
+              <Link href="/pricing" className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#ed7c5a] text-[#ed7c5a] hover:bg-[#ed7c5a] hover:text-white transition whitespace-nowrap">
+                View Plans
+              </Link>
+            </div>
+          ) : null}
+
+          <hr className="border-[#e2ddd5]" />
+
+          {/* Delete account */}
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <p className="font-bold text-sm mb-0.5">Delete Account</p>
+              <p className="text-xs text-[#5c5c5c]">Permanently delete your account and all your data. This cannot be undone.</p>
+            </div>
+            {!deleteConfirm ? (
+              <button
+                onClick={() => setDeleteConfirm(true)}
+                className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-red-400 hover:text-red-500 transition whitespace-nowrap"
+              >
+                Delete Account
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-xs text-red-500 font-bold">Are you sure?</p>
+                <button
+                  onClick={deleteAccount}
+                  disabled={deleteLoading}
+                  className="text-sm font-bold px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
+                >
+                  {deleteLoading ? 'Deleting...' : 'Yes, delete'}
+                </button>
+                <button
+                  onClick={() => setDeleteConfirm(false)}
+                  className="text-sm font-bold px-4 py-2 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-[#1c1c1c] transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+
+        </div>
       </div>
 
       {/* New Games */}

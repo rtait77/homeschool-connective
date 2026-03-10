@@ -47,7 +47,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-extrabold mb-2">Our content</h2>
-          <p className="text-sm text-[#3c3c3c]">All games, lessons, and educational content on this site are owned by Homeschool Connective, LLC unless otherwise credited. Some planet images are courtesy of NASA and used in accordance with NASA's media usage guidelines.</p>
+          <p className="text-sm text-[#3c3c3c]">All games, lessons, and educational content on this site are owned by Homeschool Connective, LLC unless otherwise credited.</p>
         </section>
 
         <section>
