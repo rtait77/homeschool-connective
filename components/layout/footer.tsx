@@ -25,6 +25,8 @@ export default function Footer() {
           <li><Link href="/about" className="text-[#5c5c5c] hover:text-[#ed7c5a] transition-colors">About</Link></li>
           <li><Link href="/tips" className="text-[#5c5c5c] hover:text-[#ed7c5a] transition-colors">Homeschool Tips</Link></li>
           <li><Link href="/contact" className="text-[#5c5c5c] hover:text-[#ed7c5a] transition-colors">Contact</Link></li>
+          <li><Link href="/privacy" className="text-[#5c5c5c] hover:text-[#ed7c5a] transition-colors">Privacy Policy</Link></li>
+          <li><Link href="/terms" className="text-[#5c5c5c] hover:text-[#ed7c5a] transition-colors">Terms of Service</Link></li>
         </ul>
         <p className="text-xs text-[#5c5c5c]">© 2026 Homeschool Connective, LLC. All rights reserved.</p>
       </div>
