@@ -437,7 +437,7 @@ const games = [
   {
     title: 'Word Sort – Planet Types',
     desc: 'Sort the planets into the correct categories — can you tell your rocky planets from your gas giants?',
-    thumb: '/thumb-word-sort.png',
+    thumb: '/word-sort-planet-types-thumbnail.png',
     url: '/word-sort-planet-types.html',
     topic: 'solar-system',
     mini: true,
@@ -447,7 +447,7 @@ const games = [
   {
     title: 'Word Sort – Has Moons vs No Moons',
     desc: 'Which planets have moons and which don\'t? Sort them into the right groups!',
-    thumb: '/thumb-word-sort.png',
+    thumb: '/word-sort-moons-no-moons-thumbnail.png',
     url: '/word-sort-moons.html',
     topic: 'solar-system',
     mini: true,
@@ -457,7 +457,7 @@ const games = [
   {
     title: 'Word Sort – Has Rings vs No Rings',
     desc: 'Not just Saturn! Sort all eight planets by whether they have rings or not.',
-    thumb: '/thumb-word-sort.png',
+    thumb: '/word-sort-rings-no-rings-thumbnail.png',
     url: '/word-sort-rings.html',
     topic: 'solar-system',
     mini: true,
@@ -467,7 +467,7 @@ const games = [
   {
     title: 'Word Sort – Has Atmosphere vs No Atmosphere',
     desc: 'Which planets have an atmosphere? Sort them and find out!',
-    thumb: '/thumb-word-sort.png',
+    thumb: '/word-sort-atmosphere-no-atmosphere-thumbnail.png',
     url: '/word-sort-atmosphere.html',
     topic: 'solar-system',
     mini: true,
