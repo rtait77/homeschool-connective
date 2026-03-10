@@ -20,7 +20,7 @@ export async function GET() {
 
     const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!.trim()
+      process.env.SUPABASE_SERVICE_ROLE_KEY!.replace(/\s+/g, '')
     )
 
     // All plays with user info
