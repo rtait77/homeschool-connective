@@ -15,6 +15,21 @@
   let locked = false;
   let cardData = [];
 
+  // ─── ANALYTICS ────────────────────────────────────────────────────────────────
+  let _playId = null, _playStart = Date.now(), _gameCompleted = false;
+  function trackStart() {
+    fetch('/api/track/play-start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ game_title: M.title }) })
+      .then(r => r.json()).then(d => { _playId = d.play_id; }).catch(() => {});
+  }
+  function trackEnd(completed) {
+    if (!_playId) return;
+    const id = _playId; _playId = null;
+    const body = JSON.stringify({ play_id: id, completed, duration_seconds: Math.round((Date.now() - _playStart) / 1000) });
+    if (navigator.sendBeacon) { navigator.sendBeacon('/api/track/play-end', new Blob([body], { type: 'application/json' })); }
+    else { fetch('/api/track/play-end', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {}); }
+  }
+  window.addEventListener('pagehide', () => { if (!_gameCompleted) trackEnd(false); });
+
   // ─── AUDIO ────────────────────────────────────────────────────────────────────
   function getAC() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -403,6 +418,7 @@
       flipped = [];
       locked = false;
       if (matched.size === M.pairs.length) {
+        _gameCompleted = true; trackEnd(true);
         setTimeout(() => {
           playWin();
           launchConfetti();
@@ -492,6 +508,7 @@
     document.getElementById('resetBtn').addEventListener('click', resetGame);
     initMusic();
     setup();
+    trackStart();
   }
 
   if (document.readyState === 'loading') {

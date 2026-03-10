@@ -15,6 +15,21 @@
   let audioCtx = null;
   let soundOn = true;
 
+  // ─── ANALYTICS ────────────────────────────────────────────────────────────────
+  let _playId = null, _playStart = Date.now(), _gameCompleted = false;
+  function trackStart() {
+    fetch('/api/track/play-start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ game_title: P.title }) })
+      .then(r => r.json()).then(d => { _playId = d.play_id; }).catch(() => {});
+  }
+  function trackEnd(completed) {
+    if (!_playId) return;
+    const id = _playId; _playId = null;
+    const body = JSON.stringify({ play_id: id, completed, duration_seconds: Math.round((Date.now() - _playStart) / 1000) });
+    if (navigator.sendBeacon) { navigator.sendBeacon('/api/track/play-end', new Blob([body], { type: 'application/json' })); }
+    else { fetch('/api/track/play-end', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {}); }
+  }
+  window.addEventListener('pagehide', () => { if (!_gameCompleted) trackEnd(false); });
+
   // ─── DOM INJECTION ────────────────────────────────────────────────────────────
   function buildDOM() {
     // Font
@@ -648,6 +663,7 @@
       dragLastX = x; dragLastY = y;
       const snapped = trySnap(dragging.groupId);
       if (snapped && checkWin()) {
+        _gameCompleted = true; trackEnd(true);
         setTimeout(() => { playWin(); launchConfetti(); document.getElementById('resetBtn').classList.add('show'); }, 250);
         dragging = null; canvas.style.cursor = 'default';
       }
@@ -661,6 +677,7 @@
     const snapped = trySnap(dragging.groupId);
     if (snapped) {
       if (checkWin()) {
+        _gameCompleted = true; trackEnd(true);
         setTimeout(() => { playWin(); launchConfetti(); document.getElementById('resetBtn').classList.add('show'); }, 250);
       }
       render();
@@ -753,6 +770,7 @@
     };
     img.onerror = () => alert('Could not load puzzle image.');
     img.src = P.image;
+    trackStart();
   }
 
   if (document.readyState === 'loading') {

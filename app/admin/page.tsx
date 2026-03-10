@@ -32,6 +32,29 @@ type Revenue = {
   recentPayments: { id: string; amount: number; email: string; created: string }[]
 }
 
+type GameStat = {
+  title: string
+  plays: number
+  completions: number
+  avgDuration: number | null
+}
+
+type RecentPlay = {
+  id: string
+  game_title: string
+  email: string
+  duration_seconds: number | null
+  completed: boolean
+  started_at: string
+}
+
+type Gameplay = {
+  totalPlays: number
+  totalCompletions: number
+  gameStats: GameStat[]
+  recentPlays: RecentPlay[]
+}
+
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-[#d1f5ea] text-[#1a7a52]',
   trialing: 'bg-[#fff3e0] text-[#b45309]',
@@ -63,18 +86,23 @@ export default function AdminPage() {
   const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'users' | 'revenue'>('overview')
+  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay'>('overview')
 
   const [stats, setStats] = useState<Stats | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
 
   const [users, setUsers] = useState<UserRow[]>([])
   const [usersLoading, setUsersLoading] = useState(false)
+  const [usersError, setUsersError] = useState('')
   const [userSearch, setUserSearch] = useState('')
   const [userStatusFilter, setUserStatusFilter] = useState('all')
 
   const [revenue, setRevenue] = useState<Revenue | null>(null)
   const [revenueLoading, setRevenueLoading] = useState(false)
+
+  const [gameplay, setGameplay] = useState<Gameplay | null>(null)
+  const [gameplayLoading, setGameplayLoading] = useState(false)
+  const [gameplayError, setGameplayError] = useState('')
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -107,10 +135,15 @@ export default function AdminPage() {
   useEffect(() => {
     if (!isAdmin || tab !== 'users' || users.length > 0) return
     setUsersLoading(true)
+    setUsersError('')
     fetch('/api/admin/users')
       .then(r => r.json())
-      .then(data => { setUsers(data.users ?? []); setUsersLoading(false) })
-      .catch(() => setUsersLoading(false))
+      .then(data => {
+        if (data.error) { setUsersError(`${data.error}${data.detail ? ': ' + data.detail : ''}`); setUsersLoading(false); return }
+        setUsers(data.users ?? [])
+        setUsersLoading(false)
+      })
+      .catch(e => { setUsersError(e.message); setUsersLoading(false) })
   }, [isAdmin, tab])
 
   // Load revenue when tab changes to 'revenue'
@@ -121,6 +154,21 @@ export default function AdminPage() {
       .then(r => r.json())
       .then(data => { setRevenue(data); setRevenueLoading(false) })
       .catch(() => setRevenueLoading(false))
+  }, [isAdmin, tab])
+
+  // Load gameplay when tab changes to 'gameplay'
+  useEffect(() => {
+    if (!isAdmin || tab !== 'gameplay' || gameplay) return
+    setGameplayLoading(true)
+    setGameplayError('')
+    fetch('/api/admin/gameplay')
+      .then(r => r.json())
+      .then(data => {
+        if (data.error) { setGameplayError(data.error); setGameplayLoading(false); return }
+        setGameplay(data)
+        setGameplayLoading(false)
+      })
+      .catch(e => { setGameplayError(e.message); setGameplayLoading(false) })
   }, [isAdmin, tab])
 
   if (!authChecked) {
@@ -139,6 +187,7 @@ export default function AdminPage() {
     { id: 'overview', label: 'Overview' },
     { id: 'users', label: 'Users' },
     { id: 'revenue', label: 'Revenue' },
+    { id: 'gameplay', label: 'Gameplay' },
   ] as const
 
   return (
@@ -232,6 +281,7 @@ export default function AdminPage() {
           </div>
 
           {usersLoading && <p className="text-sm text-[#5c5c5c]">Loading users...</p>}
+          {usersError && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-4 py-3">{usersError}</p>}
 
           {!usersLoading && (
             <div className="overflow-x-auto rounded-2xl border border-[#e2ddd5]" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
@@ -332,6 +382,106 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* GAMEPLAY TAB */}
+      {tab === 'gameplay' && (
+        <div>
+          {gameplayLoading && <p className="text-sm text-[#5c5c5c]">Loading gameplay data...</p>}
+          {gameplayError && <p className="text-sm text-red-500 bg-red-50 rounded-lg px-4 py-3">{gameplayError}</p>}
+          {gameplay && (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                <StatCard label="Total Plays" value={gameplay.totalPlays} sub="all custom games" />
+                <StatCard label="Completions" value={gameplay.totalCompletions} />
+                <StatCard
+                  label="Completion Rate"
+                  value={gameplay.totalPlays > 0 ? `${Math.round((gameplay.totalCompletions / gameplay.totalPlays) * 100)}%` : '—'}
+                />
+              </div>
+
+              {/* Per-game stats */}
+              <div className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden mb-8" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <div className="px-6 py-4 border-b border-[#e2ddd5]">
+                  <h2 className="font-extrabold text-base">Games by Popularity</h2>
+                </div>
+                {gameplay.gameStats.length === 0 ? (
+                  <p className="px-6 py-8 text-sm text-[#5c5c5c] text-center">No plays recorded yet.</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-[#f5f1e9] text-left">
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Game</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Plays</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Completions</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Avg Time</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#e2ddd5]">
+                      {gameplay.gameStats.map(g => (
+                        <tr key={g.title} className="bg-white hover:bg-[#fafaf8] transition-colors">
+                          <td className="px-4 py-3 font-semibold text-[#1c1c1c]">{g.title}</td>
+                          <td className="px-4 py-3 text-[#1c1c1c]">{g.plays}</td>
+                          <td className="px-4 py-3 text-[#1c1c1c]">
+                            {g.completions} {g.plays > 0 && <span className="text-xs text-[#5c5c5c]">({Math.round((g.completions / g.plays) * 100)}%)</span>}
+                          </td>
+                          <td className="px-4 py-3 text-[#5c5c5c]">
+                            {g.avgDuration != null ? formatDuration(g.avgDuration) : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+
+              {/* Recent plays */}
+              <div className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <div className="px-6 py-4 border-b border-[#e2ddd5]">
+                  <h2 className="font-extrabold text-base">Recent Plays</h2>
+                </div>
+                {gameplay.recentPlays.length === 0 ? (
+                  <p className="px-6 py-8 text-sm text-[#5c5c5c] text-center">No plays recorded yet.</p>
+                ) : (
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-[#f5f1e9] text-left">
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">User</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Game</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Duration</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Completed</th>
+                        <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#e2ddd5]">
+                      {gameplay.recentPlays.map(p => (
+                        <tr key={p.id} className="bg-white hover:bg-[#fafaf8] transition-colors">
+                          <td className="px-4 py-3 text-[#1c1c1c] font-semibold truncate max-w-[200px]">{p.email}</td>
+                          <td className="px-4 py-3 text-[#1c1c1c]">{p.game_title}</td>
+                          <td className="px-4 py-3 text-[#5c5c5c]">{p.duration_seconds != null ? formatDuration(p.duration_seconds) : '—'}</td>
+                          <td className="px-4 py-3">
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.completed ? 'bg-[#d1f5ea] text-[#1a7a52]' : 'bg-[#f3f4f6] text-[#6b7280]'}`}>
+                              {p.completed ? 'Yes' : 'No'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-[#5c5c5c]">
+                            {new Date(p.started_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
     </div>
   )
+}
+
+function formatDuration(seconds: number) {
+  if (seconds < 60) return `${seconds}s`
+  const m = Math.floor(seconds / 60), s = seconds % 60
+  return s > 0 ? `${m}m ${s}s` : `${m}m`
 }
