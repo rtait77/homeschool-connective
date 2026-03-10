@@ -156,10 +156,10 @@ export default function AdminPage() {
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all -mb-px ${
+            className={`px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all -mb-px cursor-pointer ${
               tab === t.id
                 ? 'border-[#ed7c5a] text-[#ed7c5a] bg-white'
-                : 'border-transparent text-[#5c5c5c] hover:text-[#1c1c1c]'
+                : 'border-transparent text-[#5c5c5c] hover:text-[#ed7c5a]'
             }`}
           >
             {t.label}
