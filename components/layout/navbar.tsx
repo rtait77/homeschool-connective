@@ -21,6 +21,15 @@ const memberLinks = [
   { href: '/about', label: 'About' },
 ]
 
+const adminLinks = [
+  { href: '/admin', label: 'Admin' },
+  { href: '/learn', label: 'Learn' },
+  { href: '/tips', label: 'Homeschool Tips' },
+  { href: '/about', label: 'About' },
+]
+
+const ADMIN_EMAIL = 'support@homeschoolconnective.com'
+
 export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
@@ -54,7 +63,7 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <ul className="hidden md:flex items-center gap-6 font-bold text-sm">
-          {(user ? memberLinks : guestLinks).map(({ href, label }) => (
+          {(user ? (user.email === ADMIN_EMAIL ? adminLinks : memberLinks) : guestLinks).map(({ href, label }) => (
             <li key={href}>
               <Link
                 href={href}
@@ -101,7 +110,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-[#eee] px-4 pb-4">
           <ul className="flex flex-col gap-1 font-bold text-sm pt-2">
-            {(user ? memberLinks : guestLinks).map(({ href, label }) => (
+            {(user ? (user.email === ADMIN_EMAIL ? adminLinks : memberLinks) : guestLinks).map(({ href, label }) => (
               <li key={href}>
                 <Link
                   href={href}
