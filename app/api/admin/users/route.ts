@@ -1,12 +1,18 @@
 import { NextResponse } from 'next/server'
-import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
 
 const ADMIN_EMAIL = 'support@homeschoolconnective.com'
 
 export async function GET() {
   try {
-    const authClient = await createServerClient()
+    const cookieStore = await cookies()
+    const authClient = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
+    )
     const { data: { user } } = await authClient.auth.getUser()
     if (!user || user.email !== ADMIN_EMAIL) {
       return NextResponse.json({ error: 'Unauthorized', email: user?.email ?? 'none' }, { status: 401 })

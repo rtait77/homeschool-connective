@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient as createServerClient } from '@/lib/supabase/server'
+import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
+import { cookies } from 'next/headers'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +11,12 @@ export async function POST(req: NextRequest) {
     // Try to get logged-in user (optional — anonymous plays are fine)
     let userId: string | null = null
     try {
-      const authClient = await createServerClient()
+      const cookieStore = await cookies()
+      const authClient = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
+      )
       const { data: { user } } = await authClient.auth.getUser()
       userId = user?.id ?? null
     } catch (_) {}
