@@ -61,7 +61,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 className="text-lg font-extrabold mb-2">Data retention</h2>
-          <p className="text-sm text-[#3c3c3c]">We keep your account data for as long as your account is active. If you delete your account, we remove your personal data within 30 days.</p>
+          <p className="text-sm text-[#3c3c3c]">We keep your account data for as long as your account is active. If you'd like your personal data deleted, email us at <a href="mailto:support@homeschoolconnective.com" className="text-[#ed7c5a] hover:underline">support@homeschoolconnective.com</a> and we will remove it upon request.</p>
         </section>
 
         <section>
