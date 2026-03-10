@@ -11,6 +11,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
   const [showPassword, setShowPassword] = useState(true)
+  const [agreedToTos, setAgreedToTos] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -89,11 +90,24 @@ export default function SignupPage() {
           </div>
         </div>
 
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            required
+            checked={agreedToTos}
+            onChange={e => setAgreedToTos(e.target.checked)}
+            className="mt-0.5 w-4 h-4 accent-[#ed7c5a] flex-shrink-0"
+          />
+          <span className="text-xs text-[#5c5c5c]">
+            I agree to the <a href="/terms" target="_blank" className="text-[#238FA4] font-bold hover:underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-[#238FA4] font-bold hover:underline">Privacy Policy</a>
+          </span>
+        </label>
+
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !agreedToTos}
           className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
         >
           {loading ? 'Creating account...' : 'Start 7 Day Free Trial'}

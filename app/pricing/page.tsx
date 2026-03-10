@@ -5,8 +5,11 @@ import Link from 'next/link'
 
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null)
+  const [agreedToTos, setAgreedToTos] = useState(false)
+  const [emailOptIn, setEmailOptIn] = useState(false)
 
   async function handleCheckout(plan: 'monthly' | 'yearly') {
+    if (!agreedToTos) return
     setLoading(plan)
     const res = await fetch('/api/checkout', {
       method: 'POST',
@@ -37,6 +40,31 @@ export default function SubscribePage() {
 
       <p className="text-center text-sm text-[#5c5c5c] mb-8">After your trial, choose a plan:</p>
 
+      <div className="bg-white rounded-2xl p-6 mb-6 flex flex-col gap-3" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={agreedToTos}
+            onChange={e => setAgreedToTos(e.target.checked)}
+            className="mt-0.5 w-4 h-4 accent-[#ed7c5a] flex-shrink-0"
+          />
+          <span className="text-xs text-[#5c5c5c]">
+            I agree to the <a href="/terms" target="_blank" className="text-[#238FA4] font-bold hover:underline">Terms of Service</a> and <a href="/privacy" target="_blank" className="text-[#238FA4] font-bold hover:underline">Privacy Policy</a> <span className="text-red-400">*</span>
+          </span>
+        </label>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={emailOptIn}
+            onChange={e => setEmailOptIn(e.target.checked)}
+            className="mt-0.5 w-4 h-4 accent-[#ed7c5a] flex-shrink-0"
+          />
+          <span className="text-xs text-[#5c5c5c]">
+            I'd like to receive updates about new games, lessons, and homeschool tips from Homeschool Connective. You can unsubscribe anytime.
+          </span>
+        </label>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Monthly */}
         <div className="bg-white rounded-2xl p-8 flex flex-col items-center text-center" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
@@ -50,7 +78,7 @@ export default function SubscribePage() {
           </ul>
           <button
             onClick={() => handleCheckout('monthly')}
-            disabled={loading !== null}
+            disabled={loading !== null || !agreedToTos}
             className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
           >
             {loading === 'monthly' ? 'Loading...' : 'Subscribe Monthly'}
@@ -71,7 +99,7 @@ export default function SubscribePage() {
           </ul>
           <button
             onClick={() => handleCheckout('yearly')}
-            disabled={loading !== null}
+            disabled={loading !== null || !agreedToTos}
             className="w-full py-3 rounded-lg bg-white text-[#ed7c5a] font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
           >
             {loading === 'yearly' ? 'Loading...' : 'Subscribe Yearly'}
