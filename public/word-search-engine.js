@@ -194,9 +194,8 @@
       /* ── Header (matches puzzle engine) ── */
       #header {
         width: 100%;
-        position: relative;
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
         padding: 14px 16px 6px;
         gap: 10px;
@@ -216,16 +215,11 @@
       }
       #backBtn:hover { color: white; }
       .title-row {
-        position: absolute;
-        left: 0; right: 0; top: 0; bottom: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        pointer-events: none;
-        z-index: 1;
       }
-      .title-row * { pointer-events: auto; }
       h1 {
         font-size: clamp(0.9rem, 2.5vw, 1.2rem);
         font-weight: 800;
@@ -250,9 +244,7 @@
       #musicBtn.playing svg { fill: #1c1c1c; }
       @keyframes noteBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
       @media (orientation: portrait) and (max-width: 768px) {
-        #header { padding: 10px 12px 4px; flex-wrap: wrap; gap: 6px; }
-        #backBtn { flex: 0 0 auto; }
-        .title-row { flex: 1; justify-content: flex-end; }
+        #header { padding: 10px 12px 4px; gap: 6px; }
         h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
       }
       /* ── Layout ── */
