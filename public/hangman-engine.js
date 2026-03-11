@@ -328,7 +328,7 @@
   function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
   function playTone(freq,type,dur,vol){try{const ctx=getCtx(),osc=ctx.createOscillator(),g=ctx.createGain();osc.connect(g);g.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
   function playCorrect(){playTone(660,'sine',0.18,0.4);setTimeout(()=>playTone(880,'sine',0.18,0.3),120);}
-  function playWrong(){playTone(200,'sawtooth',0.3,0.35);}
+  function playWrong(){playTone(350,'triangle',0.18,0.28);setTimeout(()=>playTone(260,'triangle',0.22,0.22),130);}
   function playWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',0.4,0.35),i*120));}
   function playLose(){[300,250,200,150].forEach((f,i)=>setTimeout(()=>playTone(f,'sawtooth',0.3,0.3),i*120));}
   async function startMusic(){try{const ctx=getCtx();if(ctx.state==='suspended')await ctx.resume();if(musicSrc){musicSrc.stop();musicSrc=null;}const res=await fetch('/puzzle-bg-music.mp3'),buf=await ctx.decodeAudioData(await res.arrayBuffer());musicSrc=ctx.createBufferSource();musicGain=ctx.createGain();musicSrc.buffer=buf;musicSrc.loop=true;musicGain.gain.value=0.18;musicSrc.connect(musicGain);musicGain.connect(ctx.destination);musicSrc.start();}catch(e){}}
