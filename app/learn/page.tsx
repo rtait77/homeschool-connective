@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 
 const games = [
@@ -539,8 +540,20 @@ export default function GamesPage() {
   const [authChecked, setAuthChecked] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
-  const [page, setPage] = useState(1)
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [page, setPage] = useState(() => {
+    const p = parseInt(searchParams.get('page') ?? '1')
+    return isNaN(p) || p < 1 ? 1 : p
+  })
   const ITEMS_PER_PAGE = 15
+
+  function goToPage(n: number) {
+    setPage(n)
+    const params = new URLSearchParams(window.location.search)
+    params.set('page', String(n))
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -583,7 +596,7 @@ export default function GamesPage() {
     checkAccess()
   }, [])
 
-  useEffect(() => { setPage(1) }, [topic, activeTypes, search])
+  useEffect(() => { goToPage(1) }, [topic, activeTypes, search])
 
   async function toggleFavorite(title: string) {
     if (!userId) return
@@ -750,7 +763,7 @@ export default function GamesPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-10 flex-wrap">
           <button
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => goToPage(Math.max(1, page - 1))}
             disabled={page === 1}
             className="px-4 py-2 rounded-lg border-2 border-[#ddd8cc] font-bold text-sm bg-white hover:border-[#55b6ca] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
@@ -759,7 +772,7 @@ export default function GamesPage() {
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i + 1}
-              onClick={() => setPage(i + 1)}
+              onClick={() => goToPage(i + 1)}
               className={`w-10 h-10 rounded-lg border-2 font-bold text-sm transition-all ${
                 page === i + 1
                   ? 'bg-[#55b6ca] border-[#55b6ca] text-white'
@@ -770,7 +783,7 @@ export default function GamesPage() {
             </button>
           ))}
           <button
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => goToPage(Math.min(totalPages, page + 1))}
             disabled={page === totalPages}
             className="px-4 py-2 rounded-lg border-2 border-[#ddd8cc] font-bold text-sm bg-white hover:border-[#55b6ca] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
