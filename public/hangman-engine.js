@@ -81,13 +81,28 @@
     const driftY = -Math.round(stage * 24 / maxWrong);
     const tethersLeft = maxWrong - stage;
     return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5" y="85" width="28" height="40" rx="4" fill="#64748b"/>
-      <rect x="1" y="90" width="36" height="8" rx="2" fill="#94a3b8"/>
-      <rect x="1" y="108" width="36" height="8" rx="2" fill="#94a3b8"/>
+      <!-- Spacecraft body -->
+      <rect x="4" y="82" width="36" height="52" rx="5" fill="#475569"/>
+      <!-- Cockpit window -->
+      <ellipse cx="22" cy="96" rx="9" ry="7" fill="#bae6fd" opacity="0.75"/>
+      <!-- Solar panels left -->
+      <rect x="-18" y="95" width="20" height="9" rx="2" fill="#1e40af"/>
+      <rect x="-18" y="111" width="20" height="9" rx="2" fill="#1e40af"/>
+      <!-- Solar panels right -->
+      <rect x="42" y="95" width="20" height="9" rx="2" fill="#1e40af"/>
+      <rect x="42" y="111" width="20" height="9" rx="2" fill="#1e40af"/>
+      <!-- Engine nozzles -->
+      <rect x="9" y="132" width="8" height="7" rx="2" fill="#334155"/>
+      <rect x="27" y="132" width="8" height="7" rx="2" fill="#334155"/>
+      <!-- Engine glow -->
+      <ellipse cx="13" cy="141" rx="4" ry="3" fill="#f97316" opacity="0.6"/>
+      <ellipse cx="31" cy="141" rx="4" ry="3" fill="#f97316" opacity="0.6"/>
+      <!-- Tethers -->
       ${Array.from({length: tethersLeft}, (_, i) =>
-        `<line x1="33" y1="${92 + i * 6}" x2="${55 + driftX}" y2="${100 + driftY + i * 4}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2"/>`
+        `<line x1="40" y1="${95 + i * 8}" x2="${55 + driftX}" y2="${100 + driftY + i * 4}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2"/>`
       ).join('')}
-      <g transform="translate(${55 + driftX}, ${60 + driftY})">
+      <!-- Astronaut (CSS transform so it can be animated independently) -->
+      <g id="astro-body" style="transform: translate(${55 + driftX}px, ${60 + driftY}px)">
         <circle cx="20" cy="10" r="18" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
         <rect x="12" y="6" width="16" height="12" rx="4" fill="#bae6fd" opacity="0.85"/>
         <rect x="8" y="28" width="24" height="28" rx="6" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
@@ -287,12 +302,14 @@
   }
 
   function animateAstronautFloat() {
-    const scene = document.getElementById('scene');
-    if (!scene) return;
-    scene.animate([
-      { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
-      { transform: 'translate(180px, -120px) rotate(40deg)', opacity: 0 }
-    ], { duration: 1300, easing: 'ease-in', fill: 'forwards' });
+    const astro = document.getElementById('astro-body');
+    if (!astro) return;
+    const sx = 55 + 48; // final drift position
+    const sy = 60 - 24;
+    astro.animate([
+      { transform: `translate(${sx}px, ${sy}px) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${sx + 220}px, ${sy - 160}px) rotate(720deg)`, opacity: 0 }
+    ], { duration: 1800, easing: 'ease-in', fill: 'forwards' });
   }
 
   function animateLaunchImage() {
@@ -454,12 +471,12 @@
       <div id="scene-wrap">
         <div id="scene"></div>
       </div>
+      <button id="resetBtn" onclick="resetGame()">Play Another</button>
       ${MODE !== 'easy' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
       <div id="blanks-row"></div>
       <div id="wrong-letters"></div>
       <div id="keyboard"></div>
       <div id="status-msg"></div>
-      <button id="resetBtn" onclick="resetGame()">Play Another</button>
     `;
     document.body.appendChild(main);
   }
