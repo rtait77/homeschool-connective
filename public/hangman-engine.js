@@ -11,10 +11,10 @@
 
 (function () {
   const cfg = window.HANGMAN || {};
-  const ANSWER = (cfg.answer || 'JUPITER').toUpperCase();
-  const MODE   = cfg.mode   || 'regular';
-  const THEME  = cfg.theme  || 'rocket';
-  const MAX_WRONG = 6;
+  const ANSWER    = (cfg.answer   || 'JUPITER').toUpperCase();
+  const MODE      = cfg.mode     || 'regular';
+  const THEME     = cfg.theme    || 'rocket';
+  const MAX_WRONG = cfg.maxWrong || 6;
 
   // ── unique letters in answer (excluding spaces)
   const letters = [...new Set(ANSWER.replace(/ /g, '').split(''))];

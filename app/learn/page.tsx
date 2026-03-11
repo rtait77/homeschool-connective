@@ -482,17 +482,27 @@ const games = [
     url: '/hangman-jupiter-easy.html',
     topic: 'solar-system',
     mini: true,
-    types: ['hangman'],
+    types: ['hangman', 'easy'],
     newTab: false,
   },
   {
-    title: 'Space Hangman #1',
-    desc: "Guess the mystery space word before the rocket breaks apart! 6 wrong guesses and it's over.",
+    title: 'Space Hangman #1 – Medium',
+    desc: "Guess the mystery space word before the rocket breaks apart! You have 6 guesses.",
     thumb: '/thumb-word-sort.png',
     url: '/hangman-jupiter.html',
     topic: 'solar-system',
     mini: true,
-    types: ['hangman'],
+    types: ['hangman', 'medium'],
+    newTab: false,
+  },
+  {
+    title: 'Space Hangman #1 – Hard',
+    desc: "Think you know your space words? Guess the mystery word — but you only get 4 chances!",
+    thumb: '/thumb-word-sort.png',
+    url: '/hangman-jupiter-hard.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['hangman', 'hard'],
     newTab: false,
   },
   {
@@ -549,6 +559,9 @@ const typeFilters = [
   { id: 'matching', label: 'Matching' },
   { id: 'word-sort', label: 'Word Sort' },
   { id: 'hangman', label: 'Hangman' },
+  { id: 'easy', label: 'Easy' },
+  { id: 'medium', label: 'Medium' },
+  { id: 'hard', label: 'Hard' },
 ]
 
 export default function GamesPage() {
