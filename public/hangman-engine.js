@@ -30,26 +30,18 @@
 
   // ROCKET: easy builds it up (stage = correct pieces placed), regular breaks it down
   function rocketSVG(stage, mode) {
-    // stage 0-6  (6 pieces total)
-    // easy:    stage = number of correct letters placed so far (capped 0-6) → show that many pieces
-    // regular: stage = number of wrong guesses → remove pieces from bottom up
-    const pieces = [
-      // [id, element]  drawn bottom→top so stacking looks right
-      // 0 = flame,  1 = base fins,  2 = lower body,  3 = middle body,  4 = upper body,  5 = nose cone
-      'flame', 'fins', 'lower', 'middle', 'upper', 'nose',
-    ];
+    // pieces ordered bottom→top: flame=0 … nose=5
+    const pieces = ['flame', 'fins', 'lower', 'middle', 'upper', 'nose'];
+    const n = pieces.length; // 6
 
-    // easy: show pieces 0..stage-1
-    // regular: show pieces stage..5  (start with all, remove from bottom)
     function show(id) {
+      const idx = pieces.indexOf(id);
       if (mode === 'easy') {
-        return pieces.indexOf(id) < stage;
+        return idx < stage;
       } else {
-        // regular: we show pieces that haven't been removed yet
-        // piece at index i is removed when wrong >= (6 - i)
-        // i.e. flame removed on 6th wrong, fins on 5th, etc.
-        const idx = pieces.indexOf(id);
-        return (6 - idx) > stage; // stage = wrong count
+        // scale so all n pieces are gone exactly at MAX_WRONG wrong guesses
+        const remaining = Math.round(n * (MAX_WRONG - stage) / MAX_WRONG);
+        return idx < remaining;
       }
     }
 
@@ -76,8 +68,9 @@
   // ALIEN SHIP: easy builds ship, regular = tractor beam pulls astronaut up (wrong guesses)
   function alienSVG(stage, mode) {
     // easy: stage = pieces placed (0-6) — build saucer bottom→top
-    // regular: stage = wrong guesses — astronaut rises toward ship (0=safe on ground, 6=abducted)
-    const beamHeight = mode === 'regular' ? Math.round(stage * 18) : 0;
+    // regular: stage = wrong guesses — astronaut rises toward ship (0=safe on ground, MAX_WRONG=abducted)
+    const totalTravel = 108; // px the astronaut travels to reach the ship
+    const beamHeight = mode === 'regular' ? Math.round(stage * totalTravel / MAX_WRONG) : 0;
     const astroY     = mode === 'regular' ? 175 - beamHeight : 175;
     const showBeam   = mode === 'regular' && stage > 0;
 
@@ -122,9 +115,9 @@
   // ASTRONAUT DRIFTING: easy = astronaut assembles suit, regular = tethers cut one by one
   function astronautSVG(stage, mode) {
     // easy: stage = suit pieces (0-6)
-    // regular: stage = wrong guesses; 6 tethers cut → astronaut drifts (moves right with each cut)
-    const driftX = mode === 'regular' ? stage * 8 : 0;
-    const driftY = mode === 'regular' ? -(stage * 4) : 0;
+    // regular: stage = wrong guesses; tethers cut → astronaut drifts away at MAX_WRONG
+    const driftX = mode === 'regular' ? Math.round(stage * 48 / MAX_WRONG) : 0;
+    const driftY = mode === 'regular' ? -Math.round(stage * 24 / MAX_WRONG) : 0;
     const tethersLeft = mode === 'regular' ? MAX_WRONG - stage : MAX_WRONG;
 
     const p = ['boots', 'legs', 'torso', 'arms', 'helmet', 'visor'];
