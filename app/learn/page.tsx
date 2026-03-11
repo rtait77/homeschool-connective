@@ -714,7 +714,11 @@ export default function GamesPage() {
       {/* Search */}
       <div className="flex gap-2 mb-4 max-w-sm">
         <div className="relative flex-1">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#aaa9a4] text-base pointer-events-none">🔍</span>
+          <button
+            onClick={submitSearch}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#aaa9a4] hover:text-[#55b6ca] transition-colors text-base cursor-pointer bg-transparent border-none p-0"
+            aria-label="Search"
+          >🔍</button>
           <input
             type="text"
             placeholder="Search games…"
@@ -724,12 +728,6 @@ export default function GamesPage() {
             className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white text-sm font-semibold placeholder-[#aaa9a4] focus:outline-none focus:border-[#55b6ca] transition-colors"
           />
         </div>
-        <button
-          onClick={submitSearch}
-          className="bg-[#55b6ca] text-white font-bold text-sm px-4 py-3 rounded-xl hover:opacity-90 transition whitespace-nowrap"
-        >
-          Search
-        </button>
         {appliedSearch && (
           <button
             onClick={() => { setSearch(''); setAppliedSearch(''); setPage(1) }}
