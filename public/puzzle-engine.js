@@ -193,6 +193,7 @@
     backBtn.id = 'backBtn';
     backBtn.href = '/learn';
     backBtn.textContent = '← Back to Games';
+    backBtn.addEventListener('click', e => { if (history.length > 1) { e.preventDefault(); history.back(); } });
     header.appendChild(backBtn);
 
     const titleRow = document.createElement('div');
