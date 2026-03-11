@@ -265,25 +265,34 @@ export default function DashboardPage() {
 }
 
 function FavoriteCard({ game, isFavorited, onToggleFavorite }: { game: Game, isFavorited: boolean, onToggleFavorite: () => void }) {
+  const external = game.url.startsWith('http')
   return (
-    <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+    <a
+      href={game.url}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      className="group bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5] cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5"
+      style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
+    >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
+        <button
+          onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFavorite() }}
+          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-base transition-all ${
+            isFavorited
+              ? 'bg-[#ed7c5a] text-white'
+              : 'bg-white/80 text-[#5c5c5c] hover:bg-[#ed7c5a] hover:text-white'
+          }`}
+          title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          {isFavorited
+            ? <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="17" height="17"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          }
+        </button>
       </div>
       <div className="p-5 flex flex-col flex-1">
-        <p className="font-extrabold text-base mb-4 flex-1">{game.title}</p>
-        <div className="flex gap-2">
-          <a href={game.url} target="_blank" rel="noopener noreferrer"
-            className="flex-1 inline-flex items-center justify-center font-bold text-sm px-4 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-            {game.types.includes('lesson') ? '▶ Start Lesson' : '▶ Play Now'}
-          </a>
-          <button onClick={onToggleFavorite}
-            className={`px-3 py-2.5 rounded-lg border-2 transition-all text-base ${isFavorited ? 'border-[#ed7c5a] text-[#ed7c5a] bg-[#fff5f2]' : 'border-[#ddd8cc] text-[#5c5c5c] hover:border-[#ed7c5a] hover:text-[#ed7c5a]'}`}
-            title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
-            {isFavorited ? '♥' : '♡'}
-          </button>
-        </div>
+        <p className="font-extrabold text-base">{game.title}</p>
       </div>
-    </div>
+    </a>
   )
 }
