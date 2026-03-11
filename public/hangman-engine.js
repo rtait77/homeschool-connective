@@ -190,7 +190,7 @@
   let audioCtx = null;
   let musicSrc  = null;
   let musicGain = null;
-  let musicOn   = true;
+  let musicOn   = false; // music only starts when user clicks the button
 
   function getCtx() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -250,73 +250,170 @@
   //  RENDER
   // ─────────────────────────────────────────────
   function buildDOM() {
-    document.documentElement.style.cssText = 'margin:0;padding:0;height:100%;';
-    document.body.style.cssText = 'margin:0;padding:0;min-height:100%;font-family:Nunito,sans-serif;background:#0a0a2e;color:#f1f5f9;display:flex;flex-direction:column;';
+    // Font
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap';
+    document.head.appendChild(link);
 
-    document.head.insertAdjacentHTML('beforeend', `
-      <link rel="preconnect" href="https://fonts.googleapis.com">
-      <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
-      <style>
-        *{box-sizing:border-box}
-        body{background:#0a0a2e url('/space-bg.png') center/cover no-repeat fixed}
-        #header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:10px 16px;background:rgba(10,10,46,0.85);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.08);flex-shrink:0}
-        #header-left{display:flex;gap:8px}
-        #header-title{font-size:clamp(0.95rem,3vw,1.2rem);font-weight:900;text-align:center;color:#fff}
-        #back-btn{background:rgba(255,255,255,0.12);border:none;color:#fff;font-size:1rem;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700}
-        #music-btn{background:rgba(255,255,255,0.12);border:none;color:#fff;font-size:1.1rem;padding:6px 10px;border-radius:8px;cursor:pointer}
-        #main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px 30px;gap:16px}
-        #clue{font-size:clamp(0.85rem,2.5vw,1rem);color:#94a3b8;font-weight:700;text-align:center}
-        #scene-wrap{display:flex;justify-content:center;align-items:center;min-height:180px}
-        #blanks-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
-        .blank{display:inline-flex;flex-direction:column;align-items:center;gap:3px}
-        .blank-letter{font-size:clamp(1.3rem,5vw,2rem);font-weight:900;min-width:28px;text-align:center;height:1.2em;color:#f1f5f9}
-        .blank-line{width:28px;height:3px;background:#55b6ca;border-radius:2px}
-        .blank-space{width:14px}
-        #wrong-letters{font-size:0.85rem;color:#f87171;font-weight:700;text-align:center;min-height:1.2em}
-        #keyboard{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:420px}
-        .key{width:clamp(32px,8vw,42px);height:clamp(32px,8vw,42px);border-radius:8px;border:none;font-family:inherit;font-size:clamp(0.75rem,2.5vw,0.9rem);font-weight:800;cursor:pointer;transition:all 0.15s;background:#1e3a5f;color:#f1f5f9}
-        .key:hover:not(:disabled){background:#2563eb;transform:scale(1.05)}
-        .key.correct{background:#059669;color:#fff;cursor:default}
-        .key.wrong{background:#374151;color:#6b7280;cursor:default}
-        #status-msg{font-size:clamp(1rem,3.5vw,1.3rem);font-weight:900;text-align:center;min-height:1.5em}
-        #reset-btn{display:none;background:#ed7c5a;color:#fff;border:none;font-family:inherit;font-weight:900;font-size:1rem;padding:12px 28px;border-radius:12px;cursor:pointer}
-        #reset-btn:hover{opacity:0.88}
-        #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
-        .wrong-count{font-size:0.8rem;color:#f87171;font-weight:700}
-      </style>
-    `);
-
-    document.body.innerHTML = `
-      <div id="confetti-container"></div>
-      <div id="header">
-        <div id="header-left">
-          <button id="back-btn" onclick="history.back()">← Back</button>
-        </div>
-        <div id="header-title">${cfg.title || 'Space Hangman'}</div>
-        <div style="display:flex;justify-content:flex-end">
-          <button id="music-btn" title="Toggle music">♪</button>
-        </div>
-      </div>
-      <div id="main">
-        <div id="clue">${cfg.clue || 'Guess the word!'}</div>
-        <div id="scene-wrap"><div id="scene"></div></div>
-        ${MODE === 'regular' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
-        <div id="blanks-row"></div>
-        <div id="wrong-letters"></div>
-        <div id="keyboard"></div>
-        <div id="status-msg"></div>
-        <button id="reset-btn" onclick="resetGame()">Play Again</button>
-      </div>
+    // CSS — header matches puzzle-engine.js exactly
+    const style = document.createElement('style');
+    style.textContent = `
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { height: 100%; }
+      body {
+        background: url('/space-bg.png') center center / cover no-repeat fixed;
+        font-family: 'Nunito', sans-serif;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        -webkit-text-size-adjust: 100%;
+      }
+      #header {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 14px 16px 6px;
+        gap: 10px;
+        flex-shrink: 0;
+      }
+      #backBtn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: color 0.15s;
+      }
+      #backBtn:hover { color: white; }
+      .title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        justify-content: center;
+      }
+      h1 {
+        font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+        font-weight: 800;
+        color: #FFD700;
+        text-align: center;
+        margin: 0;
+        text-shadow: 0 0 24px rgba(255,215,0,0.35);
+      }
+      #musicBtn {
+        background: #ed7c5a;
+        border: none;
+        border-radius: 50%;
+        width: 32px; height: 32px; min-width: 32px;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: background 0.15s;
+        flex-shrink: 0;
+      }
+      #musicBtn:hover { background: #d4623f; }
+      #musicBtn svg { width: 16px; height: 16px; fill: white; }
+      #musicBtn.playing { background: #FFD700; animation: noteBounce 0.7s ease-in-out infinite; }
+      #musicBtn.playing svg { fill: #1c1c1c; }
+      #musicBtn.playing:hover { background: #e6c200; }
+      @keyframes noteBounce {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.18); }
+      }
+      @media (orientation: portrait) and (max-width: 768px) {
+        #header { flex-wrap: wrap; padding: 10px 12px 4px; gap: 6px; }
+        #backBtn { flex: 0 0 auto; }
+        .title-row { flex: 1; justify-content: flex-end; }
+        h1 { font-size: clamp(0.95rem, 4vw, 1.3rem); }
+      }
+      #main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 16px 30px;
+        gap: 16px;
+        width: 100%;
+      }
+      #clue { font-size: clamp(0.85rem,2.5vw,1rem); color: rgba(255,255,255,0.65); font-weight: 700; text-align: center; }
+      #scene-wrap { display: flex; justify-content: center; align-items: center; min-height: 180px; }
+      #blanks-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+      .blank { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+      .blank-letter { font-size: clamp(1.3rem,5vw,2rem); font-weight: 900; min-width: 28px; text-align: center; height: 1.2em; color: #f1f5f9; }
+      .blank-line { width: 28px; height: 3px; background: #55b6ca; border-radius: 2px; }
+      .blank-space { width: 14px; }
+      #wrong-letters { font-size: 0.85rem; color: #f87171; font-weight: 700; text-align: center; min-height: 1.2em; }
+      #keyboard { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 420px; }
+      .key { width: clamp(32px,8vw,42px); height: clamp(32px,8vw,42px); border-radius: 8px; border: none; font-family: inherit; font-size: clamp(0.75rem,2.5vw,0.9rem); font-weight: 800; cursor: pointer; transition: all 0.15s; background: #1e3a5f; color: #f1f5f9; }
+      .key:hover:not(:disabled) { background: #2563eb; transform: scale(1.05); }
+      .key.correct { background: #059669; color: #fff; cursor: default; }
+      .key.wrong { background: #374151; color: #6b7280; cursor: default; }
+      #status-msg { font-size: clamp(1rem,3.5vw,1.3rem); font-weight: 900; text-align: center; min-height: 1.5em; }
+      #reset-btn { display: none; background: #ed7c5a; color: #fff; border: none; font-family: inherit; font-weight: 900; font-size: 1rem; padding: 12px 28px; border-radius: 12px; cursor: pointer; }
+      #reset-btn:hover { opacity: 0.88; }
+      #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+      .wrong-count { font-size: 0.8rem; color: #f87171; font-weight: 700; }
     `;
+    document.head.appendChild(style);
 
-    document.getElementById('music-btn').addEventListener('click', () => {
+    // Confetti container
+    const confettiDiv = document.createElement('div');
+    confettiDiv.id = 'confetti-container';
+    document.body.appendChild(confettiDiv);
+
+    // Header
+    const header = document.createElement('div');
+    header.id = 'header';
+
+    const backBtn = document.createElement('a');
+    backBtn.id = 'backBtn';
+    backBtn.href = '/learn';
+    backBtn.textContent = '← Back to Games';
+    header.appendChild(backBtn);
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'title-row';
+
+    const h1 = document.createElement('h1');
+    h1.textContent = cfg.title || 'Space Hangman';
+    titleRow.appendChild(h1);
+
+    const musicBtn = document.createElement('button');
+    musicBtn.id = 'musicBtn';
+    musicBtn.title = 'Toggle music';
+    musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
+    titleRow.appendChild(musicBtn);
+
+    header.appendChild(titleRow);
+    document.body.appendChild(header);
+
+    // Main game area
+    const main = document.createElement('div');
+    main.id = 'main';
+    main.innerHTML = `
+      <div id="clue">${cfg.clue || 'Guess the word!'}</div>
+      <div id="scene-wrap"><div id="scene"></div></div>
+      ${MODE === 'regular' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
+      <div id="blanks-row"></div>
+      <div id="wrong-letters"></div>
+      <div id="keyboard"></div>
+      <div id="status-msg"></div>
+      <button id="reset-btn" onclick="resetGame()">Play Again</button>
+    `;
+    document.body.appendChild(main);
+
+    // Music button: only plays on explicit click (not on first interaction)
+    musicBtn.addEventListener('click', () => {
       musicOn = !musicOn;
-      document.getElementById('music-btn').textContent = musicOn ? '♪' : '🔇';
+      musicBtn.classList.toggle('playing', musicOn);
       if (musicOn) startMusic(); else stopMusic();
     });
-
-    document.addEventListener('touchstart', () => { if (musicOn) startMusic(); }, { once: true });
-    document.addEventListener('mousedown',  () => { if (musicOn) startMusic(); }, { once: true });
   }
 
   function updateScene() {
