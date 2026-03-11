@@ -557,7 +557,7 @@
     playWin();
     launchConfetti();
     if (MODE === 'easy') revealAllTiles();
-    document.getElementById('status-msg').innerHTML = '<span style="color:#34d399">\uD83C\uDF89 You got it!</span>';
+    document.getElementById('status-msg').textContent = '';
     const btn = document.getElementById('resetBtn');
     btn.textContent = 'Play Another';
     btn.onclick = window.resetGame;
