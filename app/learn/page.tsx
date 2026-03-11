@@ -396,15 +396,6 @@ const games = [
     newTab: false,
   },
   {
-    title: 'Dwarf Planets Word Search',
-    desc: 'Hunt for the names of dwarf planets hidden in the grid. How many can you find?',
-    thumb: '/thumb-word-search.png',
-    url: 'https://view.genially.com/69a8a17cf434d87dab6ea745',
-    topic: 'solar-system',
-    mini: true,
-    types: ['word-search'],
-  },
-  {
     title: 'Find a Pair – Inner Planets',
     desc: 'Flip the cards and match each inner planet to its name. Mercury, Venus, Earth, and Mars!',
     thumb: '/thumb-find-pair-inner.png',
@@ -487,7 +478,7 @@ const games = [
   {
     title: 'Word Search – The Planets',
     desc: 'Find all eight planets hidden in the grid — search across, down, and diagonally!',
-    thumb: '/word-search-planets-thumbnail.png',
+    thumb: '/planets-word-search-thumbnail.png',
     url: '/word-search-planets.html',
     topic: 'solar-system',
     mini: true,
