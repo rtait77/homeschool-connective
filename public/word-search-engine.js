@@ -215,10 +215,9 @@
       }
       #backBtn:hover { color: white; }
       .title-row {
+        flex: 1;
         display: flex;
         align-items: center;
-        gap: 10px;
-        flex: 1;
         justify-content: center;
       }
       h1 {
@@ -382,13 +381,14 @@
     h1.textContent = W.title;
     titleRow.appendChild(h1);
 
+    header.appendChild(titleRow);
+
     const musicBtn = document.createElement('button');
     musicBtn.id = 'musicBtn';
     musicBtn.title = 'Toggle music';
     musicBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>';
     musicBtn.addEventListener('click', toggleMusic);
-    titleRow.appendChild(musicBtn);
-    header.appendChild(titleRow);
+    header.appendChild(musicBtn);
     document.body.appendChild(header);
 
     // Game area
