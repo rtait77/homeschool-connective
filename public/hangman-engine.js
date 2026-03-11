@@ -380,11 +380,10 @@
       .key.correct{background:#059669;color:#fff;cursor:default;}
       .key.wrong{background:#374151;color:#6b7280;cursor:default;}
       #status-msg{font-size:clamp(1rem,3.5vw,1.3rem);font-weight:900;text-align:center;min-height:1.5em;}
-      #resetBtn{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:rgba(5,10,26,0.75);border:3px solid rgba(255,255,255,0.6);border-radius:50%;width:72px;height:72px;cursor:pointer;z-index:11;align-items:center;justify-content:center;transition:background 0.15s,border-color 0.15s;}
-      #resetBtn.show{display:flex;animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
-      #resetBtn:hover{background:rgba(237,124,90,0.85);border-color:white;}
-      #resetBtn svg{width:36px;height:36px;fill:white;}
-      @keyframes popIn{0%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+      #resetBtn{display:none;background:#ed7c5a;border:none;border-radius:999px;padding:12px 32px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;cursor:pointer;transition:background 0.15s,transform 0.15s;letter-spacing:0.02em;}
+      #resetBtn.show{display:inline-flex;animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
+      #resetBtn:hover{background:#d4623f;transform:scale(1.04);}
+      @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
       #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
     `;
     document.head.appendChild(style);
@@ -429,15 +428,13 @@
       <div id="clue"></div>
       <div id="scene-wrap">
         <div id="scene"></div>
-        <button id="resetBtn" title="Play again" onclick="resetGame()">
-          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        </button>
       </div>
       ${MODE !== 'easy' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
       <div id="blanks-row"></div>
       <div id="wrong-letters"></div>
       <div id="keyboard"></div>
       <div id="status-msg"></div>
+      <button id="resetBtn" onclick="resetGame()">Play Another</button>
     `;
     document.body.appendChild(main);
   }
