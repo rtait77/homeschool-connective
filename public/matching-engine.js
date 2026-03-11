@@ -4,7 +4,7 @@
   const M = window.MATCHING;
   const COLS = M.cols || 4;
   const ROWS = Math.ceil(M.pairs.length * 2 / COLS);
-  const GAP = 10;
+  const GAP = 16;
   const PAD = 14;
   const CARD_RATIO = 1.0; // square cards
 
@@ -221,7 +221,7 @@
         color: #000; text-align: center; line-height: 1.2;
       }
       .card-front .planet-name.long {
-        font-size: clamp(0.9rem, 3.5vw, 1.4rem);
+        font-size: clamp(1rem, 3.8vw, 1.55rem);
       }
       /* Matched glow */
       .card.matched .card-front.image-card {
@@ -331,7 +331,7 @@
     // Fit by height
     const hByH = (availH - GAP * (rows - 1)) / rows;
     // Use whichever is smaller; cap smaller on portrait to avoid covering image credit
-    const cap = isPortrait ? 145 : 200;
+    const cap = isPortrait ? 128 : 200;
     const cardW = Math.floor(Math.min(wByW, hByH, cap));
     const cardH = Math.floor(cardW / CARD_RATIO);
     document.documentElement.style.setProperty('--card-w', cardW + 'px');
