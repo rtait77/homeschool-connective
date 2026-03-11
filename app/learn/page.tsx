@@ -485,6 +485,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Word Search – The Planets',
+    desc: 'Find all eight planets hidden in the grid — search across, down, and diagonally!',
+    thumb: '/word-search-planets-thumbnail.png',
+    url: '/word-search-planets.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['word-search'],
+    newTab: false,
+  },
+  {
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
