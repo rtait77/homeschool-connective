@@ -519,6 +519,8 @@ export default function GamesPage() {
   const [authChecked, setAuthChecked] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const ITEMS_PER_PAGE = 12
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -561,6 +563,8 @@ export default function GamesPage() {
     checkAccess()
   }, [])
 
+  useEffect(() => { setPage(1) }, [topic, activeTypes, search])
+
   async function toggleFavorite(title: string) {
     if (!userId) return
     if (favorites.includes(title)) {
@@ -599,9 +603,11 @@ export default function GamesPage() {
     return true
   })
 
-  const fullGames = filtered.filter(g => !g.mini && !g.types.includes('lesson'))
-  const miniGames = filtered.filter(g => g.mini)
-  const lessons = filtered.filter(g => g.types.includes('lesson'))
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
+  const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+  const fullGames = paginated.filter(g => !g.mini && !g.types.includes('lesson'))
+  const miniGames = paginated.filter(g => g.mini)
+  const lessons = paginated.filter(g => g.types.includes('lesson'))
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
@@ -683,7 +689,7 @@ export default function GamesPage() {
       {fullGames.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {fullGames.map(game => (
-            <GameCard key={game.title} game={game} hasAccess={hasAccess} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+            <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
         </div>
       )}
@@ -696,7 +702,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {miniGames.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         </>
@@ -710,7 +716,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {lessons.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         </>
@@ -718,6 +724,39 @@ export default function GamesPage() {
 
       {filtered.length === 0 && (
         <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your search. Try different keywords or clear your filters!</p>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-10 flex-wrap">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-4 py-2 rounded-lg border-2 border-[#ddd8cc] font-bold text-sm bg-white hover:border-[#55b6ca] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ← Prev
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => setPage(i + 1)}
+              className={`w-10 h-10 rounded-lg border-2 font-bold text-sm transition-all ${
+                page === i + 1
+                  ? 'bg-[#55b6ca] border-[#55b6ca] text-white'
+                  : 'bg-white border-[#ddd8cc] hover:border-[#55b6ca]'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="px-4 py-2 rounded-lg border-2 border-[#ddd8cc] font-bold text-sm bg-white hover:border-[#55b6ca] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Next →
+          </button>
+        </div>
       )}
 
       {/* Coming Soon */}
@@ -730,9 +769,17 @@ export default function GamesPage() {
   )
 }
 
-function GameCard({ game, hasAccess, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, isFavorited: boolean, onToggleFavorite: () => void }) {
+function GameCard({ game, hasAccess, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
+  const href = hasAccess ? game.url : '/signup'
+  const external = hasAccess && game.newTab !== false
+
   return (
-    <div className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5]" style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}>
+    <a
+      href={href}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+      className="group bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5] cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5"
+      style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
+    >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
         {game.mini && (
@@ -740,29 +787,27 @@ function GameCard({ game, hasAccess, isFavorited, onToggleFavorite }: { game: ty
             Mini
           </span>
         )}
+        {userId && (
+          <button
+            onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFavorite() }}
+            className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-base transition-all ${
+              isFavorited
+                ? 'bg-[#ed7c5a] text-white'
+                : 'bg-white/80 text-[#5c5c5c] hover:bg-[#ed7c5a] hover:text-white'
+            }`}
+            title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {isFavorited ? '♥' : '♡'}
+          </button>
+        )}
       </div>
       <div className="p-5 flex flex-col flex-1">
         <p className="font-extrabold text-base mb-2">{game.title}</p>
         {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
-        {hasAccess ? (
-          <div className="mt-4 flex gap-2">
-            <a href={game.url} {...(game.newTab === false ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
-              className="flex-1 inline-flex items-center justify-center font-bold text-sm px-4 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-              {game.types.includes('lesson') ? '▶ Start Lesson' : '▶ Play Now'}
-            </a>
-            <button onClick={onToggleFavorite}
-              className={`px-3 py-2.5 rounded-lg border-2 transition-all text-base ${isFavorited ? 'border-[#ed7c5a] text-[#ed7c5a] bg-[#fff5f2]' : 'border-[#ddd8cc] text-[#5c5c5c] hover:border-[#ed7c5a] hover:text-[#ed7c5a]'}`}
-              title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}>
-              {isFavorited ? '♥' : '♡'}
-            </button>
-          </div>
-        ) : (
-          <Link href="/signup"
-            className="mt-4 inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
-            Start Free Trial
-          </Link>
+        {!hasAccess && (
+          <p className="mt-3 text-sm font-bold text-[#55b6ca]">Start free trial →</p>
         )}
       </div>
-    </div>
+    </a>
   )
 }
