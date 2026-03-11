@@ -1,12 +1,35 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { createBrowserClient } from '@supabase/ssr'
 
 export default function SubscribePage() {
   const [loading, setLoading] = useState<string | null>(null)
   const [agreedToTos, setAgreedToTos] = useState(false)
   const [emailOptIn, setEmailOptIn] = useState(false)
+  const [showTrial, setShowTrial] = useState(true)
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+
+  useEffect(() => {
+    async function checkUser() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('trial_end, subscription_status')
+        .eq('id', user.id)
+        .single()
+      const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
+      const subscribed = profile?.subscription_status === 'active'
+      if (trialActive || subscribed) setShowTrial(false)
+    }
+    checkUser()
+  }, [])
 
   async function handleCheckout(plan: 'monthly' | 'yearly') {
     if (!agreedToTos) return
@@ -25,20 +48,22 @@ export default function SubscribePage() {
       <h1 className="text-3xl font-extrabold text-center mb-2">Get Full Access</h1>
       <p className="text-center text-[#5c5c5c] mb-4">All games, all topics, new content added regularly.</p>
 
-      {/* Free trial CTA */}
-      <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center mb-10">
-        <h2 className="text-xl font-extrabold mb-2">Try it free for 7 days</h2>
-        <p className="text-[#5c5c5c] text-sm mb-6">No credit card required. Full access to all games and lessons. Cancel anytime.</p>
-        <Link
-          href="/signup"
-          className="inline-block bg-[#ed7c5a] text-white font-bold px-10 py-4 rounded-lg text-base hover:opacity-90 transition"
-        >
-          Start 7 Day Free Trial
-        </Link>
-        <p className="text-xs text-[#5c5c5c] mt-4">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
-      </div>
+      {/* Free trial CTA — hidden for users already trialing or subscribed */}
+      {showTrial && (
+        <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center mb-10">
+          <h2 className="text-xl font-extrabold mb-2">Try it free for 7 days</h2>
+          <p className="text-[#5c5c5c] text-sm mb-6">No credit card required. Full access to all games and lessons. Cancel anytime.</p>
+          <Link
+            href="/signup"
+            className="inline-block bg-[#ed7c5a] text-white font-bold px-10 py-4 rounded-lg text-base hover:opacity-90 transition"
+          >
+            Start 7 Day Free Trial
+          </Link>
+          <p className="text-xs text-[#5c5c5c] mt-4">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
+        </div>
+      )}
 
-      <p className="text-center text-sm text-[#5c5c5c] mb-8">After your trial, choose a plan:</p>
+      <p className="text-center text-sm text-[#5c5c5c] mb-8">{showTrial ? 'After your trial, choose a plan:' : 'Choose a plan:'}</p>
 
       <div className="bg-white rounded-2xl p-6 mb-6 flex flex-col gap-3" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
         <label className="flex items-start gap-3 cursor-pointer">
