@@ -13,7 +13,8 @@ const games = [
     url: 'https://view.genially.com/68b468a36df9dbd6433fe511',
     topic: 'solar-system',
     mini: false,
-    types: [],
+    types: ['easy'],
+    keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'facts', 'drag'],
   },
   {
     title: 'Ordering the Planets',
@@ -22,7 +23,8 @@ const games = [
     url: 'https://view.genially.com/68164fbb7306f160f7843510',
     topic: 'solar-system',
     mini: false,
-    types: [],
+    types: ['easy'],
+    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'order', 'distance', 'sun'],
   },
   {
     title: 'The Sun Puzzle – Easy',
@@ -403,6 +405,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['matching'],
+    keywords: ['mercury', 'venus', 'earth', 'mars'],
     newTab: false,
   },
   {
@@ -413,6 +416,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['matching'],
+    keywords: ['jupiter', 'saturn', 'uranus', 'neptune'],
     newTab: false,
   },
   {
@@ -423,6 +427,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['matching'],
+    keywords: ['pluto', 'eris', 'ceres', 'makemake', 'haumea'],
     newTab: false,
   },
   {
@@ -433,6 +438,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-sort'],
+    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'haumea', 'eris', 'makemake', 'ceres', 'rocky', 'gas giant', 'ice giant', 'dwarf'],
     newTab: false,
   },
   {
@@ -443,6 +449,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-sort'],
+    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'moon', 'moons'],
     newTab: false,
   },
   {
@@ -453,6 +460,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-sort'],
+    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'rings'],
     newTab: false,
   },
   {
@@ -463,6 +471,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-sort'],
+    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'atmosphere'],
     newTab: false,
   },
   {
@@ -473,6 +482,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-sort'],
+    keywords: ['io', 'europa', 'ganymede', 'callisto', 'titan', 'enceladus', 'mimas', 'rhea', 'dione', 'tethys'],
     newTab: false,
   },
   {
@@ -513,6 +523,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-search'],
+    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'],
     newTab: false,
   },
   {
@@ -523,6 +534,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-search'],
+    keywords: ['pluto', 'eris', 'makemake', 'ceres', 'haumea'],
     newTab: false,
   },
   {
@@ -533,6 +545,7 @@ const games = [
     topic: 'solar-system',
     mini: true,
     types: ['word-search'],
+    keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'moon', 'asteroid', 'comet', 'vesta'],
     newTab: false,
   },
   {
@@ -542,7 +555,8 @@ const games = [
     url: 'https://view.genially.com/699e69be43a96797318311da',
     topic: 'solar-system',
     mini: false,
-    types: ['lesson'],
+    types: ['lesson', 'medium'],
+    keywords: ['mars', 'phobos', 'deimos', 'rover', 'curiosity', 'perseverance', 'red planet', 'nasa'],
   },
 ]
 
@@ -563,6 +577,17 @@ const typeFilters = [
   { id: 'medium', label: 'Medium' },
   { id: 'hard', label: 'Hard' },
 ]
+
+function levenshtein(a: string, b: string): number {
+  const m = a.length, n = b.length
+  const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+  )
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])
+  return dp[m][n]
+}
 
 export default function GamesPage() {
   const [topic, setTopic] = useState('all')
@@ -642,19 +667,31 @@ export default function GamesPage() {
     const topicMatch = topic === 'all' || g.topic === topic
     if (!topicMatch) return false
     if (activeTypes.length > 0) {
-      const typeMatch = (activeTypes.includes('mini') && g.mini) || g.types.some(t => activeTypes.includes(t))
+      const titleLower = g.title.toLowerCase()
+      const difficultyMatch =
+        (activeTypes.includes('easy')   && (g.types.includes('easy')   || titleLower.includes('easy')))   ||
+        (activeTypes.includes('medium') && (g.types.includes('medium') || titleLower.includes('medium'))) ||
+        (activeTypes.includes('hard')   && (g.types.includes('hard')   || titleLower.includes('hard')))
+      const typeMatch = (activeTypes.includes('mini') && g.mini) || g.types.some(t => activeTypes.includes(t)) || difficultyMatch
       if (!typeMatch) return false
     }
     if (search.trim()) {
-      const q = search.toLowerCase()
       const haystack = [
         g.title,
         g.desc,
         g.topic,
         ...g.types,
+        ...((g as any).keywords ?? []),
         g.mini ? 'mini' : '',
       ].join(' ').toLowerCase()
-      if (!haystack.includes(q)) return false
+      const queryWords = search.trim().toLowerCase().split(/\s+/)
+      const haystackWords = haystack.split(/\W+/).filter(Boolean)
+      const matched = queryWords.every(qw => {
+        if (haystack.includes(qw)) return true
+        const threshold = qw.length <= 4 ? 1 : 2
+        return haystackWords.some(hw => levenshtein(qw, hw) <= threshold)
+      })
+      if (!matched) return false
     }
     return true
   })
