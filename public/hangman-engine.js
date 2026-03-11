@@ -111,7 +111,6 @@
     const N = ANSWER.length;
     const cols = Math.ceil(Math.sqrt(N));
     const rows = Math.ceil(N / cols);
-    const totalCells = cols * rows;
 
     const wrap = document.createElement('div');
     wrap.id = 'reveal-wrap';
@@ -123,17 +122,24 @@
     img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;';
     wrap.appendChild(img);
 
+    // Flex rows so last row's tiles stretch to fill — no exposed image corners
     const grid = document.createElement('div');
     grid.id = 'tile-grid';
-    grid.style.cssText = `position:absolute;top:0;left:0;width:100%;height:100%;display:grid;grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);gap:2px;`;
+    grid.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;gap:2px;';
 
-    for (let i = 0; i < totalCells; i++) {
-      const tile = document.createElement('div');
-      tile.id = 'tile-' + i;
-      tile.style.cssText = i < N
-        ? 'background:rgba(0,5,20,0.85);transition:opacity 0.5s ease;border:1px solid rgba(85,182,202,0.2);border-radius:2px;'
-        : 'background:transparent;pointer-events:none;';
-      grid.appendChild(tile);
+    let tileIdx = 0;
+    for (let r = 0; r < rows; r++) {
+      const rowEl = document.createElement('div');
+      rowEl.style.cssText = 'display:flex;flex:1;gap:2px;';
+      const tilesInRow = (r < rows - 1) ? cols : (N - (rows - 1) * cols);
+      for (let c = 0; c < tilesInRow; c++) {
+        const tile = document.createElement('div');
+        tile.id = 'tile-' + tileIdx;
+        tile.style.cssText = 'flex:1;background:rgba(0,5,20,0.85);transition:opacity 0.5s ease;border:1px solid rgba(85,182,202,0.2);border-radius:2px;';
+        rowEl.appendChild(tile);
+        tileIdx++;
+      }
+      grid.appendChild(rowEl);
     }
 
     wrap.appendChild(grid);
