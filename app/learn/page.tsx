@@ -565,7 +565,8 @@ const topics = [
   { id: 'solar-system', label: '🪐 Solar System' },
 ]
 
-const typeFilters = [
+const gameTypes = [
+  { id: '', label: 'All Types' },
   { id: 'mini', label: 'Mini Games' },
   { id: 'lesson', label: 'Lessons' },
   { id: 'puzzle', label: 'Puzzles' },
@@ -573,6 +574,10 @@ const typeFilters = [
   { id: 'matching', label: 'Matching' },
   { id: 'word-sort', label: 'Word Sort' },
   { id: 'hangman', label: 'Hangman' },
+]
+
+const difficulties = [
+  { id: '', label: 'All Levels' },
   { id: 'easy', label: 'Easy' },
   { id: 'medium', label: 'Medium' },
   { id: 'hard', label: 'Hard' },
@@ -582,7 +587,10 @@ const typeFilters = [
 export default function GamesPage() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
-  const [activeTypes, setActiveTypes] = useState<string[]>([])
+  const [gameTypeOpen, setGameTypeOpen] = useState(false)
+  const [difficultyOpen, setDifficultyOpen] = useState(false)
+  const [activeGameType, setActiveGameType] = useState('')
+  const [activeDifficulty, setActiveDifficulty] = useState('')
   const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
@@ -647,23 +655,18 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeTypes, search])
-
-  function toggleType(id: string) {
-    setActiveTypes(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id])
-  }
+  useEffect(() => { setPage(1) }, [topic, activeGameType, activeDifficulty, search])
 
   const filtered = games.filter(g => {
-    const topicMatch = topic === 'all' || g.topic === topic
-    if (!topicMatch) return false
-    if (activeTypes.length > 0) {
-      const titleLower = g.title.toLowerCase()
-      const difficultyMatch =
-        (activeTypes.includes('easy')   && (g.types.includes('easy')   || titleLower.includes('easy')))   ||
-        (activeTypes.includes('medium') && (g.types.includes('medium') || titleLower.includes('medium'))) ||
-        (activeTypes.includes('hard')   && (g.types.includes('hard')   || titleLower.includes('hard')))
-      const typeMatch = (activeTypes.includes('mini') && g.mini) || g.types.some(t => activeTypes.includes(t)) || difficultyMatch
+    if (topic !== 'all' && g.topic !== topic) return false
+    if (activeGameType) {
+      const typeMatch = (activeGameType === 'mini' && g.mini) || g.types.includes(activeGameType)
       if (!typeMatch) return false
+    }
+    if (activeDifficulty) {
+      const titleLower = g.title.toLowerCase()
+      const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
+      if (!diffMatch) return false
     }
     if (search.trim()) {
       const haystack = [
@@ -723,44 +726,63 @@ export default function GamesPage() {
         {/* Topic dropdown */}
         <div className="relative">
           <button
-            onClick={() => setTopicOpen(o => !o)}
-            className="flex items-center gap-2 font-bold text-sm px-5 py-2 rounded-full border-2 border-[#ddd8cc] bg-white hover:border-[#55b6ca] transition-all cursor-pointer"
+            onClick={() => { setTopicOpen(o => !o); setGameTypeOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${topic !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
             {topics.find(t => t.id === topic)?.label}
             <span className="text-xs">▾</span>
           </button>
           {topicOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-xl shadow-lg z-10 min-w-[180px]">
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
               {topics.map(t => (
-                <button
-                  key={t.id}
-                  onClick={() => { setTopic(t.id); setTopicOpen(false) }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-xl last:rounded-b-xl cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
-                >
-                  {t.label}
-                </button>
+                <button key={t.id} onClick={() => { setTopic(t.id); setTopicOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
+                >{t.label}</button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Divider */}
-        <span className="text-[#ddd8cc] hidden sm:block">|</span>
-
-        {/* Type filters */}
-        {typeFilters.map(f => (
+        {/* Game Type dropdown */}
+        <div className="relative">
           <button
-            key={f.id}
-            onClick={() => toggleType(f.id)}
-            className={`font-bold text-sm px-4 py-2 rounded-full border-2 transition-all cursor-pointer ${
-              activeTypes.includes(f.id)
-                ? 'bg-[#55b6ca] border-[#55b6ca] text-white'
-                : 'bg-white border-[#ddd8cc] text-[#1c1c1c] hover:border-[#55b6ca] hover:text-[#238FA4]'
-            }`}
+            onClick={() => { setGameTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeGameType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
-            {f.label}
+            {gameTypes.find(t => t.id === activeGameType)?.label}
+            <span className="text-xs">▾</span>
           </button>
-        ))}
+          {gameTypeOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
+              {gameTypes.map(t => (
+                <button key={t.id} onClick={() => { setActiveGameType(t.id); setGameTypeOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeGameType === t.id ? 'text-[#55b6ca]' : ''}`}
+                >{t.label}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Difficulty dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+          >
+            {difficulties.find(d => d.id === activeDifficulty)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {difficultyOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[150px]">
+              {difficulties.map(d => (
+                <button key={d.id} onClick={() => { setActiveDifficulty(d.id); setDifficultyOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeDifficulty === d.id ? 'text-[#55b6ca]' : ''}`}
+                >{d.label}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
 
       {/* Full games */}
