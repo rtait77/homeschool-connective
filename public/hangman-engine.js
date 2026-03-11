@@ -2,23 +2,43 @@
 // window.HANGMAN = { title, mode ('easy'|'medium'|'hard'), wordBank: [{word, clue, image?}] }
 (function () {
   'use strict';
-  const cfg      = window.HANGMAN || {};
-  const TITLE    = cfg.title    || 'Space Hangman';
-  const MODE     = cfg.mode     || 'medium';
-  const BANK     = cfg.wordBank || [];
+  const cfg       = window.HANGMAN || {};
+  const TITLE     = cfg.title    || 'Space Hangman';
+  const MODE      = cfg.mode     || 'medium';
+  const BANK      = cfg.wordBank || [];
   const MAX_WRONG = MODE === 'hard' ? 4 : 6;
 
-  const THEMES = ['rocket', 'alien', 'astronaut'];
-  let themeIdx = 0;
+  const THEMES = ['rocket','alien','astronaut','meteor','supernova','squid','dragon','wormhole','robot','ice'];
+  let themeQueue = [], themeQueueIdx = 0, currentTheme = 'rocket';
   let usedWords = new Set();
 
-  // Per-round state
-  let entry = null;
-  let ANSWER = '';
+  let entry = null, ANSWER = '';
   let guessed = new Set();
-  let wrong = 0;
-  let won = false, lost = false;
+  let wrong = 0, won = false, lost = false;
 
+  // ── Theme queue ──────────────────────────────────────────────
+  function shuffleArr(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function initThemeQueue() {
+    themeQueue = shuffleArr(THEMES);
+    themeQueueIdx = 0;
+    currentTheme = themeQueue[themeQueueIdx++];
+  }
+  function advanceTheme() {
+    if (themeQueueIdx >= themeQueue.length) {
+      themeQueue = shuffleArr(THEMES);
+      themeQueueIdx = 0;
+    }
+    currentTheme = themeQueue[themeQueueIdx++];
+  }
+
+  // ── Word bank ────────────────────────────────────────────────
   function pickEntry() {
     if (!BANK.length) return { word: 'EARTH', clue: 'A beautiful blue planet!', image: '/earth.png' };
     let pool = BANK.filter(e => !usedWords.has(e.word));
@@ -28,14 +48,12 @@
     return e;
   }
 
-  // SVG themes for medium/hard
+  // ── SVG: Rocket ──────────────────────────────────────────────
   function rocketSVG(stage, maxWrong) {
     const pieces = ['flame','fins','lower','middle','upper','nose'];
     const n = pieces.length;
     function show(id) {
-      const idx = pieces.indexOf(id);
-      const remaining = Math.round(n * (maxWrong - stage) / maxWrong);
-      return idx < remaining;
+      return pieces.indexOf(id) < Math.round(n * (maxWrong - stage) / maxWrong);
     }
     return `<svg viewBox="0 0 120 200" width="120" height="200" xmlns="http://www.w3.org/2000/svg">
       ${show('flame')  ? `<ellipse cx="60" cy="188" rx="14" ry="18" fill="#f97316" opacity="0.9"/><ellipse cx="60" cy="182" rx="8" ry="12" fill="#fbbf24"/>` : ''}
@@ -47,24 +65,24 @@
     </svg>`;
   }
 
+  // ── SVG: Alien ───────────────────────────────────────────────
   function alienSVG(stage, maxWrong) {
     const totalTravel = 108;
-    const beamHeight = Math.round(stage * totalTravel / maxWrong);
-    const astroY = 175 - beamHeight;
-    // At max wrong: person absorbed into ship — hide beam and person
-    const absorbed = stage >= maxWrong;
-    const showBeam  = stage > 0 && !absorbed;
-    const showAstro = !absorbed;
+    const beamHeight  = Math.round(stage * totalTravel / maxWrong);
+    const astroY      = 175 - beamHeight;
+    const absorbed    = stage >= maxWrong;
+    const showBeam    = stage > 0 && !absorbed;
+    const showAstro   = !absorbed;
     return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="80" cy="55" rx="48" ry="14" fill="#6366f1"/>
       <ellipse cx="80" cy="50" rx="30" ry="18" fill="#818cf8"/>
       <ellipse cx="80" cy="44" rx="16" ry="12" fill="#a5b4fc" opacity="0.9"/>
-      <ellipse cx="80" cy="66" rx="48" ry="8" fill="#4f46e5" opacity="0.6"/>
+      <ellipse cx="80" cy="66" rx="48" ry="8"  fill="#4f46e5" opacity="0.6"/>
       <circle cx="60" cy="68" r="4" fill="#fbbf24"/>
       <circle cx="80" cy="70" r="4" fill="#34d399"/>
       <circle cx="100" cy="68" r="4" fill="#f472b6"/>
-      ${showBeam ? `<polygon points="68,75 92,75 ${92 + stage * 4},${75 + beamHeight} ${68 - stage * 4},${75 + beamHeight}" fill="#fde68a" opacity="0.35"/>` : ''}
-      ${showAstro ? `<g transform="translate(80, ${astroY})">
+      ${showBeam ? `<polygon points="68,75 92,75 ${92+stage*4},${75+beamHeight} ${68-stage*4},${75+beamHeight}" fill="#fde68a" opacity="0.35"/>` : ''}
+      ${showAstro ? `<g transform="translate(80,${astroY})">
         <circle cx="0" cy="-24" r="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
         <rect x="-8" y="-14" width="16" height="18" rx="4" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
         <line x1="-8" y1="-10" x2="-18" y2="-4" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
@@ -76,57 +94,323 @@
     </svg>`;
   }
 
+  // ── SVG: Astronaut ───────────────────────────────────────────
   function astronautSVG(stage, maxWrong) {
     const driftX = Math.round(stage * 48 / maxWrong);
     const driftY = -Math.round(stage * 24 / maxWrong);
     const tethersLeft = maxWrong - stage;
     return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
-      <!-- Spacecraft body -->
       <rect x="4" y="82" width="36" height="52" rx="5" fill="#475569"/>
-      <!-- Cockpit window -->
       <ellipse cx="22" cy="96" rx="9" ry="7" fill="#bae6fd" opacity="0.75"/>
-      <!-- Solar panels left -->
-      <rect x="-18" y="95" width="20" height="9" rx="2" fill="#1e40af"/>
+      <rect x="-18" y="95"  width="20" height="9" rx="2" fill="#1e40af"/>
       <rect x="-18" y="111" width="20" height="9" rx="2" fill="#1e40af"/>
-      <!-- Solar panels right -->
-      <rect x="42" y="95" width="20" height="9" rx="2" fill="#1e40af"/>
-      <rect x="42" y="111" width="20" height="9" rx="2" fill="#1e40af"/>
-      <!-- Engine nozzles -->
-      <rect x="9" y="132" width="8" height="7" rx="2" fill="#334155"/>
+      <rect x="42"  y="95"  width="20" height="9" rx="2" fill="#1e40af"/>
+      <rect x="42"  y="111" width="20" height="9" rx="2" fill="#1e40af"/>
+      <rect x="9"  y="132" width="8" height="7" rx="2" fill="#334155"/>
       <rect x="27" y="132" width="8" height="7" rx="2" fill="#334155"/>
-      <!-- Engine glow -->
       <ellipse cx="13" cy="141" rx="4" ry="3" fill="#f97316" opacity="0.6"/>
       <ellipse cx="31" cy="141" rx="4" ry="3" fill="#f97316" opacity="0.6"/>
-      <!-- Tethers -->
       ${Array.from({length: tethersLeft}, (_, i) =>
-        `<line x1="40" y1="${95 + i * 8}" x2="${55 + driftX}" y2="${100 + driftY + i * 4}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2"/>`
+        `<line x1="40" y1="${95+i*8}" x2="${55+driftX}" y2="${100+driftY+i*4}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2"/>`
       ).join('')}
-      <!-- Astronaut (CSS transform so it can be animated independently) -->
-      <g id="astro-body" style="transform: translate(${55 + driftX}px, ${60 + driftY}px)">
+      <g id="astro-body" style="transform:translate(${55+driftX}px,${60+driftY}px)">
         <circle cx="20" cy="10" r="18" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
-        <rect x="12" y="6" width="16" height="12" rx="4" fill="#bae6fd" opacity="0.85"/>
-        <rect x="8" y="28" width="24" height="28" rx="6" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
-        <rect x="13" y="32" width="14" height="8" rx="2" fill="#94a3b8" opacity="0.5"/>
+        <rect x="12" y="6"  width="16" height="12" rx="4" fill="#bae6fd" opacity="0.85"/>
+        <rect x="8"  y="28" width="24" height="28" rx="6" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
+        <rect x="13" y="32" width="14" height="8"  rx="2" fill="#94a3b8" opacity="0.5"/>
         <rect x="-4" y="28" width="10" height="22" rx="5" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
         <rect x="34" y="28" width="10" height="22" rx="5" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
         <rect x="10" y="55" width="10" height="22" rx="5" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
         <rect x="22" y="55" width="10" height="22" rx="5" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
-        <rect x="8"  y="74" width="13" height="8" rx="4" fill="#94a3b8"/>
-        <rect x="20" y="74" width="13" height="8" rx="4" fill="#94a3b8"/>
+        <rect x="8"  y="74" width="13" height="8"  rx="4" fill="#94a3b8"/>
+        <rect x="20" y="74" width="13" height="8"  rx="4" fill="#94a3b8"/>
       </g>
     </svg>`;
   }
 
-  function getThemeSVG() {
-    const theme = THEMES[themeIdx % 3];
-    if (theme === 'rocket')    return rocketSVG(wrong, MAX_WRONG);
-    if (theme === 'alien')     return alienSVG(wrong, MAX_WRONG);
-    return astronautSVG(wrong, MAX_WRONG);
+  // ── SVG: Meteor ──────────────────────────────────────────────
+  function meteorSVG(stage, maxWrong) {
+    const p  = stage / maxWrong;
+    const cx = Math.round(130 - p * 55);
+    const cy = Math.round(25  + p * 80);
+    const r  = Math.round(8   + p * 26);
+    const tl = Math.round(25  + p * 55);
+    const tx = Math.min(158, cx + tl * 0.7);
+    const ty = Math.max(5,   cy - tl * 0.7);
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25"  cy="40"  r="1.5" fill="white" opacity="0.7"/>
+      <circle cx="55"  cy="15"  r="1"   fill="white" opacity="0.6"/>
+      <circle cx="20"  cy="130" r="1"   fill="white" opacity="0.6"/>
+      <circle cx="45"  cy="175" r="1.5" fill="white" opacity="0.5"/>
+      <circle cx="130" cy="170" r="1"   fill="white" opacity="0.7"/>
+      ${stage > 0 ? `
+        <line x1="${cx}" y1="${cy}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" stroke="#f97316" stroke-width="${(r*0.8).toFixed(1)}" stroke-linecap="round" opacity="0.35"/>
+        <line x1="${cx}" y1="${cy}" x2="${Math.min(158,tx+3).toFixed(1)}" y2="${Math.max(5,ty-3).toFixed(1)}" stroke="#fbbf24" stroke-width="${(r*0.4).toFixed(1)}" stroke-linecap="round" opacity="0.6"/>
+      ` : ''}
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="#78716c"/>
+      <circle cx="${(cx-r*0.3).toFixed(1)}" cy="${(cy-r*0.3).toFixed(1)}" r="${(r*0.45).toFixed(1)}" fill="#a8a29e" opacity="0.55"/>
+      ${r > 12 ? `<circle cx="${(cx+r*0.25).toFixed(1)}" cy="${(cy+r*0.22).toFixed(1)}" r="${(r*0.18).toFixed(1)}" fill="#57534e"/>` : ''}
+      ${r > 20 ? `<circle cx="${(cx-r*0.28).toFixed(1)}" cy="${(cy+r*0.12).toFixed(1)}" r="${(r*0.12).toFixed(1)}" fill="#57534e"/>` : ''}
+    </svg>`;
   }
 
-  // Easy mode: image reveal
+  // ── SVG: Supernova ───────────────────────────────────────────
+  function supernovaSVG(stage, maxWrong) {
+    const p   = stage / maxWrong;
+    const r   = Math.round(12 + p * 52);
+    const cx  = 80, cy = 108;
+    const pal = ['#fde68a','#fbbf24','#f97316','#ef4444','#ffffff'];
+    const col = pal[Math.min(Math.floor(p * (pal.length - 0.01)), pal.length - 1)];
+    const bgOp = (0.7 - p * 0.5).toFixed(2);
+    const rays = [];
+    if (stage > 0) {
+      for (let i = 0; i < 8; i++) {
+        const a  = (i / 8) * Math.PI * 2;
+        const rl = 8 + p * 38;
+        rays.push(`<line x1="${(cx+Math.cos(a)*(r+4)).toFixed(1)}" y1="${(cy+Math.sin(a)*(r+4)).toFixed(1)}" x2="${(cx+Math.cos(a)*(r+4+rl)).toFixed(1)}" y2="${(cy+Math.sin(a)*(r+4+rl)).toFixed(1)}" stroke="${col}" stroke-width="${(1+p*2.5).toFixed(1)}" opacity="${(0.5+p*0.5).toFixed(2)}"/>`);
+      }
+    }
+    return `<svg viewBox="0 0 160 216" width="160" height="216" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="140" cy="35"  r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="30"  cy="188" r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="148" cy="165" r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="${cx}" cy="${cy}" r="${r+28}" fill="${col}" opacity="${(p*0.08).toFixed(2)}"/>
+      <circle cx="${cx}" cy="${cy}" r="${r+14}" fill="${col}" opacity="${(p*0.13).toFixed(2)}"/>
+      ${rays.join('')}
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="${col}"/>
+      <circle cx="${cx}" cy="${cy}" r="${(r*0.55).toFixed(1)}" fill="white" opacity="${(0.25+p*0.55).toFixed(2)}"/>
+    </svg>`;
+  }
+
+  // ── SVG: Squid ───────────────────────────────────────────────
+  function squidSVG(stage, maxWrong) {
+    const p  = stage / maxWrong;
+    const bx = 80, by = 68;
+    const tentacleAngles = [200, 222, 244, 266, 288, 310];
+    const tentacles = [];
+    for (let i = 0; i < Math.min(stage, tentacleAngles.length); i++) {
+      const a   = tentacleAngles[i] * Math.PI / 180;
+      const len = 52 + p * 38;
+      const ex  = (bx + Math.cos(a) * len).toFixed(1);
+      const ey  = (by + 28 + Math.sin(a) * len * 0.85).toFixed(1);
+      const cpx = (bx + Math.cos(a + 0.4) * len * 0.58).toFixed(1);
+      const cpy = (by + 28 + Math.sin(a + 0.4) * len * 0.5).toFixed(1);
+      tentacles.push(`<path d="M${bx},${by+28} Q${cpx},${cpy} ${ex},${ey}" stroke="#7c3aed" stroke-width="${(3.5-i*0.18).toFixed(1)}" fill="none" stroke-linecap="round"/>`);
+      tentacles.push(`<circle cx="${((bx+parseFloat(ex))/2).toFixed(1)}" cy="${((by+28+parseFloat(ey))/2).toFixed(1)}" r="2" fill="#5b21b6" opacity="0.55"/>`);
+    }
+    const bgOp = (0.7 - p * 0.3).toFixed(2);
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="140" cy="35"  r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="15"  cy="165" r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="148" cy="158" r="1.5" fill="white" opacity="${bgOp}"/>
+      ${tentacles.join('')}
+      <ellipse cx="${bx}" cy="${by}" rx="22" ry="28" fill="#6d28d9"/>
+      <ellipse cx="${bx}" cy="${by}" rx="15" ry="20" fill="#7c3aed" opacity="0.55"/>
+      <polygon points="${bx},${by-42} ${bx-13},${by-18} ${bx+13},${by-18}" fill="#5b21b6"/>
+      ${stage > 0 ? `
+        <circle cx="${bx-9}" cy="${by+2}" r="${(5+p).toFixed(1)}" fill="white"/>
+        <circle cx="${bx+9}" cy="${by+2}" r="${(5+p).toFixed(1)}" fill="white"/>
+        <circle cx="${bx-9}" cy="${by+2}" r="${(2.5+p*0.4).toFixed(1)}" fill="#1c1c1c"/>
+        <circle cx="${bx+9}" cy="${by+2}" r="${(2.5+p*0.4).toFixed(1)}" fill="#1c1c1c"/>
+        <circle cx="${bx-8}"  cy="${by+1}" r="1.2" fill="white"/>
+        <circle cx="${bx+10}" cy="${by+1}" r="1.2" fill="white"/>
+      ` : `
+        <circle cx="${bx-9}" cy="${by+2}" r="5" fill="#4c1d95" opacity="0.4"/>
+        <circle cx="${bx+9}" cy="${by+2}" r="5" fill="#4c1d95" opacity="0.4"/>
+      `}
+      ${p > 0.3 ? `
+        <circle cx="${bx-5}" cy="${by+17}" r="2.5" fill="#c084fc" opacity="${(p*0.7).toFixed(2)}"/>
+        <circle cx="${bx+6}" cy="${by+15}" r="2"   fill="#e879f9" opacity="${(p*0.6).toFixed(2)}"/>
+      ` : ''}
+    </svg>`;
+  }
+
+  // ── SVG: Dragon ──────────────────────────────────────────────
+  function dragonSVG(stage, maxWrong) {
+    const isMax = stage >= maxWrong;
+    const smokeCol = isMax ? '#f97316' : '#94a3b8';
+    const puffs = [];
+    for (let i = 0; i < stage; i++) {
+      const px = 118 + i * 9;
+      const py = 80  - i * 7;
+      const pr = 5   + i * 2.5;
+      puffs.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${pr.toFixed(1)}" fill="${smokeCol}" opacity="${Math.max(0.12, 0.62 - i * 0.09).toFixed(2)}"/>`);
+    }
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20"  cy="25"  r="1.5" fill="white" opacity="0.7"/>
+      <circle cx="140" cy="20"  r="1"   fill="white" opacity="0.6"/>
+      <circle cx="15"  cy="120" r="1"   fill="white" opacity="0.5"/>
+      <ellipse cx="80" cy="168" rx="54" ry="17" fill="#a8a29e"/>
+      <ellipse cx="80" cy="166" rx="54" ry="16" fill="#d6d3d1"/>
+      <circle cx="50"  cy="160" r="7" fill="#a8a29e"/>
+      <circle cx="106" cy="162" r="5" fill="#a8a29e"/>
+      <path d="M 40 160 Q 18 140 25 115 Q 32 95 22 75" stroke="#15803d" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <polygon points="22,75 12,65 27,70" fill="#166534"/>
+      <path d="M 58 125 Q 25 95 42 68 Q 55 100 66 113 Z" fill="#166534" opacity="0.85"/>
+      <path d="M 92 125 Q 125 95 108 68 Q 95 100 84 113 Z" fill="#166534" opacity="0.85"/>
+      <ellipse cx="75" cy="132" rx="28" ry="22" fill="#16a34a"/>
+      <ellipse cx="75" cy="136" rx="18" ry="13" fill="#4ade80" opacity="0.5"/>
+      <path d="M 78 112 Q 88 97 95 82" stroke="#16a34a" stroke-width="14" fill="none" stroke-linecap="round"/>
+      <ellipse cx="98"  cy="75" rx="14" ry="11" fill="#16a34a"/>
+      <ellipse cx="113" cy="78" rx="9"  ry="6"  fill="#16a34a"/>
+      <path d="M 104 82 Q 113 86 120 82" stroke="#166534" stroke-width="1.5" fill="none"/>
+      <circle cx="96" cy="70" r="5"   fill="#fbbf24"/>
+      <circle cx="97" cy="70" r="2.5" fill="#1c1c1c"/>
+      <circle cx="98" cy="69" r="1"   fill="white"/>
+      <circle cx="118" cy="76" r="2"  fill="#166534"/>
+      <polygon points="97,66 93,52 101,61" fill="#15803d"/>
+      <polygon points="107,69 113,61 112,71" fill="#166534" opacity="0.8"/>
+      ${puffs.join('')}
+      ${isMax ? `
+        <path d="M 120 76 Q 146 63 158 53 Q 140 71 158 80 Q 140 76 120 82 Z" fill="#f97316" opacity="0.9"/>
+        <path d="M 120 76 Q 142 66 152 59 Q 136 72 150 78 Q 134 74 120 80 Z" fill="#fbbf24" opacity="0.75"/>
+      ` : ''}
+    </svg>`;
+  }
+
+  // ── SVG: Wormhole ────────────────────────────────────────────
+  function wormholeSVG(stage, maxWrong) {
+    const p    = stage / maxWrong;
+    const r    = Math.round(14 + p * 66);
+    const cx   = 80, cy = 108;
+    const bgOp = (0.8 - p * 0.65).toFixed(2);
+    const ringCols = ['#818cf8','#a78bfa','#c084fc','#e879f9','#f0abfc'];
+    const rings = ringCols.map((col, i) => {
+      const frac = (i + 1) / 5;
+      return `<circle cx="${cx}" cy="${cy}" r="${(r*frac).toFixed(1)}" fill="none" stroke="${col}" stroke-width="${(1+(5-i)*0.45).toFixed(1)}" opacity="${(0.3+frac*0.55).toFixed(2)}"/>`;
+    });
+    return `<svg viewBox="0 0 160 216" width="160" height="216" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="140" cy="30"  r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="25"  cy="185" r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="148" cy="165" r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="75"  cy="200" r="1"   fill="white" opacity="${bgOp}"/>
+      ${p > 0.1 ? `<circle cx="${cx}" cy="${cy}" r="${r+22}" fill="none" stroke="#818cf8" stroke-width="2" opacity="${(p*0.22).toFixed(2)}"/>` : ''}
+      ${rings.join('')}
+      <circle cx="${cx}" cy="${cy}" r="${(r*0.22).toFixed(1)}" fill="#09090b"/>
+      ${r > 24 ? `<circle cx="${cx}" cy="${cy}" r="${(r*0.11).toFixed(1)}" fill="#4f46e5" opacity="0.45"/>` : ''}
+    </svg>`;
+  }
+
+  // ── SVG: Robot ───────────────────────────────────────────────
+  function robotSVG(stage, maxWrong) {
+    const pieces = ['legs','body','rightArm','leftArm','head','antenna'];
+    const n = pieces.length;
+    function show(id) {
+      return pieces.indexOf(id) < Math.round(n * (maxWrong - stage) / maxWrong);
+    }
+    const sparks = [];
+    for (let i = 0; i < stage * 2; i++) {
+      const sx = 62 + (i % 5) * 9;
+      const sy = 78 + Math.floor(i / 5) * 22;
+      sparks.push(`<line x1="${sx}" y1="${sy}" x2="${sx+5-(i%3)*3}" y2="${sy-9}" stroke="#fbbf24" stroke-width="1.5" opacity="0.85"/>`);
+    }
+    return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="0.7"/>
+      <circle cx="140" cy="35"  r="1"   fill="white" opacity="0.6"/>
+      <circle cx="25"  cy="175" r="1"   fill="white" opacity="0.5"/>
+      ${sparks.join('')}
+      ${show('legs') ? `
+        <rect x="62" y="162" width="14" height="28" rx="4" fill="#475569"/>
+        <rect x="84" y="162" width="14" height="28" rx="4" fill="#475569"/>
+        <rect x="60" y="186" width="18" height="8"  rx="3" fill="#334155"/>
+        <rect x="82" y="186" width="18" height="8"  rx="3" fill="#334155"/>
+      ` : ''}
+      ${show('body') ? `
+        <rect x="50" y="110" width="60" height="55" rx="8" fill="#475569"/>
+        <rect x="58" y="118" width="44" height="30" rx="4" fill="#1e293b"/>
+        <circle cx="68" cy="133" r="6" fill="#22d3ee" opacity="0.8"/>
+        <circle cx="80" cy="133" r="6" fill="#f97316" opacity="0.8"/>
+        <circle cx="92" cy="133" r="6" fill="#4ade80" opacity="0.8"/>
+        <rect x="58" y="152" width="44" height="8" rx="3" fill="#334155"/>
+      ` : ''}
+      ${show('rightArm') ? `
+        <rect x="112" y="112" width="24" height="12" rx="5" fill="#475569"/>
+        <rect x="128" y="108" width="14" height="20" rx="5" fill="#334155"/>
+      ` : ''}
+      ${show('leftArm') ? `
+        <rect x="24" y="112" width="24" height="12" rx="5" fill="#475569"/>
+        <rect x="18" y="108" width="14" height="20" rx="5" fill="#334155"/>
+      ` : ''}
+      ${show('head') ? `
+        <rect x="55" y="70" width="50" height="42" rx="10" fill="#64748b"/>
+        <rect x="63" y="80" width="14" height="10" rx="3" fill="#bae6fd" opacity="0.9"/>
+        <rect x="83" y="80" width="14" height="10" rx="3" fill="#bae6fd" opacity="0.9"/>
+        <rect x="65" y="96" width="30" height="5"  rx="2" fill="#475569"/>
+        <rect x="72" y="96" width="16" height="5"  rx="2" fill="#f87171" opacity="0.7"/>
+      ` : ''}
+      ${show('antenna') ? `
+        <line x1="80" y1="70" x2="80" y2="50" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="80" cy="46" r="6" fill="#f87171"/>
+        <circle cx="80" cy="46" r="3" fill="#fca5a5"/>
+      ` : ''}
+    </svg>`;
+  }
+
+  // ── SVG: Ice ─────────────────────────────────────────────────
+  function iceCrystalArms(ox, oy, dirDeg, size) {
+    const arms = [];
+    [-30, -15, 0, 15, 30].forEach(off => {
+      const a   = (dirDeg + off) * Math.PI / 180;
+      const len = size * 65;
+      if (len < 3) return;
+      const ex = (ox + Math.cos(a) * len).toFixed(1);
+      const ey = (oy + Math.sin(a) * len).toFixed(1);
+      arms.push(`<line x1="${ox}" y1="${oy}" x2="${ex}" y2="${ey}" stroke="#bae6fd" stroke-width="1.5" opacity="0.85"/>`);
+      if (len > 20) {
+        const mx = ox + Math.cos(a) * len * 0.55;
+        const my = oy + Math.sin(a) * len * 0.55;
+        const bl = len * 0.38;
+        [a + 0.48, a - 0.48].forEach(ba => {
+          arms.push(`<line x1="${mx.toFixed(1)}" y1="${my.toFixed(1)}" x2="${(mx+Math.cos(ba)*bl).toFixed(1)}" y2="${(my+Math.sin(ba)*bl).toFixed(1)}" stroke="#bae6fd" stroke-width="1" opacity="0.68"/>`);
+        });
+      }
+    });
+    return arms.join('');
+  }
+
+  function iceSVG(stage, maxWrong) {
+    const p     = stage / maxWrong;
+    const bgOp  = Math.max(0, 0.7 - p * 0.6).toFixed(2);
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="130" cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="20"  cy="40"  r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="140" cy="158" r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="80" cy="108" r="44" fill="#3b82f6" opacity="${(0.82-p*0.32).toFixed(2)}"/>
+      <circle cx="68" cy="97"  r="15" fill="#60a5fa" opacity="${(0.5-p*0.25).toFixed(2)}"/>
+      <circle cx="80" cy="108" r="44" fill="#e0f2fe" opacity="${(p*0.78).toFixed(2)}"/>
+      ${stage >= 2 ? `
+        <path d="M48 85 L62 100 L54 116 L68 127" stroke="#7dd3fc" stroke-width="1.5" fill="none" opacity="${Math.min(1, p*1.4).toFixed(2)}"/>
+        <path d="M93 83 L104 99 L97 116 L113 128" stroke="#7dd3fc" stroke-width="1.5" fill="none" opacity="${Math.min(1, p*1.4).toFixed(2)}"/>
+      ` : ''}
+      ${stage >= 1 ? iceCrystalArms(0,   0,    45,  p)        : ''}
+      ${stage >= 2 ? iceCrystalArms(160, 0,   135,  p)        : ''}
+      ${stage >= 3 ? iceCrystalArms(0,   200, -45,  p)        : ''}
+      ${stage >= 4 ? iceCrystalArms(160, 200, -135, p)        : ''}
+      ${stage >= 5 ? iceCrystalArms(80,  0,    90,  p * 0.82) : ''}
+      ${stage >= 6 ? iceCrystalArms(0,   100,   0,  p * 0.82) : ''}
+    </svg>`;
+  }
+
+  function getThemeSVG() {
+    if (currentTheme === 'rocket')    return rocketSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'alien')     return alienSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'astronaut') return astronautSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'meteor')    return meteorSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'supernova') return supernovaSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'squid')     return squidSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'dragon')    return dragonSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'wormhole')  return wormholeSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'robot')     return robotSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'ice')       return iceSVG(wrong, MAX_WRONG);
+    return rocketSVG(wrong, MAX_WRONG);
+  }
+
+  // ── Easy mode image reveal ───────────────────────────────────
   function buildRevealScene() {
-    const N = ANSWER.length;
+    const N    = ANSWER.length;
     const cols = Math.ceil(Math.sqrt(N));
     const rows = Math.ceil(N / cols);
 
@@ -140,7 +424,6 @@
     img.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;';
     wrap.appendChild(img);
 
-    // Flex rows so last row's tiles stretch to fill — no exposed image corners
     const grid = document.createElement('div');
     grid.id = 'tile-grid';
     grid.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;gap:2px;';
@@ -149,7 +432,7 @@
     for (let r = 0; r < rows; r++) {
       const rowEl = document.createElement('div');
       rowEl.style.cssText = 'display:flex;flex:1;gap:2px;';
-      const tilesInRow = (r < rows - 1) ? cols : (N - (rows - 1) * cols);
+      const tilesInRow = r < rows - 1 ? cols : N - (rows - 1) * cols;
       for (let c = 0; c < tilesInRow; c++) {
         const tile = document.createElement('div');
         tile.id = 'tile-' + tileIdx;
@@ -159,7 +442,6 @@
       }
       grid.appendChild(rowEl);
     }
-
     wrap.appendChild(grid);
     return wrap;
   }
@@ -180,7 +462,7 @@
     }
   }
 
-  // DOM updates
+  // ── DOM updates ──────────────────────────────────────────────
   function updateScene() {
     const scene = document.getElementById('scene');
     if (!scene) return;
@@ -242,7 +524,7 @@
     if (wc) wc.textContent = MODE !== 'easy' ? `Wrong guesses: ${wrong} / ${MAX_WRONG}` : '';
   }
 
-  // Game logic
+  // ── Game logic ───────────────────────────────────────────────
   function checkWin() {
     return [...ANSWER].filter(c => c !== ' ').every(c => guessed.has(c));
   }
@@ -274,12 +556,11 @@
   function handleWin() {
     playWin();
     launchConfetti();
-    if (MODE === 'easy') {
-      revealAllTiles();
-    }
+    if (MODE === 'easy') revealAllTiles();
     document.getElementById('status-msg').innerHTML = '<span style="color:#34d399">\uD83C\uDF89 You got it!</span>';
     const btn = document.getElementById('resetBtn');
     btn.textContent = 'Play Another';
+    btn.onclick = window.resetGame;
     btn.classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
   }
@@ -289,58 +570,140 @@
     document.getElementById('status-msg').textContent = '';
     const btn = document.getElementById('resetBtn');
     btn.textContent = 'Try Again';
+    btn.onclick = window.tryAgain;
     btn.classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
-    const theme = THEMES[themeIdx % 3];
-    if (theme === 'alien')     setTimeout(animateAlienEscape, 350);
-    if (theme === 'astronaut') setTimeout(animateAstronautFloat, 350);
+    const delay = 350;
+    if (currentTheme === 'alien')      setTimeout(animateAlienEscape,       delay);
+    if (currentTheme === 'astronaut')  setTimeout(animateAstronautFloat,    delay);
+    if (currentTheme === 'meteor')     setTimeout(animateMeteorImpact,      delay);
+    if (currentTheme === 'supernova')  setTimeout(animateSupernovaExplosion,delay);
+    if (currentTheme === 'squid')      setTimeout(animateSquidEngulf,       delay);
+    if (currentTheme === 'dragon')     setTimeout(animateDragonFire,        delay);
+    if (currentTheme === 'wormhole')   setTimeout(animateWormholeSuck,      delay);
+    if (currentTheme === 'robot')      setTimeout(animateRobotCollapse,     delay);
+    if (currentTheme === 'ice')        setTimeout(animateIceShatter,        delay);
   }
 
+  // ── Lose animations ──────────────────────────────────────────
   function animateAlienEscape() {
     const scene = document.getElementById('scene');
     if (!scene) return;
     scene.animate([
-      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-      { transform: 'translate(60px, -350px) scale(0.3)', opacity: 0 }
+      { transform: 'translate(0,0) scale(1)', opacity: 1 },
+      { transform: 'translate(60px,-350px) scale(0.3)', opacity: 0 }
     ], { duration: 1000, easing: 'ease-in', fill: 'forwards' });
   }
 
   function animateAstronautFloat() {
     const astro = document.getElementById('astro-body');
     if (!astro) return;
-    const sx = 55 + 48; // final drift position
-    const sy = 60 - 24;
+    const sx = 55 + 48, sy = 60 - 24;
     astro.animate([
-      { transform: `translate(${sx}px, ${sy}px) rotate(0deg)`, opacity: 1 },
-      { transform: `translate(${sx + 220}px, ${sy - 160}px) rotate(720deg)`, opacity: 0 }
+      { transform: `translate(${sx}px,${sy}px) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${sx+220}px,${sy-160}px) rotate(720deg)`, opacity: 0 }
     ], { duration: 1800, easing: 'ease-in', fill: 'forwards' });
   }
 
-  function animateLaunchImage() {
-    const wrap = document.getElementById('reveal-wrap');
-    if (!wrap) return;
-    wrap.animate([
-      { transform: 'translateY(0) scale(1)', opacity: 1 },
-      { transform: 'translateY(-300px) scale(0.5)', opacity: 0 }
-    ], { duration: 900, easing: 'ease-in', fill: 'forwards' });
+  function animateMeteorImpact() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { filter: 'brightness(1)',  opacity: 1, transform: 'scale(1)' },
+      { filter: 'brightness(6)',  opacity: 1, transform: 'scale(1.1)', offset: 0.2 },
+      { filter: 'brightness(0.8)', opacity: 0, transform: 'scale(1.4)' }
+    ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
   }
 
-  // Round management
+  function animateSupernovaExplosion() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'scale(1)',   filter: 'brightness(1)', opacity: 1 },
+      { transform: 'scale(1.4)', filter: 'brightness(8)', opacity: 1, offset: 0.25 },
+      { transform: 'scale(3.5)', filter: 'brightness(1)', opacity: 0 }
+    ], { duration: 1200, easing: 'ease-out', fill: 'forwards' });
+  }
+
+  function animateSquidEngulf() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'scale(1) rotate(0deg)',   opacity: 1 },
+      { transform: 'scale(1.3) rotate(6deg)', opacity: 0.7, offset: 0.4 },
+      { transform: 'scale(0.2) rotate(-8deg)', opacity: 0 }
+    ], { duration: 1200, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animateDragonFire() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { filter: 'hue-rotate(0deg) brightness(1)',   opacity: 1 },
+      { filter: 'hue-rotate(25deg) brightness(2.5)', opacity: 1, offset: 0.3 },
+      { filter: 'hue-rotate(25deg) brightness(0.4)', opacity: 0 }
+    ], { duration: 1100, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animateWormholeSuck() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'scale(1) rotate(0deg)',    opacity: 1 },
+      { transform: 'scale(0.1) rotate(720deg)', opacity: 0 }
+    ], { duration: 1500, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animateRobotCollapse() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'translate(0,0) rotate(0deg)',    opacity: 1 },
+      { transform: 'translate(4px,0) rotate(10deg)', opacity: 1, offset: 0.3 },
+      { transform: 'translate(0,28px) rotate(-4deg)', opacity: 0 }
+    ], { duration: 1000, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animateIceShatter() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { filter: 'brightness(1) saturate(1)',       opacity: 1, transform: 'scale(1)' },
+      { filter: 'brightness(4) saturate(0.1)',     opacity: 1, transform: 'scale(1.05)', offset: 0.15 },
+      { filter: 'brightness(2) saturate(0)',       opacity: 0, transform: 'scale(1.12)' }
+    ], { duration: 800, easing: 'ease-out', fill: 'forwards' });
+  }
+
+  // ── Round management ─────────────────────────────────────────
   function startRound(e) {
-    entry = e;
+    entry  = e;
     ANSWER = e.word.toUpperCase();
     guessed = new Set();
-    wrong = 0;
-    won = false;
-    lost = false;
+    wrong   = 0;
+    won     = false;
+    lost    = false;
+
     const clueEl = document.getElementById('clue');
     if (clueEl) clueEl.textContent = e.clue;
     const statusEl = document.getElementById('status-msg');
     if (statusEl) statusEl.textContent = '';
     const resetBtn = document.getElementById('resetBtn');
-    if (resetBtn) { resetBtn.classList.remove('show'); resetBtn.getAnimations().forEach(a => a.cancel()); }
+    if (resetBtn) {
+      resetBtn.classList.remove('show');
+      resetBtn.getAnimations().forEach(a => a.cancel());
+    }
+
+    // Cancel and reset any in-progress lose animations
     const scene = document.getElementById('scene');
-    if (scene) scene.getAnimations().forEach(a => a.cancel());
+    if (scene) {
+      scene.getAnimations().forEach(a => a.cancel());
+      scene.style.opacity   = '';
+      scene.style.transform = '';
+      scene.style.filter    = '';
+    }
+    const astroBody = document.getElementById('astro-body');
+    if (astroBody) astroBody.getAnimations().forEach(a => a.cancel());
+
     updateScene();
     updateBlanks();
     updateKeyboard();
@@ -348,48 +711,53 @@
   }
 
   window.resetGame = function () {
-    if (MODE !== 'easy') themeIdx++;
+    if (MODE !== 'easy') advanceTheme();
     startRound(pickEntry());
   };
 
-  // Confetti
+  window.tryAgain = function () {
+    // Same word, same theme — just restart the round
+    startRound(entry);
+  };
+
+  // ── Confetti ─────────────────────────────────────────────────
   function launchConfetti() {
     const colors = ['#ed7c5a','#55b6ca','#fbbf24','#34d399','#f472b6','#a78bfa'];
     const container = document.getElementById('confetti-container');
     if (!container) return;
     for (let i = 0; i < 80; i++) {
       const el = document.createElement('div');
-      el.style.cssText = `position:absolute;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'2px'};left:${Math.random()*100}%;top:-10px;opacity:1;pointer-events:none;`;
+      el.style.cssText = `position:absolute;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'2px'};left:${Math.random()*100}%;top:-10px;pointer-events:none;`;
       container.appendChild(el);
       const dur = 1.5 + Math.random() * 2;
       el.animate([
-        {transform:'translateY(0) rotate(0deg)',opacity:1},
-        {transform:`translateY(${window.innerHeight+50}px) rotate(${360+Math.random()*720}deg)`,opacity:0}
-      ],{duration:dur*1000,easing:'ease-in',fill:'forwards'}).onfinish = ()=>el.remove();
+        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+        { transform: `translateY(${window.innerHeight+50}px) rotate(${360+Math.random()*720}deg)`, opacity: 0 }
+      ], { duration: dur * 1000, easing: 'ease-in', fill: 'forwards' }).onfinish = () => el.remove();
     }
   }
 
-  // Audio
-  let audioCtx=null,musicSrc=null,musicGain=null,musicOn=false;
-  function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
-  function playTone(freq,type,dur,vol){try{const ctx=getCtx(),osc=ctx.createOscillator(),g=ctx.createGain();osc.connect(g);g.connect(ctx.destination);osc.type=type;osc.frequency.value=freq;g.gain.setValueAtTime(vol,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);osc.start();osc.stop(ctx.currentTime+dur);}catch(e){}}
-  function playCorrect(){playTone(660,'sine',0.18,0.4);setTimeout(()=>playTone(880,'sine',0.18,0.3),120);}
-  function playWrong(){playTone(350,'triangle',0.18,0.28);setTimeout(()=>playTone(260,'triangle',0.22,0.22),130);}
-  function playWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',0.4,0.35),i*120));}
-  function playLose(){[300,250,200,150].forEach((f,i)=>setTimeout(()=>playTone(f,'sawtooth',0.3,0.3),i*120));}
-  async function startMusic(){try{const ctx=getCtx();if(ctx.state==='suspended')await ctx.resume();if(musicSrc){musicSrc.stop();musicSrc=null;}const res=await fetch('/puzzle-bg-music.mp3'),buf=await ctx.decodeAudioData(await res.arrayBuffer());musicSrc=ctx.createBufferSource();musicGain=ctx.createGain();musicSrc.buffer=buf;musicSrc.loop=true;musicGain.gain.value=0.18;musicSrc.connect(musicGain);musicGain.connect(ctx.destination);musicSrc.start();}catch(e){}}
-  function stopMusic(){try{if(musicSrc){musicSrc.stop();musicSrc=null;}}catch(e){}}
+  // ── Audio ────────────────────────────────────────────────────
+  let audioCtx = null, musicSrc = null, musicGain = null, musicOn = false;
+  function getCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+  function playTone(freq, type, dur, vol) { try { const ctx = getCtx(), osc = ctx.createOscillator(), g = ctx.createGain(); osc.connect(g); g.connect(ctx.destination); osc.type = type; osc.frequency.value = freq; g.gain.setValueAtTime(vol, ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur); osc.start(); osc.stop(ctx.currentTime + dur); } catch(e) {} }
+  function playCorrect() { playTone(660,'sine',0.18,0.4); setTimeout(() => playTone(880,'sine',0.18,0.3), 120); }
+  function playWrong()   { playTone(350,'triangle',0.18,0.28); setTimeout(() => playTone(260,'triangle',0.22,0.22), 130); }
+  function playWin()     { [523,659,784,1047].forEach((f,i) => setTimeout(() => playTone(f,'sine',0.4,0.35), i*120)); }
+  function playLose()    { [300,250,200,150].forEach((f,i) => setTimeout(() => playTone(f,'sawtooth',0.3,0.3), i*120)); }
+  async function startMusic() { try { const ctx = getCtx(); if (ctx.state === 'suspended') await ctx.resume(); if (musicSrc) { musicSrc.stop(); musicSrc = null; } const res = await fetch('/puzzle-bg-music.mp3'), buf = await ctx.decodeAudioData(await res.arrayBuffer()); musicSrc = ctx.createBufferSource(); musicGain = ctx.createGain(); musicSrc.buffer = buf; musicSrc.loop = true; musicGain.gain.value = 0.18; musicSrc.connect(musicGain); musicGain.connect(ctx.destination); musicSrc.start(); } catch(e) {} }
+  function stopMusic() { try { if (musicSrc) { musicSrc.stop(); musicSrc = null; } } catch(e) {} }
 
-  // Build DOM
+  // ── Build DOM ────────────────────────────────────────────────
   function buildDOM() {
     const link = document.createElement('link');
-    link.rel='stylesheet';
-    link.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap';
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap';
     document.head.appendChild(link);
 
     const meta = document.createElement('meta');
-    meta.name='viewport';
-    meta.content='width=device-width,initial-scale=1.0,maximum-scale=1.0';
+    meta.name = 'viewport';
+    meta.content = 'width=device-width,initial-scale=1.0,maximum-scale=1.0';
     document.head.appendChild(meta);
 
     const style = document.createElement('style');
@@ -472,10 +840,8 @@
     main.id = 'main';
     main.innerHTML = `
       <div id="clue"></div>
-      <div id="scene-wrap">
-        <div id="scene"></div>
-      </div>
-      <button id="resetBtn" onclick="resetGame()">Play Another</button>
+      <div id="scene-wrap"><div id="scene"></div></div>
+      <button id="resetBtn">Play Another</button>
       ${MODE !== 'easy' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
       <div id="blanks-row"></div>
       <div id="wrong-letters"></div>
@@ -487,6 +853,7 @@
 
   function init() {
     buildDOM();
+    if (MODE !== 'easy') initThemeQueue();
     startRound(pickEntry());
   }
 
