@@ -632,7 +632,7 @@ export default function GamesPage() {
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#aaa9a4] text-base pointer-events-none">🔍</span>
         <input
           type="search"
-          placeholder="Search games… try &quot;sun puzzle&quot;, &quot;matching&quot;, &quot;easy&quot;"
+          placeholder="Search games…"
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white text-sm font-semibold placeholder-[#aaa9a4] focus:outline-none focus:border-[#55b6ca] transition-colors"
