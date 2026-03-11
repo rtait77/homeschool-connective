@@ -486,6 +486,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Word Search – Dwarf Planets',
+    desc: 'Hunt for Pluto, Eris, Makemake, Ceres, and Haumea hidden in the grid!',
+    thumb: '/word-search-dwarf-planets-thumbnail.png',
+    url: '/word-search-dwarf-planets.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['word-search'],
+    newTab: false,
+  },
+  {
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
