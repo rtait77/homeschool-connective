@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 
@@ -532,6 +532,10 @@ const typeFilters = [
 ]
 
 export default function GamesPage() {
+  return <Suspense fallback={null}><GamesPageInner /></Suspense>
+}
+
+function GamesPageInner() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
   const [activeTypes, setActiveTypes] = useState<string[]>([])
