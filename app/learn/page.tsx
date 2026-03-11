@@ -666,7 +666,7 @@ export default function GamesPage() {
         <div className="relative">
           <button
             onClick={() => setTopicOpen(o => !o)}
-            className="flex items-center gap-2 font-bold text-sm px-5 py-2 rounded-full border-2 border-[#ddd8cc] bg-white hover:border-[#55b6ca] transition-all"
+            className="flex items-center gap-2 font-bold text-sm px-5 py-2 rounded-full border-2 border-[#ddd8cc] bg-white hover:border-[#55b6ca] transition-all cursor-pointer"
           >
             {topics.find(t => t.id === topic)?.label}
             <span className="text-xs">▾</span>
@@ -677,7 +677,7 @@ export default function GamesPage() {
                 <button
                   key={t.id}
                   onClick={() => { setTopic(t.id); setTopicOpen(false) }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-xl last:rounded-b-xl ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-xl last:rounded-b-xl cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
                 >
                   {t.label}
                 </button>
@@ -694,7 +694,7 @@ export default function GamesPage() {
           <button
             key={f.id}
             onClick={() => toggleType(f.id)}
-            className={`font-bold text-sm px-4 py-2 rounded-full border-2 transition-all ${
+            className={`font-bold text-sm px-4 py-2 rounded-full border-2 transition-all cursor-pointer ${
               activeTypes.includes(f.id)
                 ? 'bg-[#55b6ca] border-[#55b6ca] text-white'
                 : 'bg-white border-[#ddd8cc] text-[#1c1c1c] hover:border-[#55b6ca] hover:text-[#238FA4]'
