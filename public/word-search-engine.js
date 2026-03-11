@@ -194,6 +194,7 @@
       /* ── Header (matches puzzle engine) ── */
       #header {
         width: 100%;
+        position: relative;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -215,12 +216,16 @@
       }
       #backBtn:hover { color: white; }
       .title-row {
+        position: absolute;
+        left: 0; right: 0; top: 0; bottom: 0;
         display: flex;
         align-items: center;
-        gap: 10px;
-        flex: 1;
         justify-content: center;
+        gap: 10px;
+        pointer-events: none;
+        z-index: 1;
       }
+      .title-row * { pointer-events: auto; }
       h1 {
         font-size: clamp(0.9rem, 2.5vw, 1.2rem);
         font-weight: 800;
