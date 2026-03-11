@@ -584,7 +584,6 @@ export default function GamesPage() {
   const [topicOpen, setTopicOpen] = useState(false)
   const [activeTypes, setActiveTypes] = useState<string[]>([])
   const [search, setSearch] = useState('')
-  const [appliedSearch, setAppliedSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
@@ -648,12 +647,7 @@ export default function GamesPage() {
     }
   }
 
-  function submitSearch() {
-    setAppliedSearch(search.trim())
-    setPage(1)
-  }
-
-  useEffect(() => { setPage(1) }, [topic, activeTypes, appliedSearch])
+  useEffect(() => { setPage(1) }, [topic, activeTypes, search])
 
   function toggleType(id: string) {
     setActiveTypes(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id])
@@ -671,7 +665,7 @@ export default function GamesPage() {
       const typeMatch = (activeTypes.includes('mini') && g.mini) || g.types.some(t => activeTypes.includes(t)) || difficultyMatch
       if (!typeMatch) return false
     }
-    if (appliedSearch) {
+    if (search.trim()) {
       const haystack = [
         g.title,
         g.desc,
@@ -680,7 +674,7 @@ export default function GamesPage() {
         ...((g as any).keywords ?? []),
         g.mini ? 'mini' : '',
       ].join(' ').toLowerCase()
-      const queryWords = appliedSearch.toLowerCase().split(/\s+/)
+      const queryWords = search.trim().toLowerCase().split(/\s+/)
       const matched = queryWords.every(qw => haystack.includes(qw))
       if (!matched) return false
     }
@@ -712,30 +706,15 @@ export default function GamesPage() {
       )}
 
       {/* Search */}
-      <div className="flex gap-2 mb-4 max-w-sm">
-        <div className="relative flex-1">
-          <button
-            onClick={submitSearch}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-[#aaa9a4] hover:text-[#55b6ca] transition-colors text-base cursor-pointer bg-transparent border-none p-0"
-            aria-label="Search"
-          >🔍</button>
-          <input
-            type="text"
-            placeholder="Search games…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') submitSearch() }}
-            className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white text-sm font-semibold placeholder-[#aaa9a4] focus:outline-none focus:border-[#55b6ca] transition-colors"
-          />
-        </div>
-        {appliedSearch && (
-          <button
-            onClick={() => { setSearch(''); setAppliedSearch(''); setPage(1) }}
-            className="text-sm font-bold text-[#5c5c5c] px-3 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white hover:border-[#ed7c5a] hover:text-[#ed7c5a] transition"
-          >
-            ✕
-          </button>
-        )}
+      <div className="relative mb-4 max-w-xs">
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#aaa9a4] text-base pointer-events-none">🔍</span>
+        <input
+          type="text"
+          placeholder="Search games…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white text-sm font-semibold placeholder-[#aaa9a4] focus:outline-none focus:border-[#55b6ca] transition-colors"
+        />
       </div>
 
       {/* Filters */}
