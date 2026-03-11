@@ -342,7 +342,7 @@
         width: 100%;
       }
       #clue { font-size: clamp(0.85rem,2.5vw,1rem); color: rgba(255,255,255,0.65); font-weight: 700; text-align: center; }
-      #scene-wrap { display: flex; justify-content: center; align-items: center; min-height: 180px; }
+      #scene-wrap { position: relative; display: flex; justify-content: center; align-items: center; min-height: 180px; }
       #blanks-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
       .blank { display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
       .blank-letter { font-size: clamp(1.3rem,5vw,2rem); font-weight: 900; min-width: 28px; text-align: center; height: 1.2em; color: #f1f5f9; }
@@ -355,8 +355,26 @@
       .key.correct { background: #059669; color: #fff; cursor: default; }
       .key.wrong { background: #374151; color: #6b7280; cursor: default; }
       #status-msg { font-size: clamp(1rem,3.5vw,1.3rem); font-weight: 900; text-align: center; min-height: 1.5em; }
-      #reset-btn { display: none; background: #ed7c5a; color: #fff; border: none; font-family: inherit; font-weight: 900; font-size: 1rem; padding: 12px 28px; border-radius: 12px; cursor: pointer; }
-      #reset-btn:hover { opacity: 0.88; }
+      #resetBtn {
+        display: none;
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(5,10,26,0.75);
+        border: 3px solid rgba(255,255,255,0.6);
+        border-radius: 50%;
+        width: 72px; height: 72px;
+        cursor: pointer; z-index: 11;
+        align-items: center; justify-content: center;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      #resetBtn.show { display: flex; animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards; }
+      #resetBtn:hover { background: rgba(237,124,90,0.85); border-color: white; }
+      #resetBtn:active { transform: translate(-50%,-50%) scale(0.93); }
+      #resetBtn svg { width: 36px; height: 36px; fill: white; }
+      @keyframes popIn {
+        0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.5); }
+        100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      }
       #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
       .wrong-count { font-size: 0.8rem; color: #f87171; font-weight: 700; }
     `;
@@ -398,13 +416,17 @@
     main.id = 'main';
     main.innerHTML = `
       <div id="clue">${cfg.clue || 'Guess the word!'}</div>
-      <div id="scene-wrap"><div id="scene"></div></div>
+      <div id="scene-wrap">
+        <div id="scene"></div>
+        <button id="resetBtn" title="Play again" onclick="resetGame()">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        </button>
+      </div>
       ${MODE === 'regular' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
       <div id="blanks-row"></div>
       <div id="wrong-letters"></div>
       <div id="keyboard"></div>
       <div id="status-msg"></div>
-      <button id="reset-btn" onclick="resetGame()">Play Again</button>
     `;
     document.body.appendChild(main);
 
@@ -499,20 +521,16 @@
   function handleWin() {
     playWin();
     launchConfetti();
-    document.getElementById('status-msg').innerHTML = `<span style="color:#34d399">🎉 Correct! The answer was <strong>${ANSWER}</strong>!</span>`;
+    document.getElementById('status-msg').innerHTML = `<span style="color:#34d399">🎉 You got it!</span>`;
     if (MODE === 'easy') animateLaunch();
-    document.getElementById('reset-btn').style.display = 'inline-block';
-    // disable remaining keys
+    document.getElementById('resetBtn').classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
   }
 
   function handleLose() {
     playLose();
-    // reveal answer
-    [...ANSWER].filter(c => c !== ' ').forEach(c => guessed.add(c));
-    updateBlanks();
-    document.getElementById('status-msg').innerHTML = `<span style="color:#f87171">The answer was <strong>${ANSWER}</strong>. Try again!</span>`;
-    document.getElementById('reset-btn').style.display = 'inline-block';
+    document.getElementById('status-msg').innerHTML = `<span style="color:#f87171">Too many wrong guesses — try again!</span>`;
+    document.getElementById('resetBtn').classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
   }
 
@@ -535,7 +553,7 @@
     won     = false;
     lost    = false;
     document.getElementById('status-msg').textContent = '';
-    document.getElementById('reset-btn').style.display = 'none';
+    document.getElementById('resetBtn').classList.remove('show');
     // remove fly-off animation
     const scene = document.getElementById('scene');
     scene.getAnimations().forEach(a => a.cancel());
