@@ -476,6 +476,26 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Space Hangman #1 – Easy',
+    desc: 'Build a rocket letter by letter — guess correctly and watch it come together, then blast off!',
+    thumb: '/thumb-word-sort.png',
+    url: '/hangman-jupiter-easy.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['hangman'],
+    newTab: false,
+  },
+  {
+    title: 'Space Hangman #1',
+    desc: "Guess the mystery space word before the rocket breaks apart! 6 wrong guesses and it's over.",
+    thumb: '/thumb-word-sort.png',
+    url: '/hangman-jupiter.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['hangman'],
+    newTab: false,
+  },
+  {
     title: 'Word Search – The Planets',
     desc: 'Find all eight planets hidden in the grid — search across, down, and diagonally!',
     thumb: '/planets-word-search-thumbnail.png',
@@ -528,6 +548,7 @@ const typeFilters = [
   { id: 'word-search', label: 'Word Search' },
   { id: 'matching', label: 'Matching' },
   { id: 'word-sort', label: 'Word Sort' },
+  { id: 'hangman', label: 'Hangman' },
 ]
 
 export default function GamesPage() {
