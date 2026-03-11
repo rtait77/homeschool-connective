@@ -217,9 +217,11 @@
         width: 92%; height: 92%; object-fit: contain;
       }
       .card-front .planet-name {
-        font-size: clamp(0.65rem, 3vw, 1.3rem); font-weight: 800;
+        font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 800;
         color: #000; text-align: center; line-height: 1.2;
-        word-break: break-word;
+      }
+      .card-front .planet-name.long {
+        font-size: clamp(0.9rem, 3.5vw, 1.4rem);
       }
       /* Matched glow */
       .card.matched .card-front.image-card {
@@ -328,8 +330,9 @@
     const wByW = (availW - GAP * (cols - 1)) / cols;
     // Fit by height
     const hByH = (availH - GAP * (rows - 1)) / rows;
-    // Use whichever is smaller, cap at 200px wide
-    const cardW = Math.floor(Math.min(wByW, hByH, 200));
+    // Use whichever is smaller; cap smaller on portrait to avoid covering image credit
+    const cap = isPortrait ? 145 : 200;
+    const cardW = Math.floor(Math.min(wByW, hByH, cap));
     const cardH = Math.floor(cardW / CARD_RATIO);
     document.documentElement.style.setProperty('--card-w', cardW + 'px');
     document.documentElement.style.setProperty('--card-h', cardH + 'px');
@@ -381,7 +384,7 @@
         front.appendChild(img);
       } else {
         const span = document.createElement('span');
-        span.className = 'planet-name';
+        span.className = data.name.length > 7 ? 'planet-name long' : 'planet-name';
         span.textContent = data.name;
         front.appendChild(span);
       }
