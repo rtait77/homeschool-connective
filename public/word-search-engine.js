@@ -337,40 +337,31 @@
         .word-item img { width: 34px; height: 34px; }
         .word-label { font-size: 0.82rem; }
       }
-      /* ── Win overlay ── */
-      #winOverlay {
+      /* ── Grid wrap (for reset btn positioning) ── */
+      #gridWrap { position: relative; flex-shrink: 0; }
+      /* ── Reset button (matches puzzle engine) ── */
+      #resetBtn {
         display: none;
-        position: fixed; inset: 0;
-        background: rgba(5,10,26,0.88);
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(5,10,26,0.75);
+        border: 3px solid rgba(255,255,255,0.6);
+        border-radius: 50%;
+        width: 72px; height: 72px;
+        cursor: pointer; z-index: 11;
         align-items: center; justify-content: center;
-        z-index: 100;
-        flex-direction: column;
-        gap: 14px;
-        text-align: center;
-        padding: 24px;
+        transition: background 0.15s, border-color 0.15s;
+        animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+        animation-fill-mode: forwards;
       }
-      #winOverlay.show { display: flex; }
-      #winOverlay h2 {
-        font-size: clamp(1.4rem, 5vw, 2rem);
-        font-weight: 800;
-        color: #FFD700;
-        text-shadow: 0 0 30px rgba(255,215,0,0.5);
+      #resetBtn.show { display: flex; }
+      #resetBtn:hover  { background: rgba(237,124,90,0.85); border-color: white; }
+      #resetBtn:active { transform: translate(-50%,-50%) scale(0.93); }
+      #resetBtn svg { width: 36px; height: 36px; fill: white; }
+      @keyframes popIn {
+        0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.5); }
+        100% { opacity: 1; transform: translate(-50%,-50%) scale(1); }
       }
-      #winOverlay p { color: rgba(255,255,255,0.8); font-size: 1rem; }
-      #playAgainBtn {
-        background: #ed7c5a;
-        border: none;
-        border-radius: 30px;
-        padding: 12px 30px;
-        color: white;
-        font-family: 'Nunito', sans-serif;
-        font-size: 1rem;
-        font-weight: 800;
-        cursor: pointer;
-        transition: background 0.15s;
-        margin-top: 4px;
-      }
-      #playAgainBtn:hover { background: #d4623f; }
       #confettiCanvas { position: fixed; inset: 0; pointer-events: none; z-index: 101; }
     `;
     document.head.appendChild(style);
@@ -405,6 +396,8 @@
     gameArea.id = 'gameArea';
 
     // Grid
+    const gridWrap = document.createElement('div');
+    gridWrap.id = 'gridWrap';
     const gridEl = document.createElement('div');
     gridEl.id = 'gridEl';
     cellMap = {};
@@ -420,7 +413,16 @@
         cellMap[r][c] = cell;
       }
     }
-    gameArea.appendChild(gridEl);
+    gridWrap.appendChild(gridEl);
+
+    const resetBtn = document.createElement('button');
+    resetBtn.id = 'resetBtn';
+    resetBtn.title = 'Play again';
+    resetBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>';
+    resetBtn.addEventListener('click', resetGame);
+    gridWrap.appendChild(resetBtn);
+
+    gameArea.appendChild(gridWrap);
 
     // Word list
     const wordList = document.createElement('div');
@@ -440,17 +442,6 @@
     });
     gameArea.appendChild(wordList);
     document.body.appendChild(gameArea);
-
-    // Win overlay
-    const winOverlay = document.createElement('div');
-    winOverlay.id = 'winOverlay';
-    winOverlay.innerHTML = `
-      <h2>🎉 You found them all!</h2>
-      <p>Outstanding work, space explorer!</p>
-      <button id="playAgainBtn">Play Again</button>
-    `;
-    document.body.appendChild(winOverlay);
-    document.getElementById('playAgainBtn').addEventListener('click', resetGame);
 
     // Confetti canvas
     const cc = document.createElement('canvas');
@@ -607,14 +598,17 @@
   function win() {
     playWin();
     launchConfetti();
-    document.getElementById('winOverlay').classList.add('show');
+    document.getElementById('resetBtn').classList.add('show');
   }
 
   function resetGame() {
     found.clear();
     _done = false;
     _playStart = Date.now();
-    document.getElementById('winOverlay').classList.remove('show');
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.classList.remove('show');
+    const cc = document.getElementById('confettiCanvas');
+    cc.getContext('2d').clearRect(0, 0, cc.width, cc.height);
     makeGrid();
 
     // Rebuild cells
