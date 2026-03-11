@@ -1295,6 +1295,16 @@ export default function GamesPage() {
 
       </div>
 
+      {/* Results counter */}
+      {filtered.length > 0 && (
+        <p className="text-sm text-[#5c5c5c] mb-6">
+          {(search.trim() || activeGameType || activeDifficulty || topic !== 'all')
+            ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> games</>
+            : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{games.length}</span> games</>
+          }
+        </p>
+      )}
+
       {/* Full games */}
       {fullGames.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
