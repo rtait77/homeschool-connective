@@ -496,6 +496,16 @@ const games = [
     newTab: false,
   },
   {
+    title: 'Word Search – The Inner Solar System',
+    desc: 'Find the Sun, inner planets, the Moon, and more hidden in the grid!',
+    thumb: '/word-search-inner-solar-system-thumbnail.png',
+    url: '/word-search-inner-solar-system.html',
+    topic: 'solar-system',
+    mini: true,
+    types: ['word-search'],
+    newTab: false,
+  },
+  {
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
