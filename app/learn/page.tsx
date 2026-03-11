@@ -503,7 +503,7 @@ const topics = [
 
 const typeFilters = [
   { id: 'lesson', label: 'Lessons' },
-  { id: 'mini', label: 'Mini' },
+  { id: 'mini', label: 'Mini Games' },
   { id: 'puzzle', label: 'Puzzles' },
   { id: 'word-search', label: 'Word Search' },
   { id: 'matching', label: 'Matching' },
@@ -520,7 +520,7 @@ export default function GamesPage() {
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
-  const ITEMS_PER_PAGE = 12
+  const ITEMS_PER_PAGE = 15
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -628,7 +628,7 @@ export default function GamesPage() {
       )}
 
       {/* Search */}
-      <div className="relative mb-4 max-w-sm">
+      <div className="relative mb-4 max-w-xs">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#aaa9a4] text-base pointer-events-none">🔍</span>
         <input
           type="search"
@@ -763,7 +763,7 @@ export default function GamesPage() {
       <div className="mt-12 bg-white rounded-[14px] p-8 text-center border-2 border-dashed border-[#ddd8cc]">
         <p className="text-2xl mb-2">🌊 🪸 🐠</p>
         <h2 className="text-lg font-extrabold mb-2">More Topics Coming Soon</h2>
-        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in the works. Subscribe to our newsletter to be the first to know!</p>
+        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in the works.</p>
       </div>
     </div>
   )
