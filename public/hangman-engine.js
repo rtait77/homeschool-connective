@@ -51,7 +51,10 @@
     const totalTravel = 108;
     const beamHeight = Math.round(stage * totalTravel / maxWrong);
     const astroY = 175 - beamHeight;
-    const showBeam = stage > 0;
+    // At max wrong: person absorbed into ship — hide beam and person
+    const absorbed = stage >= maxWrong;
+    const showBeam  = stage > 0 && !absorbed;
+    const showAstro = !absorbed;
     return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="80" cy="55" rx="48" ry="14" fill="#6366f1"/>
       <ellipse cx="80" cy="50" rx="30" ry="18" fill="#818cf8"/>
@@ -61,7 +64,7 @@
       <circle cx="80" cy="70" r="4" fill="#34d399"/>
       <circle cx="100" cy="68" r="4" fill="#f472b6"/>
       ${showBeam ? `<polygon points="68,75 92,75 ${92 + stage * 4},${75 + beamHeight} ${68 - stage * 4},${75 + beamHeight}" fill="#fde68a" opacity="0.35"/>` : ''}
-      <g transform="translate(80, ${astroY})">
+      ${showAstro ? `<g transform="translate(80, ${astroY})">
         <circle cx="0" cy="-24" r="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
         <rect x="-8" y="-14" width="16" height="18" rx="4" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
         <line x1="-8" y1="-10" x2="-18" y2="-4" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
@@ -69,7 +72,7 @@
         <line x1="-4" y1="4"   x2="-5"  y2="18" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="4"  y1="4"   x2="5"   y2="18" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
         <rect x="-5" y="-26" width="10" height="7" rx="2" fill="#bae6fd" opacity="0.8"/>
-      </g>
+      </g>` : ''}
     </svg>`;
   }
 
@@ -270,6 +273,27 @@
     document.getElementById('status-msg').innerHTML = '<span style="color:#f87171">Too many wrong guesses \u2014 try again!</span>';
     document.getElementById('resetBtn').classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
+    const theme = THEMES[themeIdx % 3];
+    if (theme === 'alien')     setTimeout(animateAlienEscape, 350);
+    if (theme === 'astronaut') setTimeout(animateAstronautFloat, 350);
+  }
+
+  function animateAlienEscape() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+      { transform: 'translate(60px, -350px) scale(0.3)', opacity: 0 }
+    ], { duration: 1000, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animateAstronautFloat() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+      { transform: 'translate(180px, -120px) rotate(40deg)', opacity: 0 }
+    ], { duration: 1300, easing: 'ease-in', fill: 'forwards' });
   }
 
   function animateLaunchImage() {
@@ -295,6 +319,8 @@
     if (statusEl) statusEl.textContent = '';
     const resetBtn = document.getElementById('resetBtn');
     if (resetBtn) resetBtn.classList.remove('show');
+    const scene = document.getElementById('scene');
+    if (scene) scene.getAnimations().forEach(a => a.cancel());
     updateScene();
     updateBlanks();
     updateKeyboard();
