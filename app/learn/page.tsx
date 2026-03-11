@@ -2,8 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 
 const games = [
@@ -532,41 +531,19 @@ const typeFilters = [
 ]
 
 export default function GamesPage() {
-  return <Suspense fallback={null}><GamesPageInner /></Suspense>
-}
-
-function GamesPageInner() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [topic, setTopic] = useState(() => searchParams.get('topic') ?? 'all')
+  const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
-  const [activeTypes, setActiveTypes] = useState<string[]>(() => {
-    const t = searchParams.get('types'); return t ? t.split(',') : []
-  })
-  const [search, setSearch] = useState(() => searchParams.get('q') ?? '')
+  const [activeTypes, setActiveTypes] = useState<string[]>([])
+  const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
-  const [page, setPage] = useState(() => {
-    const p = parseInt(searchParams.get('page') ?? '1')
-    return isNaN(p) || p < 1 ? 1 : p
-  })
+  const [page, setPage] = useState(1)
   const ITEMS_PER_PAGE = 15
-
-  function updateURL(newPage: number, newTopic: string, newTypes: string[], newSearch: string) {
-    const params = new URLSearchParams()
-    if (newTopic !== 'all') params.set('topic', newTopic)
-    if (newTypes.length > 0) params.set('types', newTypes.join(','))
-    if (newSearch.trim()) params.set('q', newSearch)
-    if (newPage > 1) params.set('page', String(newPage))
-    const qs = params.toString()
-    router.replace(qs ? `?${qs}` : '/learn', { scroll: false })
-  }
 
   function goToPage(n: number) {
     setPage(n)
-    updateURL(n, topic, activeTypes, search)
   }
 
   const supabase = createBrowserClient(
@@ -621,13 +598,10 @@ function GamesPageInner() {
     }
   }
 
+  useEffect(() => { setPage(1) }, [topic, activeTypes, search])
+
   function toggleType(id: string) {
-    const newTypes = activeTypes.includes(id)
-      ? activeTypes.filter(t => t !== id)
-      : [...activeTypes, id]
-    setActiveTypes(newTypes)
-    updateURL(1, topic, newTypes, search)
-    setPage(1)
+    setActiveTypes(prev => prev.includes(id) ? prev.filter(t => t !== id) : [...prev, id])
   }
 
   const filtered = games.filter(g => {
@@ -682,7 +656,7 @@ function GamesPageInner() {
           type="search"
           placeholder="Search games…"
           value={search}
-          onChange={e => { setSearch(e.target.value); setPage(1); updateURL(1, topic, activeTypes, e.target.value) }}
+          onChange={e => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#ddd8cc] bg-white text-sm font-semibold placeholder-[#aaa9a4] focus:outline-none focus:border-[#55b6ca] transition-colors"
         />
       </div>
@@ -704,7 +678,7 @@ function GamesPageInner() {
               {topics.map(t => (
                 <button
                   key={t.id}
-                  onClick={() => { setTopic(t.id); setTopicOpen(false); setPage(1); updateURL(1, t.id, activeTypes, search) }}
+                  onClick={() => { setTopic(t.id); setTopicOpen(false) }}
                   className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-xl last:rounded-b-xl cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
                 >
                   {t.label}
