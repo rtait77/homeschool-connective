@@ -278,14 +278,18 @@
       revealAllTiles();
     }
     document.getElementById('status-msg').innerHTML = '<span style="color:#34d399">\uD83C\uDF89 You got it!</span>';
-    document.getElementById('resetBtn').classList.add('show');
+    const btn = document.getElementById('resetBtn');
+    btn.textContent = 'Play Another';
+    btn.classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
   }
 
   function handleLose() {
     playLose();
-    document.getElementById('status-msg').innerHTML = '<span style="color:#f87171">Too many wrong guesses \u2014 try again!</span>';
-    document.getElementById('resetBtn').classList.add('show');
+    document.getElementById('status-msg').textContent = '';
+    const btn = document.getElementById('resetBtn');
+    btn.textContent = 'Try Again';
+    btn.classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
     const theme = THEMES[themeIdx % 3];
     if (theme === 'alien')     setTimeout(animateAlienEscape, 350);
