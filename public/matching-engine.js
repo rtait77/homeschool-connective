@@ -217,8 +217,9 @@
         width: 92%; height: 92%; object-fit: contain;
       }
       .card-front .planet-name {
-        font-size: clamp(1.1rem, 4vw, 1.8rem); font-weight: 800;
+        font-size: clamp(0.65rem, 3vw, 1.3rem); font-weight: 800;
         color: #000; text-align: center; line-height: 1.2;
+        word-break: break-word;
       }
       /* Matched glow */
       .card.matched .card-front.image-card {
@@ -320,17 +321,19 @@
     const gameArea = document.getElementById('gameArea');
     const availW = gameArea.clientWidth - PAD * 2;
     const availH = gameArea.clientHeight - PAD * 2;
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const cols = isPortrait ? 2 : COLS;
+    const rows = Math.ceil(M.pairs.length * 2 / cols);
     // Fit by width
-    const wByW = (availW - GAP * (COLS - 1)) / COLS;
-    const hByW = wByW / CARD_RATIO;
+    const wByW = (availW - GAP * (cols - 1)) / cols;
     // Fit by height
-    const hByH = (availH - GAP * (ROWS - 1)) / ROWS;
-    const wByH = hByH * CARD_RATIO;
+    const hByH = (availH - GAP * (rows - 1)) / rows;
     // Use whichever is smaller, cap at 200px wide
-    const cardW = Math.floor(Math.min(wByW, wByH, 200));
+    const cardW = Math.floor(Math.min(wByW, hByH, 200));
     const cardH = Math.floor(cardW / CARD_RATIO);
     document.documentElement.style.setProperty('--card-w', cardW + 'px');
     document.documentElement.style.setProperty('--card-h', cardH + 'px');
+    document.getElementById('grid').style.gridTemplateColumns = `repeat(${cols}, ${cardW}px)`;
   }
 
   // ─── SETUP ────────────────────────────────────────────────────────────────────
