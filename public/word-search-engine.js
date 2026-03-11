@@ -336,21 +336,22 @@
       }
       /* ── Landscape mobile: 2-column word list beside grid ── */
       @media (orientation: landscape) and (max-height: 500px) {
+        #gameArea { gap: 12px; padding: 6px 12px 6px 12px; }
         #gridEl {
-          --cell: clamp(20px, calc((100vh - 65px) / ${SIZE}), 30px);
+          --cell: clamp(18px, calc((100vh - 70px) / ${SIZE + 1}), 26px);
         }
         #wordList {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 5px;
+          gap: 6px;
           max-height: calc(100vh - 65px);
           overflow: hidden;
           align-content: center;
           padding: 0;
         }
-        .word-item { min-width: auto; padding: 4px 8px 4px 4px; }
-        .word-item img { width: 28px; height: 28px; }
-        .word-label { font-size: 0.72rem; }
+        .word-item { min-width: auto; padding: 5px 10px 5px 5px; }
+        .word-item img { width: 38px; height: 38px; }
+        .word-label { font-size: 0.85rem; }
       }
       /* ── Grid wrap (for reset btn positioning) ── */
       #gridWrap { position: relative; flex-shrink: 0; }
