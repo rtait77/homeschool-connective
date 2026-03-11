@@ -261,7 +261,6 @@
     launchConfetti();
     if (MODE === 'easy') {
       revealAllTiles();
-      setTimeout(animateLaunchImage, 300);
     }
     document.getElementById('status-msg').innerHTML = '<span style="color:#34d399">\uD83C\uDF89 You got it!</span>';
     document.getElementById('resetBtn').classList.add('show');
