@@ -331,7 +331,7 @@
     // Fit by height
     const hByH = (availH - GAP * (rows - 1)) / rows;
     // Use whichever is smaller; cap smaller on portrait to avoid covering image credit
-    const cap = isPortrait ? 128 : 200;
+    const cap = isPortrait ? 112 : 200;
     const cardW = Math.floor(Math.min(wByW, hByH, cap));
     const cardH = Math.floor(cardW / CARD_RATIO);
     document.documentElement.style.setProperty('--card-w', cardW + 'px');
