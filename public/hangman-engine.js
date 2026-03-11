@@ -334,7 +334,7 @@
     const statusEl = document.getElementById('status-msg');
     if (statusEl) statusEl.textContent = '';
     const resetBtn = document.getElementById('resetBtn');
-    if (resetBtn) resetBtn.classList.remove('show');
+    if (resetBtn) { resetBtn.classList.remove('show'); resetBtn.getAnimations().forEach(a => a.cancel()); }
     const scene = document.getElementById('scene');
     if (scene) scene.getAnimations().forEach(a => a.cancel());
     updateScene();
@@ -422,8 +422,8 @@
       .key.correct{background:#059669;color:#fff;cursor:default;}
       .key.wrong{background:#374151;color:#6b7280;cursor:default;}
       #status-msg{font-size:clamp(1rem,3.5vw,1.3rem);font-weight:900;text-align:center;min-height:1.5em;}
-      #resetBtn{display:none;background:#ed7c5a;border:none;border-radius:999px;padding:12px 32px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;cursor:pointer;transition:background 0.15s,transform 0.15s;letter-spacing:0.02em;}
-      #resetBtn.show{display:inline-flex;animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
+      #resetBtn{display:inline-flex;background:#ed7c5a;border:none;border-radius:999px;padding:12px 32px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;color:white;cursor:pointer;transition:background 0.15s,transform 0.15s;letter-spacing:0.02em;opacity:0;pointer-events:none;}
+      #resetBtn.show{opacity:1;pointer-events:auto;animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;}
       #resetBtn:hover{background:#d4623f;transform:scale(1.04);}
       @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
       #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
