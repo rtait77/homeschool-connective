@@ -523,8 +523,8 @@ const topics = [
 ]
 
 const typeFilters = [
-  { id: 'lesson', label: 'Lessons' },
   { id: 'mini', label: 'Mini Games' },
+  { id: 'lesson', label: 'Lessons' },
   { id: 'puzzle', label: 'Puzzles' },
   { id: 'word-search', label: 'Word Search' },
   { id: 'matching', label: 'Matching' },
