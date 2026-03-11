@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <defs>
+    <linearGradient id="tailGrad" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0%" stop-color="#bae6fd" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0.75"/>
+    </linearGradient>
+    <radialGradient id="nucleusGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0f9ff"/>
+      <stop offset="55%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </radialGradient>
+  </defs>
+  <polygon points="220,150 20,75 20,225" fill="url(#tailGrad)"/>
+  <polygon points="220,150 50,60 50,240" fill="rgba(125,211,252,0.25)"/>
+  <circle cx="225" cy="150" r="52" fill="url(#nucleusGrad)"/>
+  <circle cx="214" cy="138" r="9" fill="rgba(255,255,255,0.45)"/>
+  <circle cx="238" cy="157" r="6" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="220" cy="168" r="7" fill="rgba(255,255,255,0.25)"/>
+  <circle cx="230" cy="137" r="4" fill="rgba(255,255,255,0.35)"/>
+</svg>
