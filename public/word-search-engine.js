@@ -342,6 +342,24 @@
         .word-item img { width: 34px; height: 34px; }
         .word-label { font-size: 0.82rem; }
       }
+      /* ── Landscape mobile: 2-column word list beside grid ── */
+      @media (orientation: landscape) and (max-height: 500px) {
+        #gridEl {
+          --cell: clamp(20px, calc((100vh - 65px) / ${SIZE}), 30px);
+        }
+        #wordList {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5px;
+          max-height: calc(100vh - 65px);
+          overflow: hidden;
+          align-content: center;
+          padding: 0;
+        }
+        .word-item { min-width: auto; padding: 4px 8px 4px 4px; }
+        .word-item img { width: 28px; height: 28px; }
+        .word-label { font-size: 0.72rem; }
+      }
       /* ── Grid wrap (for reset btn positioning) ── */
       #gridWrap { position: relative; flex-shrink: 0; }
       /* ── Reset button (matches puzzle engine) ── */
