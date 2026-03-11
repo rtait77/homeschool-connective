@@ -488,7 +488,7 @@ const games = [
   {
     title: 'Space Hangman #1 – Easy',
     desc: 'Build a rocket letter by letter — guess correctly and watch it come together, then blast off!',
-    thumb: '/thumb-word-sort.png',
+    thumb: '/space-hangman-easy-thumbnail.png',
     url: '/hangman-jupiter-easy.html',
     topic: 'solar-system',
     mini: true,
@@ -498,7 +498,7 @@ const games = [
   {
     title: 'Space Hangman #1 – Medium',
     desc: "Guess the mystery space word before the rocket breaks apart! You have 6 guesses.",
-    thumb: '/thumb-word-sort.png',
+    thumb: '/space-hangman-medium-thumbnail.png',
     url: '/hangman-jupiter.html',
     topic: 'solar-system',
     mini: true,
@@ -508,7 +508,7 @@ const games = [
   {
     title: 'Space Hangman #1 – Hard',
     desc: "Think you know your space words? Guess the mystery word — but you only get 4 chances!",
-    thumb: '/thumb-word-sort.png',
+    thumb: '/space-hangman-hard-thumbnail.png',
     url: '/hangman-jupiter-hard.html',
     topic: 'solar-system',
     mini: true,
