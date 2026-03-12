@@ -8,8 +8,8 @@
   const BANK      = cfg.wordBank || [];
   const MAX_WRONG = MODE === 'hard' ? 4 : 6;
 
-  // 5 themes
-  const THEMES = ['rocket','alien','astronaut','meteor','supernova'];
+  // 6 themes
+  const THEMES = ['rocket','alien','astronaut','meteor','supernova','solar'];
   let themeQueue = [], themeQueueIdx = 0, currentTheme = 'rocket';
 
   // Meteor planet target — picked each round
@@ -336,12 +336,91 @@
     </svg>`;
   }
 
+  // ── SVG: Solar ───────────────────────────────────────────────
+  // Spacecraft drifts toward the sun with each wrong guess
+  function solarSVG(stage, maxWrong) {
+    const p     = stage / maxWrong;
+    const isMax = stage >= maxWrong;
+
+    // Sun: large circle anchored at right edge, partially off-screen
+    const sx = 178, sy = 108;
+    const sunR = 58;
+
+    // Spacecraft moves left→right toward sun surface
+    const shipX = Math.round(22 + p * 106); // 22 → 128 (sun surface ≈ 120)
+    const shipY = 108;
+
+    // Corona rays on the visible (left) side of the sun
+    const rays = [];
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      if (Math.cos(a) > 0.2) continue; // only left-facing rays
+      const r1 = sunR + 6;
+      const r2 = sunR + 14 + p * 18;
+      rays.push(`<line x1="${(sx+Math.cos(a)*r1).toFixed(1)}" y1="${(sy+Math.sin(a)*r1).toFixed(1)}" x2="${(sx+Math.cos(a)*r2).toFixed(1)}" y2="${(sy+Math.sin(a)*r2).toFixed(1)}" stroke="#fbbf24" stroke-width="${(1.5+p*1.5).toFixed(1)}" opacity="${(0.5+p*0.45).toFixed(2)}" stroke-linecap="round"/>`);
+    }
+
+    // Heat glow around spacecraft (appears as it gets close)
+    const heatOp   = Math.max(0, p - 0.35) * 0.9;
+    const heatR    = 12 + p * 14;
+    const shipCol  = p > 0.6 ? '#f97316' : p > 0.35 ? '#fbbf24' : '#cbd5e1';
+    const wingCol  = p > 0.6 ? '#ea580c' : p > 0.35 ? '#f59e0b' : '#94a3b8';
+    const glowOp   = (0.08 + p * 0.18).toFixed(2);
+
+    return `<svg viewBox="0 0 160 216" width="160" height="216" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18"  cy="22"  r="1.5" fill="white" opacity="${(0.7-p*0.5).toFixed(2)}"/>
+      <circle cx="40"  cy="8"   r="1"   fill="white" opacity="${(0.6-p*0.5).toFixed(2)}"/>
+      <circle cx="12"  cy="170" r="1.5" fill="white" opacity="${(0.5-p*0.4).toFixed(2)}"/>
+      <circle cx="55"  cy="185" r="1"   fill="white" opacity="${(0.6-p*0.5).toFixed(2)}"/>
+      <!-- Sun outer glow -->
+      <circle cx="${sx}" cy="${sy}" r="${sunR+30+p*18}" fill="#fde68a" opacity="${glowOp}"/>
+      <circle cx="${sx}" cy="${sy}" r="${sunR+14}"       fill="#fbbf24" opacity="${(0.12+p*0.1).toFixed(2)}"/>
+      <!-- Corona rays -->
+      ${rays.join('')}
+      <!-- Sun body -->
+      <circle cx="${sx}" cy="${sy}" r="${sunR}"   fill="#f97316"/>
+      <circle cx="${sx}" cy="${sy}" r="${sunR-10}" fill="#fbbf24" opacity="0.65"/>
+      <circle cx="${sx}" cy="${sy}" r="${sunR-22}" fill="#fde68a" opacity="0.5"/>
+      <!-- Heat shimmer around ship -->
+      ${heatOp > 0 ? `<circle cx="${shipX}" cy="${shipY}" r="${heatR.toFixed(1)}" fill="#f97316" opacity="${heatOp.toFixed(2)}"/>` : ''}
+      <!-- Spacecraft (pointing right, horizontal) -->
+      ${!isMax ? `
+        <!-- Engine flame -->
+        <path d="M${shipX-22},${shipY} L${shipX-30},${shipY-5} L${shipX-34},${shipY} L${shipX-30},${shipY+5} Z" fill="#60a5fa" opacity="0.85"/>
+        <path d="M${shipX-22},${shipY} L${shipX-28},${shipY-3} L${shipX-31},${shipY} L${shipX-28},${shipY+3} Z" fill="white" opacity="0.7"/>
+        <!-- Engine nozzle -->
+        <rect x="${shipX-24}" y="${shipY-4}" width="6" height="8" rx="2" fill="#334155"/>
+        <!-- Body -->
+        <rect x="${shipX-18}" y="${shipY-6}" width="30" height="12" rx="4" fill="${shipCol}"/>
+        <!-- Cockpit window -->
+        <ellipse cx="${shipX+4}" cy="${shipY}" rx="5" ry="4" fill="#bae6fd" opacity="0.85"/>
+        <!-- Nose cone -->
+        <path d="M${shipX+12},${shipY-6} L${shipX+12},${shipY+6} L${shipX+22},${shipY} Z" fill="${wingCol}"/>
+        <!-- Solar panels -->
+        <rect x="${shipX-10}" y="${shipY-16}" width="18" height="8" rx="2" fill="#1e40af"/>
+        <rect x="${shipX-10}" y="${shipY+8}"  width="18" height="8" rx="2" fill="#1e40af"/>
+        <!-- Panel detail lines -->
+        <line x1="${shipX-4}" y1="${shipY-16}" x2="${shipX-4}" y2="${shipY-8}" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+        <line x1="${shipX+4}" y1="${shipY-16}" x2="${shipX+4}" y2="${shipY-8}" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+        <line x1="${shipX-4}" y1="${shipY+8}"  x2="${shipX-4}" y2="${shipY+16}" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+        <line x1="${shipX+4}" y1="${shipY+8}"  x2="${shipX+4}" y2="${shipY+16}" stroke="#3b82f6" stroke-width="1" opacity="0.6"/>
+      ` : `
+        <!-- Impact explosion -->
+        <circle cx="${shipX}" cy="${shipY}" r="22" fill="#f97316" opacity="0.8"/>
+        <circle cx="${shipX}" cy="${shipY}" r="13" fill="#fbbf24" opacity="0.9"/>
+        <circle cx="${shipX}" cy="${shipY}" r="6"  fill="white"   opacity="1"/>
+        ${Array.from({length:8},(_,i)=>{const a=(i/8)*Math.PI*2;const r1=16,r2=28+i*2;return `<line x1="${(shipX+Math.cos(a)*r1).toFixed(1)}" y1="${(shipY+Math.sin(a)*r1).toFixed(1)}" x2="${(shipX+Math.cos(a)*r2).toFixed(1)}" y2="${(shipY+Math.sin(a)*r2).toFixed(1)}" stroke="#fbbf24" stroke-width="2.5" opacity="0.9" stroke-linecap="round"/>`;}).join('')}
+      `}
+    </svg>`;
+  }
+
   function getThemeSVG() {
     if (currentTheme === 'rocket')    return rocketSVG(wrong, MAX_WRONG);
     if (currentTheme === 'alien')     return alienSVG(wrong, MAX_WRONG);
     if (currentTheme === 'astronaut') return astronautSVG(wrong, MAX_WRONG);
     if (currentTheme === 'meteor')    return meteorSVG(wrong, MAX_WRONG);
     if (currentTheme === 'supernova') return supernovaSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'solar')     return solarSVG(wrong, MAX_WRONG);
     return rocketSVG(wrong, MAX_WRONG);
   }
 
@@ -520,6 +599,7 @@
     if (currentTheme === 'astronaut')  setTimeout(animateAstronautFloat,    delay);
     if (currentTheme === 'meteor')     setTimeout(animateMeteorImpact,      delay);
     if (currentTheme === 'supernova')  setTimeout(animateSupernovaExplosion,delay);
+    if (currentTheme === 'solar')      setTimeout(animateSolarImpact,       delay);
   }
 
   // ── Lose animations ──────────────────────────────────────────
@@ -571,6 +651,17 @@
       { filter: 'hue-rotate(25deg) brightness(2.5)', opacity: 1, offset: 0.3 },
       { filter: 'hue-rotate(25deg) brightness(0.4)', opacity: 0 }
     ], { duration: 1100, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animateSolarImpact() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { filter: 'brightness(1)',   opacity: 1, transform: 'scale(1)' },
+      { filter: 'brightness(8)',   opacity: 1, transform: 'scale(1.08)', offset: 0.15 },
+      { filter: 'brightness(2)',   opacity: 1, transform: 'scale(1.2)',  offset: 0.4 },
+      { filter: 'brightness(0.5)', opacity: 0, transform: 'scale(1.5)' }
+    ], { duration: 1200, easing: 'ease-out', fill: 'forwards' });
   }
 
   function animateIceShatter() {
