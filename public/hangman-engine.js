@@ -1115,6 +1115,9 @@
       @media (orientation:portrait) and (max-width:768px){#header{flex-wrap:wrap;padding:10px 12px 4px;gap:6px;}#backBtn{flex:0 0 auto;}.title-row{flex:1;justify-content:flex-end;}h1{font-size:clamp(0.95rem,4vw,1.3rem);}}
       #main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px 30px;gap:16px;width:100%;}
       #clue{font-size:clamp(0.85rem,2.5vw,1rem);color:rgba(255,255,255,0.75);font-weight:700;text-align:center;max-width:500px;}
+      #content-cols{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;}
+      #left-col{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;}
+      #right-col{display:flex;justify-content:center;align-items:center;order:-1;}
       #scene-wrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:230px;}
       #blanks-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
       .blank{display:inline-flex;flex-direction:column;align-items:center;gap:3px;}
@@ -1134,6 +1137,23 @@
       #resetBtn:hover{background:#d4623f;transform:scale(1.04);}
       @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
       #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
+      @media (orientation:landscape) and (max-height:600px){
+        #main{padding:6px 12px 8px;gap:6px;}
+        #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;}
+        #content-cols{flex-direction:row;align-items:stretch;gap:10px;flex:1;}
+        #left-col{flex:1;min-width:0;gap:6px;justify-content:center;order:1;}
+        #right-col{flex:0 0 auto;order:2;align-items:center;justify-content:center;}
+        #scene-wrap{min-height:0;}
+        #scene-wrap svg{width:auto;height:clamp(140px,38vh,200px);}
+        #keyboard{max-width:none;gap:4px;}
+        .key{width:clamp(26px,5.5vw,36px);height:clamp(26px,6vh,34px);font-size:clamp(0.65rem,1.8vw,0.82rem);}
+        .blank-letter{font-size:clamp(1rem,3.5vh,1.5rem);}
+        .blank-line{width:22px;}
+        #resetBtn{padding:8px 22px;font-size:0.88rem;}
+        #status-msg{font-size:clamp(0.85rem,2.5vw,1.1rem);min-height:1.2em;}
+        .wrong-count{font-size:0.75rem;}
+        #wrong-letters{font-size:0.75rem;}
+      }
     `;
     document.head.appendChild(style);
 
@@ -1175,13 +1195,19 @@
     main.id = 'main';
     main.innerHTML = `
       <div id="clue"></div>
-      <div id="scene-wrap"><div id="scene"></div></div>
-      <button id="resetBtn">Play Another</button>
-      ${MODE !== 'easy' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
-      <div id="blanks-row"></div>
-      <div id="wrong-letters"></div>
-      <div id="keyboard"></div>
-      <div id="status-msg"></div>
+      <div id="content-cols">
+        <div id="left-col">
+          <div id="blanks-row"></div>
+          <div id="wrong-letters"></div>
+          ${MODE !== 'easy' ? '<div id="wrong-count" class="wrong-count"></div>' : ''}
+          <div id="keyboard"></div>
+          <div id="status-msg"></div>
+          <button id="resetBtn">Play Another</button>
+        </div>
+        <div id="right-col">
+          <div id="scene-wrap"><div id="scene"></div></div>
+        </div>
+      </div>
     `;
     document.body.appendChild(main);
   }
