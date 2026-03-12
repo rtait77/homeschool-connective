@@ -1154,7 +1154,7 @@
         .title-row{grid-column:2;justify-self:center;}
         #main{padding:6px 8px 8px;gap:4px;}
         #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;text-align:center;}
-        #content-cols{flex-direction:row;align-items:stretch;gap:4px;flex:1;width:100%;}
+        #content-cols{flex-direction:row;align-items:center;gap:4px;flex:1;width:100%;}
         #left-col{flex:1;min-width:0;gap:6px;align-items:center;justify-content:center;order:1;overflow:hidden;}
         #right-col{flex:0 0 40vw;max-width:220px;order:2;display:flex;flex-direction:column;align-items:center;justify-content:center;}
         #scene-wrap{width:100%;min-height:0;}
