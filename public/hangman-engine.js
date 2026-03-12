@@ -1150,13 +1150,13 @@
       #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
       @media (orientation:landscape) and (max-height:600px){
         #main{padding:6px 8px 8px;gap:4px;}
-        #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;text-align:left;}
+        #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;text-align:center;}
         #content-cols{flex-direction:row;align-items:stretch;gap:8px;flex:1;width:100%;}
-        #left-col{flex:1;min-width:0;gap:6px;justify-content:center;order:1;overflow:hidden;}
-        #right-col{flex:0 0 40vw;max-width:220px;order:2;align-items:center;justify-content:center;}
-        #scene-wrap{width:100%;min-height:0;}
-        #scene-wrap svg{width:100%;height:auto;max-height:clamp(130px,36vh,195px);}
-        #blanks-row{gap:3px;justify-content:flex-start;}
+        #left-col{flex:2;min-width:0;gap:6px;align-items:center;justify-content:center;order:1;overflow:hidden;}
+        #right-col{flex:1;order:2;align-items:center;justify-content:center;}
+        #scene-wrap{width:100%;min-height:0;display:flex;justify-content:center;align-items:center;}
+        #scene-wrap svg{width:auto;height:clamp(130px,36vh,195px);max-width:100%;}
+        #blanks-row{gap:3px;justify-content:center;}
         .blank-word{gap:3px;}
         .blank-letter{font-size:clamp(0.85rem,3.5vw,1.2rem);min-width:0;width:clamp(20px,4.2vw,28px);}
         .blank-line{width:clamp(18px,4vw,26px);}
