@@ -185,44 +185,54 @@
 
   // ── SVG: Squid ───────────────────────────────────────────────
   function squidSVG(stage, maxWrong) {
-    const p  = stage / maxWrong;
-    const bx = 80, by = 68;
-    const tentacleAngles = [200, 222, 244, 266, 288, 310];
+    const p = stage / maxWrong;
+    // Body slides in from right — starts fully off-screen
+    const bodyX = Math.round(222 - p * 82); // 222 → 140
+    const bodyY = 95;
+    // Tentacles fan leftward from body base, getting longer each stage
+    const angles  = [148, 162, 176, 192, 206, 220];
     const tentacles = [];
-    for (let i = 0; i < Math.min(stage, tentacleAngles.length); i++) {
-      const a   = tentacleAngles[i] * Math.PI / 180;
-      const len = 52 + p * 38;
-      const ex  = (bx + Math.cos(a) * len).toFixed(1);
-      const ey  = (by + 28 + Math.sin(a) * len * 0.85).toFixed(1);
-      const cpx = (bx + Math.cos(a + 0.4) * len * 0.58).toFixed(1);
-      const cpy = (by + 28 + Math.sin(a + 0.4) * len * 0.5).toFixed(1);
-      tentacles.push(`<path d="M${bx},${by+28} Q${cpx},${cpy} ${ex},${ey}" stroke="#7c3aed" stroke-width="${(3.5-i*0.18).toFixed(1)}" fill="none" stroke-linecap="round"/>`);
-      tentacles.push(`<circle cx="${((bx+parseFloat(ex))/2).toFixed(1)}" cy="${((by+28+parseFloat(ey))/2).toFixed(1)}" r="2" fill="#5b21b6" opacity="0.55"/>`);
+    for (let i = 0; i < Math.min(stage, angles.length); i++) {
+      const a    = angles[i] * Math.PI / 180;
+      const len  = 48 + p * 88;
+      const bx   = bodyX;
+      const by_  = bodyY + 18 + (i - 2.5) * 7;
+      const ex   = (bx + Math.cos(a) * len).toFixed(1);
+      const ey   = (by_ + Math.sin(a) * len).toFixed(1);
+      const cpx  = (bx + Math.cos(a + 0.35) * len * 0.55).toFixed(1);
+      const cpy  = (by_ + Math.sin(a + 0.35) * len * 0.55).toFixed(1);
+      tentacles.push(`<path d="M${bx.toFixed(1)},${by_.toFixed(1)} Q${cpx},${cpy} ${ex},${ey}" stroke="#7c3aed" stroke-width="${(3.8-i*0.25).toFixed(1)}" fill="none" stroke-linecap="round"/>`);
+      const mx = ((bx + parseFloat(ex)) / 2).toFixed(1);
+      const my = ((by_ + parseFloat(ey)) / 2).toFixed(1);
+      tentacles.push(`<circle cx="${mx}" cy="${my}" r="2.2" fill="#5b21b6" opacity="0.6"/>`);
     }
-    const bgOp = (0.7 - p * 0.3).toFixed(2);
+    // Body and eyes only render when near/in frame
+    const showBody = bodyX < 176;
+    const showEyes = bodyX < 170;
+    const eyeR     = showEyes ? Math.min(5.5, (170 - bodyX) * 0.22 + 1.8) : 0;
+    const bgOp     = (0.7 - p * 0.4).toFixed(2);
     return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
-      <circle cx="140" cy="35"  r="1"   fill="white" opacity="${bgOp}"/>
-      <circle cx="15"  cy="165" r="1"   fill="white" opacity="${bgOp}"/>
-      <circle cx="148" cy="158" r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="20" cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="80" cy="35"  r="1"   fill="white" opacity="${bgOp}"/>
+      <circle cx="15" cy="130" r="1.5" fill="white" opacity="${bgOp}"/>
+      <circle cx="50" cy="170" r="1"   fill="white" opacity="${bgOp}"/>
       ${tentacles.join('')}
-      <ellipse cx="${bx}" cy="${by}" rx="22" ry="28" fill="#6d28d9"/>
-      <ellipse cx="${bx}" cy="${by}" rx="15" ry="20" fill="#7c3aed" opacity="0.55"/>
-      <polygon points="${bx},${by-42} ${bx-13},${by-18} ${bx+13},${by-18}" fill="#5b21b6"/>
-      ${stage > 0 ? `
-        <circle cx="${bx-9}" cy="${by+2}" r="${(5+p).toFixed(1)}" fill="white"/>
-        <circle cx="${bx+9}" cy="${by+2}" r="${(5+p).toFixed(1)}" fill="white"/>
-        <circle cx="${bx-9}" cy="${by+2}" r="${(2.5+p*0.4).toFixed(1)}" fill="#1c1c1c"/>
-        <circle cx="${bx+9}" cy="${by+2}" r="${(2.5+p*0.4).toFixed(1)}" fill="#1c1c1c"/>
-        <circle cx="${bx-8}"  cy="${by+1}" r="1.2" fill="white"/>
-        <circle cx="${bx+10}" cy="${by+1}" r="1.2" fill="white"/>
-      ` : `
-        <circle cx="${bx-9}" cy="${by+2}" r="5" fill="#4c1d95" opacity="0.4"/>
-        <circle cx="${bx+9}" cy="${by+2}" r="5" fill="#4c1d95" opacity="0.4"/>
-      `}
-      ${p > 0.3 ? `
-        <circle cx="${bx-5}" cy="${by+17}" r="2.5" fill="#c084fc" opacity="${(p*0.7).toFixed(2)}"/>
-        <circle cx="${bx+6}" cy="${by+15}" r="2"   fill="#e879f9" opacity="${(p*0.6).toFixed(2)}"/>
+      ${showBody ? `
+        <ellipse cx="${bodyX}" cy="${bodyY}" rx="22" ry="28" fill="#6d28d9"/>
+        <ellipse cx="${bodyX}" cy="${bodyY}" rx="15" ry="20" fill="#7c3aed" opacity="0.55"/>
+        <polygon points="${bodyX},${bodyY-40} ${bodyX-12},${bodyY-18} ${bodyX+12},${bodyY-18}" fill="#5b21b6"/>
+      ` : ''}
+      ${showEyes ? `
+        <circle cx="${(bodyX-9).toFixed(1)}" cy="${bodyY+2}" r="${eyeR.toFixed(1)}" fill="white"/>
+        <circle cx="${(bodyX+9).toFixed(1)}" cy="${bodyY+2}" r="${eyeR.toFixed(1)}" fill="white"/>
+        <circle cx="${(bodyX-9).toFixed(1)}" cy="${bodyY+2}" r="${(eyeR*0.5).toFixed(1)}" fill="#1c1c1c"/>
+        <circle cx="${(bodyX+9).toFixed(1)}" cy="${bodyY+2}" r="${(eyeR*0.5).toFixed(1)}" fill="#1c1c1c"/>
+        <circle cx="${(bodyX-8).toFixed(1)}" cy="${(bodyY+1).toFixed(1)}" r="1" fill="white"/>
+        <circle cx="${(bodyX+10).toFixed(1)}" cy="${(bodyY+1).toFixed(1)}" r="1" fill="white"/>
+      ` : ''}
+      ${p > 0.6 && bodyX < 155 ? `
+        <circle cx="${(bodyX-5).toFixed(1)}" cy="${(bodyY+17).toFixed(1)}" r="2.5" fill="#c084fc" opacity="${(p*0.6).toFixed(2)}"/>
+        <circle cx="${(bodyX+4).toFixed(1)}" cy="${(bodyY+15).toFixed(1)}" r="2"   fill="#e879f9" opacity="${(p*0.5).toFixed(2)}"/>
       ` : ''}
     </svg>`;
   }
@@ -272,25 +282,54 @@
 
   // ── SVG: Wormhole ────────────────────────────────────────────
   function wormholeSVG(stage, maxWrong) {
-    const p    = stage / maxWrong;
-    const r    = Math.round(14 + p * 66);
-    const cx   = 80, cy = 108;
-    const bgOp = (0.8 - p * 0.65).toFixed(2);
-    const ringCols = ['#818cf8','#a78bfa','#c084fc','#e879f9','#f0abfc'];
+    const p  = stage / maxWrong;
+    const r  = Math.round(14 + p * 62);
+    const cx = 80, cy = 105;
+
+    // Stars that get sucked toward the center — drawn as streaks
+    const starData = [
+      {x:14, y:18}, {x:142,y:28}, {x:22, y:188}, {x:150,y:162},
+      {x:72, y:198}, {x:8,  y:82}, {x:152,y:88},  {x:58, y:8},
+      {x:118,y:195}, {x:6,  y:145},{x:155,y:135},  {x:38, y:192}
+    ];
+    const starEls = starData.map((s, i) => {
+      const pulled = stage > 0 && i < stage + 2;
+      if (pulled) {
+        const dx = cx - s.x, dy = cy - s.y;
+        const pull = Math.min(0.88, p * 0.6 + (i / starData.length) * p * 0.5);
+        const ex = (s.x + dx * pull).toFixed(1);
+        const ey = (s.y + dy * pull).toFixed(1);
+        return `<line x1="${s.x}" y1="${s.y}" x2="${ex}" y2="${ey}" stroke="white" stroke-width="1.5" opacity="${(0.35+pull*0.55).toFixed(2)}" stroke-linecap="round"/>`;
+      }
+      const op = (0.7 - p * 0.45).toFixed(2);
+      return `<circle cx="${s.x}" cy="${s.y}" r="1.5" fill="white" opacity="${op}"/>`;
+    });
+
+    // Concentric rings — purple to pink gradient outward
+    const ringCols = ['#f0abfc','#e879f9','#c084fc','#a78bfa','#818cf8'];
     const rings = ringCols.map((col, i) => {
       const frac = (i + 1) / 5;
-      return `<circle cx="${cx}" cy="${cy}" r="${(r*frac).toFixed(1)}" fill="none" stroke="${col}" stroke-width="${(1+(5-i)*0.45).toFixed(1)}" opacity="${(0.3+frac*0.55).toFixed(2)}"/>`;
+      return `<circle cx="${cx}" cy="${cy}" r="${(r*frac).toFixed(1)}" fill="none" stroke="${col}" stroke-width="${(1.2+(5-i)*0.5).toFixed(1)}" opacity="${(0.28+frac*0.6).toFixed(2)}"/>`;
     });
-    return `<svg viewBox="0 0 160 216" width="160" height="216" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
-      <circle cx="140" cy="30"  r="1"   fill="white" opacity="${bgOp}"/>
-      <circle cx="25"  cy="185" r="1.5" fill="white" opacity="${bgOp}"/>
-      <circle cx="148" cy="165" r="1"   fill="white" opacity="${bgOp}"/>
-      <circle cx="75"  cy="200" r="1"   fill="white" opacity="${bgOp}"/>
-      ${p > 0.1 ? `<circle cx="${cx}" cy="${cy}" r="${r+22}" fill="none" stroke="#818cf8" stroke-width="2" opacity="${(p*0.22).toFixed(2)}"/>` : ''}
+
+    // Swirl dots orbiting at mid-radius
+    const swirlDots = [];
+    if (stage > 1) {
+      const numDots = Math.min(8, stage * 2);
+      for (let i = 0; i < numDots; i++) {
+        const a  = (i / numDots) * Math.PI * 2 + p * 3;
+        const dr = r * (0.55 + (i % 2) * 0.18);
+        swirlDots.push(`<circle cx="${(cx+Math.cos(a)*dr).toFixed(1)}" cy="${(cy+Math.sin(a)*dr).toFixed(1)}" r="1.8" fill="#e879f9" opacity="${(0.4+p*0.4).toFixed(2)}"/>`);
+      }
+    }
+
+    return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
+      ${starEls.join('')}
+      ${p > 0.08 ? `<circle cx="${cx}" cy="${cy}" r="${r+24}" fill="none" stroke="#818cf8" stroke-width="1.5" opacity="${(p*0.18).toFixed(2)}"/>` : ''}
       ${rings.join('')}
-      <circle cx="${cx}" cy="${cy}" r="${(r*0.22).toFixed(1)}" fill="#09090b"/>
-      ${r > 24 ? `<circle cx="${cx}" cy="${cy}" r="${(r*0.11).toFixed(1)}" fill="#4f46e5" opacity="0.45"/>` : ''}
+      ${swirlDots.join('')}
+      <circle cx="${cx}" cy="${cy}" r="${(r*0.24).toFixed(1)}" fill="#09090b"/>
+      <circle cx="${cx}" cy="${cy}" r="${(3+p*6).toFixed(1)}" fill="white" opacity="${(0.15+p*0.65).toFixed(2)}"/>
     </svg>`;
   }
 
@@ -502,17 +541,23 @@
     const kb = document.getElementById('keyboard');
     if (!kb) return;
     kb.innerHTML = '';
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
-      const btn = document.createElement('button');
-      btn.className = 'key';
-      btn.textContent = letter;
-      if (guessed.has(letter)) {
-        btn.classList.add(ANSWER.includes(letter) ? 'correct' : 'wrong');
-        btn.disabled = true;
-      } else {
-        btn.addEventListener('click', () => guess(letter));
-      }
-      kb.appendChild(btn);
+    const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+    rows.forEach(row => {
+      const rowEl = document.createElement('div');
+      rowEl.style.cssText = 'display:flex;justify-content:center;gap:6px;width:100%;';
+      row.split('').forEach(letter => {
+        const btn = document.createElement('button');
+        btn.className = 'key';
+        btn.textContent = letter;
+        if (guessed.has(letter)) {
+          btn.classList.add(ANSWER.includes(letter) ? 'correct' : 'wrong');
+          btn.disabled = true;
+        } else {
+          btn.addEventListener('click', () => guess(letter));
+        }
+        rowEl.appendChild(btn);
+      });
+      kb.appendChild(rowEl);
     });
   }
 
@@ -629,10 +674,10 @@
     const scene = document.getElementById('scene');
     if (!scene) return;
     scene.animate([
-      { transform: 'scale(1) rotate(0deg)',   opacity: 1 },
-      { transform: 'scale(1.3) rotate(6deg)', opacity: 0.7, offset: 0.4 },
-      { transform: 'scale(0.2) rotate(-8deg)', opacity: 0 }
-    ], { duration: 1200, easing: 'ease-in', fill: 'forwards' });
+      { transform: 'translateX(0) scale(1)',     opacity: 1 },
+      { transform: 'translateX(18px) scale(0.9)', opacity: 0.8, offset: 0.35 },
+      { transform: 'translateX(220px) scale(0.3)', opacity: 0 }
+    ], { duration: 1000, easing: 'ease-in', fill: 'forwards' });
   }
 
   function animateDragonFire() {
@@ -716,7 +761,7 @@
   };
 
   window.tryAgain = function () {
-    // Same word, same theme — just restart the round
+    if (MODE !== 'easy') advanceTheme();
     startRound(entry);
   };
 
@@ -788,7 +833,7 @@
       .blank-space{width:14px;}
       #wrong-letters{font-size:0.85rem;color:#f87171;font-weight:700;text-align:center;min-height:1.2em;}
       .wrong-count{font-size:0.8rem;color:#f87171;font-weight:700;text-align:center;min-height:1.2em;}
-      #keyboard{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:420px;}
+      #keyboard{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;max-width:420px;}
       .key{width:clamp(32px,8vw,42px);height:clamp(32px,8vw,42px);border-radius:8px;border:none;font-family:inherit;font-size:clamp(0.75rem,2.5vw,0.9rem);font-weight:800;cursor:pointer;transition:all 0.15s;background:#1e3a5f;color:#f1f5f9;}
       .key:hover:not(:disabled){background:#2563eb;transform:scale(1.05);}
       .key.correct{background:#059669;color:#fff;cursor:default;}
