@@ -1149,6 +1149,9 @@
       @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
       #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
       @media (orientation:landscape) and (max-height:600px){
+        #header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 16px;}
+        #backBtn{grid-column:1;justify-self:start;}
+        .title-row{grid-column:2;justify-self:center;}
         #main{padding:6px 8px 8px;gap:4px;}
         #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;text-align:center;}
         #content-cols{flex-direction:row;align-items:stretch;gap:8px;flex:1;width:100%;}
