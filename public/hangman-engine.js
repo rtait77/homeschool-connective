@@ -8,8 +8,8 @@
   const BANK      = cfg.wordBank || [];
   const MAX_WRONG = MODE === 'hard' ? 4 : 6;
 
-  // 6 themes
-  const THEMES = ['rocket','alien','astronaut','meteor','supernova','solar'];
+  // 10 themes
+  const THEMES = ['rocket','alien','astronaut','meteor','supernova','solar','asteroids','wormplanet','cracking','station'];
   let themeQueue = [], themeQueueIdx = 0, currentTheme = 'rocket';
 
   // Meteor planet target — picked each round
@@ -414,13 +414,297 @@
     </svg>`;
   }
 
+  // ── SVG: Asteroids ───────────────────────────────────────────
+  // Two asteroids converge toward each other, explode on lose
+  function asteroidsSVG(stage, maxWrong) {
+    const p     = stage / maxWrong;
+    const isMax = stage >= maxWrong;
+    // Left rock: starts cx=18, moves right
+    const lx = Math.round(18 + p * 54);
+    const ly = 118;
+    // Right rock: starts cx=142, moves left
+    const rx = Math.round(142 - p * 54);
+    const ry = 90;
+    // Both converge to ~cx=80
+    const sparks = [];
+    if (isMax) {
+      for (let i = 0; i < 12; i++) {
+        const a  = (i / 12) * Math.PI * 2;
+        const r1 = 14 + (i % 3) * 8;
+        const r2 = r1 + 22 + (i % 2) * 10;
+        const cx = 80, cy = 104;
+        sparks.push(`<line x1="${(cx+Math.cos(a)*r1).toFixed(1)}" y1="${(cy+Math.sin(a)*r1).toFixed(1)}" x2="${(cx+Math.cos(a)*r2).toFixed(1)}" y2="${(cy+Math.sin(a)*r2).toFixed(1)}" stroke="${i%2?'#fbbf24':'#f97316'}" stroke-width="2.5" opacity="0.9" stroke-linecap="round"/>`);
+      }
+    }
+    // Asteroid shape helper (irregular polygon around cx/cy with radius r)
+    function rock(cx, cy, r, seed) {
+      const pts = [];
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2 + seed;
+        const rr = r * (0.72 + (((seed * 13 + i * 7) % 100) / 100) * 0.44);
+        pts.push(`${(cx+Math.cos(a)*rr).toFixed(1)},${(cy+Math.sin(a)*rr).toFixed(1)}`);
+      }
+      return pts.join(' ');
+    }
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25"  cy="22"  r="1.5" fill="white" opacity="0.7"/>
+      <circle cx="138" cy="50"  r="1"   fill="white" opacity="0.6"/>
+      <circle cx="10"  cy="160" r="1.5" fill="white" opacity="0.5"/>
+      <circle cx="148" cy="178" r="1"   fill="white" opacity="0.6"/>
+      ${!isMax ? `
+        <!-- Left asteroid -->
+        <polygon points="${rock(lx,ly,20,0.3)}" fill="#78716c"/>
+        <polygon points="${rock(lx-4,ly-4,8,1.1)}" fill="#a8a29e" opacity="0.55"/>
+        <circle cx="${lx+6}" cy="${ly+6}" r="4" fill="#57534e"/>
+        <!-- Right asteroid -->
+        <polygon points="${rock(rx,ry,16,0.9)}" fill="#6b7280"/>
+        <polygon points="${rock(rx+3,ry-3,6,1.8)}" fill="#9ca3af" opacity="0.5"/>
+        <circle cx="${rx-5}" cy="${ry+5}" r="3" fill="#4b5563"/>
+        ${p > 0 ? `
+          <!-- Left trail -->
+          <line x1="${lx-8}" y1="${ly+4}" x2="${Math.max(8,lx-22)}" y2="${ly+10}" stroke="#f97316" stroke-width="3" stroke-linecap="round" opacity="${(p*0.55).toFixed(2)}"/>
+          <line x1="${lx-8}" y1="${ly+4}" x2="${Math.max(8,lx-22)}" y2="${ly+10}" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" opacity="${(p*0.7).toFixed(2)}"/>
+          <!-- Right trail -->
+          <line x1="${rx+8}" y1="${ry-4}" x2="${Math.min(152,rx+22)}" y2="${ry-10}" stroke="#f97316" stroke-width="3" stroke-linecap="round" opacity="${(p*0.55).toFixed(2)}"/>
+          <line x1="${rx+8}" y1="${ry-4}" x2="${Math.min(152,rx+22)}" y2="${ry-10}" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" opacity="${(p*0.7).toFixed(2)}"/>
+        ` : ''}
+      ` : `
+        <!-- Explosion -->
+        <circle cx="80" cy="104" r="38" fill="#f97316" opacity="0.55"/>
+        <circle cx="80" cy="104" r="24" fill="#fbbf24" opacity="0.75"/>
+        <circle cx="80" cy="104" r="11" fill="white"   opacity="0.95"/>
+        ${sparks.join('')}
+        <!-- Debris chunks -->
+        <polygon points="${rock(50,78,9,0.5)}" fill="#78716c" opacity="0.8"/>
+        <polygon points="${rock(112,90,7,1.2)}" fill="#6b7280" opacity="0.8"/>
+        <polygon points="${rock(62,130,6,0.1)}" fill="#78716c" opacity="0.7"/>
+        <polygon points="${rock(100,125,5,1.7)}" fill="#6b7280" opacity="0.7"/>
+      `}
+    </svg>`;
+  }
+
+  // ── SVG: Wormhole planet ─────────────────────────────────────
+  // A planet gets pulled into a wormhole and disappears on lose
+  function wormplanetSVG(stage, maxWrong) {
+    const p     = stage / maxWrong;
+    const isMax = stage >= maxWrong;
+
+    // Wormhole portal: left side, grows slightly
+    const wx = 52, wy = 108;
+    const wRx = Math.round(26 + p * 10);
+    const wRy = Math.round(34 + p * 12);
+
+    // Planet starts at right (cx=128, cy=72) and moves toward wormhole
+    const startX = 128, startY = 72;
+    const px  = Math.round(startX - p * (startX - wx));
+    const py  = Math.round(startY - p * (startY - wy));
+    const pr  = Math.round(26 - p * 10);   // shrinks as it approaches
+    const pOp = isMax ? 0 : Math.max(0, 1 - p * 1.15);
+
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14"  cy="20"  r="1.5" fill="white" opacity="${(0.7-p*0.5).toFixed(2)}"/>
+      <circle cx="148" cy="38"  r="1"   fill="white" opacity="${(0.6-p*0.4).toFixed(2)}"/>
+      <circle cx="18"  cy="175" r="1.5" fill="white" opacity="${(0.5-p*0.35).toFixed(2)}"/>
+      <circle cx="140" cy="160" r="1"   fill="white" opacity="${(0.6-p*0.4).toFixed(2)}"/>
+      <!-- Wormhole outer glow -->
+      <ellipse cx="${wx}" cy="${wy}" rx="${wRx+18}" ry="${wRy+14}" fill="#7c3aed" opacity="${(0.12+p*0.14).toFixed(2)}"/>
+      <ellipse cx="${wx}" cy="${wy}" rx="${wRx+10}" ry="${wRy+7}"  fill="#6d28d9" opacity="${(0.2+p*0.15).toFixed(2)}"/>
+      <!-- Wormhole rings -->
+      <ellipse cx="${wx}" cy="${wy}" rx="${wRx}"   ry="${wRy}"   fill="none" stroke="#a855f7" stroke-width="3.5" opacity="0.85"/>
+      <ellipse cx="${wx}" cy="${wy}" rx="${wRx-7}"  ry="${wRy-5}"  fill="none" stroke="#7c3aed" stroke-width="2.5" opacity="0.7"/>
+      <ellipse cx="${wx}" cy="${wy}" rx="${wRx-14}" ry="${wRy-10}" fill="none" stroke="#6d28d9" stroke-width="2" opacity="0.55"/>
+      <!-- Dark void center -->
+      <ellipse cx="${wx}" cy="${wy}" rx="${Math.max(4,wRx-18)}" ry="${Math.max(3,wRy-14)}" fill="#0d0018" opacity="0.95"/>
+      <!-- Swirl streaks being pulled in (stage > 0) -->
+      ${stage > 0 ? Array.from({length:6},(_,i)=>{
+        const a = (i/6)*Math.PI*2 + p;
+        const r1 = wRx+22, r2 = wRx+4;
+        const op = (0.3+p*0.5).toFixed(2);
+        return `<line x1="${(wx+Math.cos(a)*r1).toFixed(1)}" y1="${(wy+Math.sin(a)*r1*0.65).toFixed(1)}" x2="${(wx+Math.cos(a)*r2).toFixed(1)}" y2="${(wy+Math.sin(a)*r2*0.65).toFixed(1)}" stroke="#c084fc" stroke-width="1.5" opacity="${op}" stroke-linecap="round"/>`;
+      }).join('') : ''}
+      <!-- Planet (teal with green patches) — disappears on max -->
+      ${!isMax && pr > 2 ? `
+        <circle cx="${px}" cy="${py}" r="${pr}" fill="#0d9488" opacity="${pOp.toFixed(2)}"/>
+        <circle cx="${px-6}" cy="${py+4}" r="${Math.max(2,pr*0.42)}" fill="#059669" opacity="${(pOp*0.55).toFixed(2)}"/>
+        <circle cx="${px+5}" cy="${py-5}" r="${Math.max(2,pr*0.32)}" fill="#059669" opacity="${(pOp*0.5).toFixed(2)}"/>
+        <circle cx="${px+4}" cy="${py+7}" r="${Math.max(1,pr*0.25)}" fill="#34d399" opacity="${(pOp*0.45).toFixed(2)}"/>
+        ${p > 0.4 ? `<ellipse cx="${px}" cy="${py}" rx="${pr}" ry="${pr}" fill="#7c3aed" opacity="${Math.min(0.6,(p-0.4)*1.8).toFixed(2)}"/>` : ''}
+      ` : ''}
+    </svg>`;
+  }
+
+  // ── SVG: Cracking planet ─────────────────────────────────────
+  // An alien planet cracks open, glowing from inside, shatters on lose
+  function crackingSVG(stage, maxWrong) {
+    const p     = stage / maxWrong;
+    const isMax = stage >= maxWrong;
+    const cx = 80, cy = 108, r = 44;
+
+    // Inner glow intensifies with each crack
+    const glowOp = (p * 0.75).toFixed(2);
+    const glowR  = Math.round(r * 0.65 + p * r * 0.35);
+
+    // Crack paths — revealed one per wrong guess
+    const crackData = [
+      `M${cx},${cy-r} L${cx+4},${cy-18} L${cx-3},${cy+2}`,
+      `M${cx-r*0.86},${cy-r*0.5} L${cx-16},${cy-5} L${cx-3},${cy+2}`,
+      `M${cx+r*0.86},${cy-r*0.5} L${cx+18},${cy+2} L${cx+3},${cy+18}`,
+      `M${cx-r*0.5},${cy+r*0.86} L${cx-8},${cy+20} L${cx-3},${cy+2}`,
+      `M${cx+r*0.5},${cy+r*0.86} L${cx+10},${cy+16} L${cx+3},${cy+18}`,
+      `M${cx},${cy+r} L${cx-2},${cy+20} L${cx+3},${cy+18}`,
+    ];
+
+    const shards = [];
+    if (isMax) {
+      // Shard debris flying outward
+      const shardAngles = [0, 60, 120, 180, 240, 300];
+      shardAngles.forEach((deg, i) => {
+        const a = deg * Math.PI / 180;
+        const dx = Math.cos(a) * (r + 20 + i * 4);
+        const dy = Math.sin(a) * (r + 20 + i * 4);
+        const sw = 8 + (i % 3) * 5;
+        const sh = 6 + (i % 2) * 7;
+        shards.push(`<ellipse cx="${(cx+dx).toFixed(1)}" cy="${(cy+dy).toFixed(1)}" rx="${sw}" ry="${sh}" fill="#5b21b6" opacity="0.8" transform="rotate(${deg+20} ${(cx+dx).toFixed(1)} ${(cy+dy).toFixed(1)})"/>`);
+      });
+    }
+
+    return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22"  cy="20"  r="1.5" fill="white" opacity="${(0.7-p*0.4).toFixed(2)}"/>
+      <circle cx="142" cy="38"  r="1"   fill="white" opacity="${(0.6-p*0.35).toFixed(2)}"/>
+      <circle cx="14"  cy="172" r="1.5" fill="white" opacity="${(0.5-p*0.3).toFixed(2)}"/>
+      ${!isMax ? `
+        <!-- Inner glow -->
+        <circle cx="${cx}" cy="${cy}" r="${glowR}" fill="#f97316" opacity="${glowOp}"/>
+        <circle cx="${cx}" cy="${cy}" r="${Math.round(glowR*0.55)}" fill="#fbbf24" opacity="${Math.min(0.9,p*1.1).toFixed(2)}"/>
+        <!-- Planet body -->
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="#5b21b6"/>
+        <circle cx="${cx-12}" cy="${cy+8}"  r="16" fill="#4c1d95" opacity="0.6"/>
+        <circle cx="${cx+14}" cy="${cy-10}" r="11" fill="#4c1d95" opacity="0.5"/>
+        <circle cx="${cx+6}"  cy="${cy+16}" r="8"  fill="#7c3aed" opacity="0.35"/>
+        <!-- Cracks revealed one at a time -->
+        ${crackData.slice(0, stage).map(d =>
+          `<path d="${d}" stroke="#fbbf24" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+           <path d="${d}" stroke="#f97316" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.55"/>`
+        ).join('')}
+      ` : `
+        <!-- Explosion at center -->
+        <circle cx="${cx}" cy="${cy}" r="${r+18}" fill="#f97316" opacity="0.5"/>
+        <circle cx="${cx}" cy="${cy}" r="${r+6}"  fill="#fbbf24" opacity="0.7"/>
+        <circle cx="${cx}" cy="${cy}" r="18"      fill="white"   opacity="0.95"/>
+        ${shards.join('')}
+        ${Array.from({length:10},(_,i)=>{
+          const a=(i/10)*Math.PI*2;
+          const r1=22, r2=40+i*4;
+          return `<line x1="${(cx+Math.cos(a)*r1).toFixed(1)}" y1="${(cy+Math.sin(a)*r1).toFixed(1)}" x2="${(cx+Math.cos(a)*r2).toFixed(1)}" y2="${(cy+Math.sin(a)*r2).toFixed(1)}" stroke="#fbbf24" stroke-width="2" opacity="0.85" stroke-linecap="round"/>`;
+        }).join('')}
+      `}
+    </svg>`;
+  }
+
+  // ── SVG: Space station ───────────────────────────────────────
+  // Station powers down section by section, breaks apart on lose
+  function stationSVG(stage, maxWrong) {
+    const p     = stage / maxWrong;
+    const isMax = stage >= maxWrong;
+
+    // How many panels are still powered (proportional)
+    function powered(idx) { return idx >= Math.floor(stage * 4 / maxWrong); }
+
+    const panelOn  = '#1d4ed8';
+    const panelOff = '#1f2937';
+    const lineOn   = '#3b82f6';
+    const lineOff  = '#374151';
+
+    // Panels: 0=right far, 1=right near, 2=left near, 3=left far
+    const pColors = [powered(0)?panelOn:panelOff, powered(1)?panelOn:panelOff, powered(2)?panelOn:panelOff, powered(3)?panelOn:panelOff];
+    const lColors = [powered(0)?lineOn:lineOff, powered(1)?lineOn:lineOff, powered(2)?lineOn:lineOff, powered(3)?lineOn:lineOff];
+
+    // Core powered when stage < maxWrong - 1
+    const coreOn   = stage < maxWrong - 1;
+    const coreBody = coreOn ? '#475569' : '#1f2937';
+    const coreDome = coreOn ? '#bae6fd' : '#374151';
+    const coreGlow = coreOn ? `<circle cx="80" cy="110" r="28" fill="#3b82f6" opacity="${(0.15-p*0.12).toFixed(2)}"/>` : '';
+    const engineGlow = coreOn ? `<ellipse cx="80" cy="138" rx="10" ry="6" fill="#60a5fa" opacity="${(0.5-p*0.4).toFixed(2)}"/>` : '';
+
+    // Flicker: odd stages make lights slightly dim
+    const flickerOp = (stage % 2 === 1 && !isMax) ? '0.55' : '1';
+
+    if (isMax) {
+      return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="22"  cy="20"  r="1.5" fill="white" opacity="0.6"/>
+        <circle cx="140" cy="42"  r="1"   fill="white" opacity="0.5"/>
+        <circle cx="14"  cy="160" r="1.5" fill="white" opacity="0.45"/>
+        <!-- Broken hub -->
+        <rect x="62" y="96" width="36" height="28" rx="5" fill="#1f2937" opacity="0.85"/>
+        <rect x="68" y="102" width="14" height="10" rx="3" fill="#111827"/>
+        <!-- Broken truss pieces -->
+        <rect x="22" y="108" width="38" height="7" rx="3" fill="#1f2937" opacity="0.7" transform="rotate(-12 22 108)"/>
+        <rect x="100" y="110" width="38" height="7" rx="3" fill="#1f2937" opacity="0.7" transform="rotate(8 100 110)"/>
+        <!-- Dark solar panels drifting -->
+        <rect x="8"   y="88"  width="20" height="28" rx="2" fill="${panelOff}" opacity="0.7" transform="rotate(-25 8 88)"/>
+        <rect x="132" y="94"  width="20" height="28" rx="2" fill="${panelOff}" opacity="0.7" transform="rotate(18 132 94)"/>
+        <!-- Debris sparks -->
+        ${Array.from({length:8},(_,i)=>{
+          const a=(i/8)*Math.PI*2;
+          const r1=16,r2=26+i*3;
+          return `<line x1="${(80+Math.cos(a)*r1).toFixed(1)}" y1="${(110+Math.sin(a)*r1).toFixed(1)}" x2="${(80+Math.cos(a)*r2).toFixed(1)}" y2="${(110+Math.sin(a)*r2).toFixed(1)}" stroke="${i%2?'#fbbf24':'#f87171'}" stroke-width="2" opacity="0.8" stroke-linecap="round"/>`;
+        }).join('')}
+      </svg>`;
+    }
+
+    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22"  cy="20"  r="1.5" fill="white" opacity="${(0.7-p*0.4).toFixed(2)}"/>
+      <circle cx="140" cy="42"  r="1"   fill="white" opacity="${(0.6-p*0.35).toFixed(2)}"/>
+      <circle cx="14"  cy="160" r="1.5" fill="white" opacity="${(0.5-p*0.3).toFixed(2)}"/>
+      <!-- Core glow -->
+      ${coreGlow}
+      <!-- Horizontal truss -->
+      <rect x="20" y="108" width="120" height="7" rx="3" fill="#334155"/>
+      <!-- Left far solar panel (idx 3) -->
+      <rect x="8"  y="90"  width="20" height="26" rx="2" fill="${pColors[3]}" opacity="${flickerOp}"/>
+      <line x1="18" y1="90" x2="18" y2="116" stroke="${lColors[3]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="8"  y1="100" x2="28" y2="100" stroke="${lColors[3]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="8"  y1="108" x2="28" y2="108" stroke="${lColors[3]}" stroke-width="1" opacity="${flickerOp}"/>
+      <!-- Left near solar panel (idx 2) -->
+      <rect x="34" y="91"  width="20" height="24" rx="2" fill="${pColors[2]}" opacity="${flickerOp}"/>
+      <line x1="44" y1="91" x2="44" y2="115" stroke="${lColors[2]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="34" y1="101" x2="54" y2="101" stroke="${lColors[2]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="34" y1="107" x2="54" y2="107" stroke="${lColors[2]}" stroke-width="1" opacity="${flickerOp}"/>
+      <!-- Right near solar panel (idx 1) -->
+      <rect x="106" y="91" width="20" height="24" rx="2" fill="${pColors[1]}" opacity="${flickerOp}"/>
+      <line x1="116" y1="91" x2="116" y2="115" stroke="${lColors[1]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="106" y1="101" x2="126" y2="101" stroke="${lColors[1]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="106" y1="107" x2="126" y2="107" stroke="${lColors[1]}" stroke-width="1" opacity="${flickerOp}"/>
+      <!-- Right far solar panel (idx 0) -->
+      <rect x="132" y="90" width="20" height="26" rx="2" fill="${pColors[0]}" opacity="${flickerOp}"/>
+      <line x1="142" y1="90" x2="142" y2="116" stroke="${lColors[0]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="132" y1="100" x2="152" y2="100" stroke="${lColors[0]}" stroke-width="1" opacity="${flickerOp}"/>
+      <line x1="132" y1="108" x2="152" y2="108" stroke="${lColors[0]}" stroke-width="1" opacity="${flickerOp}"/>
+      <!-- Central hub -->
+      <rect x="62" y="96" width="36" height="28" rx="5" fill="${coreBody}"/>
+      <rect x="70" y="100" width="14" height="10" rx="3" fill="${coreDome}" opacity="${flickerOp}"/>
+      <!-- Engine / docking port -->
+      ${engineGlow}
+      <rect x="72" y="124" width="16" height="10" rx="3" fill="#334155"/>
+      <ellipse cx="80" cy="134" rx="6" ry="3" fill="${coreOn ? '#60a5fa' : '#1f2937'}" opacity="${flickerOp}"/>
+      <!-- Windows (tiny lights) -->
+      <circle cx="72" cy="103" r="2.5" fill="${coreOn ? '#fbbf24' : '#374151'}" opacity="${flickerOp}"/>
+      <circle cx="88" cy="103" r="2.5" fill="${coreOn ? '#fbbf24' : '#374151'}" opacity="${flickerOp}"/>
+      <circle cx="80" cy="119" r="2"   fill="${coreOn ? '#34d399' : '#374151'}" opacity="${flickerOp}"/>
+    </svg>`;
+  }
+
   function getThemeSVG() {
-    if (currentTheme === 'rocket')    return rocketSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'alien')     return alienSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'astronaut') return astronautSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'meteor')    return meteorSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'supernova') return supernovaSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'solar')     return solarSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'rocket')     return rocketSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'alien')      return alienSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'astronaut')  return astronautSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'meteor')     return meteorSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'supernova')  return supernovaSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'solar')      return solarSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'asteroids')  return asteroidsSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'wormplanet') return wormplanetSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'cracking')   return crackingSVG(wrong, MAX_WRONG);
+    if (currentTheme === 'station')    return stationSVG(wrong, MAX_WRONG);
     return rocketSVG(wrong, MAX_WRONG);
   }
 
@@ -595,11 +879,15 @@
     btn.classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
     const delay = 350;
-    if (currentTheme === 'alien')      setTimeout(animateAlienEscape,       delay);
-    if (currentTheme === 'astronaut')  setTimeout(animateAstronautFloat,    delay);
-    if (currentTheme === 'meteor')     setTimeout(animateMeteorImpact,      delay);
-    if (currentTheme === 'supernova')  setTimeout(animateSupernovaExplosion,delay);
-    if (currentTheme === 'solar')      setTimeout(animateSolarImpact,       delay);
+    if (currentTheme === 'alien')      setTimeout(animateAlienEscape,        delay);
+    if (currentTheme === 'astronaut')  setTimeout(animateAstronautFloat,     delay);
+    if (currentTheme === 'meteor')     setTimeout(animateMeteorImpact,       delay);
+    if (currentTheme === 'supernova')  setTimeout(animateSupernovaExplosion, delay);
+    if (currentTheme === 'solar')      setTimeout(animateSolarImpact,        delay);
+    if (currentTheme === 'asteroids')  setTimeout(animateAsteroidCollision,  delay);
+    if (currentTheme === 'wormplanet') setTimeout(animateWormplanetSuck,     delay);
+    if (currentTheme === 'cracking')   setTimeout(animatePlanetShatter,      delay);
+    if (currentTheme === 'station')    setTimeout(animateStationBreakup,     delay);
   }
 
   // ── Lose animations ──────────────────────────────────────────
@@ -672,6 +960,48 @@
       { filter: 'brightness(4) saturate(0.1)', opacity: 1, transform: 'scale(1.05)', offset: 0.15 },
       { filter: 'brightness(2) saturate(0)',   opacity: 0, transform: 'scale(1.12)' }
     ], { duration: 800, easing: 'ease-out', fill: 'forwards' });
+  }
+
+  function animateAsteroidCollision() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'scale(1)',    filter: 'brightness(1)',  opacity: 1 },
+      { transform: 'scale(1.2)', filter: 'brightness(9)',  opacity: 1,   offset: 0.2 },
+      { transform: 'scale(2.5)', filter: 'brightness(1)',  opacity: 0 }
+    ], { duration: 1000, easing: 'ease-out', fill: 'forwards' });
+  }
+
+  function animateWormplanetSuck() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'scale(1) rotate(0deg)',    opacity: 1 },
+      { transform: 'scale(0.85) rotate(15deg)', opacity: 0.9, offset: 0.35 },
+      { transform: 'scale(0.5) rotate(35deg)',  opacity: 0.5, offset: 0.65 },
+      { transform: 'scale(0.15) rotate(60deg)', opacity: 0 }
+    ], { duration: 1100, easing: 'ease-in', fill: 'forwards' });
+  }
+
+  function animatePlanetShatter() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { transform: 'scale(1)',    filter: 'brightness(1)',  opacity: 1 },
+      { transform: 'scale(1.12)', filter: 'brightness(6)',  opacity: 1,   offset: 0.2 },
+      { transform: 'scale(2.2)', filter: 'brightness(0.8)', opacity: 0 }
+    ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
+  }
+
+  function animateStationBreakup() {
+    const scene = document.getElementById('scene');
+    if (!scene) return;
+    scene.animate([
+      { filter: 'brightness(1) saturate(1)',   opacity: 1, transform: 'scale(1)' },
+      { filter: 'brightness(3) saturate(0.4)', opacity: 1, transform: 'scale(1.06)', offset: 0.15 },
+      { filter: 'brightness(0.6) saturate(0)', opacity: 0.6, transform: 'scale(1.1) rotate(4deg)', offset: 0.5 },
+      { filter: 'brightness(0.2) saturate(0)', opacity: 0, transform: 'scale(1.2) rotate(8deg)' }
+    ], { duration: 1200, easing: 'ease-in', fill: 'forwards' });
   }
 
   // ── Round management ─────────────────────────────────────────
