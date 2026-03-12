@@ -884,6 +884,9 @@
     btn.onclick = window.tryAgain;
     btn.classList.add('show');
     document.querySelectorAll('.key:not(:disabled)').forEach(b => b.disabled = true);
+    // Disable pointer events on scene so scaled/faded animations don't block clicks
+    const sceneEl = document.getElementById('scene');
+    if (sceneEl) sceneEl.style.pointerEvents = 'none';
     const delay = 350;
     if (currentTheme === 'alien')      setTimeout(animateAlienEscape,        delay);
     if (currentTheme === 'astronaut')  setTimeout(animateAstronautFloat,     delay);
@@ -1038,9 +1041,10 @@
     const scene = document.getElementById('scene');
     if (scene) {
       scene.getAnimations().forEach(a => a.cancel());
-      scene.style.opacity   = '';
-      scene.style.transform = '';
-      scene.style.filter    = '';
+      scene.style.opacity       = '';
+      scene.style.transform     = '';
+      scene.style.filter        = '';
+      scene.style.pointerEvents = '';
     }
     const astroBody = document.getElementById('astro-body');
     if (astroBody) astroBody.getAnimations().forEach(a => a.cancel());
@@ -1145,20 +1149,20 @@
       @keyframes popIn{0%{opacity:0;transform:scale(0.7)}100%{opacity:1;transform:scale(1)}}
       #confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
       @media (orientation:landscape) and (max-height:600px){
-        #main{padding:6px 12px 8px;gap:6px;}
-        #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;}
-        #content-cols{flex-direction:row;align-items:stretch;gap:10px;flex:1;}
+        #main{padding:6px 8px 8px;gap:4px;}
+        #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;text-align:left;}
+        #content-cols{flex-direction:row;align-items:stretch;gap:8px;flex:1;width:100%;}
         #left-col{flex:1;min-width:0;gap:6px;justify-content:center;order:1;overflow:hidden;}
-        #right-col{flex:0 0 auto;order:2;align-items:center;justify-content:center;}
-        #scene-wrap{min-height:0;}
-        #scene-wrap svg{width:auto;height:clamp(140px,38vh,200px);}
-        #blanks-row{gap:3px;}
+        #right-col{flex:0 0 40vw;max-width:220px;order:2;align-items:center;justify-content:center;}
+        #scene-wrap{width:100%;min-height:0;}
+        #scene-wrap svg{width:100%;height:auto;max-height:clamp(130px,36vh,195px);}
+        #blanks-row{gap:3px;justify-content:flex-start;}
         .blank-word{gap:3px;}
-        .blank-letter{font-size:clamp(0.85rem,3.5vw,1.2rem);min-width:0;width:clamp(20px,4.5vw,28px);}
+        .blank-letter{font-size:clamp(0.85rem,3.5vw,1.2rem);min-width:0;width:clamp(20px,4.2vw,28px);}
         .blank-line{width:clamp(18px,4vw,26px);}
         .blank-space{width:8px;}
         #keyboard{max-width:none;gap:4px;}
-        .key{width:clamp(26px,5.5vw,36px);height:clamp(26px,6vh,34px);font-size:clamp(0.65rem,1.8vw,0.82rem);}
+        .key{width:clamp(26px,5.2vw,35px);height:clamp(26px,6vh,34px);font-size:clamp(0.62rem,1.7vw,0.8rem);}
         #resetBtn{padding:8px 22px;font-size:0.88rem;}
         #status-msg{font-size:clamp(0.85rem,2.5vw,1.1rem);min-height:1.2em;}
         .wrong-count{font-size:0.75rem;}
