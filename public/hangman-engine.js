@@ -778,12 +778,17 @@
     const row = document.getElementById('blanks-row');
     if (!row) return;
     row.innerHTML = '';
-    for (const ch of ANSWER) {
-      if (ch === ' ') {
+    // Group letters by word so each word wraps as a single unit (no mid-word line breaks)
+    const words = ANSWER.split(' ');
+    words.forEach((word, wi) => {
+      if (wi > 0) {
         const sp = document.createElement('div');
         sp.className = 'blank-space';
         row.appendChild(sp);
-      } else {
+      }
+      const group = document.createElement('div');
+      group.className = 'blank-word';
+      word.split('').forEach(ch => {
         const div = document.createElement('div');
         div.className = 'blank';
         const letter = document.createElement('div');
@@ -793,9 +798,10 @@
         line.className = 'blank-line';
         div.appendChild(letter);
         div.appendChild(line);
-        row.appendChild(div);
-      }
-    }
+        group.appendChild(div);
+      });
+      row.appendChild(group);
+    });
   }
 
   function updateKeyboard() {
@@ -1119,7 +1125,8 @@
       #left-col{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;}
       #right-col{display:flex;justify-content:center;align-items:center;order:-1;}
       #scene-wrap{position:relative;display:flex;justify-content:center;align-items:center;min-height:230px;}
-      #blanks-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;}
+      #blanks-row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;width:100%;}
+      .blank-word{display:inline-flex;flex-wrap:nowrap;gap:6px;}
       .blank{display:inline-flex;flex-direction:column;align-items:center;gap:3px;}
       .blank-letter{font-size:clamp(1.3rem,5vw,2rem);font-weight:900;min-width:28px;text-align:center;height:1.2em;color:#f1f5f9;}
       .blank-line{width:28px;height:3px;background:#55b6ca;border-radius:2px;}
@@ -1141,14 +1148,17 @@
         #main{padding:6px 12px 8px;gap:6px;}
         #clue{font-size:clamp(0.75rem,1.8vw,0.9rem);max-width:none;width:100%;}
         #content-cols{flex-direction:row;align-items:stretch;gap:10px;flex:1;}
-        #left-col{flex:1;min-width:0;gap:6px;justify-content:center;order:1;}
+        #left-col{flex:1;min-width:0;gap:6px;justify-content:center;order:1;overflow:hidden;}
         #right-col{flex:0 0 auto;order:2;align-items:center;justify-content:center;}
         #scene-wrap{min-height:0;}
         #scene-wrap svg{width:auto;height:clamp(140px,38vh,200px);}
+        #blanks-row{gap:3px;}
+        .blank-word{gap:3px;}
+        .blank-letter{font-size:clamp(0.85rem,3.5vw,1.2rem);min-width:0;width:clamp(20px,4.5vw,28px);}
+        .blank-line{width:clamp(18px,4vw,26px);}
+        .blank-space{width:8px;}
         #keyboard{max-width:none;gap:4px;}
         .key{width:clamp(26px,5.5vw,36px);height:clamp(26px,6vh,34px);font-size:clamp(0.65rem,1.8vw,0.82rem);}
-        .blank-letter{font-size:clamp(1rem,3.5vh,1.5rem);}
-        .blank-line{width:22px;}
         #resetBtn{padding:8px 22px;font-size:0.88rem;}
         #status-msg{font-size:clamp(0.85rem,2.5vw,1.1rem);min-height:1.2em;}
         .wrong-count{font-size:0.75rem;}
