@@ -810,7 +810,7 @@
     kb.innerHTML = '';
     ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach(row => {
       const rowEl = document.createElement('div');
-      rowEl.style.cssText = 'display:flex;justify-content:center;gap:6px;width:100%;';
+      rowEl.style.cssText = 'display:flex;gap:5px;width:100%;';
       row.split('').forEach(letter => {
         const btn = document.createElement('button');
         btn.className = 'key';
@@ -1137,8 +1137,8 @@
       .blank-space{width:14px;}
       #wrong-letters{font-size:0.85rem;color:#f87171;font-weight:700;text-align:center;min-height:1.2em;}
       .wrong-count{font-size:0.8rem;color:#f87171;font-weight:700;text-align:center;min-height:1.2em;}
-      #keyboard{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;max-width:420px;}
-      .key{width:clamp(32px,8vw,42px);height:clamp(32px,8vw,42px);border-radius:8px;border:none;font-family:inherit;font-size:clamp(0.75rem,2.5vw,0.9rem);font-weight:800;cursor:pointer;transition:all 0.15s;background:#1e3a5f;color:#f1f5f9;}
+      #keyboard{display:flex;flex-direction:column;align-items:stretch;gap:5px;width:100%;max-width:460px;}
+      .key{flex:1;min-width:0;height:clamp(38px,5.5vh,48px);border-radius:8px;border:none;font-family:inherit;font-size:clamp(0.82rem,2.8vw,1rem);font-weight:800;cursor:pointer;transition:all 0.15s;background:#1e3a5f;color:#f1f5f9;}
       .key:hover:not(:disabled){background:#2563eb;transform:scale(1.05);}
       .key.correct{background:#059669;color:#fff;cursor:default;}
       .key.wrong{background:#374151;color:#6b7280;cursor:default;}
@@ -1161,8 +1161,8 @@
         .blank-letter{font-size:clamp(0.85rem,3.5vw,1.2rem);min-width:0;width:clamp(20px,4.2vw,28px);}
         .blank-line{width:clamp(18px,4vw,26px);}
         .blank-space{width:8px;}
-        #keyboard{max-width:none;gap:4px;}
-        .key{width:clamp(26px,5.2vw,35px);height:clamp(26px,6vh,34px);font-size:clamp(0.62rem,1.7vw,0.8rem);}
+        #keyboard{max-width:none;gap:3px;}
+        .key{height:clamp(28px,6vh,36px);font-size:clamp(0.62rem,1.7vw,0.8rem);}
         #resetBtn{padding:8px 22px;font-size:0.88rem;}
         #status-msg{font-size:clamp(0.85rem,2.5vw,1.1rem);min-height:1.2em;}
         .wrong-count{font-size:0.75rem;}
