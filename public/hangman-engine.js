@@ -8,10 +8,15 @@
   const BANK      = cfg.wordBank || [];
   const MAX_WRONG = MODE === 'hard' ? 4 : 6;
 
-  const THEMES = ['rocket','alien','astronaut','meteor','supernova','squid','dragon','wormhole','robot','ice'];
+  // 5 themes
+  const THEMES = ['rocket','alien','astronaut','meteor','supernova'];
   let themeQueue = [], themeQueueIdx = 0, currentTheme = 'rocket';
-  let usedWords = new Set();
 
+  // Meteor planet target — picked each round
+  const PLANET_TYPES = ['mars','moon','jupiter','neptune','alien'];
+  let currentPlanet = 'mars';
+
+  let usedWords = new Set();
   let entry = null, ANSWER = '';
   let guessed = new Set();
   let wrong = 0, won = false, lost = false;
@@ -129,28 +134,88 @@
   }
 
   // ── SVG: Meteor ──────────────────────────────────────────────
+  function drawPlanetSVG(type, cx, cy) {
+    if (type === 'mars') return `
+      <circle cx="${cx}" cy="${cy}" r="34" fill="#c1440e"/>
+      <circle cx="${cx-10}" cy="${cy+8}" r="12" fill="#a33a0c" opacity="0.6"/>
+      <circle cx="${cx+12}" cy="${cy-10}" r="8"  fill="#a33a0c" opacity="0.5"/>
+      <ellipse cx="${cx+5}" cy="${cy+14}" r="6" ry="4" fill="#8b3009" opacity="0.5" transform="rotate(-15 ${cx+5} ${cy+14})"/>
+      <ellipse cx="${cx}" cy="${cy-30}" rx="10" ry="4" fill="#e8e8f0" opacity="0.7"/>`;
+    if (type === 'moon') return `
+      <circle cx="${cx}" cy="${cy}" r="35" fill="#9ca3af"/>
+      <circle cx="${cx-12}" cy="${cy-12}" r="9"  fill="#6b7280" opacity="0.7"/>
+      <circle cx="${cx-11}" cy="${cy-11}" r="7"  fill="#9ca3af"/>
+      <circle cx="${cx+14}" cy="${cy+8}"  r="7"  fill="#6b7280" opacity="0.65"/>
+      <circle cx="${cx+13}" cy="${cy+7}"  r="5.5" fill="#9ca3af"/>
+      <circle cx="${cx-4}"  cy="${cy+16}" r="5"  fill="#6b7280" opacity="0.6"/>
+      <circle cx="${cx-3}"  cy="${cy+15}" r="3.5" fill="#9ca3af"/>
+      <circle cx="${cx+8}"  cy="${cy-18}" r="4"  fill="#6b7280" opacity="0.55"/>
+      <circle cx="${cx+9}"  cy="${cy-17}" r="2.5" fill="#9ca3af"/>`;
+    if (type === 'jupiter') return `
+      <circle cx="${cx}" cy="${cy}" r="40" fill="#c4a05a"/>
+      <ellipse cx="${cx}" cy="${cy-18}" rx="40" ry="6"  fill="#a0784a" opacity="0.8"/>
+      <ellipse cx="${cx}" cy="${cy-8}"  rx="40" ry="5"  fill="#d4b56a" opacity="0.7"/>
+      <ellipse cx="${cx}" cy="${cy+4}"  rx="40" ry="6"  fill="#a0784a" opacity="0.75"/>
+      <ellipse cx="${cx}" cy="${cy+16}" rx="40" ry="5"  fill="#c4a05a" opacity="0.6"/>
+      <ellipse cx="${cx-14}" cy="${cy+4}" rx="8" ry="5" fill="#b05c3a" opacity="0.85"/>`;
+    if (type === 'neptune') return `
+      <circle cx="${cx}" cy="${cy}" r="30" fill="#1d4ed8"/>
+      <ellipse cx="${cx-5}" cy="${cy-8}"  rx="18" ry="6" fill="#2563eb" opacity="0.7" transform="rotate(-20 ${cx-5} ${cy-8})"/>
+      <ellipse cx="${cx+8}" cy="${cy+10}" rx="14" ry="4" fill="#3b82f6" opacity="0.6" transform="rotate(15 ${cx+8} ${cy+10})"/>
+      <circle cx="${cx-8}" cy="${cy-12}" r="5" fill="#60a5fa" opacity="0.5"/>`;
+    // alien (purple)
+    return `
+      <circle cx="${cx}" cy="${cy}" r="33" fill="#6d28d9"/>
+      <circle cx="${cx-8}"  cy="${cy+6}"  r="14" fill="#059669" opacity="0.45"/>
+      <circle cx="${cx+10}" cy="${cy-8}"  r="10" fill="#059669" opacity="0.4"/>
+      <circle cx="${cx+5}"  cy="${cy+14}" r="7"  fill="#059669" opacity="0.35"/>
+      <circle cx="${cx-12}" cy="${cy-14}" r="8"  fill="#7c3aed" opacity="0.5"/>
+      <ellipse cx="${cx+8}" cy="${cy-2}"  rx="5" ry="3" fill="#fbbf24" opacity="0.6"/>`;
+  }
+
   function meteorSVG(stage, maxWrong) {
-    const p  = stage / maxWrong;
-    const cx = Math.round(130 - p * 55);
-    const cy = Math.round(25  + p * 80);
-    const r  = Math.round(8   + p * 26);
-    const tl = Math.round(25  + p * 55);
-    const tx = Math.min(158, cx + tl * 0.7);
-    const ty = Math.max(5,   cy - tl * 0.7);
-    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="25"  cy="40"  r="1.5" fill="white" opacity="0.7"/>
-      <circle cx="55"  cy="15"  r="1"   fill="white" opacity="0.6"/>
-      <circle cx="20"  cy="130" r="1"   fill="white" opacity="0.6"/>
-      <circle cx="45"  cy="175" r="1.5" fill="white" opacity="0.5"/>
-      <circle cx="130" cy="170" r="1"   fill="white" opacity="0.7"/>
-      ${stage > 0 ? `
-        <line x1="${cx}" y1="${cy}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" stroke="#f97316" stroke-width="${(r*0.8).toFixed(1)}" stroke-linecap="round" opacity="0.35"/>
-        <line x1="${cx}" y1="${cy}" x2="${Math.min(158,tx+3).toFixed(1)}" y2="${Math.max(5,ty-3).toFixed(1)}" stroke="#fbbf24" stroke-width="${(r*0.4).toFixed(1)}" stroke-linecap="round" opacity="0.6"/>
-      ` : ''}
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="#78716c"/>
-      <circle cx="${(cx-r*0.3).toFixed(1)}" cy="${(cy-r*0.3).toFixed(1)}" r="${(r*0.45).toFixed(1)}" fill="#a8a29e" opacity="0.55"/>
-      ${r > 12 ? `<circle cx="${(cx+r*0.25).toFixed(1)}" cy="${(cy+r*0.22).toFixed(1)}" r="${(r*0.18).toFixed(1)}" fill="#57534e"/>` : ''}
-      ${r > 20 ? `<circle cx="${(cx-r*0.28).toFixed(1)}" cy="${(cy+r*0.12).toFixed(1)}" r="${(r*0.12).toFixed(1)}" fill="#57534e"/>` : ''}
+    const p     = stage / maxWrong;
+    const isMax = stage >= maxWrong;
+    // Planet — center of scene
+    const px = 72, py = 115;
+    // Meteor starts top-right, moves toward planet
+    const mx = Math.round(148 - p * 76);  // 148 → 72
+    const my = Math.round(18  + p * 97);  // 18  → 115
+    const mr = Math.round(7   + p * 16);  // 7   → 23
+    // Trail points back toward top-right
+    const tl = Math.round(20 + p * 50);
+    const tx = Math.min(157, mx + tl * 0.62);
+    const ty = Math.max(5,   my - tl * 0.78);
+
+    // Impact explosion at max wrong
+    const impactSparks = [];
+    if (isMax) {
+      for (let i = 0; i < 10; i++) {
+        const a  = (i / 10) * Math.PI * 2;
+        const r1 = 18 + (i % 3) * 10;
+        const r2 = r1 + 18;
+        impactSparks.push(`<line x1="${(px+Math.cos(a)*r1).toFixed(1)}" y1="${(py+Math.sin(a)*r1).toFixed(1)}" x2="${(px+Math.cos(a)*r2).toFixed(1)}" y2="${(py+Math.sin(a)*r2).toFixed(1)}" stroke="#fbbf24" stroke-width="2.5" opacity="0.9" stroke-linecap="round"/>`);
+      }
+    }
+
+    return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20"  cy="30"  r="1.5" fill="white" opacity="0.7"/>
+      <circle cx="130" cy="155" r="1"   fill="white" opacity="0.6"/>
+      <circle cx="10"  cy="150" r="1.5" fill="white" opacity="0.5"/>
+      <circle cx="145" cy="185" r="1"   fill="white" opacity="0.6"/>
+      ${drawPlanetSVG(currentPlanet, px, py)}
+      ${!isMax ? `
+        <line x1="${mx}" y1="${my}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" stroke="#f97316" stroke-width="${(mr*0.75).toFixed(1)}" stroke-linecap="round" opacity="0.4"/>
+        <line x1="${mx}" y1="${my}" x2="${Math.min(157,tx+3).toFixed(1)}" y2="${Math.max(5,ty-3).toFixed(1)}" stroke="#fbbf24" stroke-width="${(mr*0.38).toFixed(1)}" stroke-linecap="round" opacity="0.65"/>
+        <circle cx="${mx}" cy="${my}" r="${mr}" fill="#78716c"/>
+        <circle cx="${(mx-mr*0.3).toFixed(1)}" cy="${(my-mr*0.3).toFixed(1)}" r="${(mr*0.45).toFixed(1)}" fill="#a8a29e" opacity="0.55"/>
+        ${mr > 12 ? `<circle cx="${(mx+mr*0.25).toFixed(1)}" cy="${(my+mr*0.22).toFixed(1)}" r="${(mr*0.18).toFixed(1)}" fill="#57534e"/>` : ''}
+      ` : `
+        <circle cx="${px}" cy="${py}" r="42" fill="#f97316" opacity="0.55"/>
+        <circle cx="${px}" cy="${py}" r="28" fill="#fbbf24" opacity="0.7"/>
+        <circle cx="${px}" cy="${py}" r="14" fill="white"   opacity="0.9"/>
+        ${impactSparks.join('')}
+      `}
     </svg>`;
   }
 
@@ -180,60 +245,6 @@
       ${rays.join('')}
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="${col}"/>
       <circle cx="${cx}" cy="${cy}" r="${(r*0.55).toFixed(1)}" fill="white" opacity="${(0.25+p*0.55).toFixed(2)}"/>
-    </svg>`;
-  }
-
-  // ── SVG: Squid ───────────────────────────────────────────────
-  function squidSVG(stage, maxWrong) {
-    const p = stage / maxWrong;
-    // Body slides in from right — starts fully off-screen
-    const bodyX = Math.round(222 - p * 82); // 222 → 140
-    const bodyY = 95;
-    // Tentacles fan leftward from body base, getting longer each stage
-    const angles  = [148, 162, 176, 192, 206, 220];
-    const tentacles = [];
-    for (let i = 0; i < Math.min(stage, angles.length); i++) {
-      const a    = angles[i] * Math.PI / 180;
-      const len  = 48 + p * 88;
-      const bx   = bodyX;
-      const by_  = bodyY + 18 + (i - 2.5) * 7;
-      const ex   = (bx + Math.cos(a) * len).toFixed(1);
-      const ey   = (by_ + Math.sin(a) * len).toFixed(1);
-      const cpx  = (bx + Math.cos(a + 0.35) * len * 0.55).toFixed(1);
-      const cpy  = (by_ + Math.sin(a + 0.35) * len * 0.55).toFixed(1);
-      tentacles.push(`<path d="M${bx.toFixed(1)},${by_.toFixed(1)} Q${cpx},${cpy} ${ex},${ey}" stroke="#7c3aed" stroke-width="${(3.8-i*0.25).toFixed(1)}" fill="none" stroke-linecap="round"/>`);
-      const mx = ((bx + parseFloat(ex)) / 2).toFixed(1);
-      const my = ((by_ + parseFloat(ey)) / 2).toFixed(1);
-      tentacles.push(`<circle cx="${mx}" cy="${my}" r="2.2" fill="#5b21b6" opacity="0.6"/>`);
-    }
-    // Body and eyes only render when near/in frame
-    const showBody = bodyX < 176;
-    const showEyes = bodyX < 170;
-    const eyeR     = showEyes ? Math.min(5.5, (170 - bodyX) * 0.22 + 1.8) : 0;
-    const bgOp     = (0.7 - p * 0.4).toFixed(2);
-    return `<svg viewBox="0 0 160 200" width="160" height="200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="20"  r="1.5" fill="white" opacity="${bgOp}"/>
-      <circle cx="80" cy="35"  r="1"   fill="white" opacity="${bgOp}"/>
-      <circle cx="15" cy="130" r="1.5" fill="white" opacity="${bgOp}"/>
-      <circle cx="50" cy="170" r="1"   fill="white" opacity="${bgOp}"/>
-      ${tentacles.join('')}
-      ${showBody ? `
-        <ellipse cx="${bodyX}" cy="${bodyY}" rx="22" ry="28" fill="#6d28d9"/>
-        <ellipse cx="${bodyX}" cy="${bodyY}" rx="15" ry="20" fill="#7c3aed" opacity="0.55"/>
-        <polygon points="${bodyX},${bodyY-40} ${bodyX-12},${bodyY-18} ${bodyX+12},${bodyY-18}" fill="#5b21b6"/>
-      ` : ''}
-      ${showEyes ? `
-        <circle cx="${(bodyX-9).toFixed(1)}" cy="${bodyY+2}" r="${eyeR.toFixed(1)}" fill="white"/>
-        <circle cx="${(bodyX+9).toFixed(1)}" cy="${bodyY+2}" r="${eyeR.toFixed(1)}" fill="white"/>
-        <circle cx="${(bodyX-9).toFixed(1)}" cy="${bodyY+2}" r="${(eyeR*0.5).toFixed(1)}" fill="#1c1c1c"/>
-        <circle cx="${(bodyX+9).toFixed(1)}" cy="${bodyY+2}" r="${(eyeR*0.5).toFixed(1)}" fill="#1c1c1c"/>
-        <circle cx="${(bodyX-8).toFixed(1)}" cy="${(bodyY+1).toFixed(1)}" r="1" fill="white"/>
-        <circle cx="${(bodyX+10).toFixed(1)}" cy="${(bodyY+1).toFixed(1)}" r="1" fill="white"/>
-      ` : ''}
-      ${p > 0.6 && bodyX < 155 ? `
-        <circle cx="${(bodyX-5).toFixed(1)}" cy="${(bodyY+17).toFixed(1)}" r="2.5" fill="#c084fc" opacity="${(p*0.6).toFixed(2)}"/>
-        <circle cx="${(bodyX+4).toFixed(1)}" cy="${(bodyY+15).toFixed(1)}" r="2"   fill="#e879f9" opacity="${(p*0.5).toFixed(2)}"/>
-      ` : ''}
     </svg>`;
   }
 
@@ -276,114 +287,6 @@
       ${isMax ? `
         <path d="M 120 76 Q 146 63 158 53 Q 140 71 158 80 Q 140 76 120 82 Z" fill="#f97316" opacity="0.9"/>
         <path d="M 120 76 Q 142 66 152 59 Q 136 72 150 78 Q 134 74 120 80 Z" fill="#fbbf24" opacity="0.75"/>
-      ` : ''}
-    </svg>`;
-  }
-
-  // ── SVG: Wormhole ────────────────────────────────────────────
-  function wormholeSVG(stage, maxWrong) {
-    const p  = stage / maxWrong;
-    const r  = Math.round(14 + p * 62);
-    const cx = 80, cy = 105;
-
-    // Stars that get sucked toward the center — drawn as streaks
-    const starData = [
-      {x:14, y:18}, {x:142,y:28}, {x:22, y:188}, {x:150,y:162},
-      {x:72, y:198}, {x:8,  y:82}, {x:152,y:88},  {x:58, y:8},
-      {x:118,y:195}, {x:6,  y:145},{x:155,y:135},  {x:38, y:192}
-    ];
-    const starEls = starData.map((s, i) => {
-      const pulled = stage > 0 && i < stage + 2;
-      if (pulled) {
-        const dx = cx - s.x, dy = cy - s.y;
-        const pull = Math.min(0.88, p * 0.6 + (i / starData.length) * p * 0.5);
-        const ex = (s.x + dx * pull).toFixed(1);
-        const ey = (s.y + dy * pull).toFixed(1);
-        return `<line x1="${s.x}" y1="${s.y}" x2="${ex}" y2="${ey}" stroke="white" stroke-width="1.5" opacity="${(0.35+pull*0.55).toFixed(2)}" stroke-linecap="round"/>`;
-      }
-      const op = (0.7 - p * 0.45).toFixed(2);
-      return `<circle cx="${s.x}" cy="${s.y}" r="1.5" fill="white" opacity="${op}"/>`;
-    });
-
-    // Concentric rings — purple to pink gradient outward
-    const ringCols = ['#f0abfc','#e879f9','#c084fc','#a78bfa','#818cf8'];
-    const rings = ringCols.map((col, i) => {
-      const frac = (i + 1) / 5;
-      return `<circle cx="${cx}" cy="${cy}" r="${(r*frac).toFixed(1)}" fill="none" stroke="${col}" stroke-width="${(1.2+(5-i)*0.5).toFixed(1)}" opacity="${(0.28+frac*0.6).toFixed(2)}"/>`;
-    });
-
-    // Swirl dots orbiting at mid-radius
-    const swirlDots = [];
-    if (stage > 1) {
-      const numDots = Math.min(8, stage * 2);
-      for (let i = 0; i < numDots; i++) {
-        const a  = (i / numDots) * Math.PI * 2 + p * 3;
-        const dr = r * (0.55 + (i % 2) * 0.18);
-        swirlDots.push(`<circle cx="${(cx+Math.cos(a)*dr).toFixed(1)}" cy="${(cy+Math.sin(a)*dr).toFixed(1)}" r="1.8" fill="#e879f9" opacity="${(0.4+p*0.4).toFixed(2)}"/>`);
-      }
-    }
-
-    return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
-      ${starEls.join('')}
-      ${p > 0.08 ? `<circle cx="${cx}" cy="${cy}" r="${r+24}" fill="none" stroke="#818cf8" stroke-width="1.5" opacity="${(p*0.18).toFixed(2)}"/>` : ''}
-      ${rings.join('')}
-      ${swirlDots.join('')}
-      <circle cx="${cx}" cy="${cy}" r="${(r*0.24).toFixed(1)}" fill="#09090b"/>
-      <circle cx="${cx}" cy="${cy}" r="${(3+p*6).toFixed(1)}" fill="white" opacity="${(0.15+p*0.65).toFixed(2)}"/>
-    </svg>`;
-  }
-
-  // ── SVG: Robot ───────────────────────────────────────────────
-  function robotSVG(stage, maxWrong) {
-    const pieces = ['legs','body','rightArm','leftArm','head','antenna'];
-    const n = pieces.length;
-    function show(id) {
-      return pieces.indexOf(id) < Math.round(n * (maxWrong - stage) / maxWrong);
-    }
-    const sparks = [];
-    for (let i = 0; i < stage * 2; i++) {
-      const sx = 62 + (i % 5) * 9;
-      const sy = 78 + Math.floor(i / 5) * 22;
-      sparks.push(`<line x1="${sx}" y1="${sy}" x2="${sx+5-(i%3)*3}" y2="${sy-9}" stroke="#fbbf24" stroke-width="1.5" opacity="0.85"/>`);
-    }
-    return `<svg viewBox="0 0 160 210" width="160" height="210" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20"  cy="20"  r="1.5" fill="white" opacity="0.7"/>
-      <circle cx="140" cy="35"  r="1"   fill="white" opacity="0.6"/>
-      <circle cx="25"  cy="175" r="1"   fill="white" opacity="0.5"/>
-      ${sparks.join('')}
-      ${show('legs') ? `
-        <rect x="62" y="162" width="14" height="28" rx="4" fill="#475569"/>
-        <rect x="84" y="162" width="14" height="28" rx="4" fill="#475569"/>
-        <rect x="60" y="186" width="18" height="8"  rx="3" fill="#334155"/>
-        <rect x="82" y="186" width="18" height="8"  rx="3" fill="#334155"/>
-      ` : ''}
-      ${show('body') ? `
-        <rect x="50" y="110" width="60" height="55" rx="8" fill="#475569"/>
-        <rect x="58" y="118" width="44" height="30" rx="4" fill="#1e293b"/>
-        <circle cx="68" cy="133" r="6" fill="#22d3ee" opacity="0.8"/>
-        <circle cx="80" cy="133" r="6" fill="#f97316" opacity="0.8"/>
-        <circle cx="92" cy="133" r="6" fill="#4ade80" opacity="0.8"/>
-        <rect x="58" y="152" width="44" height="8" rx="3" fill="#334155"/>
-      ` : ''}
-      ${show('rightArm') ? `
-        <rect x="112" y="112" width="24" height="12" rx="5" fill="#475569"/>
-        <rect x="128" y="108" width="14" height="20" rx="5" fill="#334155"/>
-      ` : ''}
-      ${show('leftArm') ? `
-        <rect x="24" y="112" width="24" height="12" rx="5" fill="#475569"/>
-        <rect x="18" y="108" width="14" height="20" rx="5" fill="#334155"/>
-      ` : ''}
-      ${show('head') ? `
-        <rect x="55" y="70" width="50" height="42" rx="10" fill="#64748b"/>
-        <rect x="63" y="80" width="14" height="10" rx="3" fill="#bae6fd" opacity="0.9"/>
-        <rect x="83" y="80" width="14" height="10" rx="3" fill="#bae6fd" opacity="0.9"/>
-        <rect x="65" y="96" width="30" height="5"  rx="2" fill="#475569"/>
-        <rect x="72" y="96" width="16" height="5"  rx="2" fill="#f87171" opacity="0.7"/>
-      ` : ''}
-      ${show('antenna') ? `
-        <line x1="80" y1="70" x2="80" y2="50" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="80" cy="46" r="6" fill="#f87171"/>
-        <circle cx="80" cy="46" r="3" fill="#fca5a5"/>
       ` : ''}
     </svg>`;
   }
@@ -439,11 +342,6 @@
     if (currentTheme === 'astronaut') return astronautSVG(wrong, MAX_WRONG);
     if (currentTheme === 'meteor')    return meteorSVG(wrong, MAX_WRONG);
     if (currentTheme === 'supernova') return supernovaSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'squid')     return squidSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'dragon')    return dragonSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'wormhole')  return wormholeSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'robot')     return robotSVG(wrong, MAX_WRONG);
-    if (currentTheme === 'ice')       return iceSVG(wrong, MAX_WRONG);
     return rocketSVG(wrong, MAX_WRONG);
   }
 
@@ -541,8 +439,7 @@
     const kb = document.getElementById('keyboard');
     if (!kb) return;
     kb.innerHTML = '';
-    const rows = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
-    rows.forEach(row => {
+    ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach(row => {
       const rowEl = document.createElement('div');
       rowEl.style.cssText = 'display:flex;justify-content:center;gap:6px;width:100%;';
       row.split('').forEach(letter => {
@@ -623,11 +520,6 @@
     if (currentTheme === 'astronaut')  setTimeout(animateAstronautFloat,    delay);
     if (currentTheme === 'meteor')     setTimeout(animateMeteorImpact,      delay);
     if (currentTheme === 'supernova')  setTimeout(animateSupernovaExplosion,delay);
-    if (currentTheme === 'squid')      setTimeout(animateSquidEngulf,       delay);
-    if (currentTheme === 'dragon')     setTimeout(animateDragonFire,        delay);
-    if (currentTheme === 'wormhole')   setTimeout(animateWormholeSuck,      delay);
-    if (currentTheme === 'robot')      setTimeout(animateRobotCollapse,     delay);
-    if (currentTheme === 'ice')        setTimeout(animateIceShatter,        delay);
   }
 
   // ── Lose animations ──────────────────────────────────────────
@@ -653,11 +545,12 @@
   function animateMeteorImpact() {
     const scene = document.getElementById('scene');
     if (!scene) return;
+    // Shockwave flash then expand and fade
     scene.animate([
-      { filter: 'brightness(1)',  opacity: 1, transform: 'scale(1)' },
-      { filter: 'brightness(6)',  opacity: 1, transform: 'scale(1.1)', offset: 0.2 },
-      { filter: 'brightness(0.8)', opacity: 0, transform: 'scale(1.4)' }
-    ], { duration: 900, easing: 'ease-out', fill: 'forwards' });
+      { transform: 'scale(1)',   filter: 'brightness(1)',  opacity: 1 },
+      { transform: 'scale(1.15)', filter: 'brightness(7)', opacity: 1,   offset: 0.18 },
+      { transform: 'scale(2.2)', filter: 'brightness(1)',  opacity: 0 }
+    ], { duration: 1100, easing: 'ease-out', fill: 'forwards' });
   }
 
   function animateSupernovaExplosion() {
@@ -665,57 +558,28 @@
     if (!scene) return;
     scene.animate([
       { transform: 'scale(1)',   filter: 'brightness(1)', opacity: 1 },
-      { transform: 'scale(1.4)', filter: 'brightness(8)', opacity: 1, offset: 0.25 },
+      { transform: 'scale(1.4)', filter: 'brightness(8)', opacity: 1,   offset: 0.25 },
       { transform: 'scale(3.5)', filter: 'brightness(1)', opacity: 0 }
     ], { duration: 1200, easing: 'ease-out', fill: 'forwards' });
-  }
-
-  function animateSquidEngulf() {
-    const scene = document.getElementById('scene');
-    if (!scene) return;
-    scene.animate([
-      { transform: 'translateX(0) scale(1)',     opacity: 1 },
-      { transform: 'translateX(18px) scale(0.9)', opacity: 0.8, offset: 0.35 },
-      { transform: 'translateX(220px) scale(0.3)', opacity: 0 }
-    ], { duration: 1000, easing: 'ease-in', fill: 'forwards' });
   }
 
   function animateDragonFire() {
     const scene = document.getElementById('scene');
     if (!scene) return;
     scene.animate([
-      { filter: 'hue-rotate(0deg) brightness(1)',   opacity: 1 },
+      { filter: 'hue-rotate(0deg) brightness(1)',    opacity: 1 },
       { filter: 'hue-rotate(25deg) brightness(2.5)', opacity: 1, offset: 0.3 },
       { filter: 'hue-rotate(25deg) brightness(0.4)', opacity: 0 }
     ], { duration: 1100, easing: 'ease-in', fill: 'forwards' });
-  }
-
-  function animateWormholeSuck() {
-    const scene = document.getElementById('scene');
-    if (!scene) return;
-    scene.animate([
-      { transform: 'scale(1) rotate(0deg)',    opacity: 1 },
-      { transform: 'scale(0.1) rotate(720deg)', opacity: 0 }
-    ], { duration: 1500, easing: 'ease-in', fill: 'forwards' });
-  }
-
-  function animateRobotCollapse() {
-    const scene = document.getElementById('scene');
-    if (!scene) return;
-    scene.animate([
-      { transform: 'translate(0,0) rotate(0deg)',    opacity: 1 },
-      { transform: 'translate(4px,0) rotate(10deg)', opacity: 1, offset: 0.3 },
-      { transform: 'translate(0,28px) rotate(-4deg)', opacity: 0 }
-    ], { duration: 1000, easing: 'ease-in', fill: 'forwards' });
   }
 
   function animateIceShatter() {
     const scene = document.getElementById('scene');
     if (!scene) return;
     scene.animate([
-      { filter: 'brightness(1) saturate(1)',       opacity: 1, transform: 'scale(1)' },
-      { filter: 'brightness(4) saturate(0.1)',     opacity: 1, transform: 'scale(1.05)', offset: 0.15 },
-      { filter: 'brightness(2) saturate(0)',       opacity: 0, transform: 'scale(1.12)' }
+      { filter: 'brightness(1) saturate(1)',   opacity: 1, transform: 'scale(1)' },
+      { filter: 'brightness(4) saturate(0.1)', opacity: 1, transform: 'scale(1.05)', offset: 0.15 },
+      { filter: 'brightness(2) saturate(0)',   opacity: 0, transform: 'scale(1.12)' }
     ], { duration: 800, easing: 'ease-out', fill: 'forwards' });
   }
 
@@ -728,6 +592,11 @@
     won     = false;
     lost    = false;
 
+    // Pick a random planet for the meteor theme (not Earth)
+    if (currentTheme === 'meteor') {
+      currentPlanet = PLANET_TYPES[Math.floor(Math.random() * PLANET_TYPES.length)];
+    }
+
     const clueEl = document.getElementById('clue');
     if (clueEl) clueEl.textContent = e.clue;
     const statusEl = document.getElementById('status-msg');
@@ -738,7 +607,7 @@
       resetBtn.getAnimations().forEach(a => a.cancel());
     }
 
-    // Cancel and reset any in-progress lose animations
+    // Cancel and fully reset any in-progress lose animations
     const scene = document.getElementById('scene');
     if (scene) {
       scene.getAnimations().forEach(a => a.cancel());
