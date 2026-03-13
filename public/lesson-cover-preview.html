@@ -20,132 +20,140 @@
     background: url('/space-bg.png') center center / cover no-repeat;
     display: flex;
     align-items: center;
-    justify-content: center;
   }
 
-  /* ── Arc + rocket SVG ── */
+  /* ── Arc SVG (full screen, behind everything) ── */
   .arc-svg {
     position: absolute;
     inset: 0;
     width: 100%; height: 100%;
     pointer-events: none;
+    z-index: 1;
   }
 
   /* ── Main layout ── */
   .cover-layout {
     position: relative;
+    z-index: 2;
     width: 100%; height: 100%;
     display: flex;
     align-items: center;
   }
 
-  /* ── Mars image ── */
+  /* ── Mars image (left ~55%) ── */
   .mars-wrap {
-    flex: 0 0 52%;
+    flex: 0 0 55%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-left: 2%;
+    height: 100%;
   }
   .mars-img {
-    width: min(560px, 88%);
+    width: min(640px, 92%);
+    height: auto;
     display: block;
-    filter: drop-shadow(0 0 40px rgba(180, 80, 30, 0.35));
+    filter: drop-shadow(0 0 50px rgba(180, 70, 20, 0.5));
   }
 
-  /* ── Right side content ── */
+  /* ── Right side ── */
   .cover-right {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    padding-right: 5%;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding-right: 4%;
+    text-align: center;
   }
 
   .cover-title {
-    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-size: clamp(2.2rem, 4.8vw, 3.8rem);
     font-weight: 900;
     color: #ffffff;
     line-height: 1.1;
-    letter-spacing: -0.5px;
+    margin-bottom: 18px;
   }
 
   .cover-rule {
-    width: 100%;
+    width: 85%;
     height: 2px;
     background: rgba(255,255,255,0.5);
     border-radius: 2px;
+    margin-bottom: 24px;
   }
 
-  /* ── START button ── */
-  .start-btn {
+  /* ── Button row ── */
+  .btn-row {
     display: flex;
     align-items: center;
-    gap: 0;
-    cursor: pointer;
-    border: none;
-    background: none;
-    padding: 0;
-    margin-top: 8px;
+    gap: 14px;
+    justify-content: center;
   }
 
-  .start-sound {
+  /* Audio button */
+  .audio-btn {
     width: 52px; height: 52px;
-    background: #22c55e;
+    background: #21c593;
+    border: none;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
     flex-shrink: 0;
-    z-index: 1;
-    box-shadow: 0 2px 12px rgba(34,197,94,0.5);
+    position: relative;
+    animation: audioPulse 2s ease-in-out infinite;
   }
-  .start-sound svg { width: 22px; height: 22px; fill: white; }
+  .audio-btn svg { width: 24px; height: 24px; fill: white; }
 
-  .start-label {
-    background: #e8273c;
+  @keyframes audioPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(33, 197, 147, 0.7); }
+    50%       { box-shadow: 0 0 0 12px rgba(33, 197, 147, 0); }
+  }
+
+  /* START button */
+  .start-btn {
+    background: #d92343;
     color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 48px;
     font-family: 'Nunito', sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     font-weight: 900;
     letter-spacing: 2px;
-    padding: 14px 28px 14px 24px;
-    margin-left: -4px;
-    border-radius: 0 50px 50px 0;
-    box-shadow: 0 2px 16px rgba(232,39,60,0.45);
-    transition: filter 0.15s;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(217, 35, 67, 0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .start-btn:hover .start-label { filter: brightness(1.1); }
+  .start-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 6px 28px rgba(217, 35, 67, 0.7);
+  }
+  .start-btn:active { transform: scale(0.97); }
 
-  .start-arrow {
-    width: 52px; height: 52px;
-    background: #e8273c;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-left: -4px;
-    box-shadow: 0 2px 12px rgba(232,39,60,0.45);
+  /* ── Rocket on arc ── */
+  .arc-rocket {
+    position: absolute;
+    z-index: 3;
+    top: 6%;
+    right: 30%;
+    transform: rotate(35deg);
+    pointer-events: none;
   }
-  .start-arrow svg { width: 20px; height: 20px; fill: white; }
+  .arc-rocket svg {
+    width: clamp(70px, 8vw, 110px);
+    height: auto;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  }
 
   /* ── Image credit ── */
   .image-credit {
     position: absolute;
     bottom: 16px; left: 20px;
+    z-index: 3;
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.5);
     font-weight: 600;
-  }
-
-  /* ── Rocket on arc ── */
-  .arc-rocket {
-    position: absolute;
-    font-size: clamp(2.4rem, 4.5vw, 3.5rem);
-    /* positioned via JS relative to arc end */
-    top: 8%;
-    right: 26%;
-    transform: rotate(30deg);
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
-    pointer-events: none;
   }
 </style>
 </head>
@@ -153,50 +161,91 @@
 
 <div class="screen">
 
-  <!-- Dashed arc SVG -->
-  <svg class="arc-svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+  <!-- Fun wavy dashed arc — goes from mid-left, swoops up with an S-curve, ends top-right (above image credit) -->
+  <svg class="arc-svg" viewBox="0 0 1000 620" preserveAspectRatio="none">
     <path
-      d="M 80 580 Q 200 80 680 80"
+      d="M 30 460
+         C 80 320, 180 480, 260 340
+         C 340 200, 460 260, 560 140
+         C 630 60, 680 50, 710 55"
       fill="none"
       stroke="white"
-      stroke-width="5"
-      stroke-dasharray="22,16"
+      stroke-width="6"
+      stroke-dasharray="24,16"
       stroke-linecap="round"
-      opacity="0.85"
+      opacity="0.8"
     />
   </svg>
 
-  <!-- Rocket at arc tip -->
-  <div class="arc-rocket">🚀</div>
+  <!-- Colorful rocket at arc tip -->
+  <div class="arc-rocket">
+    <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+      <!-- Flame -->
+      <ellipse cx="50" cy="148" rx="13" ry="16" fill="#f97316" opacity="0.95"/>
+      <ellipse cx="50" cy="143" rx="8" ry="11" fill="#fbbf24"/>
+      <ellipse cx="50" cy="140" rx="4" ry="6" fill="#fff7ed"/>
+      <!-- Left fin -->
+      <polygon points="22,130 35,95 35,130" fill="#34d399"/>
+      <polygon points="22,130 35,95 35,130" fill="url(#finGrad)" opacity="0.9"/>
+      <!-- Right fin -->
+      <polygon points="78,130 65,95 65,130" fill="#34d399"/>
+      <polygon points="78,130 65,95 65,130" fill="url(#finGradR)" opacity="0.9"/>
+      <!-- Body -->
+      <rect x="32" y="55" width="36" height="80" rx="4" fill="#67e8f9"/>
+      <rect x="32" y="55" width="36" height="80" rx="4" fill="url(#bodyGrad)" opacity="0.8"/>
+      <!-- Nose cone -->
+      <path d="M32 55 Q50 5 68 55 Z" fill="#a7f3d0"/>
+      <path d="M32 55 Q50 5 68 55 Z" fill="url(#noseGrad)" opacity="0.85"/>
+      <!-- Window -->
+      <circle cx="50" cy="95" r="11" fill="#0f172a" stroke="#a5f3fc" stroke-width="3"/>
+      <circle cx="50" cy="95" r="7" fill="#0ea5e9"/>
+      <circle cx="47" cy="92" r="2.5" fill="rgba(255,255,255,0.7)"/>
+      <!-- Shine on body -->
+      <rect x="36" y="60" width="8" height="50" rx="4" fill="rgba(255,255,255,0.25)"/>
+
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#22d3ee"/>
+          <stop offset="100%" stop-color="#6ee7b7"/>
+        </linearGradient>
+        <linearGradient id="noseGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#86efac"/>
+          <stop offset="100%" stop-color="#22d3ee"/>
+        </linearGradient>
+        <linearGradient id="finGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#059669"/>
+          <stop offset="100%" stop-color="#34d399"/>
+        </linearGradient>
+        <linearGradient id="finGradR" x1="1" y1="0" x2="0" y2="0">
+          <stop offset="0%" stop-color="#059669"/>
+          <stop offset="100%" stop-color="#34d399"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  </div>
 
   <!-- Main layout -->
   <div class="cover-layout">
 
-    <!-- Mars image -->
+    <!-- Mars (no background, just the planet PNG) -->
     <div class="mars-wrap">
-      <img src="/mars-with-background.png" alt="Mars" class="mars-img" />
+      <img src="/mars.png" alt="Mars" class="mars-img" />
     </div>
 
-    <!-- Right: title + button -->
+    <!-- Right: title, rule, buttons -->
     <div class="cover-right">
       <div class="cover-title">All About Mars</div>
       <div class="cover-rule"></div>
-      <button class="start-btn" onclick="alert('START!')">
-        <div class="start-sound">
-          <!-- speaker icon -->
+      <div class="btn-row">
+        <button class="audio-btn" title="Play audio">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-        </div>
-        <div class="start-label">START</div>
-        <div class="start-arrow">
-          <!-- arrow icon -->
-          <svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7"/></svg>
-        </div>
-      </button>
+        </button>
+        <button class="start-btn">START</button>
+      </div>
     </div>
 
   </div>
 
-  <!-- Image credit -->
   <div class="image-credit">· Image Credit: NASA</div>
 
 </div>
