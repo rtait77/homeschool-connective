@@ -29,6 +29,7 @@
     width: 100%; height: 100%;
     pointer-events: none;
     z-index: 1;
+    overflow: visible;
   }
 
   /* ── Main layout ── */
@@ -83,17 +84,17 @@
     margin-bottom: 24px;
   }
 
-  /* ── Button row ── */
-  .btn-row {
-    display: flex;
+  /* ── Button group — green overlaps left of red pill ── */
+  .btn-group {
+    position: relative;
+    display: inline-flex;
     align-items: center;
-    gap: 14px;
     justify-content: center;
   }
 
-  /* Audio button */
+  /* Audio button — overlaps left edge of start button */
   .audio-btn {
-    width: 52px; height: 52px;
+    width: 56px; height: 56px;
     background: #21c593;
     border: none;
     border-radius: 50%;
@@ -101,29 +102,37 @@
     cursor: pointer;
     flex-shrink: 0;
     position: relative;
+    z-index: 2;
+    margin-right: -20px;
     animation: audioPulse 2s ease-in-out infinite;
+    box-shadow: 0 2px 12px rgba(33,197,147,0.5);
   }
   .audio-btn svg { width: 24px; height: 24px; fill: white; }
 
   @keyframes audioPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(33, 197, 147, 0.7); }
-    50%       { box-shadow: 0 0 0 12px rgba(33, 197, 147, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(33, 197, 147, 0.65); }
+    50%       { box-shadow: 0 0 0 14px rgba(33, 197, 147, 0); }
   }
 
-  /* START button */
+  /* START button — pill shape, green circle overlaps left */
   .start-btn {
     background: #d92343;
     color: white;
     border: none;
-    border-radius: 12px;
-    padding: 16px 48px;
+    border-radius: 50px;
+    padding: 15px 36px 15px 44px;
     font-family: 'Nunito', sans-serif;
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 900;
     letter-spacing: 2px;
     cursor: pointer;
     box-shadow: 0 4px 20px rgba(217, 35, 67, 0.5);
     transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
   }
   .start-btn:hover {
     transform: scale(1.04);
@@ -131,19 +140,30 @@
   }
   .start-btn:active { transform: scale(0.97); }
 
-  /* ── Rocket on arc ── */
+  /* Arrow circle on right of start button */
+  .start-arrow {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .start-arrow svg { width: 18px; height: 18px; fill: white; }
+
+  /* ── Rocket on arc (front/end of path, top-right) ── */
   .arc-rocket {
     position: absolute;
     z-index: 3;
-    top: 6%;
-    right: 30%;
-    transform: rotate(35deg);
+    top: 16%;
+    right: 22%;
+    /* rocket faces right, slightly angled down — matches arc direction */
+    transform: rotate(-10deg) scaleX(-1);
     pointer-events: none;
   }
   .arc-rocket svg {
-    width: clamp(70px, 8vw, 110px);
+    width: clamp(80px, 9vw, 120px);
     height: auto;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.5));
   }
 
   /* ── Image credit ── */
@@ -161,19 +181,16 @@
 
 <div class="screen">
 
-  <!-- Fun wavy dashed arc — goes from mid-left, swoops up with an S-curve, ends top-right (above image credit) -->
+  <!-- Simple clean arc — starts bottom-left off-screen, arcs over top of Mars, ends at rocket top-right -->
   <svg class="arc-svg" viewBox="0 0 1000 620" preserveAspectRatio="none">
     <path
-      d="M 30 460
-         C 80 320, 180 480, 260 340
-         C 340 200, 460 260, 560 140
-         C 630 60, 680 50, 710 55"
+      d="M -40 530 Q 220 -60 760 185"
       fill="none"
       stroke="white"
-      stroke-width="6"
-      stroke-dasharray="24,16"
+      stroke-width="11"
+      stroke-dasharray="28,18"
       stroke-linecap="round"
-      opacity="0.8"
+      opacity="0.9"
     />
   </svg>
 
@@ -236,11 +253,16 @@
     <div class="cover-right">
       <div class="cover-title">All About Mars</div>
       <div class="cover-rule"></div>
-      <div class="btn-row">
-        <button class="audio-btn" title="Play audio">
+      <div class="btn-group">
+        <button class="audio-btn" title="Play narration">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <button class="start-btn">START</button>
+        <button class="start-btn">
+          START
+          <span class="start-arrow">
+            <svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </span>
+        </button>
       </div>
     </div>
 
