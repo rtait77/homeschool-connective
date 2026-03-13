@@ -49,7 +49,7 @@
     transition: transform 0.2s;
   }
 
-  /* Active — full color, hover lift, subtle glow */
+  /* Active — glow + hover lift (current lesson to do) */
   .stop.active .rocket-wrap img {
     filter: drop-shadow(0 0 0.6vw rgba(255,220,80,0.7));
   }
@@ -57,14 +57,15 @@
     transform: scale(1.12) translateY(-4px);
   }
 
-  /* Completed — full color, same hover as active */
-  .stop.completed:hover .rocket-wrap img {
-    transform: scale(1.12) translateY(-4px);
-  }
+  /* Completed — full color, no hover animation */
 
-  /* Locked — not clickable, full color, lock icon shown above */
+  /* Locked — not clickable, no hover animation */
   .stop.locked {
-    cursor: default;
+    cursor: default !important;
+  }
+  .stop.locked .rocket-wrap img,
+  .stop.completed .rocket-wrap img {
+    pointer-events: none;
   }
 
   /* Lock icon floats above the rocket in flex column */
@@ -112,7 +113,7 @@
   <!-- 1. All About Mars -->
   <div class="stop" id="stop-all-about-mars" style="left:8%; top:32%"
        onclick="goLesson('all-about-mars')">
-    <div class="rocket-wrap" style="transform:rotate(55deg)">
+    <div class="rocket-wrap" style="transform:rotate(58deg)">
       <img src="/rocket-image.png" alt="All About Mars">
     </div>
   </div>
@@ -120,7 +121,7 @@
   <!-- 2. Mars Rovers -->
   <div class="stop" id="stop-mars-rovers" style="left:23%; top:35%"
        onclick="goLesson('mars-rovers')">
-    <div class="rocket-wrap" style="transform:rotate(112deg)">
+    <div class="rocket-wrap" style="transform:rotate(120deg)">
       <img src="/rocket-image.png" alt="Mars Rovers">
     </div>
   </div>
@@ -134,17 +135,17 @@
   </div>
 
   <!-- 4. Mars's Moons -->
-  <div class="stop" id="stop-marss-moons" style="left:48%; top:53%"
+  <div class="stop" id="stop-marss-moons" style="left:48%; top:51%"
        onclick="goLesson('marss-moons')">
-    <div class="rocket-wrap" style="transform:rotate(115deg)">
+    <div class="rocket-wrap" style="transform:rotate(118deg)">
       <img src="/rocket-image.png" alt="Mars's Moons">
     </div>
   </div>
 
   <!-- 5. Design a Moon -->
-  <div class="stop" id="stop-design-a-moon" style="left:65%; top:59%"
+  <div class="stop" id="stop-design-a-moon" style="left:63%; top:59%"
        onclick="goLesson('design-a-moon')">
-    <div class="rocket-wrap" style="transform:rotate(85deg)">
+    <div class="rocket-wrap" style="transform:rotate(82deg)">
       <img src="/rocket-image.png" alt="Design a Moon">
     </div>
   </div>
