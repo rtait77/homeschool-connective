@@ -182,10 +182,10 @@
 
   /* ── Audio image button ── */
   .audio-img {
-    width: 2.1vw;
-    height: 2.1vw;
-    max-width: 28px;
-    max-height: 28px;
+    width: 2.6vw;
+    height: 2.6vw;
+    max-width: 34px;
+    max-height: 34px;
     cursor: pointer;
     flex-shrink: 0;
     transition: transform 0.15s;
@@ -194,10 +194,10 @@
   }
   .audio-img:hover { transform: scale(0.9); }
   .audio-img-sm {
-    width: 1.5vw;
-    height: 1.5vw;
-    max-width: 20px;
-    max-height: 20px;
+    width: 1.9vw;
+    height: 1.9vw;
+    max-width: 25px;
+    max-height: 25px;
   }
   /* Overlap: audio img overlaps left edge of red button */
   .audio-img-overlap {
@@ -269,36 +269,46 @@
     pointer-events: auto;
   }
 
-  /* ── Launch button ── */
+  /* ── Launch button — round red circle with arrow ── */
   #launch-btn {
     background: #d92343;
     color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.5vw;
-    font-weight: 900;
-    padding: 0.4vw 1.6vw 0.4vw 1.3vw;
-    border-radius: 99px;
+    width: 5vw;
+    height: 5vw;
+    border-radius: 50%;
     border: none;
     cursor: pointer;
     box-shadow: 0 0.2vw 1vw rgba(217,35,67,0.5);
-    letter-spacing: 0.04em;
-    transition: transform 0.15s, box-shadow 0.15s;
     display: flex;
     align-items: center;
-    gap: 0.4vw;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  #launch-btn svg.arrow-icon {
+    width: 2.2vw;
+    height: 2.2vw;
   }
   #launch-row.visible #launch-btn {
     animation: pulse-launch 1.6s ease-in-out infinite;
   }
   @keyframes pulse-launch {
     0%,100% { box-shadow: 0 0.2vw 1vw rgba(217,35,67,0.5); transform: scale(1); }
-    50%      { box-shadow: 0 0.3vw 1.8vw rgba(217,35,67,0.85); transform: scale(1.05); }
+    50%      { box-shadow: 0 0.3vw 2vw rgba(217,35,67,0.9); transform: scale(1.08); }
+  }
+  #launch-row.visible #launch-btn .arrow-icon {
+    animation: arrow-nudge 1.6s ease-in-out infinite;
+  }
+  @keyframes arrow-nudge {
+    0%,100% { transform: translateX(0); }
+    50%      { transform: translateX(0.35vw); }
   }
   #launch-btn:hover:not(:disabled) {
     animation: none;
     transform: scale(0.93);
     box-shadow: 0 0.15vw 0.6vw rgba(217,35,67,0.4);
   }
+  #launch-btn:hover:not(:disabled) .arrow-icon { animation: none; }
   #launch-btn:disabled { cursor: default; }
 
   /* ── Rover stage ── */
@@ -381,16 +391,9 @@
     <div id="launch-row">
       <img src="/audio-button.png" class="audio-img audio-img-overlap" onclick="playAudio('launch-audio')" title="Listen" alt="audio">
       <button id="launch-btn">
-        Launch
-        <svg viewBox="0 0 44 26" style="width:2.6vw;height:1.6vw;vertical-align:middle;display:inline-block" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="5" width="24" height="14" rx="3" fill="white" opacity="0.9"/>
-          <circle cx="15" cy="21" r="4" fill="white" opacity="0.85"/>
-          <circle cx="29" cy="21" r="4" fill="white" opacity="0.85"/>
-          <rect x="34" y="10" width="8" height="2.5" rx="1" fill="white" opacity="0.8"/>
-          <rect x="2" y="9" width="8" height="3" rx="1.5" fill="white" opacity="0.7"/>
-          <line x1="2" y1="13" x2="9" y2="10" stroke="white" stroke-width="1.2" opacity="0.5"/>
+        <svg class="arrow-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 24 H36 M26 14 L38 24 L26 34" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         </svg>
-        →
       </button>
     </div>
 
@@ -442,9 +445,10 @@
   <audio id="title-audio"  src="/build-your-rover.mp3"></audio>
   <audio id="audio-body"   src="/body.mp3"></audio>
   <audio id="audio-wheels" src="/wheels.mp3"></audio>
-  <audio id="audio-camera" src=""></audio>
+  <audio id="audio-camera" src="/camera.mp3"></audio>
   <audio id="audio-arm"    src="/robotic-arm.mp3"></audio>
   <audio id="launch-audio" src="/launch-rover.mp3"></audio>
+  <audio id="rover-zoom"   src="/rover-zoom.mp3"></audio>
   <audio id="map-audio"    src=""></audio>
 
 </div><!-- end .stage -->
@@ -885,6 +889,7 @@ document.getElementById('launch-btn').addEventListener('click', function() {
   roverStage.style.transition = 'transform 1.9s cubic-bezier(0.4, 0, 1, 1)';
   roverStage.style.transform = 'translateX(180%)';
 
+  playAudio('rover-zoom');
   spawnDust();
 
   setTimeout(() => {
