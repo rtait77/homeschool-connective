@@ -39,8 +39,8 @@
     } catch (e) {}
   }
 
-  // Redirect to map
-  window.location.replace('/lesson-mars-map.html');
+  // Redirect to map — passes lesson id so the unlock animation plays
+  window.location.replace('/lesson-mars-map.html?just-completed=' + (lesson || ''));
 </script>
 </body>
 </html>
