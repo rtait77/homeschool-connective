@@ -35,6 +35,7 @@
     flex-direction: column;
     align-items: center;
     cursor: pointer;
+    overflow: visible;
   }
 
   .stop .rocket-wrap {
@@ -68,19 +69,23 @@
     pointer-events: none;
   }
 
-  /* Lock icon floats above the rocket in flex column */
+  /* Lock icon — absolutely positioned above rocket, unaffected by rocket rotation */
   .lock-badge {
-    width: 2.2vw;
-    height: 2.2vw;
-    max-width: 30px;
-    max-height: 30px;
-    background: rgba(0,0,0,0.55);
+    position: absolute;
+    top: -3.2vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3vw;
+    height: 3vw;
+    max-width: 42px;
+    max-height: 42px;
+    background: rgba(10,20,50,0.8);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    border: 1.5px solid rgba(255,255,255,0.4);
-    margin-bottom: 0.4vw;
+    border: 2px solid rgba(255,255,255,0.5);
+    z-index: 5;
   }
-  .lock-badge svg { width: 55%; height: 55%; fill: rgba(255,255,255,0.9); }
+  .lock-badge svg { width: 55%; height: 55%; fill: white; }
 
 
 
@@ -143,7 +148,7 @@
   </div>
 
   <!-- 5. Design a Moon -->
-  <div class="stop" id="stop-design-a-moon" style="left:63%; top:59%"
+  <div class="stop" id="stop-design-a-moon" style="left:63%; top:57%"
        onclick="goLesson('design-a-moon')">
     <div class="rocket-wrap" style="transform:rotate(82deg)">
       <img src="/rocket-image.png" alt="Design a Moon">
@@ -253,7 +258,7 @@
         const badge = document.createElement('div');
         badge.className = 'lock-badge';
         badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
-        el.insertBefore(badge, wrap); // lock floats above the rocket
+        el.appendChild(badge); // absolutely positioned above rocket
       }
     });
   }
