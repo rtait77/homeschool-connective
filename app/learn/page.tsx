@@ -571,8 +571,13 @@ const topics = [
 
 const gameTypes = [
   { id: '', label: 'All Types' },
+  { id: 'game', label: 'Games' },
   { id: 'mini', label: 'Mini Games' },
   { id: 'lesson', label: 'Lessons' },
+]
+
+const miniGameTypes = [
+  { id: '', label: 'All Mini Games' },
   { id: 'puzzle', label: 'Puzzles' },
   { id: 'word-search', label: 'Word Search' },
   { id: 'matching', label: 'Matching' },
@@ -592,8 +597,10 @@ export default function GamesPage() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
   const [gameTypeOpen, setGameTypeOpen] = useState(false)
+  const [miniTypeOpen, setMiniTypeOpen] = useState(false)
   const [difficultyOpen, setDifficultyOpen] = useState(false)
   const [activeGameType, setActiveGameType] = useState('')
+  const [activeMiniType, setActiveMiniType] = useState('')
   const [activeDifficulty, setActiveDifficulty] = useState('')
   const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
@@ -659,15 +666,23 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeGameType, activeDifficulty, search])
+  useEffect(() => { setPage(1) }, [topic, activeGameType, activeMiniType, activeDifficulty, search])
+
+  const showDifficulty = activeGameType !== 'lesson'
 
   const filtered = games.filter(g => {
     if (topic !== 'all' && g.topic !== topic) return false
-    if (activeGameType) {
-      const typeMatch = (activeGameType === 'mini' && g.mini) || g.types.includes(activeGameType)
-      if (!typeMatch) return false
+    if (activeGameType === 'game') {
+      if (g.mini || g.types.includes('lesson')) return false
+    } else if (activeGameType === 'mini') {
+      if (!g.mini) return false
+    } else if (activeGameType === 'lesson') {
+      if (!g.types.includes('lesson')) return false
     }
-    if (activeDifficulty) {
+    if (activeMiniType && activeGameType === 'mini') {
+      if (!g.types.includes(activeMiniType)) return false
+    }
+    if (activeDifficulty && showDifficulty) {
       const titleLower = g.title.toLowerCase()
       const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
       if (!diffMatch) return false
@@ -730,7 +745,7 @@ export default function GamesPage() {
         {/* Topic dropdown */}
         <div className="relative">
           <button
-            onClick={() => { setTopicOpen(o => !o); setGameTypeOpen(false); setDifficultyOpen(false) }}
+            onClick={() => { setTopicOpen(o => !o); setGameTypeOpen(false); setMiniTypeOpen(false); setDifficultyOpen(false) }}
             className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${topic !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
             {topics.find(t => t.id === topic)?.label}
@@ -747,19 +762,24 @@ export default function GamesPage() {
           )}
         </div>
 
-        {/* Game Type dropdown */}
+        {/* Type dropdown */}
         <div className="relative">
           <button
-            onClick={() => { setGameTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false) }}
+            onClick={() => { setGameTypeOpen(o => !o); setTopicOpen(false); setMiniTypeOpen(false); setDifficultyOpen(false) }}
             className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeGameType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
             {gameTypes.find(t => t.id === activeGameType)?.label}
             <span className="text-xs">▾</span>
           </button>
           {gameTypeOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
               {gameTypes.map(t => (
-                <button key={t.id} onClick={() => { setActiveGameType(t.id); setGameTypeOpen(false) }}
+                <button key={t.id} onClick={() => {
+                  setActiveGameType(t.id)
+                  setActiveMiniType('')
+                  if (t.id === 'lesson') setActiveDifficulty('')
+                  setGameTypeOpen(false)
+                }}
                   className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeGameType === t.id ? 'text-[#55b6ca]' : ''}`}
                 >{t.label}</button>
               ))}
@@ -767,25 +787,49 @@ export default function GamesPage() {
           )}
         </div>
 
-        {/* Difficulty dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false) }}
-            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-          >
-            {difficulties.find(d => d.id === activeDifficulty)?.label}
-            <span className="text-xs">▾</span>
-          </button>
-          {difficultyOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[150px]">
-              {difficulties.map(d => (
-                <button key={d.id} onClick={() => { setActiveDifficulty(d.id); setDifficultyOpen(false) }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeDifficulty === d.id ? 'text-[#55b6ca]' : ''}`}
-                >{d.label}</button>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Mini game sub-type dropdown — only when Mini Games selected */}
+        {activeGameType === 'mini' && (
+          <div className="relative">
+            <button
+              onClick={() => { setMiniTypeOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false); setDifficultyOpen(false) }}
+              className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeMiniType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+            >
+              {miniGameTypes.find(t => t.id === activeMiniType)?.label}
+              <span className="text-xs">▾</span>
+            </button>
+            {miniTypeOpen && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
+                {miniGameTypes.map(t => (
+                  <button key={t.id} onClick={() => { setActiveMiniType(t.id); setMiniTypeOpen(false) }}
+                    className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeMiniType === t.id ? 'text-[#55b6ca]' : ''}`}
+                  >{t.label}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Difficulty dropdown — hidden for Lessons */}
+        {showDifficulty && (
+          <div className="relative">
+            <button
+              onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false); setMiniTypeOpen(false) }}
+              className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+            >
+              {difficulties.find(d => d.id === activeDifficulty)?.label}
+              <span className="text-xs">▾</span>
+            </button>
+            {difficultyOpen && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[150px]">
+                {difficulties.map(d => (
+                  <button key={d.id} onClick={() => { setActiveDifficulty(d.id); setDifficultyOpen(false) }}
+                    className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeDifficulty === d.id ? 'text-[#55b6ca]' : ''}`}
+                  >{d.label}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
       </div>
 
