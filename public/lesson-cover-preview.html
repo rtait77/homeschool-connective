@@ -50,7 +50,7 @@
     height: 100%;
   }
   .mars-img {
-    width: min(640px, 92%);
+    width: min(512px, 74%);
     height: auto;
     display: block;
     filter: drop-shadow(0 0 50px rgba(180, 70, 20, 0.5));
@@ -120,7 +120,7 @@
     color: white;
     border: none;
     border-radius: 50px;
-    padding: 15px 36px 15px 44px;
+    padding: 15px 44px 15px 44px;
     font-family: 'Nunito', sans-serif;
     font-size: 1.25rem;
     font-weight: 900;
@@ -150,20 +150,22 @@
   }
   .start-arrow svg { width: 18px; height: 18px; fill: white; }
 
-  /* ── Rocket on arc (front/end of path, top-right) ── */
+  /* ── Rocket image at front of arc ── */
   .arc-rocket {
     position: absolute;
     z-index: 3;
-    top: 16%;
-    right: 22%;
-    /* rocket faces right, slightly angled down — matches arc direction */
-    transform: rotate(-10deg) scaleX(-1);
+    /* flame sits at arc endpoint — nudge so fire aligns with arc tip */
+    top: 8%;
+    right: 18%;
     pointer-events: none;
   }
-  .arc-rocket svg {
-    width: clamp(80px, 9vw, 120px);
+  .arc-rocket img {
+    width: clamp(200px, 22vw, 300px);
     height: auto;
-    filter: drop-shadow(0 4px 14px rgba(0,0,0,0.5));
+    /* screen blend removes the dark navy background */
+    mix-blend-mode: screen;
+    /* rocket is angled: nose upper-right, flame lower-left — matches arc direction */
+    transform: rotate(-15deg);
   }
 
   /* ── Image credit ── */
@@ -194,51 +196,9 @@
     />
   </svg>
 
-  <!-- Colorful rocket at arc tip -->
+  <!-- Rocket image — dark bg removed via mix-blend-mode, flame aligns with arc tip -->
   <div class="arc-rocket">
-    <svg viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
-      <!-- Flame -->
-      <ellipse cx="50" cy="148" rx="13" ry="16" fill="#f97316" opacity="0.95"/>
-      <ellipse cx="50" cy="143" rx="8" ry="11" fill="#fbbf24"/>
-      <ellipse cx="50" cy="140" rx="4" ry="6" fill="#fff7ed"/>
-      <!-- Left fin -->
-      <polygon points="22,130 35,95 35,130" fill="#34d399"/>
-      <polygon points="22,130 35,95 35,130" fill="url(#finGrad)" opacity="0.9"/>
-      <!-- Right fin -->
-      <polygon points="78,130 65,95 65,130" fill="#34d399"/>
-      <polygon points="78,130 65,95 65,130" fill="url(#finGradR)" opacity="0.9"/>
-      <!-- Body -->
-      <rect x="32" y="55" width="36" height="80" rx="4" fill="#67e8f9"/>
-      <rect x="32" y="55" width="36" height="80" rx="4" fill="url(#bodyGrad)" opacity="0.8"/>
-      <!-- Nose cone -->
-      <path d="M32 55 Q50 5 68 55 Z" fill="#a7f3d0"/>
-      <path d="M32 55 Q50 5 68 55 Z" fill="url(#noseGrad)" opacity="0.85"/>
-      <!-- Window -->
-      <circle cx="50" cy="95" r="11" fill="#0f172a" stroke="#a5f3fc" stroke-width="3"/>
-      <circle cx="50" cy="95" r="7" fill="#0ea5e9"/>
-      <circle cx="47" cy="92" r="2.5" fill="rgba(255,255,255,0.7)"/>
-      <!-- Shine on body -->
-      <rect x="36" y="60" width="8" height="50" rx="4" fill="rgba(255,255,255,0.25)"/>
-
-      <defs>
-        <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#22d3ee"/>
-          <stop offset="100%" stop-color="#6ee7b7"/>
-        </linearGradient>
-        <linearGradient id="noseGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#86efac"/>
-          <stop offset="100%" stop-color="#22d3ee"/>
-        </linearGradient>
-        <linearGradient id="finGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#059669"/>
-          <stop offset="100%" stop-color="#34d399"/>
-        </linearGradient>
-        <linearGradient id="finGradR" x1="1" y1="0" x2="0" y2="0">
-          <stop offset="0%" stop-color="#059669"/>
-          <stop offset="100%" stop-color="#34d399"/>
-        </linearGradient>
-      </defs>
-    </svg>
+    <img src="/rocket-cartoon.jpg" alt="Rocket" />
   </div>
 
   <!-- Main layout -->
@@ -257,12 +217,7 @@
         <button class="audio-btn" title="Play narration">
           <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
         </button>
-        <button class="start-btn">
-          START
-          <span class="start-arrow">
-            <svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
-          </span>
-        </button>
+        <button class="start-btn">START</button>
       </div>
     </div>
 
