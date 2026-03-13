@@ -935,6 +935,8 @@ function playAudio(id) {
 //  INIT
 // ─────────────────────────────────────────────
 buildPanel();
+// Camera is recorded louder — bring it down to match others
+document.getElementById('audio-camera').volume = 0.55;
 </script>
 </body>
 </html>
