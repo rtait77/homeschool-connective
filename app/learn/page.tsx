@@ -555,7 +555,7 @@ const games = [
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
-    url: '/lesson-mars.html',
+    url: 'https://view.genially.com/699e69be43a96797318311da',
     topic: 'solar-system',
     mini: false,
     types: ['lesson', 'medium'],
