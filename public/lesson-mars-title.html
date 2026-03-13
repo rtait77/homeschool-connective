@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All About Mars</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #0d1b3e;
+    overflow: hidden;
+  }
+
+  /* Full-screen container — image fills screen, centered */
+  .screen {
+    position: fixed; inset: 0;
+    background: url('/lesson-mars-title.jpg') center center / cover no-repeat;
+  }
+
+  /* ── Invisible clickable START region ──
+     In the image (1456×816):
+     The full button group (green circle + red pill + arrow) spans roughly:
+       left: 945px → 64.9%   right: 1205px → 82.8%
+       top:  572px → 70.1%   bottom: 628px → 76.9%
+     Click anywhere in this area to start.
+  */
+  .start-zone {
+    position: absolute;
+    left: 63%;
+    top: 68%;
+    width: 22%;
+    height: 12%;
+    cursor: pointer;
+    z-index: 10;
+    /* debug: outline: 2px solid red; */
+  }
+
+  /* ── Animated green audio button overlay ──
+     Sits exactly on top of the static green circle in the image.
+     Green circle center in image: ~967px x, ~600px y (1456×816)
+     → 66.4% x, 73.5% y
+     Button is ~56px radius = ~3.8% of width, ~6.9% of height
+  */
+  .audio-btn {
+    position: absolute;
+    left: 64.5%;
+    top: 69%;
+    transform: translate(-50%, -50%);
+    width: clamp(40px, 4.2vw, 62px);
+    height: clamp(40px, 4.2vw, 62px);
+    background: #21c593;
+    border: none;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 20;
+    animation: audioPulse 2s ease-in-out infinite;
+    box-shadow: 0 2px 14px rgba(33,197,147,0.5);
+    font-family: 'Nunito', sans-serif;
+  }
+  .audio-btn svg {
+    width: 45%; height: 45%;
+    fill: white;
+  }
+
+  @keyframes audioPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(33, 197, 147, 0.7); }
+    50%       { box-shadow: 0 0 0 14px rgba(33, 197, 147, 0); }
+  }
+
+  /* ── Music toggle button (bottom-right corner) ── */
+  .music-btn {
+    position: absolute;
+    bottom: 16px; right: 16px;
+    z-index: 30;
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .music-btn:hover { background: rgba(255,255,255,0.28); }
+  .music-btn svg { width: 20px; height: 20px; fill: white; }
+  .music-btn.muted { opacity: 0.45; }
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- Invisible click zone over the entire START button area -->
+  <div class="start-zone" onclick="goStart()" title="Start lesson"></div>
+
+  <!-- Animated audio button overlaid on top of the static one in the image -->
+  <button class="audio-btn" id="audio-btn" title="Play introduction">
+    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+  </button>
+
+  <!-- Music toggle -->
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Toggle background music">
+    <svg id="music-icon" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+  </button>
+
+  <audio id="bg-music" src="/puzzle-bg-music.mp3" loop></audio>
+  <audio id="narration" src="/start.mp3"></audio>
+
+</div>
+
+<script>
+  const bgMusic   = document.getElementById('bg-music');
+  const narration = document.getElementById('narration');
+  const musicBtn  = document.getElementById('music-btn');
+  const musicIcon = document.getElementById('music-icon');
+  let musicOn = false;
+
+  // Autoplay background music
+  bgMusic.volume = 0.35;
+  bgMusic.play().then(() => { musicOn = true; }).catch(() => {
+    document.addEventListener('click', () => {
+      if (!musicOn) { bgMusic.play(); musicOn = true; }
+    }, { once: true });
+  });
+
+  // Audio button — play narration
+  document.getElementById('audio-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    narration.currentTime = 0;
+    narration.play();
+  });
+
+  // START — goes to the map page (update URL when map is built)
+  function goStart() {
+    window.location.href = '/lesson-mars-map.html';
+  }
+
+  function toggleMusic() {
+    if (musicOn) {
+      bgMusic.pause(); musicOn = false;
+      musicBtn.classList.add('muted');
+      musicIcon.innerHTML = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+    } else {
+      bgMusic.play(); musicOn = true;
+      musicBtn.classList.remove('muted');
+      musicIcon.innerHTML = '<path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>';
+    }
+  }
+</script>
+
+</body>
+</html>
