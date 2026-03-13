@@ -560,6 +560,7 @@ const games = [
     mini: false,
     types: ['lesson', 'medium'],
     keywords: ['mars', 'phobos', 'deimos', 'rover', 'curiosity', 'perseverance', 'red planet', 'nasa'],
+    newTab: false,
   },
 ]
 
