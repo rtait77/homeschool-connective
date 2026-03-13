@@ -150,22 +150,23 @@
   }
   .start-arrow svg { width: 18px; height: 18px; fill: white; }
 
-  /* ── Rocket image at front of arc ── */
+  /* ── Rocket SVG — flame end aligns with arc endpoint ── */
   .arc-rocket {
     position: absolute;
     z-index: 3;
-    /* flame sits at arc endpoint — nudge so fire aligns with arc tip */
-    top: 8%;
-    right: 18%;
+    /* flame is ~10% from left of SVG, 50% from top */
+    /* arc ends at ~74% x, 28% y — offset so flame sits there */
+    left: 62%;
+    top: 20%;
     pointer-events: none;
+    /* nose points right-down, flame points left-up, matching arc direction */
+    transform: rotate(22deg);
+    transform-origin: 10% 50%;
+    filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
   }
-  .arc-rocket img {
-    width: clamp(200px, 22vw, 300px);
+  .arc-rocket svg {
+    width: clamp(220px, 26vw, 340px);
     height: auto;
-    /* screen blend removes the dark navy background */
-    mix-blend-mode: screen;
-    /* rocket is angled: nose upper-right, flame lower-left — matches arc direction */
-    transform: rotate(-15deg);
   }
 
   /* ── Image credit ── */
@@ -196,9 +197,80 @@
     />
   </svg>
 
-  <!-- Rocket image — dark bg removed via mix-blend-mode, flame aligns with arc tip -->
+  <!-- Inline SVG rocket — flame on left aligns with arc endpoint -->
   <div class="arc-rocket">
-    <img src="/rocket-cartoon.jpg" alt="Rocket" />
+    <svg viewBox="0 0 280 100" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8eef5"/>
+          <stop offset="35%" stop-color="#c8d4e0"/>
+          <stop offset="65%" stop-color="#8fa8c0"/>
+          <stop offset="100%" stop-color="#6a8aa0"/>
+        </linearGradient>
+        <linearGradient id="noseGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f0f4f8"/>
+          <stop offset="100%" stop-color="#a0b8cc"/>
+        </linearGradient>
+        <linearGradient id="nozzleGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#555"/>
+          <stop offset="100%" stop-color="#222"/>
+        </linearGradient>
+        <radialGradient id="flameGrad" cx="85%" cy="50%" r="80%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="25%" stop-color="#ffe066" stop-opacity="1"/>
+          <stop offset="55%" stop-color="#ff7a1a" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#ff3a00" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="winGrad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#a8e4ff"/>
+          <stop offset="100%" stop-color="#1a6fa8"/>
+        </radialGradient>
+      </defs>
+
+      <!-- FLAME (behind body) -->
+      <ellipse cx="62" cy="50" rx="48" ry="18" fill="url(#flameGrad)" opacity="0.95"/>
+      <ellipse cx="52" cy="50" rx="30" ry="11" fill="#ffe566" opacity="0.6"/>
+      <ellipse cx="46" cy="50" rx="18" ry="7" fill="#ffffff" opacity="0.7"/>
+
+      <!-- ENGINE NOZZLE -->
+      <path d="M 95 38 L 88 28 L 88 72 L 95 62 Z" fill="url(#nozzleGrad)"/>
+      <ellipse cx="95" cy="50" rx="5" ry="12" fill="#333"/>
+
+      <!-- MAIN BODY -->
+      <rect x="95" y="33" width="130" height="34" rx="4" fill="url(#bodyGrad)"/>
+      <rect x="98" y="34" width="124" height="5" rx="2" fill="rgba(255,255,255,0.4)"/>
+
+      <!-- RED ACCENT STRIPE -->
+      <rect x="120" y="33" width="22" height="34" fill="#d92343" opacity="0.9"/>
+      <rect x="121" y="34" width="20" height="4" fill="rgba(255,255,255,0.3)"/>
+
+      <!-- PANEL LINES -->
+      <line x1="155" y1="34" x2="155" y2="66" stroke="#7a9ab0" stroke-width="0.8" opacity="0.7"/>
+      <line x1="185" y1="34" x2="185" y2="66" stroke="#7a9ab0" stroke-width="0.8" opacity="0.7"/>
+      <line x1="210" y1="34" x2="210" y2="66" stroke="#7a9ab0" stroke-width="0.8" opacity="0.7"/>
+
+      <!-- PORTHOLE WINDOW -->
+      <circle cx="170" cy="50" r="10" fill="#1a4a6a"/>
+      <circle cx="170" cy="50" r="9" fill="url(#winGrad)"/>
+      <circle cx="166" cy="46" r="3" fill="rgba(255,255,255,0.5)"/>
+      <circle cx="170" cy="50" r="10" fill="none" stroke="#8ab0cc" stroke-width="1.5"/>
+
+      <!-- NOSE CONE -->
+      <path d="M 225 33 Q 278 38 280 50 Q 278 62 225 67 Z" fill="url(#noseGrad)"/>
+      <path d="M 226 35 Q 268 40 270 47" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- DELTA FINS -->
+      <path d="M 105 67 L 98 88 L 118 67 Z" fill="#d92343"/>
+      <path d="M 106 67 L 100 85 L 116 67 Z" fill="#ff4060" opacity="0.5"/>
+      <path d="M 105 33 L 98 12 L 118 33 Z" fill="#d92343"/>
+      <path d="M 106 33 L 100 15 L 116 33 Z" fill="#ff4060" opacity="0.5"/>
+
+      <!-- RIVETS -->
+      <circle cx="145" cy="36" r="1.5" fill="#8ab0cc"/>
+      <circle cx="145" cy="64" r="1.5" fill="#8ab0cc"/>
+      <circle cx="200" cy="36" r="1.5" fill="#8ab0cc"/>
+      <circle cx="200" cy="64" r="1.5" fill="#8ab0cc"/>
+    </svg>
   </div>
 
   <!-- Main layout -->
