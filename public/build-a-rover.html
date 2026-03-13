@@ -28,7 +28,6 @@
     overflow: hidden;
   }
 
-  /* gradient overlay so left panel reads cleanly */
   .stage::before {
     content: '';
     position: absolute; inset: 0;
@@ -161,8 +160,8 @@
   }
   .option:hover {
     border-color: rgba(85,182,202,0.65);
-    background: rgba(85,182,202,0.1);
-    transform: translateY(-0.15vw);
+    background: rgba(85,182,202,0.08);
+    transform: scale(0.94);
   }
   .option.selected {
     border-color: #ed7c5a;
@@ -195,28 +194,134 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 2% 2% 1.5%;
+  }
+
+  /* ── Top bar (both buttons) ── */
+  .preview-top-bar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 1%;
+  }
+
+  .btn-with-audio {
+    display: flex;
+    align-items: center;
+    gap: 0.45vw;
+  }
+
+  /* ── Audio dot ── */
+  .audio-dot {
+    width: 2vw; height: 2vw;
+    border-radius: 50%;
+    background: #2ebd4e;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 0.75vw;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    line-height: 1;
+  }
+  .audio-dot:hover { transform: scale(0.9); }
+  .audio-dot-sm {
+    width: 1.4vw; height: 1.4vw;
+    font-size: 0.55vw;
   }
 
-  .preview-label {
-    font-size: 1.5vw;
+  /* ── Nav button (Back to Map) ── */
+  .nav-btn {
+    background: #d92343;
+    border: none;
+    border-radius: 99px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1vw;
     font-weight: 800;
-    color: rgba(255,255,255,0.85);
-    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-    margin-bottom: 0.8vw;
-    letter-spacing: 0.04em;
+    padding: 0.4vw 1.1vw;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    box-shadow: 0 0.2vw 0.8vw rgba(217,35,67,0.4);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .nav-btn:hover {
+    transform: scale(0.93);
+    box-shadow: 0 0.15vw 0.5vw rgba(217,35,67,0.3);
   }
 
+  /* ── Launch button row ── */
+  #launch-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45vw;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+  #launch-row.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── Launch button ── */
+  #launch-btn {
+    background: #d92343;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.5vw;
+    font-weight: 900;
+    padding: 0.4vw 1.6vw;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0.2vw 1vw rgba(217,35,67,0.5);
+    letter-spacing: 0.04em;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  #launch-row.visible #launch-btn {
+    animation: pulse-launch 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-launch {
+    0%,100% { box-shadow: 0 0.2vw 1vw rgba(217,35,67,0.5); transform: scale(1); }
+    50%      { box-shadow: 0 0.3vw 1.8vw rgba(217,35,67,0.85); transform: scale(1.05); }
+  }
+  #launch-btn:hover:not(:disabled) {
+    animation: none;
+    transform: scale(0.93);
+    box-shadow: 0 0.15vw 0.6vw rgba(217,35,67,0.4);
+  }
+  #launch-btn:disabled { cursor: default; }
+
+  /* ── "Your Rover" label ── */
+  .preview-label {
+    font-size: 2.6vw;
+    font-weight: 900;
+    color: rgba(255,255,255,0.9);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7);
+    margin-bottom: 0.6vw;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  /* ── Rover stage ── */
   .rover-stage {
     position: relative;
-    width: 82%;
+    width: 88%;
+    flex: 1;
+    display: flex;
+    align-items: center;
   }
   .rover-stage svg#rover-svg {
     width: 100%;
     height: auto;
     display: block;
     filter: drop-shadow(0 6px 24px rgba(0,0,0,0.5));
-    transition: transform 0s;
   }
 
   /* ── Dust clouds ── */
@@ -228,77 +333,6 @@
     height: 42%;
     pointer-events: none;
     opacity: 0;
-  }
-
-  /* ── Instruction text ── */
-  .instruction {
-    font-size: 0.9vw;
-    color: rgba(255,255,255,0.45);
-    font-weight: 700;
-    margin-top: 0.6vw;
-    text-align: center;
-    letter-spacing: 0.03em;
-  }
-
-  /* ── Launch button ── */
-  #launch-btn {
-    position: absolute;
-    bottom: 5.5%;
-    left: 68%;
-    transform: translateX(-50%);
-    z-index: 10;
-    background: linear-gradient(135deg, #ed7c5a 0%, #d95f36 100%);
-    color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.8vw;
-    font-weight: 900;
-    padding: 0.7vw 2.2vw;
-    border-radius: 99px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0.3vw 1.5vw rgba(237,124,90,0.55);
-    letter-spacing: 0.04em;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s, box-shadow 0.2s;
-  }
-  #launch-btn.visible {
-    opacity: 1;
-    pointer-events: auto;
-    animation: pulse-launch 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse-launch {
-    0%,100% { box-shadow: 0 0.3vw 1.5vw rgba(237,124,90,0.55); transform: translateX(-50%) scale(1); }
-    50%      { box-shadow: 0 0.4vw 2.5vw rgba(237,124,90,0.85); transform: translateX(-50%) scale(1.05); }
-  }
-  #launch-btn:hover:not(:disabled) {
-    animation: none;
-    transform: translateX(-50%) scale(1.08);
-    box-shadow: 0 0.4vw 2.8vw rgba(237,124,90,0.9);
-  }
-  #launch-btn:disabled { cursor: default; }
-
-  /* ── Home button ── */
-  .home-btn {
-    position: absolute;
-    top: 3%;
-    right: 2%;
-    z-index: 20;
-    background: rgba(8,16,32,0.7);
-    border: 0.12vw solid rgba(255,255,255,0.2);
-    border-radius: 99px;
-    color: rgba(255,255,255,0.75);
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.9vw;
-    font-weight: 800;
-    padding: 0.35vw 1vw;
-    cursor: pointer;
-    letter-spacing: 0.04em;
-    transition: background 0.2s, color 0.2s;
-  }
-  .home-btn:hover {
-    background: rgba(85,182,202,0.25);
-    color: #fff;
   }
 
   /* ── Part-selected pop animation ── */
@@ -320,12 +354,12 @@
 <body>
 <div class="stage">
 
-  <!-- Home button -->
-  <button class="home-btn" onclick="window.location.href='/lesson-mars-map.html'">← Map</button>
-
   <!-- ── LEFT PANEL ── -->
   <div class="panel">
-    <div class="panel-title">🔧 Build Your Rover!</div>
+    <div class="panel-title" style="display:flex;align-items:center;gap:0.5vw;">
+      <button class="audio-dot audio-dot-sm" onclick="playAudio('title-audio')" title="Listen">▶</button>
+      🔧 Build Your Rover!
+    </div>
 
     <div class="progress-row">
       <div class="progress-dot" id="dot-0"></div>
@@ -343,22 +377,34 @@
 
   <!-- ── PREVIEW AREA ── -->
   <div class="preview-area">
-    <div class="preview-label">Your Rover</div>
+
+    <!-- Top bar: Back to Map | Launch -->
+    <div class="preview-top-bar">
+      <div class="btn-with-audio">
+        <button class="audio-dot" onclick="playAudio('map-audio')" title="Listen">▶</button>
+        <button class="nav-btn" onclick="window.location.href='/lesson-mars-map.html'">Back to Map</button>
+      </div>
+      <div class="btn-with-audio" id="launch-row">
+        <button class="audio-dot" onclick="playAudio('launch-audio')" title="Listen">▶</button>
+        <button id="launch-btn">🚀 Launch Rover!</button>
+      </div>
+    </div>
+
     <div class="rover-stage" id="rover-stage">
 
       <!-- Main rover SVG -->
       <svg id="rover-svg" viewBox="0 0 500 270" xmlns="http://www.w3.org/2000/svg">
-        <!-- Ground shadow (stays put) -->
-        <ellipse id="ground-shadow" cx="255" cy="252" rx="148" ry="12" fill="rgba(0,0,0,0.28)"/>
+        <!-- Ground shadow -->
+        <ellipse cx="255" cy="252" rx="148" ry="12" fill="rgba(0,0,0,0.28)"/>
         <!-- Ground line -->
         <line x1="30" y1="238" x2="470" y2="238" stroke="rgba(210,170,130,0.3)" stroke-width="1.5" stroke-dasharray="10,7"/>
 
-        <!-- Rover assembly groups — drawn back to front -->
+        <!-- Back to front: wheels → chassis → camera (behind body) → body → arm → antenna -->
         <g id="group-wheels"></g>
         <g id="group-chassis"></g>
+        <g id="group-camera"></g>
         <g id="group-body"></g>
         <g id="group-arm"></g>
-        <g id="group-camera"></g>
         <g id="group-antenna"></g>
 
         <!-- Placeholder ghost outlines -->
@@ -389,11 +435,17 @@
       <svg class="dust-container" id="dust-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg"></svg>
 
     </div>
-    <div class="instruction" id="instruction-text">Pick one option from each category on the left</div>
   </div>
 
-  <!-- Launch button -->
-  <button id="launch-btn">🚀 Launch Rover!</button>
+  <!-- Audio -->
+  <audio id="title-audio"   src="/build-your-rover.mp3"></audio>
+  <audio id="audio-body"    src="/body.mp3"></audio>
+  <audio id="audio-wheels"  src="/wheels.mp3"></audio>
+  <audio id="audio-camera"  src=""></audio>
+  <audio id="audio-arm"     src="/robotic-arm.mp3"></audio>
+  <audio id="audio-antenna" src="/antenna.mp3"></audio>
+  <audio id="launch-audio"  src="/launch-rover.mp3"></audio>
+  <audio id="map-audio"     src=""></audio>
 
 </div><!-- end .stage -->
 
@@ -435,35 +487,43 @@ const PARTS = {
       name: 'Rectangular',
       thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
         <rect x="4" y="5" width="80" height="44" rx="5" fill="#c8d4e0" stroke="#9aaabb" stroke-width="2"/>
-        <rect x="10" y="12" width="28" height="16" rx="3" fill="#3a70a8" opacity="0.9"/>
-        <rect x="44" y="12" width="30" height="16" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="10" y="12" width="28" height="16" rx="3" fill="#c4900a" opacity="0.9"/>
+        <rect x="44" y="12" width="30" height="16" rx="3" fill="#c4900a" opacity="0.9"/>
         <rect x="2" y="46" width="84" height="7" rx="3" fill="#9aaabb"/>
         <rect x="4" y="35" width="80" height="3" rx="1.5" fill="#9aaabb" opacity="0.55"/>
       </svg>`,
       assembly: `
         <rect x="180" y="120" width="140" height="80" rx="6" fill="#c8d4e0" stroke="#9aaabb" stroke-width="2.5"/>
-        <rect x="191" y="131" width="46" height="28" rx="4" fill="#2d6a9f" opacity="0.92"/>
-        <rect x="246" y="131" width="46" height="28" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="191" y="131" width="46" height="28" rx="4" fill="#c4900a" opacity="0.92"/>
+        <rect x="246" y="131" width="46" height="28" rx="4" fill="#c4900a" opacity="0.92"/>
         <rect x="173" y="194" width="154" height="10" rx="4" fill="#9aaabb"/>
         <rect x="180" y="165" width="140" height="3.5" rx="1.5" fill="#9aaabb" opacity="0.5"/>
       `,
       cx1: 173, cx2: 327
     },
     {
-      name: 'Dome',
+      name: 'Long Rect',
       thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="28" width="68" height="26" rx="5" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2"/>
-        <ellipse cx="44" cy="28" rx="36" ry="22" fill="#c8d4e0" stroke="#8a9aaa" stroke-width="2"/>
-        <ellipse cx="44" cy="24" rx="20" ry="12" fill="#3a70a8" opacity="0.85"/>
-        <rect x="8" y="50" width="72" height="7" rx="3" fill="#8a9aaa"/>
+        <rect x="3" y="10" width="82" height="36" rx="5" fill="#b8c4d0" stroke="#8a9aaa" stroke-width="2"/>
+        <circle cx="20" cy="28" r="9"  fill="#3a70a8" opacity="0.88"/>
+        <circle cx="20" cy="28" r="3.5" fill="#1a50a8"/>
+        <circle cx="44" cy="28" r="9"  fill="#3a70a8" opacity="0.88"/>
+        <circle cx="44" cy="28" r="3.5" fill="#1a50a8"/>
+        <circle cx="68" cy="28" r="9"  fill="#3a70a8" opacity="0.88"/>
+        <circle cx="68" cy="28" r="3.5" fill="#1a50a8"/>
+        <rect x="1" y="43" width="86" height="6" rx="3" fill="#8a9aaa"/>
       </svg>`,
       assembly: `
-        <rect x="202" y="162" width="96" height="44" rx="6" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2.5"/>
-        <ellipse cx="250" cy="162" rx="60" ry="36" fill="#c8d4e0" stroke="#8a9aaa" stroke-width="2.5"/>
-        <ellipse cx="250" cy="155" rx="34" ry="20" fill="#2d6a9f" opacity="0.88"/>
-        <rect x="194" y="200" width="112" height="9" rx="4" fill="#8a9aaa"/>
+        <rect x="175" y="132" width="150" height="68" rx="6" fill="#b8c4d0" stroke="#8a9aaa" stroke-width="2.5"/>
+        <circle cx="210" cy="166" r="18" fill="#2d6a9f" opacity="0.88"/>
+        <circle cx="210" cy="166" r="7"  fill="#1a50a8"/>
+        <circle cx="250" cy="166" r="18" fill="#2d6a9f" opacity="0.88"/>
+        <circle cx="250" cy="166" r="7"  fill="#1a50a8"/>
+        <circle cx="290" cy="166" r="18" fill="#2d6a9f" opacity="0.88"/>
+        <circle cx="290" cy="166" r="7"  fill="#1a50a8"/>
+        <rect x="168" y="195" width="164" height="9" rx="4" fill="#8a9aaa"/>
       `,
-      cx1: 194, cx2: 306
+      cx1: 168, cx2: 332
     },
   ],
 
@@ -471,20 +531,20 @@ const PARTS = {
   wheels: [
     {
       name: '4 Round',
-      thumb: `<svg viewBox="0 0 88 42" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="15" width="76" height="7" rx="3" fill="#555" opacity="0.8"/>
-        <circle cx="17" cy="24" r="13" fill="#333" stroke="#111" stroke-width="1.5"/>
-        <circle cx="17" cy="24" r="5" fill="#666"/>
-        <line x1="17" y1="11" x2="17" y2="37" stroke="#1a1a1a" stroke-width="1.5"/>
-        <line x1="4"  y1="24" x2="30" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
-        <circle cx="44" cy="24" r="13" fill="#333" stroke="#111" stroke-width="1.5"/>
-        <circle cx="44" cy="24" r="5" fill="#666"/>
-        <line x1="44" y1="11" x2="44" y2="37" stroke="#1a1a1a" stroke-width="1.5"/>
-        <line x1="31" y1="24" x2="57" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
-        <circle cx="71" cy="24" r="13" fill="#333" stroke="#111" stroke-width="1.5"/>
-        <circle cx="71" cy="24" r="5" fill="#666"/>
-        <line x1="71" y1="11" x2="71" y2="37" stroke="#1a1a1a" stroke-width="1.5"/>
-        <line x1="58" y1="24" x2="84" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
+      thumb: `<svg viewBox="0 0 88 46" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="17" width="80" height="7" rx="3" fill="#555" opacity="0.8"/>
+        <circle cx="17" cy="27" r="14" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <circle cx="17" cy="27" r="5" fill="#666"/>
+        <line x1="17" y1="13" x2="17" y2="41" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="3"  y1="27" x2="31" y2="27" stroke="#1a1a1a" stroke-width="1.5"/>
+        <circle cx="44" cy="27" r="14" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <circle cx="44" cy="27" r="5" fill="#666"/>
+        <line x1="44" y1="13" x2="44" y2="41" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="30" y1="27" x2="58" y2="27" stroke="#1a1a1a" stroke-width="1.5"/>
+        <circle cx="71" cy="27" r="14" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <circle cx="71" cy="27" r="5" fill="#666"/>
+        <line x1="71" y1="13" x2="71" y2="41" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="57" y1="27" x2="85" y2="27" stroke="#1a1a1a" stroke-width="1.5"/>
       </svg>`,
       assembly: `
         <rect x="157" y="210" width="186" height="9" rx="4" fill="#555" opacity="0.85"/>
@@ -507,78 +567,105 @@ const PARTS = {
       `
     },
     {
-      name: '6 Knobby',
+      name: '4 Spoked',
       thumb: `<svg viewBox="0 0 88 46" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="16" width="88" height="7" rx="3" fill="#444" opacity="0.85"/>
-        <circle cx="9"  cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
-        <circle cx="9"  cy="26" r="4"  fill="#777"/>
-        <circle cx="27" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
-        <circle cx="27" cy="26" r="4"  fill="#777"/>
-        <circle cx="45" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
-        <circle cx="45" cy="26" r="4"  fill="#777"/>
-        <circle cx="63" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
-        <circle cx="63" cy="26" r="4"  fill="#777"/>
-        <circle cx="79" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
-        <circle cx="79" cy="26" r="4"  fill="#777"/>
+        <rect x="4" y="17" width="80" height="7" rx="3" fill="#555" opacity="0.8"/>
+        <circle cx="17" cy="27" r="14" fill="#222" stroke="#4a4a4a" stroke-width="2"/>
+        <circle cx="17" cy="27" r="5" fill="#55b6ca"/>
+        <circle cx="17" cy="27" r="2" fill="#aadefd"/>
+        <line x1="17" y1="13" x2="17" y2="41" stroke="#666" stroke-width="2"/>
+        <line x1="3"  y1="27" x2="31" y2="27" stroke="#666" stroke-width="2"/>
+        <line x1="7"  y1="17" x2="27" y2="37" stroke="#666" stroke-width="2"/>
+        <line x1="7"  y1="37" x2="27" y2="17" stroke="#666" stroke-width="2"/>
+        <circle cx="44" cy="27" r="14" fill="#222" stroke="#4a4a4a" stroke-width="2"/>
+        <circle cx="44" cy="27" r="5" fill="#55b6ca"/>
+        <circle cx="44" cy="27" r="2" fill="#aadefd"/>
+        <line x1="44" y1="13" x2="44" y2="41" stroke="#666" stroke-width="2"/>
+        <line x1="30" y1="27" x2="58" y2="27" stroke="#666" stroke-width="2"/>
+        <line x1="34" y1="17" x2="54" y2="37" stroke="#666" stroke-width="2"/>
+        <line x1="34" y1="37" x2="54" y2="17" stroke="#666" stroke-width="2"/>
+        <circle cx="71" cy="27" r="14" fill="#222" stroke="#4a4a4a" stroke-width="2"/>
+        <circle cx="71" cy="27" r="5" fill="#55b6ca"/>
+        <circle cx="71" cy="27" r="2" fill="#aadefd"/>
+        <line x1="71" y1="13" x2="71" y2="41" stroke="#666" stroke-width="2"/>
+        <line x1="57" y1="27" x2="85" y2="27" stroke="#666" stroke-width="2"/>
+        <line x1="61" y1="17" x2="81" y2="37" stroke="#666" stroke-width="2"/>
+        <line x1="61" y1="37" x2="81" y2="17" stroke="#666" stroke-width="2"/>
       </svg>`,
       assembly: `
-        <rect x="140" y="210" width="220" height="9" rx="4" fill="#444" opacity="0.88"/>
-        <circle cx="158" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
-        <circle cx="158" cy="218" r="8"  fill="#707070"/>
-        <circle cx="200" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
-        <circle cx="200" cy="218" r="8"  fill="#707070"/>
-        <circle cx="242" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
-        <circle cx="242" cy="218" r="8"  fill="#707070"/>
-        <circle cx="284" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
-        <circle cx="284" cy="218" r="8"  fill="#707070"/>
-        <circle cx="326" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
-        <circle cx="326" cy="218" r="8"  fill="#707070"/>
-        <circle cx="358" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
-        <circle cx="358" cy="218" r="8"  fill="#707070"/>
+        <rect x="157" y="210" width="186" height="9" rx="4" fill="#555" opacity="0.85"/>
+        <circle cx="178" cy="218" r="21" fill="#1e1e1e" stroke="#4a4a4a" stroke-width="2.5"/>
+        <circle cx="178" cy="218" r="8"  fill="#55b6ca"/>
+        <circle cx="178" cy="218" r="3"  fill="#aadefd"/>
+        <line x1="178" y1="197" x2="178" y2="239" stroke="#666" stroke-width="2.5"/>
+        <line x1="157" y1="218" x2="199" y2="218" stroke="#666" stroke-width="2.5"/>
+        <line x1="163" y1="203" x2="193" y2="233" stroke="#666" stroke-width="2.5"/>
+        <line x1="163" y1="233" x2="193" y2="203" stroke="#666" stroke-width="2.5"/>
+        <circle cx="229" cy="218" r="21" fill="#1e1e1e" stroke="#4a4a4a" stroke-width="2.5"/>
+        <circle cx="229" cy="218" r="8"  fill="#55b6ca"/>
+        <circle cx="229" cy="218" r="3"  fill="#aadefd"/>
+        <line x1="229" y1="197" x2="229" y2="239" stroke="#666" stroke-width="2.5"/>
+        <line x1="208" y1="218" x2="250" y2="218" stroke="#666" stroke-width="2.5"/>
+        <line x1="214" y1="203" x2="244" y2="233" stroke="#666" stroke-width="2.5"/>
+        <line x1="214" y1="233" x2="244" y2="203" stroke="#666" stroke-width="2.5"/>
+        <circle cx="271" cy="218" r="21" fill="#1e1e1e" stroke="#4a4a4a" stroke-width="2.5"/>
+        <circle cx="271" cy="218" r="8"  fill="#55b6ca"/>
+        <circle cx="271" cy="218" r="3"  fill="#aadefd"/>
+        <line x1="271" y1="197" x2="271" y2="239" stroke="#666" stroke-width="2.5"/>
+        <line x1="250" y1="218" x2="292" y2="218" stroke="#666" stroke-width="2.5"/>
+        <line x1="256" y1="203" x2="286" y2="233" stroke="#666" stroke-width="2.5"/>
+        <line x1="256" y1="233" x2="286" y2="203" stroke="#666" stroke-width="2.5"/>
+        <circle cx="322" cy="218" r="21" fill="#1e1e1e" stroke="#4a4a4a" stroke-width="2.5"/>
+        <circle cx="322" cy="218" r="8"  fill="#55b6ca"/>
+        <circle cx="322" cy="218" r="3"  fill="#aadefd"/>
+        <line x1="322" y1="197" x2="322" y2="239" stroke="#666" stroke-width="2.5"/>
+        <line x1="301" y1="218" x2="343" y2="218" stroke="#666" stroke-width="2.5"/>
+        <line x1="307" y1="203" x2="337" y2="233" stroke="#666" stroke-width="2.5"/>
+        <line x1="307" y1="233" x2="337" y2="203" stroke="#666" stroke-width="2.5"/>
       `
     },
     {
-      name: '4 Wide Flat',
-      thumb: `<svg viewBox="0 0 88 42" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="18" width="76" height="6" rx="2" fill="#555" opacity="0.8"/>
-        <ellipse cx="16" cy="24" rx="16" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
-        <ellipse cx="16" cy="24" rx="6"  ry="4"  fill="#666"/>
-        <ellipse cx="44" cy="24" rx="16" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
-        <ellipse cx="44" cy="24" rx="6"  ry="4"  fill="#666"/>
-        <ellipse cx="72" cy="24" rx="16" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
-        <ellipse cx="72" cy="24" rx="6"  ry="4"  fill="#666"/>
+      name: '4 Treaded',
+      thumb: `<svg viewBox="0 0 88 46" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="17" width="80" height="7" rx="3" fill="#555" opacity="0.8"/>
+        <circle cx="17" cy="27" r="14" fill="#2a2a2a" stroke="#888" stroke-width="4" stroke-dasharray="5.5,3"/>
+        <circle cx="17" cy="27" r="6"  fill="#555"/>
+        <circle cx="44" cy="27" r="14" fill="#2a2a2a" stroke="#888" stroke-width="4" stroke-dasharray="5.5,3"/>
+        <circle cx="44" cy="27" r="6"  fill="#555"/>
+        <circle cx="71" cy="27" r="14" fill="#2a2a2a" stroke="#888" stroke-width="4" stroke-dasharray="5.5,3"/>
+        <circle cx="71" cy="27" r="6"  fill="#555"/>
       </svg>`,
       assembly: `
-        <rect x="148" y="213" width="204" height="9" rx="4" fill="#555" opacity="0.85"/>
-        <ellipse cx="173" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
-        <ellipse cx="173" cy="220" rx="10" ry="6"  fill="#666"/>
-        <ellipse cx="223" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
-        <ellipse cx="223" cy="220" rx="10" ry="6"  fill="#666"/>
-        <ellipse cx="277" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
-        <ellipse cx="277" cy="220" rx="10" ry="6"  fill="#666"/>
-        <ellipse cx="327" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
-        <ellipse cx="327" cy="220" rx="10" ry="6"  fill="#666"/>
+        <rect x="157" y="210" width="186" height="9" rx="4" fill="#555" opacity="0.85"/>
+        <circle cx="178" cy="218" r="21" fill="#222" stroke="#888" stroke-width="5" stroke-dasharray="8,4"/>
+        <circle cx="178" cy="218" r="9"  fill="#555"/>
+        <circle cx="229" cy="218" r="21" fill="#222" stroke="#888" stroke-width="5" stroke-dasharray="8,4"/>
+        <circle cx="229" cy="218" r="9"  fill="#555"/>
+        <circle cx="271" cy="218" r="21" fill="#222" stroke="#888" stroke-width="5" stroke-dasharray="8,4"/>
+        <circle cx="271" cy="218" r="9"  fill="#555"/>
+        <circle cx="322" cy="218" r="21" fill="#222" stroke="#888" stroke-width="5" stroke-dasharray="8,4"/>
+        <circle cx="322" cy="218" r="9"  fill="#555"/>
       `
     },
   ],
 
-  // ── CAMERA ────────────────────────────────────
+  // ── CAMERA (rendered behind body) ─────────────
   camera: [
     {
       name: 'Single Mast',
       thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
         <rect x="40" y="12" width="8"  height="42" rx="3" fill="#ccc"/>
         <rect x="24" y="5"  width="40" height="18" rx="6" fill="#dde2ee" stroke="#aab2cc" stroke-width="1.5"/>
-        <circle cx="44" cy="14" r="8"  fill="#3a7fd0"/>
-        <circle cx="44" cy="14" r="3.5" fill="#1a55a8"/>
-        <circle cx="44" cy="14" r="1.2" fill="#aadefd"/>
+        <circle cx="44" cy="14" r="8"  fill="#d92343"/>
+        <circle cx="44" cy="14" r="3.5" fill="#a01030"/>
+        <circle cx="44" cy="14" r="1.2" fill="#ffaabc"/>
       </svg>`,
       assembly: `
         <rect x="261" y="70" width="8" height="62" rx="3.5" fill="#cccccc"/>
         <rect x="242" y="55" width="44" height="22" rx="6" fill="#dee2ee" stroke="#aab2cc" stroke-width="2"/>
-        <circle cx="264" cy="66" r="11" fill="#3a7fd0"/>
-        <circle cx="264" cy="66" r="4.5" fill="#1a55a8"/>
-        <circle cx="264" cy="66" r="1.5" fill="#aadefd"/>
+        <circle cx="264" cy="66" r="11" fill="#d92343"/>
+        <circle cx="264" cy="66" r="4.5" fill="#a01030"/>
+        <circle cx="264" cy="66" r="1.5" fill="#ffaabc"/>
       `
     },
     {
@@ -628,16 +715,16 @@ const PARTS = {
   // ── ROBOTIC ARM ───────────────────────────────
   arm: [
     {
-      name: 'Short Stubby',
+      name: 'Short Arm',
       thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
         <rect x="32" y="22" width="46" height="12" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
-        <circle cx="36" cy="28" r="6" fill="#7a9aa8"/>
+        <circle cx="36" cy="28" r="6" fill="#ed7c5a"/>
         <rect x="28" y="22" width="11" height="28" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
         <rect x="14" y="44" width="30" height="9"  rx="4" fill="#6a8a98"/>
       </svg>`,
       assembly: `
         <rect x="148" y="156" width="55" height="12" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
-        <circle cx="154" cy="162" r="8" fill="#7a9aa8"/>
+        <circle cx="154" cy="162" r="8" fill="#ed7c5a"/>
         <rect x="141" y="156" width="13" height="32" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
         <rect x="125" y="182" width="34" height="9"  rx="4" fill="#6a8a98"/>
       `
@@ -737,6 +824,14 @@ const PARTS = {
   ],
 };
 
+const CATEGORY_AUDIO = {
+  body:    '/body.mp3',
+  wheels:  '/wheels.mp3',
+  camera:  '',
+  arm:     '/robotic-arm.mp3',
+  antenna: '/antenna.mp3',
+};
+
 // ─────────────────────────────────────────────
 //  STATE
 // ─────────────────────────────────────────────
@@ -747,14 +842,15 @@ const selected = { body: null, wheels: null, camera: null, arm: null, antenna: n
 // ─────────────────────────────────────────────
 function buildPanel() {
   const container = document.getElementById('categories-container');
-  CATEGORIES.forEach((cat, catIdx) => {
+  CATEGORIES.forEach((cat) => {
     const parts = PARTS[cat.id];
     const card = document.createElement('div');
     card.className = 'category';
     card.id = 'cat-' + cat.id;
     card.innerHTML = `
       <div class="cat-header">
-        <span class="cat-icon">${cat.icon}</span>
+        <button class="audio-dot audio-dot-sm" onclick="playAudio('audio-${cat.id}')" title="Listen">▶</button>
+        <span class="cat-icon" style="margin-left:0.3vw">${cat.icon}</span>
         <span class="cat-title">${cat.label}</span>
         <span class="cat-check">✓</span>
       </div>
@@ -762,7 +858,6 @@ function buildPanel() {
         ${parts.map((part, pi) => `
           <div class="option" id="opt-${cat.id}-${pi}" data-cat="${cat.id}" data-idx="${pi}" onclick="selectPart('${cat.id}',${pi})">
             ${part.thumb}
-            <span class="option-label">${part.name}</span>
           </div>
         `).join('')}
       </div>
@@ -777,20 +872,15 @@ function buildPanel() {
 function selectPart(catId, idx) {
   selected[catId] = idx;
 
-  // Update option highlight
   document.querySelectorAll(`[data-cat="${catId}"]`).forEach(el => el.classList.remove('selected'));
   document.getElementById(`opt-${catId}-${idx}`).classList.add('selected');
-
-  // Mark category done
   document.getElementById('cat-' + catId).classList.add('complete');
 
-  // Update rover SVG
   updateRoverPart(catId, idx);
 
-  // Pop animation on rover
   const svg = document.getElementById('rover-svg');
   svg.classList.remove('popping');
-  void svg.offsetWidth; // reflow
+  void svg.offsetWidth;
   svg.classList.add('popping');
   setTimeout(() => svg.classList.remove('popping'), 300);
 
@@ -802,19 +892,14 @@ function selectPart(catId, idx) {
 // ─────────────────────────────────────────────
 function updateRoverPart(catId, idx) {
   const part = PARTS[catId][idx];
-
-  // Inject SVG into the rover group
   document.getElementById('group-' + catId).innerHTML = part.assembly;
 
-  // Hide the placeholder for this group
   const ph = document.getElementById('ph-' + catId);
   if (ph) ph.style.display = 'none';
 
-  // Update chassis to match body
   if (catId === 'body') {
     const chassis = document.getElementById('group-chassis');
-    const x1 = part.cx1, x2 = part.cx2;
-    chassis.innerHTML = `<rect x="${x1}" y="196" width="${x2 - x1}" height="10" rx="4" fill="#667788"/>`;
+    chassis.innerHTML = `<rect x="${part.cx1}" y="196" width="${part.cx2 - part.cx1}" height="10" rx="4" fill="#667788"/>`;
   }
 }
 
@@ -833,9 +918,8 @@ function updateProgress() {
   if (count < 5) {
     document.getElementById('progress-label').textContent = `${count} of 5 parts chosen`;
   } else {
-    document.getElementById('progress-label').textContent = 'All parts selected — ready!';
-    document.getElementById('instruction-text').textContent = 'Your rover is ready. Hit launch! 🚀';
-    document.getElementById('launch-btn').classList.add('visible');
+    document.getElementById('progress-label').textContent = `5 of 5 parts chosen`;
+    document.getElementById('launch-row').classList.add('visible');
   }
 }
 
@@ -843,17 +927,14 @@ function updateProgress() {
 //  LAUNCH
 // ─────────────────────────────────────────────
 document.getElementById('launch-btn').addEventListener('click', function() {
-  const btn = this;
-  btn.disabled = true;
-  btn.style.animation = 'none';
-  btn.textContent = '🚀 Launching!';
+  this.disabled = true;
+  this.style.animation = 'none';
+  this.textContent = '🚀 Launching!';
 
-  // Drive rover off right side
   const roverStage = document.getElementById('rover-stage');
   roverStage.style.transition = 'transform 1.9s cubic-bezier(0.4, 0, 1, 1)';
   roverStage.style.transform = 'translateX(180%)';
 
-  // Show dust cloud behind it
   spawnDust();
 
   setTimeout(() => {
@@ -880,6 +961,17 @@ function spawnDust() {
   }
   dustSvg.innerHTML = html;
   dustSvg.style.opacity = '1';
+}
+
+// ─────────────────────────────────────────────
+//  AUDIO
+// ─────────────────────────────────────────────
+function playAudio(id) {
+  const audio = document.getElementById(id);
+  if (audio && audio.src && !audio.src.endsWith(window.location.href)) {
+    audio.currentTime = 0;
+    audio.play();
+  }
 }
 
 // ─────────────────────────────────────────────
