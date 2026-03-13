@@ -40,12 +40,13 @@
     z-index: 1;
   }
 
-  /* ── Left panel ── */
+  /* ── Left panel — centered vertically ── */
   .panel {
     position: absolute;
-    top: 0; left: 0;
+    top: 50%; left: 0;
+    transform: translateY(-50%);
     width: 38%;
-    height: 100%;
+    height: 88%;
     z-index: 2;
     padding: 1.6% 1.8% 1.4% 2.2%;
     display: flex;
@@ -198,18 +199,24 @@
     max-width: 20px;
     max-height: 20px;
   }
-  /* Overlap effect: audio img sits slightly over left edge of red button */
+  /* Overlap: audio img overlaps left edge of red button */
   .audio-img-overlap {
     margin-right: -0.8vw;
     position: relative;
     z-index: 1;
   }
+  /* Overlap: audio img overlaps right edge of red button */
+  .audio-img-overlap-right {
+    margin-left: -0.8vw;
+    position: relative;
+    z-index: 1;
+  }
 
-  /* ── Back to Map button (absolute top-right of stage) ── */
+  /* ── Back to Map button (absolute top-LEFT of stage) ── */
   #back-to-map-row {
     position: absolute;
     top: 3%;
-    right: 2%;
+    left: 2%;
     z-index: 10;
     display: flex;
     align-items: center;
@@ -247,7 +254,7 @@
     box-shadow: 0 0.15vw 0.5vw rgba(217,35,67,0.3);
   }
 
-  /* ── Launch row (centered, shown when all 5 chosen) ── */
+  /* ── Launch row (centered, shown when all 4 chosen) ── */
   #launch-row {
     display: flex;
     align-items: center;
@@ -341,10 +348,10 @@
 <body>
 <div class="stage">
 
-  <!-- ── BACK TO MAP (absolute top-right) ── -->
+  <!-- ── BACK TO MAP (absolute top-LEFT, arrow + audio on right) ── -->
   <div id="back-to-map-row">
-    <img src="/audio-button.png" class="audio-img audio-img-overlap" onclick="playAudio('map-audio')" title="Listen" alt="audio">
-    <button class="nav-btn" onclick="window.location.href='/lesson-mars-map.html'">Back to Map</button>
+    <button class="nav-btn" onclick="window.location.href='/lesson-mars-map.html'">← Back to Map</button>
+    <img src="/audio-button.png" class="audio-img audio-img-overlap-right" onclick="playAudio('map-audio')" title="Listen" alt="audio">
   </div>
 
   <!-- ── LEFT PANEL ── -->
@@ -359,8 +366,7 @@
       <div class="progress-dot" id="dot-1"></div>
       <div class="progress-dot" id="dot-2"></div>
       <div class="progress-dot" id="dot-3"></div>
-      <div class="progress-dot" id="dot-4"></div>
-      <span class="progress-label" id="progress-label">Pick 5 parts to build!</span>
+      <span class="progress-label" id="progress-label">Pick 4 parts to build!</span>
     </div>
 
     <div class="categories" id="categories-container">
@@ -371,7 +377,7 @@
   <!-- ── PREVIEW AREA ── -->
   <div class="preview-area">
 
-    <!-- Launch row (centered, hidden until all 5 parts chosen) -->
+    <!-- Launch row (centered, hidden until all 4 parts chosen) -->
     <div id="launch-row">
       <img src="/audio-button.png" class="audio-img audio-img-overlap" onclick="playAudio('launch-audio')" title="Listen" alt="audio">
       <button id="launch-btn">
@@ -392,42 +398,35 @@
 
       <!-- Main rover SVG -->
       <svg id="rover-svg" viewBox="0 0 500 270" xmlns="http://www.w3.org/2000/svg">
-        <!-- Ground shadow -->
+        <!-- Ground shadow (keep shadow, no dashed line) -->
         <ellipse cx="255" cy="252" rx="148" ry="12" fill="rgba(0,0,0,0.28)"/>
-        <!-- Ground line -->
-        <line x1="30" y1="238" x2="470" y2="238" stroke="rgba(210,170,130,0.3)" stroke-width="1.5" stroke-dasharray="10,7"/>
 
-        <!-- Flip wrapper: arm ends up on right (front), antenna on left (back) -->
+        <!-- Flip wrapper: arm on right (front), no antenna -->
         <g transform="translate(500,0) scale(-1,1)">
-          <!-- Back to front: wheels → chassis → camera (behind body) → body → arm → antenna -->
+          <!-- Layer order: wheels → chassis → arm (behind body) → camera → body (on top) -->
           <g id="group-wheels"></g>
           <g id="group-chassis"></g>
+          <g id="group-arm"></g>
           <g id="group-camera"></g>
           <g id="group-body"></g>
-          <g id="group-arm"></g>
-          <g id="group-antenna"></g>
 
           <!-- Placeholder ghost outlines -->
           <g id="ph-wheels">
-            <circle cx="178" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
-            <circle cx="250" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
-            <circle cx="322" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
-          </g>
-          <g id="ph-body">
-            <rect x="202" y="132" width="96" height="66" rx="7" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
-            <text x="250" y="170" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="18" font-family="Nunito" font-weight="900">?</text>
-          </g>
-          <g id="ph-camera">
-            <line x1="264" y1="132" x2="264" y2="74" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
-            <rect x="250" y="64" width="28" height="18" rx="4" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+            <circle cx="178" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+            <circle cx="250" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+            <circle cx="322" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
           </g>
           <g id="ph-arm">
-            <line x1="202" y1="162" x2="144" y2="162" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
-            <line x1="144" y1="162" x2="144" y2="188" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+            <line x1="202" y1="162" x2="144" y2="162" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+            <line x1="144" y1="162" x2="144" y2="188" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
           </g>
-          <g id="ph-antenna">
-            <line x1="310" y1="132" x2="310" y2="70" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
-            <circle cx="310" cy="67" r="5" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <g id="ph-camera">
+            <line x1="264" y1="132" x2="264" y2="74" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+            <rect x="250" y="64" width="28" height="18" rx="4" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+          </g>
+          <g id="ph-body">
+            <rect x="202" y="132" width="96" height="66" rx="7" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5"/>
+            <text x="250" y="170" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="18" font-family="Nunito" font-weight="900">?</text>
           </g>
         </g>
       </svg>
@@ -440,14 +439,13 @@
   </div>
 
   <!-- Audio -->
-  <audio id="title-audio"   src="/build-your-rover.mp3"></audio>
-  <audio id="audio-body"    src="/body.mp3"></audio>
-  <audio id="audio-wheels"  src="/wheels.mp3"></audio>
-  <audio id="audio-camera"  src=""></audio>
-  <audio id="audio-arm"     src="/robotic-arm.mp3"></audio>
-  <audio id="audio-antenna" src="/antenna.mp3"></audio>
-  <audio id="launch-audio"  src="/launch-rover.mp3"></audio>
-  <audio id="map-audio"     src=""></audio>
+  <audio id="title-audio"  src="/build-your-rover.mp3"></audio>
+  <audio id="audio-body"   src="/body.mp3"></audio>
+  <audio id="audio-wheels" src="/wheels.mp3"></audio>
+  <audio id="audio-camera" src=""></audio>
+  <audio id="audio-arm"    src="/robotic-arm.mp3"></audio>
+  <audio id="launch-audio" src="/launch-rover.mp3"></audio>
+  <audio id="map-audio"    src=""></audio>
 
 </div><!-- end .stage -->
 
@@ -456,11 +454,10 @@
 //  PART DATA
 // ─────────────────────────────────────────────
 const CATEGORIES = [
-  { id: 'body',    label: 'Body',        icon: '🛸' },
-  { id: 'wheels',  label: 'Wheels',      icon: '⚙️' },
-  { id: 'camera',  label: 'Camera',      icon: '📷' },
-  { id: 'arm',     label: 'Robotic Arm', icon: '🦾' },
-  { id: 'antenna', label: 'Antenna',     icon: '📡' },
+  { id: 'body',   label: 'Body',        icon: '🛸' },
+  { id: 'wheels', label: 'Wheels',      icon: '⚙️' },
+  { id: 'camera', label: 'Camera',      icon: '📷' },
+  { id: 'arm',    label: 'Robotic Arm', icon: '🦾' },
 ];
 
 const PARTS = {
@@ -471,15 +468,15 @@ const PARTS = {
       name: 'Compact',
       thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
         <rect x="10" y="8" width="68" height="40" rx="6" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2"/>
-        <rect x="17" y="15" width="22" height="14" rx="3" fill="#3a70a8" opacity="0.9"/>
-        <rect x="45" y="15" width="22" height="14" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="19" y="15" width="22" height="14" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="47" y="15" width="22" height="14" rx="3" fill="#3a70a8" opacity="0.9"/>
         <rect x="8" y="44" width="72" height="7" rx="3" fill="#8a9aaa"/>
         <rect x="10" y="34" width="68" height="3" rx="1.5" fill="#8a9aaa" opacity="0.55"/>
       </svg>`,
       assembly: `
         <rect x="200" y="132" width="100" height="66" rx="6" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2.5"/>
-        <rect x="210" y="142" width="32" height="22" rx="4" fill="#2d6a9f" opacity="0.92"/>
-        <rect x="250" y="142" width="32" height="22" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="214" y="151" width="32" height="22" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="254" y="151" width="32" height="22" rx="4" fill="#2d6a9f" opacity="0.92"/>
         <rect x="194" y="192" width="112" height="9" rx="4" fill="#8a9aaa"/>
         <rect x="200" y="171" width="100" height="3.5" rx="1.5" fill="#8a9aaa" opacity="0.5"/>
       `,
@@ -489,15 +486,15 @@ const PARTS = {
       name: 'Rectangular',
       thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
         <rect x="4" y="5" width="80" height="44" rx="5" fill="#c8d4e0" stroke="#9aaabb" stroke-width="2"/>
-        <rect x="10" y="19" width="28" height="16" rx="3" fill="#c4900a" opacity="0.9"/>
-        <rect x="44" y="19" width="30" height="16" rx="3" fill="#c4900a" opacity="0.9"/>
+        <rect x="12" y="19" width="29" height="16" rx="3" fill="#c4900a" opacity="0.9"/>
+        <rect x="47" y="19" width="29" height="16" rx="3" fill="#c4900a" opacity="0.9"/>
         <rect x="2" y="46" width="84" height="7" rx="3" fill="#9aaabb"/>
         <rect x="4" y="35" width="80" height="3" rx="1.5" fill="#9aaabb" opacity="0.55"/>
       </svg>`,
       assembly: `
         <rect x="180" y="120" width="140" height="80" rx="6" fill="#c8d4e0" stroke="#9aaabb" stroke-width="2.5"/>
-        <rect x="191" y="146" width="46" height="28" rx="4" fill="#c4900a" opacity="0.92"/>
-        <rect x="246" y="146" width="46" height="28" rx="4" fill="#c4900a" opacity="0.92"/>
+        <rect x="200" y="143" width="46" height="28" rx="4" fill="#c4900a" opacity="0.92"/>
+        <rect x="255" y="143" width="46" height="28" rx="4" fill="#c4900a" opacity="0.92"/>
         <rect x="173" y="194" width="154" height="10" rx="4" fill="#9aaabb"/>
         <rect x="180" y="165" width="140" height="3.5" rx="1.5" fill="#9aaabb" opacity="0.5"/>
       `,
@@ -714,18 +711,21 @@ const PARTS = {
     },
   ],
 
-  // ── ROBOTIC ARM ───────────────────────────────
+  // ── ROBOTIC ARM (renders behind body, bar extends into body area) ──
   arm: [
     {
       name: 'Short Arm',
+      // thumb mirrored so tool faces right (matching rover orientation)
       thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
-        <rect x="32" y="22" width="46" height="12" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
-        <circle cx="36" cy="28" r="6" fill="#ed7c5a"/>
-        <rect x="28" y="22" width="11" height="28" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
-        <rect x="14" y="44" width="30" height="9"  rx="4" fill="#6a8a98"/>
+        <g transform="translate(88,0) scale(-1,1)">
+          <rect x="32" y="22" width="46" height="12" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+          <circle cx="36" cy="28" r="6" fill="#ed7c5a"/>
+          <rect x="28" y="22" width="11" height="28" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+          <rect x="14" y="44" width="30" height="9"  rx="4" fill="#6a8a98"/>
+        </g>
       </svg>`,
       assembly: `
-        <rect x="148" y="156" width="55" height="12" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <rect x="148" y="156" width="112" height="12" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
         <circle cx="154" cy="162" r="8" fill="#ed7c5a"/>
         <rect x="141" y="156" width="13" height="32" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
         <rect x="125" y="182" width="34" height="9"  rx="4" fill="#6a8a98"/>
@@ -733,16 +733,19 @@ const PARTS = {
     },
     {
       name: 'Long Arm',
+      // thumb mirrored so tool faces right (matching rover orientation)
       thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
-        <rect x="22" y="22" width="54" height="10" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
-        <circle cx="26" cy="27" r="7" fill="#55b6ca"/>
-        <rect x="14" y="27" width="11" height="26" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
-        <rect x="6"  y="46" width="22" height="8"  rx="3" fill="#55b6ca"/>
-        <rect x="8"  y="40" width="5"  height="7"  rx="2" fill="#55b6ca" opacity="0.8"/>
-        <rect x="19" y="40" width="5"  height="7"  rx="2" fill="#55b6ca" opacity="0.8"/>
+        <g transform="translate(88,0) scale(-1,1)">
+          <rect x="22" y="22" width="54" height="10" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+          <circle cx="26" cy="27" r="7" fill="#55b6ca"/>
+          <rect x="14" y="27" width="11" height="26" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+          <rect x="6"  y="46" width="22" height="8"  rx="3" fill="#55b6ca"/>
+          <rect x="8"  y="40" width="5"  height="7"  rx="2" fill="#55b6ca" opacity="0.8"/>
+          <rect x="19" y="40" width="5"  height="7"  rx="2" fill="#55b6ca" opacity="0.8"/>
+        </g>
       </svg>`,
       assembly: `
-        <rect x="118" y="155" width="85" height="11" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <rect x="118" y="155" width="142" height="11" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
         <circle cx="126" cy="160" r="9" fill="#55b6ca"/>
         <rect x="113" y="160" width="12" height="34" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
         <rect x="100" y="186" width="28" height="9"  rx="4" fill="#55b6ca"/>
@@ -752,15 +755,18 @@ const PARTS = {
     },
     {
       name: 'Claw',
+      // thumb mirrored so claw faces right (matching rover orientation)
       thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
-        <rect x="26" y="24" width="50" height="10" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
-        <circle cx="30" cy="29" r="6" fill="#ed7c5a"/>
-        <path d="M 18 29 L 4 20 L 2 30 Z"  fill="#ed7c5a" stroke="#c05a35" stroke-width="1"/>
-        <path d="M 18 29 L 4 38 L 2 28 Z"  fill="#ed7c5a" stroke="#c05a35" stroke-width="1"/>
-        <line x1="18" y1="29" x2="4"  y2="29" stroke="#8a9aaa" stroke-width="3"/>
+        <g transform="translate(88,0) scale(-1,1)">
+          <rect x="26" y="24" width="50" height="10" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+          <circle cx="30" cy="29" r="6" fill="#ed7c5a"/>
+          <path d="M 18 29 L 4 20 L 2 30 Z"  fill="#ed7c5a" stroke="#c05a35" stroke-width="1"/>
+          <path d="M 18 29 L 4 38 L 2 28 Z"  fill="#ed7c5a" stroke="#c05a35" stroke-width="1"/>
+          <line x1="18" y1="29" x2="4"  y2="29" stroke="#8a9aaa" stroke-width="3"/>
+        </g>
       </svg>`,
       assembly: `
-        <rect x="122" y="155" width="80" height="11" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <rect x="122" y="155" width="138" height="11" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
         <circle cx="128" cy="160" r="8" fill="#ed7c5a"/>
         <path d="M 116 160 L 94 148 L 90 162 Z" fill="#ed7c5a" stroke="#c05a35" stroke-width="1.5"/>
         <path d="M 116 160 L 94 172 L 90 158 Z" fill="#ed7c5a" stroke="#c05a35" stroke-width="1.5"/>
@@ -768,76 +774,19 @@ const PARTS = {
       `
     },
   ],
-
-  // ── ANTENNA ───────────────────────────────────
-  antenna: [
-    {
-      name: 'Dish',
-      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
-        <rect x="40" y="24" width="7" height="32" rx="3" fill="#ccc"/>
-        <path d="M 20 24 Q 43 4 66 24" fill="none" stroke="#55b6ca" stroke-width="3" stroke-linecap="round"/>
-        <path d="M 22 24 Q 43 8  64 24" fill="#55b6ca" opacity="0.22"/>
-        <circle cx="43" cy="24" r="5" fill="#ed7c5a"/>
-        <line x1="43" y1="19" x2="43" y2="24" stroke="#ccc" stroke-width="2"/>
-      </svg>`,
-      assembly: `
-        <rect x="307" y="88" width="8" height="44" rx="3.5" fill="#cccccc"/>
-        <path d="M 276 88 Q 311 60 346 88" fill="none" stroke="#55b6ca" stroke-width="4" stroke-linecap="round"/>
-        <path d="M 278 88 Q 311 64 344 88" fill="#55b6ca" opacity="0.22"/>
-        <circle cx="311" cy="88" r="7" fill="#ed7c5a"/>
-        <line x1="311" y1="81" x2="311" y2="88" stroke="#cccccc" stroke-width="2.5"/>
-      `
-    },
-    {
-      name: 'Tall Rod',
-      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
-        <rect x="40" y="6"  width="8"  height="50" rx="3" fill="#55b6ca"/>
-        <circle cx="44" cy="6" r="6"  fill="#ed7c5a"/>
-        <line x1="30" y1="20" x2="58" y2="20" stroke="#55b6ca" stroke-width="2" opacity="0.6"/>
-        <line x1="32" y1="32" x2="56" y2="32" stroke="#55b6ca" stroke-width="2" opacity="0.6"/>
-        <line x1="34" y1="44" x2="54" y2="44" stroke="#55b6ca" stroke-width="2" opacity="0.6"/>
-      </svg>`,
-      assembly: `
-        <rect x="306" y="42" width="9"  height="90" rx="4" fill="#55b6ca"/>
-        <circle cx="310" cy="42" r="8" fill="#ed7c5a"/>
-        <line x1="293" y1="62"  x2="327" y2="62"  stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
-        <line x1="295" y1="79"  x2="325" y2="79"  stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
-        <line x1="297" y1="96"  x2="323" y2="96"  stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
-        <line x1="299" y1="113" x2="321" y2="113" stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
-      `
-    },
-    {
-      name: 'Double Rod',
-      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
-        <rect x="24" y="16" width="22" height="5" rx="2" fill="#ccc"/>
-        <rect x="24" y="8"  width="7"  height="50" rx="3" fill="#ccc"/>
-        <rect x="37" y="18" width="7"  height="40" rx="3" fill="#ccc"/>
-        <circle cx="27" cy="8"  r="5" fill="#55b6ca"/>
-        <circle cx="40" cy="18" r="5" fill="#55b6ca"/>
-      </svg>`,
-      assembly: `
-        <rect x="296" y="68" width="26" height="6" rx="2.5" fill="#cccccc"/>
-        <rect x="296" y="48" width="9"  height="84" rx="4" fill="#cccccc"/>
-        <rect x="313" y="62" width="9"  height="70" rx="4" fill="#cccccc"/>
-        <circle cx="300" cy="48" r="7" fill="#55b6ca"/>
-        <circle cx="317" cy="62" r="7" fill="#55b6ca"/>
-      `
-    },
-  ],
 };
 
 const CATEGORY_AUDIO = {
-  body:    '/body.mp3',
-  wheels:  '/wheels.mp3',
-  camera:  '',
-  arm:     '/robotic-arm.mp3',
-  antenna: '/antenna.mp3',
+  body:   '/body.mp3',
+  wheels: '/wheels.mp3',
+  camera: '',
+  arm:    '/robotic-arm.mp3',
 };
 
 // ─────────────────────────────────────────────
 //  STATE
 // ─────────────────────────────────────────────
-const selected = { body: null, wheels: null, camera: null, arm: null, antenna: null };
+const selected = { body: null, wheels: null, camera: null, arm: null };
 
 // ─────────────────────────────────────────────
 //  BUILD PANEL
@@ -917,10 +866,10 @@ function updateProgress() {
     }
   });
 
-  if (count < 5) {
-    document.getElementById('progress-label').textContent = `${count} of 5 parts chosen`;
+  if (count < 4) {
+    document.getElementById('progress-label').textContent = `${count} of 4 parts chosen`;
   } else {
-    document.getElementById('progress-label').textContent = `5 of 5 parts chosen`;
+    document.getElementById('progress-label').textContent = `4 of 4 parts chosen`;
     document.getElementById('launch-row').classList.add('visible');
   }
 }
