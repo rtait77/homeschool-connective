@@ -254,12 +254,15 @@
     box-shadow: 0 0.15vw 0.5vw rgba(217,35,67,0.3);
   }
 
-  /* ── Launch row (centered, shown when all 4 chosen) ── */
+  /* ── Launch row (absolutely centered just above the rover) ── */
   #launch-row {
+    position: absolute;
+    bottom: 36%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
     display: flex;
     align-items: center;
-    margin-bottom: 1%;
-    flex-shrink: 0;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s;
@@ -389,7 +392,6 @@
 
     <!-- Launch row (centered, hidden until all 4 parts chosen) -->
     <div id="launch-row">
-      <img src="/audio-button.png" class="audio-img audio-img-overlap" onclick="playAudio('launch-audio')" title="Listen" alt="audio">
       <button id="launch-btn">
         <svg class="arrow-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 24 H36 M26 14 L38 24 L26 34" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
