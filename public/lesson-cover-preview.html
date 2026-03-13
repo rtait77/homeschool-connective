@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cover Layout Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', sans-serif;
+    background: #0d1b3e;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: fixed; inset: 0;
+    background: url('/space-bg.png') center center / cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Arc + rocket SVG ── */
+  .arc-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  /* ── Main layout ── */
+  .cover-layout {
+    position: relative;
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ── Mars image ── */
+  .mars-wrap {
+    flex: 0 0 52%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 2%;
+  }
+  .mars-img {
+    width: min(560px, 88%);
+    display: block;
+    filter: drop-shadow(0 0 40px rgba(180, 80, 30, 0.35));
+  }
+
+  /* ── Right side content ── */
+  .cover-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding-right: 5%;
+  }
+
+  .cover-title {
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .cover-rule {
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 2px;
+  }
+
+  /* ── START button ── */
+  .start-btn {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    margin-top: 8px;
+  }
+
+  .start-sound {
+    width: 52px; height: 52px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    z-index: 1;
+    box-shadow: 0 2px 12px rgba(34,197,94,0.5);
+  }
+  .start-sound svg { width: 22px; height: 22px; fill: white; }
+
+  .start-label {
+    background: #e8273c;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    padding: 14px 28px 14px 24px;
+    margin-left: -4px;
+    border-radius: 0 50px 50px 0;
+    box-shadow: 0 2px 16px rgba(232,39,60,0.45);
+    transition: filter 0.15s;
+  }
+  .start-btn:hover .start-label { filter: brightness(1.1); }
+
+  .start-arrow {
+    width: 52px; height: 52px;
+    background: #e8273c;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-left: -4px;
+    box-shadow: 0 2px 12px rgba(232,39,60,0.45);
+  }
+  .start-arrow svg { width: 20px; height: 20px; fill: white; }
+
+  /* ── Image credit ── */
+  .image-credit {
+    position: absolute;
+    bottom: 16px; left: 20px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.55);
+    font-weight: 600;
+  }
+
+  /* ── Rocket on arc ── */
+  .arc-rocket {
+    position: absolute;
+    font-size: clamp(2.4rem, 4.5vw, 3.5rem);
+    /* positioned via JS relative to arc end */
+    top: 8%;
+    right: 26%;
+    transform: rotate(30deg);
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- Dashed arc SVG -->
+  <svg class="arc-svg" viewBox="0 0 1000 600" preserveAspectRatio="none">
+    <path
+      d="M 80 580 Q 200 80 680 80"
+      fill="none"
+      stroke="white"
+      stroke-width="5"
+      stroke-dasharray="22,16"
+      stroke-linecap="round"
+      opacity="0.85"
+    />
+  </svg>
+
+  <!-- Rocket at arc tip -->
+  <div class="arc-rocket">🚀</div>
+
+  <!-- Main layout -->
+  <div class="cover-layout">
+
+    <!-- Mars image -->
+    <div class="mars-wrap">
+      <img src="/mars-with-background.png" alt="Mars" class="mars-img" />
+    </div>
+
+    <!-- Right: title + button -->
+    <div class="cover-right">
+      <div class="cover-title">All About Mars</div>
+      <div class="cover-rule"></div>
+      <button class="start-btn" onclick="alert('START!')">
+        <div class="start-sound">
+          <!-- speaker icon -->
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        </div>
+        <div class="start-label">START</div>
+        <div class="start-arrow">
+          <!-- arrow icon -->
+          <svg viewBox="0 0 24 24"><path d="M8 5l7 7-7 7"/></svg>
+        </div>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Image credit -->
+  <div class="image-credit">· Image Credit: NASA</div>
+
+</div>
+
+</body>
+</html>
