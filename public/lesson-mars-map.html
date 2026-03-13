@@ -57,48 +57,29 @@
     transform: scale(1.12) translateY(-4px);
   }
 
-  /* Completed — coral tint */
-  .stop.completed .rocket-wrap img {
-    filter: sepia(1) saturate(3) hue-rotate(330deg) brightness(1.1);
-  }
+  /* Completed — full color, same hover as active */
   .stop.completed:hover .rocket-wrap img {
-    transform: scale(1.08);
+    transform: scale(1.12) translateY(-4px);
   }
 
-  /* Locked — greyscale, no hover, not clickable */
+  /* Locked — not clickable, full color, lock icon shown above */
   .stop.locked {
     cursor: default;
   }
-  .stop.locked .rocket-wrap img {
-    filter: grayscale(1) opacity(0.5);
-  }
 
-  /* Coming soon — greyscale with badge */
-  /* Checkmark badge on completed rockets */
-  .check-badge {
-    position: absolute;
-    bottom: -2px; right: -2px;
-    width: 32%;
-    height: 32%;
-    background: #ed7c5a;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    border: 0.2vw solid white;
-  }
-  .check-badge svg { width: 60%; height: 60%; fill: white; }
-
-  /* Lock icon on locked rockets */
+  /* Lock icon floats above the rocket in flex column */
   .lock-badge {
-    position: absolute;
-    bottom: -2px; right: -2px;
-    width: 32%;
-    height: 32%;
-    background: rgba(0,0,0,0.6);
+    width: 2.2vw;
+    height: 2.2vw;
+    max-width: 30px;
+    max-height: 30px;
+    background: rgba(0,0,0,0.55);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    border: 0.2vw solid rgba(255,255,255,0.3);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    margin-bottom: 0.4vw;
   }
-  .lock-badge svg { width: 60%; height: 60%; fill: rgba(255,255,255,0.7); }
+  .lock-badge svg { width: 55%; height: 55%; fill: rgba(255,255,255,0.9); }
 
 
 
@@ -129,15 +110,15 @@
   <!-- 7 stops — Build a Rover & Design a Moon are locked until games are built -->
 
   <!-- 1. All About Mars -->
-  <div class="stop" id="stop-all-about-mars" style="left:5.5%; top:32%"
+  <div class="stop" id="stop-all-about-mars" style="left:8%; top:32%"
        onclick="goLesson('all-about-mars')">
-    <div class="rocket-wrap" style="transform:rotate(45deg)">
+    <div class="rocket-wrap" style="transform:rotate(50deg)">
       <img src="/rocket-image.png" alt="All About Mars">
     </div>
   </div>
 
   <!-- 2. Mars Rovers -->
-  <div class="stop" id="stop-mars-rovers" style="left:20%; top:33%"
+  <div class="stop" id="stop-mars-rovers" style="left:23%; top:33%"
        onclick="goLesson('mars-rovers')">
     <div class="rocket-wrap" style="transform:rotate(100deg)">
       <img src="/rocket-image.png" alt="Mars Rovers">
@@ -145,7 +126,7 @@
   </div>
 
   <!-- 3. Build a Rover -->
-  <div class="stop" id="stop-build-a-rover" style="left:38%; top:40%"
+  <div class="stop" id="stop-build-a-rover" style="left:36%; top:42%"
        onclick="goLesson('build-a-rover')">
     <div class="rocket-wrap" style="transform:rotate(95deg)">
       <img src="/rocket-image.png" alt="Build a Rover">
@@ -153,7 +134,7 @@
   </div>
 
   <!-- 4. Mars's Moons -->
-  <div class="stop" id="stop-marss-moons" style="left:52%; top:49%"
+  <div class="stop" id="stop-marss-moons" style="left:50%; top:51%"
        onclick="goLesson('marss-moons')">
     <div class="rocket-wrap" style="transform:rotate(110deg)">
       <img src="/rocket-image.png" alt="Mars's Moons">
@@ -161,7 +142,7 @@
   </div>
 
   <!-- 5. Design a Moon -->
-  <div class="stop" id="stop-design-a-moon" style="left:67%; top:61%"
+  <div class="stop" id="stop-design-a-moon" style="left:65%; top:59%"
        onclick="goLesson('design-a-moon')">
     <div class="rocket-wrap" style="transform:rotate(90deg)">
       <img src="/rocket-image.png" alt="Design a Moon">
@@ -177,7 +158,7 @@
   </div>
 
   <!-- 7. Get Your Badge! -->
-  <div class="stop" id="stop-badge" style="left:90%; top:51%"
+  <div class="stop" id="stop-badge" style="left:92%; top:51%"
        onclick="goLesson('badge')">
     <div class="rocket-wrap" style="transform:rotate(45deg)">
       <img src="/rocket-image.png" alt="Get Your Badge!">
@@ -243,7 +224,8 @@
   function isCompleted(id) { return getCompleted().includes(id); }
 
   function isUnlocked(lesson) {
-    return true; // all rockets visible — locking will be re-enabled once all games are built
+    if (!lesson.unlockAfter) return true;
+    return isCompleted(lesson.unlockAfter);
   }
 
   // ── Apply states to all stops ──
@@ -255,16 +237,11 @@
       const wrap = el.querySelector('.rocket-wrap');
 
       // Clear previous state badges
-      el.querySelector('.check-badge')?.remove();
       el.querySelector('.lock-badge')?.remove();
       el.classList.remove('active', 'completed', 'locked');
 
       if (isCompleted(lesson.id)) {
         el.classList.add('completed');
-        const badge = document.createElement('div');
-        badge.className = 'check-badge';
-        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
-        wrap.appendChild(badge);
 
       } else if (isUnlocked(lesson)) {
         el.classList.add('active');
@@ -275,7 +252,7 @@
         const badge = document.createElement('div');
         badge.className = 'lock-badge';
         badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
-        wrap.appendChild(badge);
+        el.insertBefore(badge, wrap); // lock floats above the rocket
       }
     });
   }
