@@ -39,8 +39,8 @@
 
   .stop .rocket-wrap {
     position: relative;
-    width: 7vw;
-    max-width: 100px;
+    width: 10vw;
+    max-width: 140px;
   }
   .stop .rocket-wrap img {
     width: 100%;
@@ -128,53 +128,55 @@
   <!-- Rocket stops — positions tuned to dotted path in map image -->
   <!-- 7 stops — Build a Rover & Design a Moon are locked until games are built -->
 
-  <!-- 1. All About Mars: up 2 rockets (~25%), rotate 45° -->
-  <div class="stop" id="stop-all-about-mars" style="left:5.5%; top:29%"
+  <!-- 1. All About Mars -->
+  <div class="stop" id="stop-all-about-mars" style="left:5.5%; top:32%"
        onclick="goLesson('all-about-mars')">
     <div class="rocket-wrap" style="transform:rotate(45deg)">
       <img src="/rocket-image.png" alt="All About Mars">
     </div>
   </div>
 
-  <!-- 2. Mars Rovers: up 1 rocket (~12.5%), rotate 100° -->
-  <div class="stop" id="stop-mars-rovers" style="left:16%; top:33%"
+  <!-- 2. Mars Rovers -->
+  <div class="stop" id="stop-mars-rovers" style="left:20%; top:33%"
        onclick="goLesson('mars-rovers')">
     <div class="rocket-wrap" style="transform:rotate(100deg)">
       <img src="/rocket-image.png" alt="Mars Rovers">
     </div>
   </div>
 
-  <!-- 3. Build a Rover: right 2 rockets (14%), rotate 95° -->
-  <div class="stop locked" id="stop-build-a-rover" style="left:40%; top:37%">
+  <!-- 3. Build a Rover -->
+  <div class="stop" id="stop-build-a-rover" style="left:38%; top:40%"
+       onclick="goLesson('build-a-rover')">
     <div class="rocket-wrap" style="transform:rotate(95deg)">
       <img src="/rocket-image.png" alt="Build a Rover">
     </div>
   </div>
 
-  <!-- 4. Mars's Moons: right 2 rockets (14%), down 1 (~12.5%), rotate 110° -->
-  <div class="stop" id="stop-marss-moons" style="left:52%; top:45%"
+  <!-- 4. Mars's Moons -->
+  <div class="stop" id="stop-marss-moons" style="left:52%; top:49%"
        onclick="goLesson('marss-moons')">
     <div class="rocket-wrap" style="transform:rotate(110deg)">
       <img src="/rocket-image.png" alt="Mars's Moons">
     </div>
   </div>
 
-  <!-- 5. Design a Moon: right 3 rockets (21%), down 2 (~25%), rotate 90° -->
-  <div class="stop locked" id="stop-design-a-moon" style="left:71%; top:62%">
+  <!-- 5. Design a Moon -->
+  <div class="stop" id="stop-design-a-moon" style="left:67%; top:61%"
+       onclick="goLesson('design-a-moon')">
     <div class="rocket-wrap" style="transform:rotate(90deg)">
       <img src="/rocket-image.png" alt="Design a Moon">
     </div>
   </div>
 
-  <!-- 6. Quiz: right 1.5 rockets (10.5%), down 1 (~12.5%), rotate 80° -->
-  <div class="stop" id="stop-quiz" style="left:74.5%; top:55%"
+  <!-- 6. Quiz -->
+  <div class="stop" id="stop-quiz" style="left:74.5%; top:58%"
        onclick="goLesson('quiz')">
     <div class="rocket-wrap" style="transform:rotate(80deg)">
       <img src="/rocket-image.png" alt="Quiz">
     </div>
   </div>
 
-  <!-- 7. Get Your Badge!: nudge up, rotate 45° -->
+  <!-- 7. Get Your Badge! -->
   <div class="stop" id="stop-badge" style="left:90%; top:51%"
        onclick="goLesson('badge')">
     <div class="rocket-wrap" style="transform:rotate(45deg)">
@@ -197,7 +199,7 @@
     {
       id: 'all-about-mars',
       url: 'https://view.genially.com/69b41bc290484ccdbdd58a43',
-      unlockAfter: null   // always unlocked first
+      unlockAfter: null
     },
     {
       id: 'mars-rovers',
@@ -205,14 +207,24 @@
       unlockAfter: 'all-about-mars'
     },
     {
+      id: 'build-a-rover',
+      url: '/build-a-rover.html', // TODO: build this game
+      unlockAfter: 'mars-rovers'
+    },
+    {
       id: 'marss-moons',
       url: 'https://view.genially.com/69b41e63611634c566df4741',
-      unlockAfter: 'mars-rovers'
+      unlockAfter: 'build-a-rover'
+    },
+    {
+      id: 'design-a-moon',
+      url: '/design-a-moon.html', // TODO: build this game
+      unlockAfter: 'marss-moons'
     },
     {
       id: 'quiz',
       url: 'https://view.genially.com/69b41ef449561c5da74f5c90',
-      unlockAfter: 'marss-moons'
+      unlockAfter: 'design-a-moon'
     },
     {
       id: 'badge',
@@ -231,8 +243,7 @@
   function isCompleted(id) { return getCompleted().includes(id); }
 
   function isUnlocked(lesson) {
-    if (!lesson.unlockAfter) return true;
-    return isCompleted(lesson.unlockAfter);
+    return true; // all rockets visible — locking will be re-enabled once all games are built
   }
 
   // ── Apply states to all stops ──
