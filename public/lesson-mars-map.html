@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission to Mars — Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #0a1428;
+    overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* 16:9 stage — scales to any screen size */
+  .stage {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 56.25vw;
+    max-height: 100vh;
+    max-width: 177.78vh;
+    background: url('/mars-lesson-map.png') center center / cover no-repeat;
+  }
+
+  /* ── Each rocket stop ── */
+  .stop {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .stop .rocket-wrap {
+    position: relative;
+    width: 7vw;
+    max-width: 100px;
+  }
+  .stop .rocket-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.2s;
+  }
+
+  /* Active — full color, hover lift, subtle glow */
+  .stop.active .rocket-wrap img {
+    filter: drop-shadow(0 0 0.6vw rgba(255,220,80,0.7));
+  }
+  .stop.active:hover .rocket-wrap img {
+    transform: scale(1.12) translateY(-4px);
+  }
+
+  /* Completed — coral tint */
+  .stop.completed .rocket-wrap img {
+    filter: sepia(1) saturate(3) hue-rotate(330deg) brightness(1.1);
+  }
+  .stop.completed:hover .rocket-wrap img {
+    transform: scale(1.08);
+  }
+
+  /* Locked — greyscale, no hover, not clickable */
+  .stop.locked {
+    cursor: default;
+  }
+  .stop.locked .rocket-wrap img {
+    filter: grayscale(1) opacity(0.5);
+  }
+
+  /* Coming soon — greyscale with badge */
+  .stop.coming-soon {
+    cursor: default;
+  }
+  .stop.coming-soon .rocket-wrap img {
+    filter: grayscale(1) opacity(0.4);
+  }
+
+  /* Checkmark badge on completed rockets */
+  .check-badge {
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 32%;
+    height: 32%;
+    background: #ed7c5a;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 0.2vw solid white;
+  }
+  .check-badge svg { width: 60%; height: 60%; fill: white; }
+
+  /* Lock icon on locked rockets */
+  .lock-badge {
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 32%;
+    height: 32%;
+    background: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 0.2vw solid rgba(255,255,255,0.3);
+  }
+  .lock-badge svg { width: 60%; height: 60%; fill: rgba(255,255,255,0.7); }
+
+  /* Coming soon pill */
+  .soon-badge {
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #21c593;
+    color: white;
+    font-size: 0.7vw;
+    font-weight: 900;
+    padding: 0.15vw 0.5vw;
+    border-radius: 2vw;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  /* Active pulse ring */
+  @keyframes activePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,220,80,0.6); }
+    50%       { box-shadow: 0 0 0 1vw rgba(255,220,80,0); }
+  }
+  .stop.active .rocket-wrap {
+    border-radius: 50%;
+    animation: activePulse 2s ease-in-out infinite;
+  }
+
+  /* Music toggle */
+  .music-btn {
+    position: absolute;
+    bottom: 2.5%; right: 1.5%;
+    width: 3.8vw; height: 3.8vw;
+    max-width: 52px; max-height: 52px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 10;
+  }
+  .music-btn:hover { background: rgba(255,255,255,0.28); }
+  .music-btn svg { width: 50%; height: 50%; fill: white; }
+  .music-btn.muted { opacity: 0.45; }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <!-- Rocket stops — positions tuned to dotted path in map image -->
+  <!-- All 7 stops; Build a Rover & Design a Moon are coming-soon side quests -->
+
+  <!-- 1. All About Mars -->
+  <div class="stop" id="stop-all-about-mars" style="left:5.5%; top:54%"
+       onclick="goLesson('all-about-mars')">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="All About Mars">
+    </div>
+  </div>
+
+  <!-- 2. Mars Rovers -->
+  <div class="stop" id="stop-mars-rovers" style="left:16%; top:45%"
+       onclick="goLesson('mars-rovers')">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="Mars Rovers">
+    </div>
+  </div>
+
+  <!-- 3. Build a Rover (coming soon) -->
+  <div class="stop coming-soon" id="stop-build-a-rover" style="left:26%; top:37%">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="Build a Rover">
+      <div class="soon-badge">COMING SOON</div>
+    </div>
+  </div>
+
+  <!-- 4. Mars's Moons -->
+  <div class="stop" id="stop-marss-moons" style="left:38%; top:33%"
+       onclick="goLesson('marss-moons')">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="Mars's Moons">
+    </div>
+  </div>
+
+  <!-- 5. Design a Moon (coming soon) -->
+  <div class="stop coming-soon" id="stop-design-a-moon" style="left:50%; top:37%">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="Design a Moon">
+      <div class="soon-badge">COMING SOON</div>
+    </div>
+  </div>
+
+  <!-- 6. Quiz -->
+  <div class="stop" id="stop-quiz" style="left:64%; top:43%"
+       onclick="goLesson('quiz')">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="Quiz">
+    </div>
+  </div>
+
+  <!-- 7. Get Your Badge! -->
+  <div class="stop" id="stop-badge" style="left:90%; top:54%"
+       onclick="goLesson('badge')">
+    <div class="rocket-wrap">
+      <img src="/rocket-image.png" alt="Get Your Badge!">
+    </div>
+  </div>
+
+  <!-- Music toggle -->
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Toggle music">
+    <svg id="music-icon" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+  </button>
+
+  <audio id="bg-music" src="/puzzle-bg-music.mp3" loop></audio>
+
+</div>
+
+<script>
+  // ── Lesson definitions ──
+  const LESSONS = [
+    {
+      id: 'all-about-mars',
+      url: 'https://view.genially.com/69b41bc290484ccdbdd58a43',
+      unlockAfter: null   // always unlocked first
+    },
+    {
+      id: 'mars-rovers',
+      url: 'https://view.genially.com/69b41d1f49561c5da74e14ca',
+      unlockAfter: 'all-about-mars'
+    },
+    {
+      id: 'marss-moons',
+      url: 'https://view.genially.com/69b41e63611634c566df4741',
+      unlockAfter: 'mars-rovers'
+    },
+    {
+      id: 'quiz',
+      url: 'https://view.genially.com/69b41ef449561c5da74f5c90',
+      unlockAfter: 'marss-moons'
+    },
+    {
+      id: 'badge',
+      url: 'https://view.genially.com/69b41f7141fe907f00bf7e0d',
+      unlockAfter: 'quiz'
+    },
+  ];
+
+  // ── Load progress from localStorage (Supabase later) ──
+  function getCompleted() {
+    try {
+      return JSON.parse(localStorage.getItem('mars_completed') || '[]');
+    } catch { return []; }
+  }
+
+  function isCompleted(id) { return getCompleted().includes(id); }
+
+  function isUnlocked(lesson) {
+    if (!lesson.unlockAfter) return true;
+    return isCompleted(lesson.unlockAfter);
+  }
+
+  // ── Apply states to all stops ──
+  function renderMap() {
+    LESSONS.forEach(lesson => {
+      const el = document.getElementById('stop-' + lesson.id);
+      if (!el) return;
+
+      const wrap = el.querySelector('.rocket-wrap');
+
+      // Clear previous state badges
+      el.querySelector('.check-badge')?.remove();
+      el.querySelector('.lock-badge')?.remove();
+      el.classList.remove('active', 'completed', 'locked');
+
+      if (isCompleted(lesson.id)) {
+        el.classList.add('completed');
+        const badge = document.createElement('div');
+        badge.className = 'check-badge';
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+        wrap.appendChild(badge);
+
+      } else if (isUnlocked(lesson)) {
+        el.classList.add('active');
+
+      } else {
+        el.classList.add('locked');
+        el.onclick = null;
+        const badge = document.createElement('div');
+        badge.className = 'lock-badge';
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
+        wrap.appendChild(badge);
+      }
+    });
+  }
+
+  // ── Navigate to lesson ──
+  function goLesson(id) {
+    const lesson = LESSONS.find(l => l.id === id);
+    if (!lesson) return;
+    if (!isCompleted(id) && !isUnlocked(lesson)) return;
+    window.location.href = lesson.url;
+  }
+
+  // ── Music ──
+  const bgMusic  = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+  const musicIcon = document.getElementById('music-icon');
+  let musicOn = false;
+
+  bgMusic.volume = 0.35;
+  bgMusic.play().then(() => { musicOn = true; }).catch(() => {
+    document.addEventListener('click', () => {
+      if (!musicOn) { bgMusic.play(); musicOn = true; }
+    }, { once: true });
+  });
+
+  function toggleMusic() {
+    if (musicOn) {
+      bgMusic.pause(); musicOn = false;
+      musicBtn.classList.add('muted');
+      musicIcon.innerHTML = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+    } else {
+      bgMusic.play(); musicOn = true;
+      musicBtn.classList.remove('muted');
+      musicIcon.innerHTML = '<path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>';
+    }
+  }
+
+  // ── Init ──
+  renderMap();
+</script>
+
+</body>
+</html>
