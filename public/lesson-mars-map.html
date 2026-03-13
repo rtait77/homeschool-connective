@@ -74,13 +74,6 @@
   }
 
   /* Coming soon — greyscale with badge */
-  .stop.coming-soon {
-    cursor: default;
-  }
-  .stop.coming-soon .rocket-wrap img {
-    filter: grayscale(1) opacity(0.4);
-  }
-
   /* Checkmark badge on completed rockets */
   .check-badge {
     position: absolute;
@@ -107,21 +100,6 @@
   }
   .lock-badge svg { width: 60%; height: 60%; fill: rgba(255,255,255,0.7); }
 
-  /* Coming soon pill */
-  .soon-badge {
-    position: absolute;
-    top: -10%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #21c593;
-    color: white;
-    font-size: 0.7vw;
-    font-weight: 900;
-    padding: 0.15vw 0.5vw;
-    border-radius: 2vw;
-    white-space: nowrap;
-    letter-spacing: 0.05em;
-  }
 
   /* Active pulse ring */
   @keyframes activePulse {
@@ -157,7 +135,7 @@
 <div class="stage" id="stage">
 
   <!-- Rocket stops — positions tuned to dotted path in map image -->
-  <!-- All 7 stops; Build a Rover & Design a Moon are coming-soon side quests -->
+  <!-- 7 stops — Build a Rover & Design a Moon are locked until games are built -->
 
   <!-- 1. All About Mars -->
   <div class="stop" id="stop-all-about-mars" style="left:5.5%; top:54%"
@@ -175,11 +153,10 @@
     </div>
   </div>
 
-  <!-- 3. Build a Rover (coming soon) -->
-  <div class="stop coming-soon" id="stop-build-a-rover" style="left:26%; top:37%">
+  <!-- 3. Build a Rover (not yet available) -->
+  <div class="stop locked" id="stop-build-a-rover" style="left:26%; top:37%">
     <div class="rocket-wrap">
       <img src="/rocket-image.png" alt="Build a Rover">
-      <div class="soon-badge">COMING SOON</div>
     </div>
   </div>
 
@@ -191,11 +168,10 @@
     </div>
   </div>
 
-  <!-- 5. Design a Moon (coming soon) -->
-  <div class="stop coming-soon" id="stop-design-a-moon" style="left:50%; top:37%">
+  <!-- 5. Design a Moon (not yet available) -->
+  <div class="stop locked" id="stop-design-a-moon" style="left:50%; top:37%">
     <div class="rocket-wrap">
       <img src="/rocket-image.png" alt="Design a Moon">
-      <div class="soon-badge">COMING SOON</div>
     </div>
   </div>
 
