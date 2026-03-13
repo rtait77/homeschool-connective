@@ -15,7 +15,7 @@
     font-family: 'Nunito', sans-serif;
   }
 
-  /* 16:9 stage — scales to any screen size */
+  /* 16:9 stage */
   .stage {
     position: fixed;
     top: 50%; left: 50%;
@@ -27,7 +27,7 @@
     background: url('/mars-lesson-map-blank.jpg') center center / cover no-repeat;
   }
 
-  /* ── Each rocket stop ── */
+  /* ── Each stop ── */
   .stop {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -38,60 +38,105 @@
     overflow: visible;
   }
 
-  .stop .rocket-wrap {
+  /* ── Circle image ── */
+  .stop-circle {
     position: relative;
-    width: 11.5vw;
-    max-width: 160px;
-  }
-  .stop .rocket-wrap img {
-    width: 100%;
-    height: auto;
-    display: block;
-    transition: transform 0.2s;
-  }
-
-  /* Unlocked (active or completed) — glow + hover lift, always clickable */
-  .stop.active .rocket-wrap img,
-  .stop.completed .rocket-wrap img {
-    filter: drop-shadow(0 0 0.6vw rgba(255,220,80,0.7));
-  }
-  .stop.active:hover .rocket-wrap img,
-  .stop.completed:hover .rocket-wrap img {
-    transform: scale(1.12) translateY(-4px);
+    width: 9vw;
+    height: 9vw;
+    max-width: 125px;
+    max-height: 125px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 3px solid rgba(255,255,255,0.2);
+    transition: transform 0.25s, box-shadow 0.25s, filter 0.4s, border-color 0.4s;
+    overflow: hidden;
   }
 
-  /* Locked — solid color, no glow, not clickable */
+  /* Quiz circle — teal bg with "?" */
+  .stop-circle.quiz-bg {
+    background: linear-gradient(135deg, #2a9db5, #55b6ca);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 4.5vw;
+    color: white;
+    overflow: visible;
+  }
+  .stop-circle.quiz-bg.locked-img {
+    filter: grayscale(1) brightness(0.6);
+  }
+
+  /* Locked — greyscale */
+  .stop.locked .stop-circle {
+    filter: grayscale(1) brightness(0.6);
+    border-color: rgba(255,255,255,0.15);
+    cursor: default;
+  }
   .stop.locked {
     cursor: default !important;
   }
 
-  /* Lock icon — absolutely positioned above rocket, unaffected by rocket rotation */
+  /* Unlocked (active or completed) — full color + golden glow */
+  .stop.active .stop-circle,
+  .stop.completed .stop-circle {
+    box-shadow: 0 0 1.5vw rgba(255,210,60,0.75), 0 0 3vw rgba(255,160,0,0.3);
+    border-color: rgba(255,210,60,0.8);
+  }
+  .stop.active:hover .stop-circle,
+  .stop.completed:hover .stop-circle {
+    transform: scale(1.12);
+  }
+
+  /* ── Lock icon — centered on circle ── */
   .lock-badge {
     position: absolute;
-    top: -3.2vw;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 3vw;
-    height: 3vw;
-    max-width: 42px;
-    max-height: 42px;
-    background: rgba(10,20,50,0.8);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42%; height: 42%;
+    background: rgba(5,12,35,0.75);
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    border: 2px solid rgba(255,255,255,0.5);
+    border: 2px solid rgba(255,255,255,0.45);
     z-index: 5;
+    pointer-events: none;
   }
   .lock-badge svg { width: 55%; height: 55%; fill: white; }
 
-  /* Label under each rocket */
+  /* ── Unlock animation ── */
+  @keyframes lockShake {
+    0%   { transform: translate(-50%,-50%) rotate(0deg) scale(1);   opacity: 1; }
+    20%  { transform: translate(-50%,-50%) rotate(-18deg) scale(1.1); }
+    40%  { transform: translate(-50%,-50%) rotate(14deg) scale(1.1); }
+    60%  { transform: translate(-50%,-50%) rotate(-10deg) scale(1.05); }
+    80%  { transform: translate(-50%,-50%) rotate(6deg) scale(0.8);  opacity: 0.6; }
+    100% { transform: translate(-50%,-50%) rotate(0deg) scale(0);    opacity: 0; }
+  }
+  @keyframes circleReveal {
+    0%   { transform: scale(1);    box-shadow: none; filter: grayscale(1) brightness(0.6); }
+    40%  { transform: scale(1.18); }
+    70%  { transform: scale(0.95); }
+    100% { transform: scale(1);    box-shadow: 0 0 1.5vw rgba(255,210,60,0.75), 0 0 3vw rgba(255,160,0,0.3); filter: grayscale(0) brightness(1); }
+  }
+  .stop.unlocking .lock-badge {
+    animation: lockShake 0.55s ease-in forwards;
+  }
+  .stop.unlocking .stop-circle {
+    animation: circleReveal 0.7s 0.35s ease-out forwards;
+  }
+
+  /* ── Label under circle ── */
   .stop-label {
-    margin-top: 0.5vw;
+    margin-top: 0.6vw;
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
-    font-size: 1.3vw;
+    font-size: 1.2vw;
     color: #fff;
     text-align: center;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
     line-height: 1.2;
     pointer-events: none;
     white-space: nowrap;
@@ -101,9 +146,7 @@
     transform: scale(0.92);
   }
 
-
-
-  /* Music toggle */
+  /* ── Music toggle ── */
   .music-btn {
     position: absolute;
     bottom: 2.5%; right: 1.5%;
@@ -126,69 +169,52 @@
 
 <div class="stage" id="stage">
 
-  <!-- Rocket stops — positions tuned to dotted path in map image -->
-  <!-- 7 stops — Build a Rover & Design a Moon are locked until games are built -->
-
   <!-- 1. All About Mars -->
   <div class="stop" id="stop-all-about-mars" style="left:8%; top:32%"
        onclick="goLesson('all-about-mars')" data-audio="all about mars.mp3">
-    <div class="rocket-wrap" style="transform:rotate(58deg)">
-      <img src="/rocket-image.png" alt="All About Mars">
-    </div>
+    <div class="stop-circle" style="background-image:url('/mars.png')"></div>
     <div class="stop-label">All About Mars</div>
   </div>
 
   <!-- 2. Mars Rovers -->
   <div class="stop" id="stop-mars-rovers" style="left:23%; top:35%"
        onclick="goLesson('mars-rovers')" data-audio="mars rovers.mp3">
-    <div class="rocket-wrap" style="transform:rotate(120deg)">
-      <img src="/rocket-image.png" alt="Mars Rovers">
-    </div>
+    <div class="stop-circle" style="background-image:url('/rover-curiosity.webp')"></div>
     <div class="stop-label">Mars Rovers</div>
   </div>
 
   <!-- 3. Build a Rover -->
   <div class="stop" id="stop-build-a-rover" style="left:36%; top:42%"
        onclick="goLesson('build-a-rover')" data-audio="build a rover.mp3">
-    <div class="rocket-wrap" style="transform:rotate(95deg)">
-      <img src="/rocket-image.png" alt="Build a Rover">
-    </div>
+    <div class="stop-circle" style="background-image:url('/rover-perseverence.webp')"></div>
     <div class="stop-label">Build a Rover</div>
   </div>
 
   <!-- 4. Mars's Moons -->
   <div class="stop" id="stop-marss-moons" style="left:48%; top:51%"
        onclick="goLesson('marss-moons')" data-audio="mars moons.mp3">
-    <div class="rocket-wrap" style="transform:rotate(118deg)">
-      <img src="/rocket-image.png" alt="Mars's Moons">
-    </div>
+    <div class="stop-circle" style="background-image:url('/phobos.webp')"></div>
     <div class="stop-label">Mars's Moons</div>
   </div>
 
   <!-- 5. Design a Moon -->
   <div class="stop" id="stop-design-a-moon" style="left:63%; top:57%"
        onclick="goLesson('design-a-moon')" data-audio="design a moon.mp3">
-    <div class="rocket-wrap" style="transform:rotate(82deg)">
-      <img src="/rocket-image.png" alt="Design a Moon">
-    </div>
+    <div class="stop-circle" style="background-image:url('/the-moon.png')"></div>
     <div class="stop-label">Design a Moon</div>
   </div>
 
   <!-- 6. Quiz -->
   <div class="stop" id="stop-quiz" style="left:76.5%; top:58%"
        onclick="goLesson('quiz')" data-audio="quiz.mp3">
-    <div class="rocket-wrap" style="transform:rotate(93deg)">
-      <img src="/rocket-image.png" alt="Quiz">
-    </div>
+    <div class="stop-circle quiz-bg">?</div>
     <div class="stop-label">Quiz</div>
   </div>
 
   <!-- 7. Get Your Badge! -->
   <div class="stop" id="stop-badge" style="left:90%; top:51%"
        onclick="goLesson('badge')" data-audio="get your badge.mp3">
-    <div class="rocket-wrap" style="transform:rotate(45deg)">
-      <img src="/rocket-image.png" alt="Get Your Badge!">
-    </div>
+    <div class="stop-circle" style="background-image:url('/badge-mars.png')"></div>
     <div class="stop-label">Get Your Badge!</div>
   </div>
 
@@ -204,72 +230,38 @@
 <script>
   // ── Lesson definitions ──
   const LESSONS = [
-    {
-      id: 'all-about-mars',
-      url: 'https://view.genially.com/69b41bc290484ccdbdd58a43',
-      unlockAfter: null
-    },
-    {
-      id: 'mars-rovers',
-      url: 'https://view.genially.com/69b41d1f49561c5da74e14ca',
-      unlockAfter: 'all-about-mars'
-    },
-    {
-      id: 'build-a-rover',
-      url: '/build-a-rover.html', // TODO: build this game
-      unlockAfter: 'mars-rovers'
-    },
-    {
-      id: 'marss-moons',
-      url: 'https://view.genially.com/69b41e63611634c566df4741',
-      unlockAfter: 'build-a-rover'
-    },
-    {
-      id: 'design-a-moon',
-      url: '/design-a-moon.html', // TODO: build this game
-      unlockAfter: 'marss-moons'
-    },
-    {
-      id: 'quiz',
-      url: 'https://view.genially.com/69b41ef449561c5da74f5c90',
-      unlockAfter: 'design-a-moon'
-    },
-    {
-      id: 'badge',
-      url: 'https://view.genially.com/69b41f7141fe907f00bf7e0d',
-      unlockAfter: 'quiz'
-    },
+    { id: 'all-about-mars', url: 'https://view.genially.com/69b41bc290484ccdbdd58a43', unlockAfter: null },
+    { id: 'mars-rovers',    url: 'https://view.genially.com/69b41d1f49561c5da74e14ca', unlockAfter: 'all-about-mars' },
+    { id: 'build-a-rover',  url: '/build-a-rover.html',                                 unlockAfter: 'mars-rovers' },
+    { id: 'marss-moons',    url: 'https://view.genially.com/69b41e63611634c566df4741', unlockAfter: 'build-a-rover' },
+    { id: 'design-a-moon',  url: '/design-a-moon.html',                                 unlockAfter: 'marss-moons' },
+    { id: 'quiz',           url: 'https://view.genially.com/69b41ef449561c5da74f5c90', unlockAfter: 'design-a-moon' },
+    { id: 'badge',          url: 'https://view.genially.com/69b41f7141fe907f00bf7e0d', unlockAfter: 'quiz' },
   ];
 
-  // ── Load progress from localStorage (Supabase later) ──
+  // ── Progress (localStorage → Supabase later) ──
   function getCompleted() {
-    try {
-      return JSON.parse(localStorage.getItem('mars_completed') || '[]');
-    } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('mars_completed') || '[]'); }
+    catch { return []; }
   }
-
   function isCompleted(id) { return getCompleted().includes(id); }
-
   function isUnlocked(lesson) {
     if (!lesson.unlockAfter) return true;
     return isCompleted(lesson.unlockAfter);
   }
 
-  // ── Apply states to all stops ──
+  // ── Render map states ──
   function renderMap() {
     LESSONS.forEach(lesson => {
       const el = document.getElementById('stop-' + lesson.id);
       if (!el) return;
+      const circle = el.querySelector('.stop-circle');
 
-      const wrap = el.querySelector('.rocket-wrap');
-
-      // Clear previous state badges
       el.querySelector('.lock-badge')?.remove();
       el.classList.remove('active', 'completed', 'locked');
 
       if (isCompleted(lesson.id)) {
         el.classList.add('completed');
-        // completed stays clickable — kid can re-enter
 
       } else if (isUnlocked(lesson)) {
         el.classList.add('active');
@@ -277,12 +269,35 @@
       } else {
         el.classList.add('locked');
         el.onclick = null;
+        // greyscale quiz circle too
+        if (circle.classList.contains('quiz-bg')) circle.classList.add('locked-img');
         const badge = document.createElement('div');
         badge.className = 'lock-badge';
         badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
-        el.appendChild(badge); // absolutely positioned above rocket
+        circle.appendChild(badge);
       }
     });
+  }
+
+  // ── Unlock animation (triggered by ?just-completed=id in URL) ──
+  function playUnlockAnimation() {
+    const params = new URLSearchParams(window.location.search);
+    const justCompleted = params.get('just-completed');
+    if (!justCompleted) return;
+
+    // Find which lesson just got unlocked
+    const newlyUnlocked = LESSONS.find(l => l.unlockAfter === justCompleted);
+    if (!newlyUnlocked) return;
+
+    const el = document.getElementById('stop-' + newlyUnlocked.id);
+    if (!el) return;
+
+    // Small delay so the map renders first
+    setTimeout(() => {
+      el.classList.add('unlocking');
+      // Remove unlocking class after animation finishes
+      setTimeout(() => el.classList.remove('unlocking'), 1200);
+    }, 300);
   }
 
   // ── Navigate to lesson ──
@@ -294,8 +309,8 @@
   }
 
   // ── Music ──
-  const bgMusic  = document.getElementById('bg-music');
-  const musicBtn = document.getElementById('music-btn');
+  const bgMusic   = document.getElementById('bg-music');
+  const musicBtn  = document.getElementById('music-btn');
   const musicIcon = document.getElementById('music-icon');
   let musicOn = false;
 
@@ -336,6 +351,7 @@
 
   // ── Init ──
   renderMap();
+  playUnlockAnimation();
 </script>
 
 </body>
