@@ -24,7 +24,7 @@
     height: 56.25vw;
     max-height: 100vh;
     max-width: 177.78vh;
-    background: url('/mars-lesson-map.jpg') center center / cover no-repeat;
+    background: url('/mars-lesson-map-blank.jpg') center center / cover no-repeat;
   }
 
   /* ── Each rocket stop ── */
@@ -83,6 +83,24 @@
   }
   .lock-badge svg { width: 55%; height: 55%; fill: white; }
 
+  /* Label under each rocket */
+  .stop-label {
+    margin-top: 0.5vw;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.3vw;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+    line-height: 1.2;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .stop:hover .stop-label {
+    transform: scale(0.92);
+    transition: transform 0.2s;
+  }
+
 
 
   /* Music toggle */
@@ -117,6 +135,7 @@
     <div class="rocket-wrap" style="transform:rotate(58deg)">
       <img src="/rocket-image.png" alt="All About Mars">
     </div>
+    <div class="stop-label">All About Mars</div>
   </div>
 
   <!-- 2. Mars Rovers -->
@@ -125,6 +144,7 @@
     <div class="rocket-wrap" style="transform:rotate(120deg)">
       <img src="/rocket-image.png" alt="Mars Rovers">
     </div>
+    <div class="stop-label">Mars Rovers</div>
   </div>
 
   <!-- 3. Build a Rover -->
@@ -133,6 +153,7 @@
     <div class="rocket-wrap" style="transform:rotate(95deg)">
       <img src="/rocket-image.png" alt="Build a Rover">
     </div>
+    <div class="stop-label">Build a Rover</div>
   </div>
 
   <!-- 4. Mars's Moons -->
@@ -141,6 +162,7 @@
     <div class="rocket-wrap" style="transform:rotate(118deg)">
       <img src="/rocket-image.png" alt="Mars's Moons">
     </div>
+    <div class="stop-label">Mars's Moons</div>
   </div>
 
   <!-- 5. Design a Moon -->
@@ -149,6 +171,7 @@
     <div class="rocket-wrap" style="transform:rotate(82deg)">
       <img src="/rocket-image.png" alt="Design a Moon">
     </div>
+    <div class="stop-label">Design a Moon</div>
   </div>
 
   <!-- 6. Quiz -->
@@ -157,6 +180,7 @@
     <div class="rocket-wrap" style="transform:rotate(93deg)">
       <img src="/rocket-image.png" alt="Quiz">
     </div>
+    <div class="stop-label">Quiz</div>
   </div>
 
   <!-- 7. Get Your Badge! -->
@@ -165,6 +189,7 @@
     <div class="rocket-wrap" style="transform:rotate(45deg)">
       <img src="/rocket-image.png" alt="Get Your Badge!">
     </div>
+    <div class="stop-label">Get Your Badge!</div>
   </div>
 
   <!-- Music toggle -->
