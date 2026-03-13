@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build a Rover!</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a0a08;
+    overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ── 16:9 stage ── */
+  .stage {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 56.25vw;
+    max-height: 100vh;
+    max-width: 177.78vh;
+    background: url('/mars-surface-bg.jpg') center/cover no-repeat;
+    overflow: hidden;
+  }
+
+  /* gradient overlay so left panel reads cleanly */
+  .stage::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to right,
+      rgba(8,4,2,0.82) 0%,
+      rgba(8,4,2,0.72) 36%,
+      rgba(8,4,2,0.18) 52%,
+      transparent 68%
+    );
+    z-index: 1;
+  }
+
+  /* ── Left panel ── */
+  .panel {
+    position: absolute;
+    top: 0; left: 0;
+    width: 38%;
+    height: 100%;
+    z-index: 2;
+    padding: 1.6% 1.8% 1.4% 2.2%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6%;
+  }
+
+  .panel-title {
+    font-size: 2.1vw;
+    font-weight: 900;
+    color: #ed7c5a;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    line-height: 1.1;
+    flex-shrink: 0;
+  }
+
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    flex-shrink: 0;
+  }
+
+  .progress-dot {
+    width: 1.1vw; height: 1.1vw;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    border: 0.14vw solid rgba(255,255,255,0.35);
+    transition: all 0.35s;
+    flex-shrink: 0;
+  }
+  .progress-dot.done {
+    background: #ed7c5a;
+    border-color: #ed7c5a;
+    box-shadow: 0 0 7px rgba(237,124,90,0.7);
+  }
+  .progress-label {
+    font-size: 0.95vw;
+    font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    margin-left: 0.3vw;
+  }
+
+  /* ── Category cards ── */
+  .categories {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55%;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .category {
+    background: rgba(8,16,32,0.78);
+    border-radius: 0.7vw;
+    border: 0.12vw solid rgba(255,255,255,0.1);
+    padding: 0.55vw 0.7vw 0.5vw;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    transition: border-color 0.3s;
+  }
+  .category.complete {
+    border-color: rgba(237,124,90,0.55);
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.4vw;
+    flex-shrink: 0;
+  }
+  .cat-icon { font-size: 1vw; margin-right: 0.3vw; }
+  .cat-title {
+    font-size: 1vw;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .cat-check {
+    margin-left: auto;
+    font-size: 0.9vw;
+    color: #ed7c5a;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .category.complete .cat-check { opacity: 1; }
+
+  /* ── Option thumbnails ── */
+  .options {
+    display: flex;
+    gap: 0.6vw;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 0.55vw;
+    border: 0.14vw solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.04);
+    padding: 0.3vw 0.2vw 0.25vw;
+    transition: border-color 0.18s, background 0.18s, transform 0.15s;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .option:hover {
+    border-color: rgba(85,182,202,0.65);
+    background: rgba(85,182,202,0.1);
+    transform: translateY(-0.15vw);
+  }
+  .option.selected {
+    border-color: #ed7c5a;
+    background: rgba(237,124,90,0.16);
+    box-shadow: 0 0 0.6vw rgba(237,124,90,0.4);
+  }
+  .option svg {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: visible;
+  }
+  .option-label {
+    font-size: 0.7vw;
+    font-weight: 700;
+    color: rgba(255,255,255,0.65);
+    text-align: center;
+    margin-top: 0.15vw;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .option.selected .option-label { color: #ed7c5a; }
+
+  /* ── Preview area ── */
+  .preview-area {
+    position: absolute;
+    top: 0; left: 36%;
+    width: 64%; height: 100%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-label {
+    font-size: 1.5vw;
+    font-weight: 800;
+    color: rgba(255,255,255,0.85);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    margin-bottom: 0.8vw;
+    letter-spacing: 0.04em;
+  }
+
+  .rover-stage {
+    position: relative;
+    width: 82%;
+  }
+  .rover-stage svg#rover-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 6px 24px rgba(0,0,0,0.5));
+    transition: transform 0s;
+  }
+
+  /* ── Dust clouds ── */
+  .dust-container {
+    position: absolute;
+    bottom: 4%;
+    right: 2%;
+    width: 35%;
+    height: 42%;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* ── Instruction text ── */
+  .instruction {
+    font-size: 0.9vw;
+    color: rgba(255,255,255,0.45);
+    font-weight: 700;
+    margin-top: 0.6vw;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── Launch button ── */
+  #launch-btn {
+    position: absolute;
+    bottom: 5.5%;
+    left: 68%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: linear-gradient(135deg, #ed7c5a 0%, #d95f36 100%);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.8vw;
+    font-weight: 900;
+    padding: 0.7vw 2.2vw;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0.3vw 1.5vw rgba(237,124,90,0.55);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s, box-shadow 0.2s;
+  }
+  #launch-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    animation: pulse-launch 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-launch {
+    0%,100% { box-shadow: 0 0.3vw 1.5vw rgba(237,124,90,0.55); transform: translateX(-50%) scale(1); }
+    50%      { box-shadow: 0 0.4vw 2.5vw rgba(237,124,90,0.85); transform: translateX(-50%) scale(1.05); }
+  }
+  #launch-btn:hover:not(:disabled) {
+    animation: none;
+    transform: translateX(-50%) scale(1.08);
+    box-shadow: 0 0.4vw 2.8vw rgba(237,124,90,0.9);
+  }
+  #launch-btn:disabled { cursor: default; }
+
+  /* ── Home button ── */
+  .home-btn {
+    position: absolute;
+    top: 3%;
+    right: 2%;
+    z-index: 20;
+    background: rgba(8,16,32,0.7);
+    border: 0.12vw solid rgba(255,255,255,0.2);
+    border-radius: 99px;
+    color: rgba(255,255,255,0.75);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9vw;
+    font-weight: 800;
+    padding: 0.35vw 1vw;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, color 0.2s;
+  }
+  .home-btn:hover {
+    background: rgba(85,182,202,0.25);
+    color: #fff;
+  }
+
+  /* ── Part-selected pop animation ── */
+  @keyframes svg-pop {
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .popping { animation: svg-pop 0.28s ease-out; }
+
+  /* ── Dust cloud puff ── */
+  @keyframes dust-puff {
+    0%   { opacity: 0; transform: scale(0.2) translate(20px, 20px); }
+    25%  { opacity: 0.85; }
+    100% { opacity: 0; transform: scale(1.6) translate(-10px, -30px); }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- Home button -->
+  <button class="home-btn" onclick="window.location.href='/lesson-mars-map.html'">← Map</button>
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="panel">
+    <div class="panel-title">🔧 Build Your Rover!</div>
+
+    <div class="progress-row">
+      <div class="progress-dot" id="dot-0"></div>
+      <div class="progress-dot" id="dot-1"></div>
+      <div class="progress-dot" id="dot-2"></div>
+      <div class="progress-dot" id="dot-3"></div>
+      <div class="progress-dot" id="dot-4"></div>
+      <span class="progress-label" id="progress-label">Pick 5 parts to build!</span>
+    </div>
+
+    <div class="categories" id="categories-container">
+      <!-- built by JS -->
+    </div>
+  </div>
+
+  <!-- ── PREVIEW AREA ── -->
+  <div class="preview-area">
+    <div class="preview-label">Your Rover</div>
+    <div class="rover-stage" id="rover-stage">
+
+      <!-- Main rover SVG -->
+      <svg id="rover-svg" viewBox="0 0 500 270" xmlns="http://www.w3.org/2000/svg">
+        <!-- Ground shadow (stays put) -->
+        <ellipse id="ground-shadow" cx="255" cy="252" rx="148" ry="12" fill="rgba(0,0,0,0.28)"/>
+        <!-- Ground line -->
+        <line x1="30" y1="238" x2="470" y2="238" stroke="rgba(210,170,130,0.3)" stroke-width="1.5" stroke-dasharray="10,7"/>
+
+        <!-- Rover assembly groups — drawn back to front -->
+        <g id="group-wheels"></g>
+        <g id="group-chassis"></g>
+        <g id="group-body"></g>
+        <g id="group-arm"></g>
+        <g id="group-camera"></g>
+        <g id="group-antenna"></g>
+
+        <!-- Placeholder ghost outlines -->
+        <g id="ph-wheels">
+          <circle cx="178" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
+          <circle cx="250" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
+          <circle cx="322" cy="218" r="20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
+        </g>
+        <g id="ph-body">
+          <rect x="202" y="132" width="96" height="66" rx="7" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="7,5"/>
+          <text x="250" y="170" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-size="18" font-family="Nunito" font-weight="900">?</text>
+        </g>
+        <g id="ph-camera">
+          <line x1="264" y1="132" x2="264" y2="74" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+          <rect x="250" y="64" width="28" height="18" rx="4" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+        </g>
+        <g id="ph-arm">
+          <line x1="202" y1="162" x2="144" y2="162" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+          <line x1="144" y1="162" x2="144" y2="188" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+        </g>
+        <g id="ph-antenna">
+          <line x1="310" y1="132" x2="310" y2="70" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="6,5"/>
+          <circle cx="310" cy="67" r="5" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.5" stroke-dasharray="5,4"/>
+        </g>
+      </svg>
+
+      <!-- Dust cloud -->
+      <svg class="dust-container" id="dust-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    </div>
+    <div class="instruction" id="instruction-text">Pick one option from each category on the left</div>
+  </div>
+
+  <!-- Launch button -->
+  <button id="launch-btn">🚀 Launch Rover!</button>
+
+</div><!-- end .stage -->
+
+<script>
+// ─────────────────────────────────────────────
+//  PART DATA
+// ─────────────────────────────────────────────
+const CATEGORIES = [
+  { id: 'body',    label: 'Body',        icon: '🛸' },
+  { id: 'wheels',  label: 'Wheels',      icon: '⚙️' },
+  { id: 'camera',  label: 'Camera',      icon: '📷' },
+  { id: 'arm',     label: 'Robotic Arm', icon: '🦾' },
+  { id: 'antenna', label: 'Antenna',     icon: '📡' },
+];
+
+const PARTS = {
+
+  // ── BODY ──────────────────────────────────────
+  body: [
+    {
+      name: 'Compact',
+      thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="8" width="68" height="40" rx="6" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2"/>
+        <rect x="17" y="15" width="22" height="14" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="45" y="15" width="22" height="14" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="8" y="44" width="72" height="7" rx="3" fill="#8a9aaa"/>
+        <rect x="10" y="34" width="68" height="3" rx="1.5" fill="#8a9aaa" opacity="0.55"/>
+      </svg>`,
+      assembly: `
+        <rect x="200" y="132" width="100" height="66" rx="6" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2.5"/>
+        <rect x="210" y="142" width="32" height="22" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="250" y="142" width="32" height="22" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="194" y="192" width="112" height="9" rx="4" fill="#8a9aaa"/>
+        <rect x="200" y="171" width="100" height="3.5" rx="1.5" fill="#8a9aaa" opacity="0.5"/>
+      `,
+      cx1: 194, cx2: 306
+    },
+    {
+      name: 'Rectangular',
+      thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="5" width="80" height="44" rx="5" fill="#c8d4e0" stroke="#9aaabb" stroke-width="2"/>
+        <rect x="10" y="12" width="28" height="16" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="44" y="12" width="30" height="16" rx="3" fill="#3a70a8" opacity="0.9"/>
+        <rect x="2" y="46" width="84" height="7" rx="3" fill="#9aaabb"/>
+        <rect x="4" y="35" width="80" height="3" rx="1.5" fill="#9aaabb" opacity="0.55"/>
+      </svg>`,
+      assembly: `
+        <rect x="180" y="120" width="140" height="80" rx="6" fill="#c8d4e0" stroke="#9aaabb" stroke-width="2.5"/>
+        <rect x="191" y="131" width="46" height="28" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="246" y="131" width="46" height="28" rx="4" fill="#2d6a9f" opacity="0.92"/>
+        <rect x="173" y="194" width="154" height="10" rx="4" fill="#9aaabb"/>
+        <rect x="180" y="165" width="140" height="3.5" rx="1.5" fill="#9aaabb" opacity="0.5"/>
+      `,
+      cx1: 173, cx2: 327
+    },
+    {
+      name: 'Dome',
+      thumb: `<svg viewBox="0 0 88 58" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="28" width="68" height="26" rx="5" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2"/>
+        <ellipse cx="44" cy="28" rx="36" ry="22" fill="#c8d4e0" stroke="#8a9aaa" stroke-width="2"/>
+        <ellipse cx="44" cy="24" rx="20" ry="12" fill="#3a70a8" opacity="0.85"/>
+        <rect x="8" y="50" width="72" height="7" rx="3" fill="#8a9aaa"/>
+      </svg>`,
+      assembly: `
+        <rect x="202" y="162" width="96" height="44" rx="6" fill="#b0bcc8" stroke="#8a9aaa" stroke-width="2.5"/>
+        <ellipse cx="250" cy="162" rx="60" ry="36" fill="#c8d4e0" stroke="#8a9aaa" stroke-width="2.5"/>
+        <ellipse cx="250" cy="155" rx="34" ry="20" fill="#2d6a9f" opacity="0.88"/>
+        <rect x="194" y="200" width="112" height="9" rx="4" fill="#8a9aaa"/>
+      `,
+      cx1: 194, cx2: 306
+    },
+  ],
+
+  // ── WHEELS ────────────────────────────────────
+  wheels: [
+    {
+      name: '4 Round',
+      thumb: `<svg viewBox="0 0 88 42" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="15" width="76" height="7" rx="3" fill="#555" opacity="0.8"/>
+        <circle cx="17" cy="24" r="13" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <circle cx="17" cy="24" r="5" fill="#666"/>
+        <line x1="17" y1="11" x2="17" y2="37" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="4"  y1="24" x2="30" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
+        <circle cx="44" cy="24" r="13" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <circle cx="44" cy="24" r="5" fill="#666"/>
+        <line x1="44" y1="11" x2="44" y2="37" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="31" y1="24" x2="57" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
+        <circle cx="71" cy="24" r="13" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <circle cx="71" cy="24" r="5" fill="#666"/>
+        <line x1="71" y1="11" x2="71" y2="37" stroke="#1a1a1a" stroke-width="1.5"/>
+        <line x1="58" y1="24" x2="84" y2="24" stroke="#1a1a1a" stroke-width="1.5"/>
+      </svg>`,
+      assembly: `
+        <rect x="157" y="210" width="186" height="9" rx="4" fill="#555" opacity="0.85"/>
+        <circle cx="178" cy="218" r="21" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <circle cx="178" cy="218" r="8"  fill="#666"/>
+        <line x1="178" y1="197" x2="178" y2="239" stroke="#111" stroke-width="2"/>
+        <line x1="157" y1="218" x2="199" y2="218" stroke="#111" stroke-width="2"/>
+        <circle cx="229" cy="218" r="21" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <circle cx="229" cy="218" r="8"  fill="#666"/>
+        <line x1="229" y1="197" x2="229" y2="239" stroke="#111" stroke-width="2"/>
+        <line x1="208" y1="218" x2="250" y2="218" stroke="#111" stroke-width="2"/>
+        <circle cx="271" cy="218" r="21" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <circle cx="271" cy="218" r="8"  fill="#666"/>
+        <line x1="271" y1="197" x2="271" y2="239" stroke="#111" stroke-width="2"/>
+        <line x1="250" y1="218" x2="292" y2="218" stroke="#111" stroke-width="2"/>
+        <circle cx="322" cy="218" r="21" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <circle cx="322" cy="218" r="8"  fill="#666"/>
+        <line x1="322" y1="197" x2="322" y2="239" stroke="#111" stroke-width="2"/>
+        <line x1="301" y1="218" x2="343" y2="218" stroke="#111" stroke-width="2"/>
+      `
+    },
+    {
+      name: '6 Knobby',
+      thumb: `<svg viewBox="0 0 88 46" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="16" width="88" height="7" rx="3" fill="#444" opacity="0.85"/>
+        <circle cx="9"  cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
+        <circle cx="9"  cy="26" r="4"  fill="#777"/>
+        <circle cx="27" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
+        <circle cx="27" cy="26" r="4"  fill="#777"/>
+        <circle cx="45" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
+        <circle cx="45" cy="26" r="4"  fill="#777"/>
+        <circle cx="63" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
+        <circle cx="63" cy="26" r="4"  fill="#777"/>
+        <circle cx="79" cy="26" r="11" fill="#222" stroke="#5a5a5a" stroke-width="2"/>
+        <circle cx="79" cy="26" r="4"  fill="#777"/>
+      </svg>`,
+      assembly: `
+        <rect x="140" y="210" width="220" height="9" rx="4" fill="#444" opacity="0.88"/>
+        <circle cx="158" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
+        <circle cx="158" cy="218" r="8"  fill="#707070"/>
+        <circle cx="200" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
+        <circle cx="200" cy="218" r="8"  fill="#707070"/>
+        <circle cx="242" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
+        <circle cx="242" cy="218" r="8"  fill="#707070"/>
+        <circle cx="284" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
+        <circle cx="284" cy="218" r="8"  fill="#707070"/>
+        <circle cx="326" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
+        <circle cx="326" cy="218" r="8"  fill="#707070"/>
+        <circle cx="358" cy="218" r="22" fill="#1e1e1e" stroke="#5a5a5a" stroke-width="2.5"/>
+        <circle cx="358" cy="218" r="8"  fill="#707070"/>
+      `
+    },
+    {
+      name: '4 Wide Flat',
+      thumb: `<svg viewBox="0 0 88 42" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="18" width="76" height="6" rx="2" fill="#555" opacity="0.8"/>
+        <ellipse cx="16" cy="24" rx="16" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <ellipse cx="16" cy="24" rx="6"  ry="4"  fill="#666"/>
+        <ellipse cx="44" cy="24" rx="16" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <ellipse cx="44" cy="24" rx="6"  ry="4"  fill="#666"/>
+        <ellipse cx="72" cy="24" rx="16" ry="10" fill="#333" stroke="#111" stroke-width="1.5"/>
+        <ellipse cx="72" cy="24" rx="6"  ry="4"  fill="#666"/>
+      </svg>`,
+      assembly: `
+        <rect x="148" y="213" width="204" height="9" rx="4" fill="#555" opacity="0.85"/>
+        <ellipse cx="173" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <ellipse cx="173" cy="220" rx="10" ry="6"  fill="#666"/>
+        <ellipse cx="223" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <ellipse cx="223" cy="220" rx="10" ry="6"  fill="#666"/>
+        <ellipse cx="277" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <ellipse cx="277" cy="220" rx="10" ry="6"  fill="#666"/>
+        <ellipse cx="327" cy="220" rx="26" ry="15" fill="#2e2e2e" stroke="#111" stroke-width="2"/>
+        <ellipse cx="327" cy="220" rx="10" ry="6"  fill="#666"/>
+      `
+    },
+  ],
+
+  // ── CAMERA ────────────────────────────────────
+  camera: [
+    {
+      name: 'Single Mast',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="12" width="8"  height="42" rx="3" fill="#ccc"/>
+        <rect x="24" y="5"  width="40" height="18" rx="6" fill="#dde2ee" stroke="#aab2cc" stroke-width="1.5"/>
+        <circle cx="44" cy="14" r="8"  fill="#3a7fd0"/>
+        <circle cx="44" cy="14" r="3.5" fill="#1a55a8"/>
+        <circle cx="44" cy="14" r="1.2" fill="#aadefd"/>
+      </svg>`,
+      assembly: `
+        <rect x="261" y="70" width="8" height="62" rx="3.5" fill="#cccccc"/>
+        <rect x="242" y="55" width="44" height="22" rx="6" fill="#dee2ee" stroke="#aab2cc" stroke-width="2"/>
+        <circle cx="264" cy="66" r="11" fill="#3a7fd0"/>
+        <circle cx="264" cy="66" r="4.5" fill="#1a55a8"/>
+        <circle cx="264" cy="66" r="1.5" fill="#aadefd"/>
+      `
+    },
+    {
+      name: 'Dual Masts',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="30" y="22" width="7" height="34" rx="3" fill="#ccc"/>
+        <rect x="51" y="28" width="7" height="28" rx="3" fill="#ccc"/>
+        <rect x="18" y="14" width="26" height="14" rx="5" fill="#dde2ee" stroke="#aab2cc" stroke-width="1.5"/>
+        <circle cx="31" cy="21" r="6"  fill="#3a7fd0"/>
+        <circle cx="31" cy="21" r="2.5" fill="#1a55a8"/>
+        <rect x="40" y="20" width="26" height="14" rx="5" fill="#dde2ee" stroke="#aab2cc" stroke-width="1.5"/>
+        <circle cx="54" cy="27" r="6"  fill="#3a7fd0"/>
+        <circle cx="54" cy="27" r="2.5" fill="#1a55a8"/>
+      </svg>`,
+      assembly: `
+        <rect x="254" y="82" width="8" height="50" rx="3.5" fill="#cccccc"/>
+        <rect x="274" y="92" width="8" height="40" rx="3.5" fill="#cccccc"/>
+        <rect x="238" y="68" width="32" height="19" rx="5" fill="#dee2ee" stroke="#aab2cc" stroke-width="2"/>
+        <circle cx="258" cy="77" r="8" fill="#3a7fd0"/>
+        <circle cx="258" cy="77" r="3" fill="#1a55a8"/>
+        <rect x="264" y="76" width="32" height="19" rx="5" fill="#dee2ee" stroke="#aab2cc" stroke-width="2"/>
+        <circle cx="280" cy="85" r="8" fill="#3a7fd0"/>
+        <circle cx="280" cy="85" r="3" fill="#1a55a8"/>
+      `
+    },
+    {
+      name: 'Wide-Angle',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="18" width="8"  height="38" rx="3" fill="#ccc"/>
+        <rect x="6"  y="6"  width="76" height="20" rx="7" fill="#dde2ee" stroke="#aab2cc" stroke-width="1.5"/>
+        <ellipse cx="44" cy="16" rx="24" ry="8" fill="#3a7fd0" opacity="0.72"/>
+        <ellipse cx="44" cy="16" rx="11" ry="4" fill="#1a55a8"/>
+        <rect x="14" y="8"  width="10" height="12" rx="2" fill="rgba(255,255,255,0.28)"/>
+        <rect x="64" y="8"  width="10" height="12" rx="2" fill="rgba(255,255,255,0.28)"/>
+      </svg>`,
+      assembly: `
+        <rect x="261" y="82" width="8" height="50" rx="3.5" fill="#cccccc"/>
+        <rect x="220" y="60" width="70" height="26" rx="8" fill="#dee2ee" stroke="#aab2cc" stroke-width="2"/>
+        <ellipse cx="255" cy="73" rx="30" ry="11" fill="#3a7fd0" opacity="0.72"/>
+        <ellipse cx="255" cy="73" rx="14" ry="5.5" fill="#1a55a8"/>
+        <rect x="226" y="63" width="13" height="17" rx="3" fill="rgba(255,255,255,0.25)"/>
+        <rect x="272" y="63" width="13" height="17" rx="3" fill="rgba(255,255,255,0.25)"/>
+      `
+    },
+  ],
+
+  // ── ROBOTIC ARM ───────────────────────────────
+  arm: [
+    {
+      name: 'Short Stubby',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="32" y="22" width="46" height="12" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+        <circle cx="36" cy="28" r="6" fill="#7a9aa8"/>
+        <rect x="28" y="22" width="11" height="28" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+        <rect x="14" y="44" width="30" height="9"  rx="4" fill="#6a8a98"/>
+      </svg>`,
+      assembly: `
+        <rect x="148" y="156" width="55" height="12" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <circle cx="154" cy="162" r="8" fill="#7a9aa8"/>
+        <rect x="141" y="156" width="13" height="32" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <rect x="125" y="182" width="34" height="9"  rx="4" fill="#6a8a98"/>
+      `
+    },
+    {
+      name: 'Long Arm',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="22" y="22" width="54" height="10" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+        <circle cx="26" cy="27" r="7" fill="#55b6ca"/>
+        <rect x="14" y="27" width="11" height="26" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+        <rect x="6"  y="46" width="22" height="8"  rx="3" fill="#55b6ca"/>
+        <rect x="8"  y="40" width="5"  height="7"  rx="2" fill="#55b6ca" opacity="0.8"/>
+        <rect x="19" y="40" width="5"  height="7"  rx="2" fill="#55b6ca" opacity="0.8"/>
+      </svg>`,
+      assembly: `
+        <rect x="118" y="155" width="85" height="11" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <circle cx="126" cy="160" r="9" fill="#55b6ca"/>
+        <rect x="113" y="160" width="12" height="34" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <rect x="100" y="186" width="28" height="9"  rx="4" fill="#55b6ca"/>
+        <rect x="103" y="178" width="6"  height="9"  rx="2" fill="#55b6ca" opacity="0.8"/>
+        <rect x="116" y="178" width="6"  height="9"  rx="2" fill="#55b6ca" opacity="0.8"/>
+      `
+    },
+    {
+      name: 'Claw',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="26" y="24" width="50" height="10" rx="5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="1.5"/>
+        <circle cx="30" cy="29" r="6" fill="#ed7c5a"/>
+        <path d="M 18 29 L 4 20 L 2 30 Z"  fill="#ed7c5a" stroke="#c05a35" stroke-width="1"/>
+        <path d="M 18 29 L 4 38 L 2 28 Z"  fill="#ed7c5a" stroke="#c05a35" stroke-width="1"/>
+        <line x1="18" y1="29" x2="4"  y2="29" stroke="#8a9aaa" stroke-width="3"/>
+      </svg>`,
+      assembly: `
+        <rect x="122" y="155" width="80" height="11" rx="5.5" fill="#9aabb5" stroke="#7a9aa8" stroke-width="2"/>
+        <circle cx="128" cy="160" r="8" fill="#ed7c5a"/>
+        <path d="M 116 160 L 94 148 L 90 162 Z" fill="#ed7c5a" stroke="#c05a35" stroke-width="1.5"/>
+        <path d="M 116 160 L 94 172 L 90 158 Z" fill="#ed7c5a" stroke="#c05a35" stroke-width="1.5"/>
+        <line x1="116" y1="160" x2="94" y2="160" stroke="#8a9aaa" stroke-width="3"/>
+      `
+    },
+  ],
+
+  // ── ANTENNA ───────────────────────────────────
+  antenna: [
+    {
+      name: 'Dish',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="24" width="7" height="32" rx="3" fill="#ccc"/>
+        <path d="M 20 24 Q 43 4 66 24" fill="none" stroke="#55b6ca" stroke-width="3" stroke-linecap="round"/>
+        <path d="M 22 24 Q 43 8  64 24" fill="#55b6ca" opacity="0.22"/>
+        <circle cx="43" cy="24" r="5" fill="#ed7c5a"/>
+        <line x1="43" y1="19" x2="43" y2="24" stroke="#ccc" stroke-width="2"/>
+      </svg>`,
+      assembly: `
+        <rect x="307" y="88" width="8" height="44" rx="3.5" fill="#cccccc"/>
+        <path d="M 276 88 Q 311 60 346 88" fill="none" stroke="#55b6ca" stroke-width="4" stroke-linecap="round"/>
+        <path d="M 278 88 Q 311 64 344 88" fill="#55b6ca" opacity="0.22"/>
+        <circle cx="311" cy="88" r="7" fill="#ed7c5a"/>
+        <line x1="311" y1="81" x2="311" y2="88" stroke="#cccccc" stroke-width="2.5"/>
+      `
+    },
+    {
+      name: 'Tall Rod',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="40" y="6"  width="8"  height="50" rx="3" fill="#55b6ca"/>
+        <circle cx="44" cy="6" r="6"  fill="#ed7c5a"/>
+        <line x1="30" y1="20" x2="58" y2="20" stroke="#55b6ca" stroke-width="2" opacity="0.6"/>
+        <line x1="32" y1="32" x2="56" y2="32" stroke="#55b6ca" stroke-width="2" opacity="0.6"/>
+        <line x1="34" y1="44" x2="54" y2="44" stroke="#55b6ca" stroke-width="2" opacity="0.6"/>
+      </svg>`,
+      assembly: `
+        <rect x="306" y="42" width="9"  height="90" rx="4" fill="#55b6ca"/>
+        <circle cx="310" cy="42" r="8" fill="#ed7c5a"/>
+        <line x1="293" y1="62"  x2="327" y2="62"  stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
+        <line x1="295" y1="79"  x2="325" y2="79"  stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
+        <line x1="297" y1="96"  x2="323" y2="96"  stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
+        <line x1="299" y1="113" x2="321" y2="113" stroke="#55b6ca" stroke-width="2.5" opacity="0.6"/>
+      `
+    },
+    {
+      name: 'Double Rod',
+      thumb: `<svg viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="24" y="16" width="22" height="5" rx="2" fill="#ccc"/>
+        <rect x="24" y="8"  width="7"  height="50" rx="3" fill="#ccc"/>
+        <rect x="37" y="18" width="7"  height="40" rx="3" fill="#ccc"/>
+        <circle cx="27" cy="8"  r="5" fill="#55b6ca"/>
+        <circle cx="40" cy="18" r="5" fill="#55b6ca"/>
+      </svg>`,
+      assembly: `
+        <rect x="296" y="68" width="26" height="6" rx="2.5" fill="#cccccc"/>
+        <rect x="296" y="48" width="9"  height="84" rx="4" fill="#cccccc"/>
+        <rect x="313" y="62" width="9"  height="70" rx="4" fill="#cccccc"/>
+        <circle cx="300" cy="48" r="7" fill="#55b6ca"/>
+        <circle cx="317" cy="62" r="7" fill="#55b6ca"/>
+      `
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+const selected = { body: null, wheels: null, camera: null, arm: null, antenna: null };
+
+// ─────────────────────────────────────────────
+//  BUILD PANEL
+// ─────────────────────────────────────────────
+function buildPanel() {
+  const container = document.getElementById('categories-container');
+  CATEGORIES.forEach((cat, catIdx) => {
+    const parts = PARTS[cat.id];
+    const card = document.createElement('div');
+    card.className = 'category';
+    card.id = 'cat-' + cat.id;
+    card.innerHTML = `
+      <div class="cat-header">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-title">${cat.label}</span>
+        <span class="cat-check">✓</span>
+      </div>
+      <div class="options">
+        ${parts.map((part, pi) => `
+          <div class="option" id="opt-${cat.id}-${pi}" data-cat="${cat.id}" data-idx="${pi}" onclick="selectPart('${cat.id}',${pi})">
+            ${part.thumb}
+            <span class="option-label">${part.name}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  SELECT A PART
+// ─────────────────────────────────────────────
+function selectPart(catId, idx) {
+  selected[catId] = idx;
+
+  // Update option highlight
+  document.querySelectorAll(`[data-cat="${catId}"]`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`opt-${catId}-${idx}`).classList.add('selected');
+
+  // Mark category done
+  document.getElementById('cat-' + catId).classList.add('complete');
+
+  // Update rover SVG
+  updateRoverPart(catId, idx);
+
+  // Pop animation on rover
+  const svg = document.getElementById('rover-svg');
+  svg.classList.remove('popping');
+  void svg.offsetWidth; // reflow
+  svg.classList.add('popping');
+  setTimeout(() => svg.classList.remove('popping'), 300);
+
+  updateProgress();
+}
+
+// ─────────────────────────────────────────────
+//  UPDATE ROVER ASSEMBLY
+// ─────────────────────────────────────────────
+function updateRoverPart(catId, idx) {
+  const part = PARTS[catId][idx];
+
+  // Inject SVG into the rover group
+  document.getElementById('group-' + catId).innerHTML = part.assembly;
+
+  // Hide the placeholder for this group
+  const ph = document.getElementById('ph-' + catId);
+  if (ph) ph.style.display = 'none';
+
+  // Update chassis to match body
+  if (catId === 'body') {
+    const chassis = document.getElementById('group-chassis');
+    const x1 = part.cx1, x2 = part.cx2;
+    chassis.innerHTML = `<rect x="${x1}" y="196" width="${x2 - x1}" height="10" rx="4" fill="#667788"/>`;
+  }
+}
+
+// ─────────────────────────────────────────────
+//  UPDATE PROGRESS
+// ─────────────────────────────────────────────
+function updateProgress() {
+  const count = Object.values(selected).filter(v => v !== null).length;
+
+  CATEGORIES.forEach((cat, idx) => {
+    if (selected[cat.id] !== null) {
+      document.getElementById('dot-' + idx).classList.add('done');
+    }
+  });
+
+  if (count < 5) {
+    document.getElementById('progress-label').textContent = `${count} of 5 parts chosen`;
+  } else {
+    document.getElementById('progress-label').textContent = 'All parts selected — ready!';
+    document.getElementById('instruction-text').textContent = 'Your rover is ready. Hit launch! 🚀';
+    document.getElementById('launch-btn').classList.add('visible');
+  }
+}
+
+// ─────────────────────────────────────────────
+//  LAUNCH
+// ─────────────────────────────────────────────
+document.getElementById('launch-btn').addEventListener('click', function() {
+  const btn = this;
+  btn.disabled = true;
+  btn.style.animation = 'none';
+  btn.textContent = '🚀 Launching!';
+
+  // Drive rover off right side
+  const roverStage = document.getElementById('rover-stage');
+  roverStage.style.transition = 'transform 1.9s cubic-bezier(0.4, 0, 1, 1)';
+  roverStage.style.transform = 'translateX(180%)';
+
+  // Show dust cloud behind it
+  spawnDust();
+
+  setTimeout(() => {
+    window.location.href = '/lesson-complete.html?lesson=build-a-rover';
+  }, 2300);
+});
+
+// ─────────────────────────────────────────────
+//  DUST CLOUD
+// ─────────────────────────────────────────────
+function spawnDust() {
+  const dustSvg = document.getElementById('dust-svg');
+  let html = '';
+  const colors = ['rgba(205,155,100,', 'rgba(185,135,85,', 'rgba(220,170,115,', 'rgba(160,110,70,'];
+  for (let i = 0; i < 18; i++) {
+    const x   = 10  + Math.random() * 200;
+    const y   = 30  + Math.random() * 120;
+    const r   = 6   + Math.random() * 32;
+    const c   = colors[Math.floor(Math.random() * colors.length)];
+    const op  = (0.25 + Math.random() * 0.55).toFixed(2);
+    const delay = (Math.random() * 0.4).toFixed(2);
+    html += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}${op})"
+      style="animation: dust-puff ${(1.2 + Math.random()).toFixed(1)}s ${delay}s ease-out forwards; opacity:0"/>`;
+  }
+  dustSvg.innerHTML = html;
+  dustSvg.style.opacity = '1';
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+buildPanel();
+</script>
+</body>
+</html>
