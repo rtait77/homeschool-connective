@@ -50,23 +50,19 @@
     transition: transform 0.2s;
   }
 
-  /* Active — glow + hover lift (current lesson to do) */
-  .stop.active .rocket-wrap img {
+  /* Unlocked (active or completed) — glow + hover lift, always clickable */
+  .stop.active .rocket-wrap img,
+  .stop.completed .rocket-wrap img {
     filter: drop-shadow(0 0 0.6vw rgba(255,220,80,0.7));
   }
-  .stop.active:hover .rocket-wrap img {
+  .stop.active:hover .rocket-wrap img,
+  .stop.completed:hover .rocket-wrap img {
     transform: scale(1.12) translateY(-4px);
   }
 
-  /* Completed — full color, no hover animation */
-
-  /* Locked — not clickable, no hover animation */
+  /* Locked — solid color, no glow, not clickable */
   .stop.locked {
     cursor: default !important;
-  }
-  .stop.locked .rocket-wrap img,
-  .stop.completed .rocket-wrap img {
-    pointer-events: none;
   }
 
   /* Lock icon — absolutely positioned above rocket, unaffected by rocket rotation */
@@ -248,6 +244,7 @@
 
       if (isCompleted(lesson.id)) {
         el.classList.add('completed');
+        // completed stays clickable — kid can re-enter
 
       } else if (isUnlocked(lesson)) {
         el.classList.add('active');
