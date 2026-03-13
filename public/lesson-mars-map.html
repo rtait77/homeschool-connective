@@ -95,10 +95,10 @@
     line-height: 1.2;
     pointer-events: none;
     white-space: nowrap;
+    transition: transform 0.2s;
   }
   .stop:hover .stop-label {
     transform: scale(0.92);
-    transition: transform 0.2s;
   }
 
 
@@ -131,7 +131,7 @@
 
   <!-- 1. All About Mars -->
   <div class="stop" id="stop-all-about-mars" style="left:8%; top:32%"
-       onclick="goLesson('all-about-mars')">
+       onclick="goLesson('all-about-mars')" data-audio="all about mars.mp3">
     <div class="rocket-wrap" style="transform:rotate(58deg)">
       <img src="/rocket-image.png" alt="All About Mars">
     </div>
@@ -140,7 +140,7 @@
 
   <!-- 2. Mars Rovers -->
   <div class="stop" id="stop-mars-rovers" style="left:23%; top:35%"
-       onclick="goLesson('mars-rovers')">
+       onclick="goLesson('mars-rovers')" data-audio="mars rovers.mp3">
     <div class="rocket-wrap" style="transform:rotate(120deg)">
       <img src="/rocket-image.png" alt="Mars Rovers">
     </div>
@@ -149,7 +149,7 @@
 
   <!-- 3. Build a Rover -->
   <div class="stop" id="stop-build-a-rover" style="left:36%; top:42%"
-       onclick="goLesson('build-a-rover')">
+       onclick="goLesson('build-a-rover')" data-audio="build a rover.mp3">
     <div class="rocket-wrap" style="transform:rotate(95deg)">
       <img src="/rocket-image.png" alt="Build a Rover">
     </div>
@@ -158,7 +158,7 @@
 
   <!-- 4. Mars's Moons -->
   <div class="stop" id="stop-marss-moons" style="left:48%; top:51%"
-       onclick="goLesson('marss-moons')">
+       onclick="goLesson('marss-moons')" data-audio="mars moons.mp3">
     <div class="rocket-wrap" style="transform:rotate(118deg)">
       <img src="/rocket-image.png" alt="Mars's Moons">
     </div>
@@ -167,7 +167,7 @@
 
   <!-- 5. Design a Moon -->
   <div class="stop" id="stop-design-a-moon" style="left:63%; top:57%"
-       onclick="goLesson('design-a-moon')">
+       onclick="goLesson('design-a-moon')" data-audio="design a moon.mp3">
     <div class="rocket-wrap" style="transform:rotate(82deg)">
       <img src="/rocket-image.png" alt="Design a Moon">
     </div>
@@ -176,7 +176,7 @@
 
   <!-- 6. Quiz -->
   <div class="stop" id="stop-quiz" style="left:76.5%; top:58%"
-       onclick="goLesson('quiz')">
+       onclick="goLesson('quiz')" data-audio="quiz.mp3">
     <div class="rocket-wrap" style="transform:rotate(93deg)">
       <img src="/rocket-image.png" alt="Quiz">
     </div>
@@ -185,7 +185,7 @@
 
   <!-- 7. Get Your Badge! -->
   <div class="stop" id="stop-badge" style="left:90%; top:51%"
-       onclick="goLesson('badge')">
+       onclick="goLesson('badge')" data-audio="get your badge.mp3">
     <div class="rocket-wrap" style="transform:rotate(45deg)">
       <img src="/rocket-image.png" alt="Get Your Badge!">
     </div>
@@ -317,6 +317,22 @@
       musicIcon.innerHTML = '<path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>';
     }
   }
+
+  // ── Hover audio ──
+  let hoverAudio = null;
+  document.querySelectorAll('.stop[data-audio]').forEach(stop => {
+    stop.addEventListener('mouseenter', () => {
+      const src = stop.dataset.audio;
+      if (!src) return;
+      if (hoverAudio) { hoverAudio.pause(); hoverAudio.currentTime = 0; }
+      hoverAudio = new Audio('/' + src);
+      hoverAudio.volume = 0.9;
+      hoverAudio.play().catch(() => {});
+    });
+    stop.addEventListener('mouseleave', () => {
+      if (hoverAudio) { hoverAudio.pause(); hoverAudio.currentTime = 0; }
+    });
+  });
 
   // ── Init ──
   renderMap();
