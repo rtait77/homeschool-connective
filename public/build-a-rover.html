@@ -257,7 +257,7 @@
   /* ── Launch row (absolutely centered just above the rover) ── */
   #launch-row {
     position: absolute;
-    bottom: 36%;
+    bottom: 70%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 5;
@@ -361,10 +361,9 @@
 <body>
 <div class="stage">
 
-  <!-- ── BACK TO MAP (absolute top-LEFT, arrow + audio on right) ── -->
+  <!-- ── BACK TO MAP (absolute top-LEFT) ── -->
   <div id="back-to-map-row">
     <button class="nav-btn" onclick="window.location.href='/lesson-mars-map.html'">← Back to Map</button>
-    <img src="/audio-button.png" class="audio-img audio-img-overlap-right" onclick="playAudio('map-audio')" title="Listen" alt="audio">
   </div>
 
   <!-- ── LEFT PANEL ── -->
