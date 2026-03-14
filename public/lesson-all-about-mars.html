@@ -101,8 +101,20 @@ html, body { width: 100%; height: 100%; background: #07112a; overflow: hidden; f
   transition: box-shadow 0.2s;
 }
 .video-bar-hotspot:hover {
-  border-bottom: 0.25vw dotted rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.08);
+  border-radius: 0.6vw;
 }
+/* Underline that appears under the baked-in "Watch these videos:" text */
+.video-bar-hotspot::after {
+  content: '';
+  display: none;
+  position: absolute;
+  left: 4%; bottom: 22%;
+  width: 56%; height: 0.2vw;
+  background: rgba(0,0,0,0.4);
+  border-radius: 1px;
+}
+.video-bar-hotspot:hover::after { display: block; }
 .play-btn {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 5.2vw; height: 5.2vw; border-radius: 50%;
@@ -348,12 +360,17 @@ function closeFullscreen() {
 }
 
 // ── Video modal ──────────────────────────────────────────────
+function stopAllAudio() {
+  [textAud, watchAud, contAud].forEach(a => { a.pause(); a.currentTime = 0; });
+}
+
 function openVideo(num) {
   const id = num === 1 ? videoBar.dataset.v1 : videoBar.dataset.v2;
   if (!id || id.startsWith('YOUTUBE')) { alert('Video coming soon!'); return; }
+  stopAllAudio();
+  bgMusic.pause();
   document.getElementById('modal-iframe').src = 'https://www.youtube.com/embed/' + id + '?autoplay=1';
   document.getElementById('modal').classList.add('open');
-  bgMusic.pause();
 }
 function closeVideo() {
   document.getElementById('modal-iframe').src = '';
