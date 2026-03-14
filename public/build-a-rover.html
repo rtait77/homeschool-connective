@@ -366,7 +366,7 @@
 
   <!-- ── BACK TO MAP (absolute top-LEFT) ── -->
   <div id="back-to-map-row">
-    <button class="nav-btn" onclick="window.location.href='/mars-map'">← Back to Map</button>
+    <button class="nav-btn" onclick="(window.top||window).location.href='/mars-map'">← Back to Map</button>
     <img src="/audio-button.png" class="audio-img audio-img-overlap-right" onclick="playAudio('map-audio')" title="Listen" alt="audio">
   </div>
 
@@ -902,7 +902,7 @@ document.getElementById('launch-btn').addEventListener('click', function() {
   spawnDust();
 
   setTimeout(() => {
-    window.location.href = '/lesson-complete.html?lesson=build-a-rover';
+    (window.top||window).location.href = '/lesson-complete.html?lesson=build-a-rover';
   }, 2300);
 });
 
