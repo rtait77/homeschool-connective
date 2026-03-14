@@ -166,12 +166,15 @@ html, body { width: 100%; height: 100%; background: #07112a; overflow: hidden; f
 }
 .modal-inner iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
 .modal-close {
-  position: absolute; top: -1.8vw; right: -1.8vw;
-  width: 3.6vw; height: 3.6vw; background: #d92343;
-  border: none; border-radius: 50%; color: white; font-size: 1.8vw;
-  font-weight: 900; cursor: pointer; z-index: 51;
+  position: absolute; top: 3%; right: 3%;
+  width: 4.5vw; height: 4.5vw; background: #d92343;
+  border: none; border-radius: 50%; color: white; font-size: 2.2vw;
+  font-weight: 900; cursor: pointer; z-index: 52;
   display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0.3vw 1.5vw rgba(0,0,0,0.6);
+  transition: transform 0.15s;
 }
+.modal-close:hover { transform: scale(1.12); }
 </style>
 </head>
 <body>
@@ -224,8 +227,8 @@ html, body { width: 100%; height: 100%; background: #07112a; overflow: hidden; f
 
   <!-- Video modal -->
   <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeVideo()">✕</button>
     <div class="modal-inner">
-      <button class="modal-close" onclick="closeVideo()">✕</button>
       <iframe id="modal-iframe" src="" allowfullscreen allow="autoplay"></iframe>
     </div>
   </div>
