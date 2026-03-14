@@ -131,7 +131,7 @@
 
   /* ── Label under circle ── */
   .stop-label {
-    margin-top: 1.4vw;
+    margin-top: 2.4vw;
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
     font-size: 1.2vw;
@@ -163,6 +163,91 @@
     12%  { opacity: 1; }
     85%  { opacity: 0.7; }
     100% { opacity: 0;   transform: rotate(var(--angle)) translateX(38vw); }
+  }
+
+  /* ── Reset button ── */
+  .reset-btn {
+    position: absolute;
+    bottom: 2.5%; left: 1.5%;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85vw;
+    font-weight: 800;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 99px;
+    padding: 0.35vw 0.9vw;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, color 0.2s;
+    z-index: 10;
+  }
+  .reset-btn:hover {
+    background: rgba(217,35,67,0.25);
+    color: rgba(255,180,180,0.9);
+    border-color: rgba(217,35,67,0.5);
+  }
+
+  /* ── Reset confirmation modal ── */
+  #reset-modal {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+  }
+  #reset-modal.open { display: flex; }
+  .reset-modal-box {
+    background: #0d1a35;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 1.2vw;
+    padding: 2.5vw 3vw 2vw;
+    max-width: 38vw;
+    text-align: center;
+    box-shadow: 0 0.5vw 3vw rgba(0,0,0,0.7);
+  }
+  .reset-modal-box h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.6vw;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 0.8vw;
+  }
+  .reset-modal-box p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1vw;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    margin-bottom: 1.8vw;
+  }
+  .reset-modal-btns {
+    display: flex;
+    gap: 1vw;
+    justify-content: center;
+  }
+  .reset-modal-btns button {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1vw;
+    padding: 0.5vw 2vw;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .reset-modal-btns button:hover { transform: scale(0.95); }
+  .btn-yes {
+    background: #d92343;
+    color: #fff;
+    box-shadow: 0 0.2vw 0.8vw rgba(217,35,67,0.4);
+  }
+  .btn-no {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.3) !important;
   }
 
   /* ── Music toggle ── */
@@ -235,6 +320,21 @@
        onclick="goLesson('badge')" data-audio="get your badge.mp3">
     <div class="stop-circle" style="background-image:url('/badge-circle.png')"></div>
     <div class="stop-label">Get Your Badge!</div>
+  </div>
+
+  <!-- Reset button -->
+  <button class="reset-btn" onclick="openResetModal()">↺ Reset Map</button>
+
+  <!-- Reset confirmation modal -->
+  <div id="reset-modal">
+    <div class="reset-modal-box">
+      <h2>⚠️ Reset the Map?</h2>
+      <p>This will erase all progress and lock every lesson.<br>You'll have to start from the beginning.<br><br>Are you sure?</p>
+      <div class="reset-modal-btns">
+        <button class="btn-yes" onclick="confirmReset()">Yes, Reset</button>
+        <button class="btn-no" onclick="closeResetModal()">No, Keep Playing</button>
+      </div>
+    </div>
   </div>
 
   <!-- Music toggle -->
@@ -391,6 +491,15 @@
     setTimeout(() => { spawnShootingStar(); scheduleNextStar(); }, delay);
   }
   scheduleNextStar();
+
+  // ── Reset ──
+  function openResetModal()  { document.getElementById('reset-modal').classList.add('open'); }
+  function closeResetModal() { document.getElementById('reset-modal').classList.remove('open'); }
+  function confirmReset() {
+    localStorage.removeItem('mars_completed');
+    closeResetModal();
+    renderMap();
+  }
 
   // ── Init ──
   renderMap();
