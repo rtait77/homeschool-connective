@@ -41,7 +41,7 @@
   /* Button group — centered in right panel below the dividing line */
   .btn-group {
     position: absolute;
-    left: 69%;
+    left: 76%;
     top: 73%;
     transform: translate(-50%, -50%);
     display: inline-flex;
@@ -75,7 +75,7 @@
   /* Red pill START button */
   .start-btn {
     height: 4.8vw;
-    padding: 0 1.2vw 0 2.2vw;
+    padding: 0 3vw;
     background: #d92343;
     color: white;
     border: none;
@@ -89,24 +89,13 @@
     z-index: 1;
     box-shadow: 0 0.3vw 1.5vw rgba(217,35,67,0.5);
     transition: transform 0.15s, box-shadow 0.15s;
-    display: flex; align-items: center; gap: 1vw;
+    display: flex; align-items: center; justify-content: center;
   }
   .start-btn:hover {
     transform: scale(1.04);
     box-shadow: 0 0.4vw 2vw rgba(217,35,67,0.7);
   }
   .start-btn:active { transform: scale(0.97); }
-
-  /* Arrow circle on right end of START button */
-  .arrow-circle {
-    width: 3.4vw;
-    height: 3.4vw;
-    background: rgba(255,255,255,0.22);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .arrow-circle svg { width: 55%; height: 55%; fill: white; }
 
   /* Music toggle — bottom-right corner */
   .music-btn {
@@ -140,13 +129,8 @@
       <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
     </button>
 
-    <!-- Red pill START button with arrow circle -->
-    <button class="start-btn" onclick="goStart()">
-      START
-      <span class="arrow-circle">
-        <svg viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
-      </span>
-    </button>
+    <!-- Red pill START button -->
+    <button class="start-btn" onclick="goStart()">START</button>
   </div>
 
   <!-- Music toggle -->
