@@ -454,7 +454,10 @@
   <audio id="launch-audio" src="/launch-rover.mp3"></audio>
   <audio id="rover-zoom"   src="/rover-zoom.mp3"></audio>
   <audio id="map-audio"    src="/back to map.mp3"></audio>
-  <audio id="snap-audio"   src="/puzzle-snap.mp3"></audio>
+  <audio id="snap-body"    src="/puzzle-snap.mp3"></audio>
+  <audio id="snap-wheels"  src="/space-sound-2.mp3"></audio>
+  <audio id="snap-camera"  src="/space-sound-teleport.mp3"></audio>
+  <audio id="snap-arm"     src="/BouncySound.mp3"></audio>
 
 </div><!-- end .stage -->
 
@@ -837,7 +840,7 @@ function selectPart(catId, idx) {
   document.getElementById('cat-' + catId).classList.add('complete');
 
   updateRoverPart(catId, idx);
-  playAudio('snap-audio');
+  playAudio('snap-' + catId);
 
   const svg = document.getElementById('rover-svg');
   svg.classList.remove('popping');
