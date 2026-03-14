@@ -131,7 +131,7 @@
 
   /* ── Label under circle ── */
   .stop-label {
-    margin-top: 0.6vw;
+    margin-top: 1.4vw;
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
     font-size: 1.2vw;
@@ -145,6 +145,24 @@
   }
   .stop:hover .stop-label {
     transform: scale(0.92);
+  }
+
+  /* ── Shooting stars ── */
+  .shooting-star {
+    position: absolute;
+    width: 7vw;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 40%, rgba(255,255,255,0.95) 100%);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+  @keyframes shoot {
+    0%   { opacity: 0;   transform: rotate(var(--angle)) translateX(0); }
+    12%  { opacity: 1; }
+    85%  { opacity: 0.7; }
+    100% { opacity: 0;   transform: rotate(var(--angle)) translateX(38vw); }
   }
 
   /* ── Music toggle ── */
@@ -349,6 +367,30 @@
       if (hoverAudio) { hoverAudio.pause(); hoverAudio.currentTime = 0; }
     });
   });
+
+  // ── Shooting stars ──
+  function spawnShootingStar() {
+    const stage = document.getElementById('stage');
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    // Random start: anywhere across top 70% width, top 55% height
+    star.style.left = (Math.random() * 75) + '%';
+    star.style.top  = (Math.random() * 55) + '%';
+    const angle = 18 + Math.random() * 18; // 18–36° downward angle
+    const dur   = (0.55 + Math.random() * 0.5).toFixed(2);
+    star.style.setProperty('--angle', angle + 'deg');
+    star.style.animation = `shoot ${dur}s ease-out forwards`;
+    // Vary length slightly
+    star.style.width = (5 + Math.random() * 5).toFixed(1) + 'vw';
+    stage.appendChild(star);
+    setTimeout(() => star.remove(), parseFloat(dur) * 1000 + 100);
+  }
+
+  function scheduleNextStar() {
+    const delay = 1800 + Math.random() * 4200; // every 1.8–6s
+    setTimeout(() => { spawnShootingStar(); scheduleNextStar(); }, delay);
+  }
+  scheduleNextStar();
 
   // ── Init ──
   renderMap();
