@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // Redirect to the Next.js map page — preserves any ?just-completed= param
+  var params = window.location.search;
+  window.location.replace('/mars-map' + params);
+</script>
 <title>Mission to Mars — Map</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
