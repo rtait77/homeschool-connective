@@ -272,46 +272,49 @@
     pointer-events: auto;
   }
 
-  /* ── Launch button — round red circle with arrow ── */
+  /* ── Launch button — green pill ── */
   #launch-btn {
-    background: #d92343;
+    background: #18a84a;
     color: #fff;
-    width: 5vw;
-    height: 5vw;
-    border-radius: 50%;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.6vw;
+    font-weight: 900;
+    padding: 0.55vw 1.8vw 0.55vw 1.4vw;
+    border-radius: 99px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 0.2vw 1vw rgba(217,35,67,0.5);
+    letter-spacing: 0.05em;
+    box-shadow: 0 0.2vw 1vw rgba(24,168,74,0.55);
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 0.5vw;
     flex-shrink: 0;
     transition: transform 0.15s, box-shadow 0.15s;
   }
-  #launch-btn svg.arrow-icon {
-    width: 2.2vw;
-    height: 2.2vw;
+  #launch-btn .launch-arrow {
+    font-size: 1.8vw;
+    display: inline-block;
   }
   #launch-row.visible #launch-btn {
-    animation: pulse-launch 1.6s ease-in-out infinite;
+    animation: pulse-launch 1.8s ease-in-out infinite;
   }
   @keyframes pulse-launch {
-    0%,100% { box-shadow: 0 0.2vw 1vw rgba(217,35,67,0.5); transform: scale(1); }
-    50%      { box-shadow: 0 0.3vw 2vw rgba(217,35,67,0.9); transform: scale(1.08); }
+    0%,100% { box-shadow: 0 0.2vw 1vw rgba(24,168,74,0.55); transform: scale(1); }
+    50%      { box-shadow: 0 0.4vw 2.2vw rgba(24,168,74,0.9); transform: scale(1.07); }
   }
-  #launch-row.visible #launch-btn .arrow-icon {
-    animation: arrow-nudge 1.6s ease-in-out infinite;
+  #launch-row.visible #launch-btn .launch-arrow {
+    animation: arrow-nudge 1.8s ease-in-out infinite;
   }
   @keyframes arrow-nudge {
     0%,100% { transform: translateX(0); }
-    50%      { transform: translateX(0.35vw); }
+    50%      { transform: translateX(0.4vw); }
   }
   #launch-btn:hover:not(:disabled) {
     animation: none;
-    transform: scale(0.93);
-    box-shadow: 0 0.15vw 0.6vw rgba(217,35,67,0.4);
+    transform: scale(0.94);
+    box-shadow: 0 0.15vw 0.6vw rgba(24,168,74,0.4);
   }
-  #launch-btn:hover:not(:disabled) .arrow-icon { animation: none; }
+  #launch-btn:hover:not(:disabled) .launch-arrow { animation: none; }
   #launch-btn:disabled { cursor: default; }
 
   /* ── Rover stage ── */
@@ -393,9 +396,8 @@
     <!-- Launch row (centered, hidden until all 4 parts chosen) -->
     <div id="launch-row">
       <button id="launch-btn">
-        <svg class="arrow-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path d="M10 24 H36 M26 14 L38 24 L26 34" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        </svg>
+        🚀 LAUNCH!
+        <span class="launch-arrow">→</span>
       </button>
     </div>
 
@@ -452,6 +454,7 @@
   <audio id="launch-audio" src="/launch-rover.mp3"></audio>
   <audio id="rover-zoom"   src="/rover-zoom.mp3"></audio>
   <audio id="map-audio"    src="/back to map.mp3"></audio>
+  <audio id="snap-audio"   src="/puzzle-snap.mp3"></audio>
 
 </div><!-- end .stage -->
 
@@ -834,6 +837,7 @@ function selectPart(catId, idx) {
   document.getElementById('cat-' + catId).classList.add('complete');
 
   updateRoverPart(catId, idx);
+  playAudio('snap-audio');
 
   const svg = document.getElementById('rover-svg');
   svg.classList.remove('popping');
