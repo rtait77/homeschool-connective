@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homeschool Connective — Homeschool Style Quizzes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: #fdf6ee; color: #3b2f1e; }
+
+  header {
+    background: #6b4f35;
+    color: #fdf6ee;
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+  header h1 { font-size: 2rem; letter-spacing: 1px; }
+  header p { margin-top: 8px; font-size: 1rem; opacity: 0.85; font-style: italic; }
+
+  .container { max-width: 780px; margin: 40px auto; padding: 0 20px 60px; }
+
+  .quiz-section {
+    background: #fff;
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 36px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border-top: 6px solid #a07850;
+  }
+
+  .quiz-section h2 {
+    font-size: 1.4rem;
+    color: #6b4f35;
+    margin-bottom: 6px;
+  }
+  .quiz-section .subtitle {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .question { margin-bottom: 28px; }
+  .question p {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #3b2f1e;
+    line-height: 1.5;
+  }
+
+  .options label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    border: 1.5px solid #e8ddd0;
+  }
+  .options label:hover { background: #fdf0e0; border-color: #c9a87a; }
+  .options input[type="radio"] { margin-top: 3px; accent-color: #a07850; flex-shrink: 0; }
+
+  .name-email {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .name-email input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #e8ddd0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: Georgia, serif;
+    background: #fdf6ee;
+  }
+  .name-email input:focus { outline: none; border-color: #a07850; }
+  .name-email label { display: block; font-size: 0.85rem; color: #888; margin-bottom: 5px; }
+
+  .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: #6b4f35;
+    color: #fff;
+    font-size: 1.1rem;
+    font-family: Georgia, serif;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+    margin-top: 10px;
+  }
+  .submit-btn:hover { background: #a07850; }
+
+  .results-box {
+    display: none;
+    background: #fdf0e0;
+    border: 2px solid #a07850;
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 36px;
+  }
+  .results-box h2 { color: #6b4f35; margin-bottom: 20px; font-size: 1.4rem; }
+  .result-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    border-left: 5px solid #a07850;
+  }
+  .result-card h3 { color: #6b4f35; margin-bottom: 8px; font-size: 1.1rem; }
+  .result-card p { font-size: 0.95rem; line-height: 1.6; color: #4a3b2a; }
+  .result-score { font-size: 0.8rem; color: #a07850; margin-top: 6px; font-style: italic; }
+
+  .followup-note {
+    background: #6b4f35;
+    color: #fdf6ee;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 20px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .email-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: #a07850;
+    color: #fff;
+    border-radius: 8px;
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .email-btn:hover { background: #6b4f35; }
+
+  .progress-bar {
+    height: 5px;
+    background: #e8ddd0;
+    border-radius: 3px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #a07850;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+
+  @media (max-width: 600px) {
+    .quiz-section, .results-box { padding: 24px 20px; }
+    .name-email { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌿 Homeschool Connective Consulting</h1>
+  <p>Discover how your child learns — and how you teach best</p>
+</header>
+
+<div class="container">
+
+  <!-- CONTACT INFO -->
+  <div class="quiz-section">
+    <h2>Before We Begin</h2>
+    <p class="subtitle">Just a couple quick details so we can send you your personalized follow-up.</p>
+    <div class="name-email">
+      <div>
+        <label for="parentName">Your Name *</label>
+        <input type="text" id="parentName" placeholder="Jane Smith">
+      </div>
+      <div>
+        <label for="parentEmail">Your Email *</label>
+        <input type="email" id="parentEmail" placeholder="jane@email.com">
+      </div>
+      <div>
+        <label for="childName">Child's Name *</label>
+        <input type="text" id="childName" placeholder="Child's first name">
+      </div>
+      <div>
+        <label for="childAge">Child's Age / Grade *</label>
+        <input type="text" id="childAge" placeholder="e.g. 8 years / 3rd grade">
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ 1: CHILD'S LEARNING STYLE -->
+  <div class="quiz-section" id="childQuizSection">
+    <h2>🧒 Quiz 1: Your Child's Learning Style</h2>
+    <p class="subtitle">Answer each question based on what you observe about your child. Choose the option that fits MOST of the time.</p>
+    <div class="progress-bar"><div class="progress-fill" id="childProgress" style="width:0%"></div></div>
+
+    <div class="question">
+      <p>1. When your child is trying to learn something new, they do best when...</p>
+      <div class="options">
+        <label><input type="radio" name="c1" value="visual"> They can see it — diagrams, pictures, videos, or demonstrations</label>
+        <label><input type="radio" name="c1" value="auditory"> Someone explains it out loud and they can ask questions</label>
+        <label><input type="radio" name="c1" value="kinesthetic"> They can try it themselves — touch it, build it, or move through it</label>
+        <label><input type="radio" name="c1" value="reading"> They can read about it or write it down in their own words</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>2. When your child is bored or restless during a lesson, they typically...</p>
+      <div class="options">
+        <label><input type="radio" name="c2" value="kinesthetic"> Start fidgeting, moving around, or wanting to do something with their hands</label>
+        <label><input type="radio" name="c2" value="visual"> Start doodling, looking around, or seem distracted by things in the room</label>
+        <label><input type="radio" name="c2" value="auditory"> Talk more, hum, or make sounds</label>
+        <label><input type="radio" name="c2" value="reading"> Reach for a book or start writing something else</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>3. When your child remembers something they learned, it's usually because...</p>
+      <div class="options">
+        <label><input type="radio" name="c3" value="visual"> They can picture it in their mind — like a chart or a scene</label>
+        <label><input type="radio" name="c3" value="auditory"> They remember hearing it explained or talked about</label>
+        <label><input type="radio" name="c3" value="kinesthetic"> They did something physical connected to it — a project or activity</label>
+        <label><input type="radio" name="c3" value="reading"> They read it or wrote it down somewhere</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>4. Your child's favorite type of activity or assignment tends to be...</p>
+      <div class="options">
+        <label><input type="radio" name="c4" value="kinesthetic"> Hands-on projects, experiments, crafts, or building things</label>
+        <label><input type="radio" name="c4" value="visual"> Watching videos, looking at maps, or creating visual displays</label>
+        <label><input type="radio" name="c4" value="reading"> Reading books, writing stories, or doing workbook pages</label>
+        <label><input type="radio" name="c4" value="auditory"> Listening to audiobooks, podcasts, or having discussions</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>5. When your child plays on their own, they most often...</p>
+      <div class="options">
+        <label><input type="radio" name="c5" value="kinesthetic"> Build things, act things out, or play physically active games</label>
+        <label><input type="radio" name="c5" value="visual"> Draw, color, watch things, or arrange items creatively</label>
+        <label><input type="radio" name="c5" value="reading"> Read, look through books, or write/draw stories</label>
+        <label><input type="radio" name="c5" value="auditory"> Sing, talk out loud, listen to music, or narrate what they're doing</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>6. When you give your child directions, they follow best when you...</p>
+      <div class="options">
+        <label><input type="radio" name="c6" value="visual"> Show them with a visual example or write the steps down</label>
+        <label><input type="radio" name="c6" value="auditory"> Say it clearly out loud, step by step</label>
+        <label><input type="radio" name="c6" value="kinesthetic"> Let them walk through it with you physically first</label>
+        <label><input type="radio" name="c6" value="reading"> Give them a written list they can refer back to</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>7. How long can your child typically focus during a lesson before needing a break?</p>
+      <div class="options">
+        <label><input type="radio" name="c7" value="short"> 5–10 minutes — attention span is very short</label>
+        <label><input type="radio" name="c7" value="medium"> 15–20 minutes with some redirection</label>
+        <label><input type="radio" name="c7" value="long"> 30+ minutes if they're engaged in the topic</label>
+        <label><input type="radio" name="c7" value="varies"> It varies a lot depending on the subject</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>8. Your child seems to thrive with...</p>
+      <div class="options">
+        <label><input type="radio" name="c8" value="structure"> A predictable routine — same time, same order every day</label>
+        <label><input type="radio" name="c8" value="flexible"> Flexibility — they do better when they have some choice in what/when</label>
+        <label><input type="radio" name="c8" value="mixed"> A mix — some structure but room to follow their interests</label>
+        <label><input type="radio" name="c8" value="unsure"> I'm still figuring out what works for them</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>9. When your child is upset or frustrated with a lesson, they most often...</p>
+      <div class="options">
+        <label><input type="radio" name="c9" value="kinesthetic"> Physically shut down — push away from the table or need to move</label>
+        <label><input type="radio" name="c9" value="auditory"> Verbalize it loudly — cry, argue, or talk through their frustration</label>
+        <label><input type="radio" name="c9" value="visual"> Shut down quietly and stare off or look away</label>
+        <label><input type="radio" name="c9" value="reading"> Ask to do something else or switch to a book/writing</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>10. Overall, which sentence best describes your child as a learner?</p>
+      <div class="options">
+        <label><input type="radio" name="c10" value="visual"> They need to SEE it to understand it</label>
+        <label><input type="radio" name="c10" value="auditory"> They need to HEAR it and TALK about it</label>
+        <label><input type="radio" name="c10" value="kinesthetic"> They need to DO it and MOVE through it</label>
+        <label><input type="radio" name="c10" value="reading"> They need to READ it and WRITE it</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ 2: PARENT TEACHING STYLE -->
+  <div class="quiz-section" id="parentQuizSection">
+    <h2>👩‍🏫 Quiz 2: Your Teaching Style</h2>
+    <p class="subtitle">Answer honestly — there are no wrong answers! This helps us match you with approaches that feel natural to YOU.</p>
+    <div class="progress-bar"><div class="progress-fill" id="parentProgress" style="width:0%"></div></div>
+
+    <div class="question">
+      <p>1. When you imagine your ideal homeschool day, it looks like...</p>
+      <div class="options">
+        <label><input type="radio" name="p1" value="structured"> A clear schedule with set times for each subject — predictable and consistent</label>
+        <label><input type="radio" name="p1" value="relaxed"> Following our interests wherever they lead — flexible and organic</label>
+        <label><input type="radio" name="p1" value="mixed"> Structured mornings with free exploration in the afternoons</label>
+        <label><input type="radio" name="p1" value="unsure"> I honestly don't know yet — I'm still figuring it out</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>2. When it comes to curriculum, you prefer...</p>
+      <div class="options">
+        <label><input type="radio" name="p2" value="structured"> An all-in-one curriculum that tells me exactly what to do each day</label>
+        <label><input type="radio" name="p2" value="relaxed"> Piecing together resources based on what my child is interested in</label>
+        <label><input type="radio" name="p2" value="mixed"> A spine curriculum with room to add my own extras</label>
+        <label><input type="radio" name="p2" value="unsure"> I'm not sure — I need guidance on this</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>3. When a lesson doesn't go as planned, you typically...</p>
+      <div class="options">
+        <label><input type="radio" name="p3" value="structured"> Feel stressed — I like to stick to the plan and get back on track quickly</label>
+        <label><input type="radio" name="p3" value="relaxed"> Go with the flow — unplanned moments are often the best learning</label>
+        <label><input type="radio" name="p3" value="mixed"> Adapt in the moment but try to circle back to the goal</label>
+        <label><input type="radio" name="p3" value="unsure"> Feel overwhelmed — I'm not sure how to handle it</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>4. Your natural strengths as a teacher are...</p>
+      <div class="options">
+        <label><input type="radio" name="p4" value="structured"> Organizing, planning, and creating systems that work consistently</label>
+        <label><input type="radio" name="p4" value="relaxed"> Making learning fun, being creative, and following my child's curiosity</label>
+        <label><input type="radio" name="p4" value="mixed"> Explaining things clearly and adapting to what my child needs in the moment</label>
+        <label><input type="radio" name="p4" value="unsure"> I'm still discovering my strengths as a homeschool teacher</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>5. When it comes to record-keeping and tracking progress, you...</p>
+      <div class="options">
+        <label><input type="radio" name="p5" value="structured"> Keep detailed records — portfolios, logs, or formal assessments</label>
+        <label><input type="radio" name="p5" value="relaxed"> Keep it minimal — I trust I know where my child is without formal tracking</label>
+        <label><input type="radio" name="p5" value="mixed"> Keep some basic records but don't stress over formality</label>
+        <label><input type="radio" name="p5" value="unsure"> I'm not sure what I'm supposed to be tracking</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>6. When your child is struggling with a concept, you most naturally...</p>
+      <div class="options">
+        <label><input type="radio" name="p6" value="structured"> Look for a different workbook, worksheet, or structured resource to try</label>
+        <label><input type="radio" name="p6" value="relaxed"> Take a break from it and come back when they seem more ready</label>
+        <label><input type="radio" name="p6" value="mixed"> Try explaining it a different way or find a hands-on activity to illustrate it</label>
+        <label><input type="radio" name="p6" value="unsure"> Feel stuck and unsure what to do next</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>7. How many hours per day are you aiming to do "formal" schoolwork?</p>
+      <div class="options">
+        <label><input type="radio" name="p7" value="light"> 1–2 hours — I believe in short focused lessons</label>
+        <label><input type="radio" name="p7" value="moderate"> 2–4 hours — a solid half-day of structured learning</label>
+        <label><input type="radio" name="p7" value="full"> 4–6 hours — we want a more school-like experience</label>
+        <label><input type="radio" name="p7" value="unsure"> I'm not sure what's realistic or appropriate</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>8. When you think about your homeschool philosophy, you most identify with...</p>
+      <div class="options">
+        <label><input type="radio" name="p8" value="structured"> Classical or Traditional — rigorous academics, great books, mastery-based</label>
+        <label><input type="radio" name="p8" value="relaxed"> Unschooling or Charlotte Mason — child-led, nature-based, living books</label>
+        <label><input type="radio" name="p8" value="mixed"> Eclectic — I take the best from multiple approaches</label>
+        <label><input type="radio" name="p8" value="unsure"> I don't know the difference yet — I need help understanding my options</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>9. At the end of a homeschool day, you feel most satisfied when...</p>
+      <div class="options">
+        <label><input type="radio" name="p9" value="structured"> We completed everything on the checklist</label>
+        <label><input type="radio" name="p9" value="relaxed"> My child was excited and engaged, even if we went off-plan</label>
+        <label><input type="radio" name="p9" value="mixed"> We covered the essentials AND had some fun discoveries along the way</label>
+        <label><input type="radio" name="p9" value="unsure"> Honestly, most days I just feel relieved it's over</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>10. Right now, your biggest challenge as a homeschool teacher is...</p>
+      <div class="options">
+        <label><input type="radio" name="p10" value="structured"> Staying consistent and not falling behind the plan</label>
+        <label><input type="radio" name="p10" value="relaxed"> Feeling like we're doing "enough" without a formal structure</label>
+        <label><input type="radio" name="p10" value="mixed"> Balancing structure with flexibility and not burning out</label>
+        <label><input type="radio" name="p10" value="unsure"> Everything feels overwhelming — I need a starting point</label>
+      </div>
+    </div>
+  </div>
+
+  <button class="submit-btn" onclick="submitQuizzes()">✨ See My Results</button>
+
+  <!-- RESULTS -->
+  <div class="results-box" id="resultsBox">
+    <h2>🌿 Your Homeschool Style Snapshot</h2>
+    <div id="childResult"></div>
+    <div id="parentResult"></div>
+    <div id="alignmentNote"></div>
+    <div class="followup-note">
+      <strong>What happens next?</strong><br><br>
+      Your full answers are being sent to your consultant for review. Within 2–3 business days, you'll receive a personalized follow-up email with deeper insight into your results, specific curriculum recommendations, and suggested next steps tailored to your family. Keep an eye on your inbox! 🌱
+    </div>
+    <a id="emailLink" href="#" class="email-btn">📧 Send My Results to Mel</a>
+  </div>
+
+</div>
+
+<script>
+const childStyles = {
+  visual: {
+    label: "Visual Learner",
+    desc: "Your child learns best through seeing. They thrive with diagrams, videos, colorful materials, timelines, and visual demonstrations. They likely have a good visual memory and may enjoy drawing or color-coding their notes."
+  },
+  auditory: {
+    label: "Auditory Learner",
+    desc: "Your child learns best through listening and discussion. They do well with read-alouds, audiobooks, verbal explanation, and talking through problems. Music, rhythm, and conversation are powerful tools for them."
+  },
+  kinesthetic: {
+    label: "Kinesthetic / Hands-On Learner",
+    desc: "Your child learns best by doing. They need movement, manipulation, and real-world application. Projects, experiments, building, acting out lessons, and frequent movement breaks will help them retain information."
+  },
+  reading: {
+    label: "Reading/Writing Learner",
+    desc: "Your child learns best through text and written expression. They tend to love books, writing, note-taking, and lists. Workbooks, journaling, and reading-based curricula often work very well for them."
+  }
+};
+
+const parentStyles = {
+  structured: {
+    label: "Structured / Traditional Teacher",
+    desc: "You thrive with clear plans, organized schedules, and measurable progress. You'll do well with all-in-one curricula, daily checklists, and consistent routines. Your strength is reliability and follow-through."
+  },
+  relaxed: {
+    label: "Relaxed / Child-Led Teacher",
+    desc: "You thrive when learning feels natural and interest-driven. You're flexible, creative, and good at following your child's curiosity. Charlotte Mason, unschooling, or unit studies may feel like a natural fit."
+  },
+  mixed: {
+    label: "Eclectic / Balanced Teacher",
+    desc: "You blend structure with flexibility naturally. You likely prefer a core curriculum as a guide while leaving room for rabbit trails and exploration. Eclectic approaches and flexible spine curricula tend to work best for you."
+  },
+  unsure: {
+    label: "Still Finding Your Style",
+    desc: "You're in the discovery phase — and that's completely okay! Many amazing homeschool parents start here. You'll benefit most from guided support to help you identify what feels right for your family before committing to a curriculum or approach."
+  }
+};
+
+function getTopScore(prefix, options) {
+  const scores = {};
+  options.forEach(o => scores[o] = 0);
+  for (let i = 1; i <= 10; i++) {
+    const el = document.querySelector(`input[name="${prefix}${i}"]:checked`);
+    if (el && scores[el.value] !== undefined) scores[el.value]++;
+  }
+  return Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+}
+
+function buildEmailBody() {
+  const name = document.getElementById('parentName').value;
+  const email = document.getElementById('parentEmail').value;
+  const child = document.getElementById('childName').value;
+  const age = document.getElementById('childAge').value;
+
+  let body = `NEW QUIZ SUBMISSION\n\nParent: ${name}\nEmail: ${email}\nChild: ${child}\nAge/Grade: ${age}\n\n--- CHILD LEARNING STYLE ANSWERS ---\n`;
+  const cLabels = ["When learning something new","When bored/restless","How they remember","Favorite activity","How they play","Following directions","Attention span","Thrives with","When frustrated","Overall description"];
+  for (let i = 1; i <= 10; i++) {
+    const el = document.querySelector(`input[name="c${i}"]:checked`);
+    body += `Q${i} (${cLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
+  }
+  body += `\n--- PARENT TEACHING STYLE ANSWERS ---\n`;
+  const pLabels = ["Ideal homeschool day","Curriculum preference","When lesson fails","Natural strengths","Record-keeping","Child struggling","Hours per day","Philosophy","End of day satisfaction","Biggest challenge"];
+  for (let i = 1; i <= 10; i++) {
+    const el = document.querySelector(`input[name="p${i}"]:checked`);
+    body += `Q${i} (${pLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
+  }
+  return encodeURIComponent(body);
+}
+
+function updateProgress() {
+  const childAnswered = document.querySelectorAll('[name^="c"]:checked').length;
+  const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
+  document.getElementById('childProgress').style.width = (childAnswered / 10 * 100) + '%';
+  document.getElementById('parentProgress').style.width = (parentAnswered / 10 * 100) + '%';
+}
+
+document.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', updateProgress));
+
+function submitQuizzes() {
+  const name = document.getElementById('parentName').value.trim();
+  const email = document.getElementById('parentEmail').value.trim();
+  if (!name || !email) { alert('Please enter your name and email before submitting.'); return; }
+
+  const childAnswered = document.querySelectorAll('[name^="c"]:checked').length;
+  const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
+  if (childAnswered < 10 || parentAnswered < 10) {
+    alert('Please answer all questions in both quizzes before submitting!');
+    return;
+  }
+
+  const [childKey] = getTopScore('c', ['visual','auditory','kinesthetic','reading']);
+  const [parentKey] = getTopScore('p', ['structured','relaxed','mixed','unsure']);
+
+  const child = childStyles[childKey];
+  const parent = parentStyles[parentKey];
+
+  document.getElementById('childResult').innerHTML = `
+    <div class="result-card">
+      <h3>🧒 ${document.getElementById('childName').value}'s Learning Style: ${child.label}</h3>
+      <p>${child.desc}</p>
+    </div>`;
+
+  document.getElementById('parentResult').innerHTML = `
+    <div class="result-card">
+      <h3>👩‍🏫 Your Teaching Style: ${parent.label}</h3>
+      <p>${parent.desc}</p>
+    </div>`;
+
+  const alignments = {
+    'structured-visual': "Great news — your structured approach pairs beautifully with your child's visual learning style. Organized, colorful curricula with charts and visual schedules will work wonderfully for your family.",
+    'structured-kinesthetic': "There's a natural tension here to work with — your preference for structure combined with your child's need for movement means building active learning INTO your schedule will be key.",
+    'relaxed-kinesthetic': "What a natural fit! Your flexible approach gives your hands-on learner room to explore, build, and discover. Project-based and interest-led learning will feel like a dream for you both.",
+    'mixed-reading': "Your eclectic teaching style gives you the flexibility to lean into reading and writing activities your child loves while still keeping things organized and progressive.",
+  };
+  const alignKey = `${parentKey}-${childKey}`;
+  const alignNote = alignments[alignKey] || "Your consultant will share personalized insight on how your teaching style and your child's learning style complement each other — and where to watch for friction.";
+
+  document.getElementById('alignmentNote').innerHTML = `
+    <div class="result-card" style="border-left-color:#6b4f35">
+      <h3>✨ Style Alignment Note</h3>
+      <p>${alignNote}</p>
+    </div>`;
+
+  const subj = encodeURIComponent(`Quiz Results — ${name} & ${document.getElementById('childName').value}`);
+  const body = buildEmailBody();
+  document.getElementById('emailLink').href = `mailto:consulting@homeschoolconnective.com?subject=${subj}&body=${body}`;
+
+  document.getElementById('resultsBox').style.display = 'block';
+  document.getElementById('resultsBox').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
