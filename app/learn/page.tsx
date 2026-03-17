@@ -863,7 +863,7 @@ export default function GamesPage() {
       {fullGames.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
           {fullGames.map(game => (
-            <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+            <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
         </div>
       )}
@@ -876,7 +876,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {miniGames.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         </>
@@ -890,7 +890,7 @@ export default function GamesPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {lessons.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
             ))}
           </div>
         </>
@@ -943,8 +943,8 @@ export default function GamesPage() {
   )
 }
 
-function GameCard({ game, hasAccess, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
-  const href = hasAccess ? game.url : '/signup'
+function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
+  const href = hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
   const external = hasAccess && game.newTab !== false
 
   return (
@@ -982,7 +982,7 @@ function GameCard({ game, hasAccess, userId, isFavorited, onToggleFavorite }: { 
         <p className="font-extrabold text-base mb-2">{game.title}</p>
         {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
         {!hasAccess && (
-          <p className="mt-3 text-sm font-bold text-[#55b6ca]">Start free trial →</p>
+          <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to play →' : 'Start free trial →'}</p>
         )}
       </div>
     </a>
