@@ -87,7 +87,7 @@ export default function AdminPage() {
   const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay'>('overview')
+  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay' | 'analytics'>('overview')
 
   const [stats, setStats] = useState<Stats | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
@@ -104,6 +104,15 @@ export default function AdminPage() {
   const [gameplay, setGameplay] = useState<Gameplay | null>(null)
   const [gameplayLoading, setGameplayLoading] = useState(false)
   const [gameplayError, setGameplayError] = useState('')
+
+  const [analytics, setAnalytics] = useState<{
+    totalAllTime: number
+    totalThisMonth: number
+    topPages: { path: string; count: number }[]
+    dailyVisits: { date: string; count: number }[]
+    recentVisits: { path: string; visited_at: string; user_id: string | null }[]
+  } | null>(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -157,6 +166,16 @@ export default function AdminPage() {
       .catch(() => setRevenueLoading(false))
   }, [isAdmin, tab])
 
+  // Load analytics when tab changes to 'analytics'
+  useEffect(() => {
+    if (!isAdmin || tab !== 'analytics' || analytics) return
+    setAnalyticsLoading(true)
+    fetch('/api/admin/page-views')
+      .then(r => r.json())
+      .then(data => { setAnalytics(data); setAnalyticsLoading(false) })
+      .catch(() => setAnalyticsLoading(false))
+  }, [isAdmin, tab])
+
   // Load gameplay when tab changes to 'gameplay'
   useEffect(() => {
     if (!isAdmin || tab !== 'gameplay' || gameplay) return
@@ -189,6 +208,7 @@ export default function AdminPage() {
     { id: 'users', label: 'Users' },
     { id: 'revenue', label: 'Revenue' },
     { id: 'gameplay', label: 'Gameplay' },
+    { id: 'analytics', label: 'Analytics' },
   ] as const
 
   return (
@@ -471,6 +491,110 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ANALYTICS TAB */}
+      {tab === 'analytics' && (
+        <div>
+          {analyticsLoading && <p className="text-sm text-[#5c5c5c]">Loading analytics...</p>}
+          {analytics && (
+            <>
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <StatCard label="Total Visits (All Time)" value={analytics.totalAllTime.toLocaleString()} />
+                <StatCard label="Visits This Month" value={analytics.totalThisMonth.toLocaleString()} />
+              </div>
+
+              {/* Top pages */}
+              <div className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden mb-8" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <div className="px-6 py-4 border-b border-[#e2ddd5]">
+                  <h2 className="font-extrabold text-base">Top Pages (last 30 days)</h2>
+                </div>
+                {analytics.topPages.length === 0 ? (
+                  <p className="px-6 py-8 text-sm text-[#5c5c5c] text-center">No data yet.</p>
+                ) : (
+                  <div className="p-6 space-y-3">
+                    {analytics.topPages.map(p => {
+                      const max = analytics.topPages[0].count
+                      return (
+                        <div key={p.path}>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span className="font-bold">{p.path === '/' ? '/ (Home)' : p.path}</span>
+                            <span className="text-[#5c5c5c]">{p.count.toLocaleString()} visits</span>
+                          </div>
+                          <div className="h-2 bg-[#f5f1e9] rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-[#55b6ca] rounded-full"
+                              style={{ width: `${Math.round((p.count / max) * 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Daily visits */}
+              <div className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden mb-8" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <div className="px-6 py-4 border-b border-[#e2ddd5]">
+                  <h2 className="font-extrabold text-base">Daily Visits (last 30 days)</h2>
+                </div>
+                {analytics.dailyVisits.length === 0 ? (
+                  <p className="px-6 py-8 text-sm text-[#5c5c5c] text-center">No data yet.</p>
+                ) : (
+                  <div className="p-6">
+                    <div className="flex items-end gap-1 h-32">
+                      {analytics.dailyVisits.map(d => {
+                        const max = Math.max(...analytics.dailyVisits.map(x => x.count))
+                        const height = max > 0 ? Math.max(4, Math.round((d.count / max) * 100)) : 4
+                        return (
+                          <div key={d.date} className="flex-1 flex flex-col items-center gap-1 group relative">
+                            <div
+                              className="w-full bg-[#ed7c5a] rounded-t-sm hover:bg-[#d96a48] transition-colors"
+                              style={{ height: `${height}%` }}
+                              title={`${d.date}: ${d.count} visits`}
+                            />
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <div className="flex justify-between text-xs text-[#5c5c5c] mt-2">
+                      <span>{analytics.dailyVisits[0]?.date}</span>
+                      <span>{analytics.dailyVisits[analytics.dailyVisits.length - 1]?.date}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Recent visits */}
+              <div className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <div className="px-6 py-4 border-b border-[#e2ddd5]">
+                  <h2 className="font-extrabold text-base">Recent Visits</h2>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-[#f5f1e9] text-left">
+                      <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Page</th>
+                      <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Visitor</th>
+                      <th className="px-4 py-3 font-extrabold text-[#5c5c5c] text-xs uppercase tracking-wide">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#e2ddd5]">
+                    {analytics.recentVisits.map((v, i) => (
+                      <tr key={i} className="bg-white hover:bg-[#fafaf8] transition-colors">
+                        <td className="px-4 py-3 font-bold">{v.path === '/' ? '/ (Home)' : v.path}</td>
+                        <td className="px-4 py-3 text-[#5c5c5c]">{v.user_id ? 'Member' : 'Guest'}</td>
+                        <td className="px-4 py-3 text-[#5c5c5c]">
+                          {new Date(v.visited_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </>
           )}
