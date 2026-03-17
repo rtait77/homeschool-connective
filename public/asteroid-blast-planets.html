@@ -223,7 +223,10 @@ const CONFIG = {
 };
 
 const CORRECT = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
-const WRONG   = ['Sun','Moon','Pluto','Comet','Asteroid','Star','Meteor','Ceres'];
+const WRONG   = ['Dwarf Planet','Vesta','Arrokoth','Moon','Sun','Meteor','Asteroid','Comet'];
+
+const sndCorrect = new Audio('/astroid-crash.mp3');
+const sndWrong   = new Audio('/space-sound-teleport.mp3');
 
 // ─── STATE ────────────────────────────────────────────────────────────────
 let lives, score, blasted, gameActive, spawnTimer, asteroidId, spawnQueue, activeCount;
@@ -283,11 +286,14 @@ function spawnAsteroid(label, isCorrect) {
   const topPct = randomBetween(12, 78);
   const fromLeft = Math.random() < 0.5;
 
-  // Regular mode: ~25% of asteroids are fast
-  const isFast = Math.random() < 0.25;
-  const duration = isFast
-    ? randomBetween(8, 12)
-    : randomBetween(14, 22);
+  // Regular mode: ~35% of asteroids are fast, some very fast
+  const speedRoll = Math.random();
+  const duration = speedRoll < 0.15
+    ? randomBetween(3, 6)    // very fast ~15%
+    : speedRoll < 0.35
+    ? randomBetween(7, 11)   // fast ~20%
+    : randomBetween(14, 20); // normal ~65%
+  const isFast = speedRoll < 0.35;
 
   const el = document.createElement('div');
   el.className = 'asteroid';
@@ -355,6 +361,7 @@ function onAsteroidClick(el, isCorrect, label) {
   if (isCorrect) {
     blasted++;
     score += 10;
+    sndCorrect.currentTime = 0; sndCorrect.play().catch(() => {});
     showExplosion(cx, cy);
     el.remove();
     activeCount--;
@@ -362,6 +369,7 @@ function onAsteroidClick(el, isCorrect, label) {
     if (blasted >= CORRECT.length) { endGame(true); return; }
     checkEmpty();
   } else {
+    sndWrong.currentTime = 0; sndWrong.play().catch(() => {});
     loseLife();
     showWrongFlash(cx, cy);
     el.style.outline = '0.3vw solid #ff4444';
@@ -378,7 +386,7 @@ function onMissed(el, label) {
   showMissedFlash(cx, cy, label);
   el.remove();
   activeCount--;
-  loseLife();
+  checkEmpty();
 }
 
 function checkEmpty() {
