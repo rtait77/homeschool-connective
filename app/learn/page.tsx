@@ -605,6 +605,7 @@ export default function GamesPage() {
   const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
+  const [trialExpired, setTrialExpired] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
@@ -644,6 +645,7 @@ export default function GamesPage() {
       const trialActive = trialEnd && trialEnd > new Date()
 
       setHasAccess(status === 'active' || !!trialActive)
+      if (!trialActive && status !== 'active' && trialEnd) setTrialExpired(true)
       setAuthChecked(true)
 
       const { data: favData } = await supabase
@@ -717,13 +719,27 @@ export default function GamesPage() {
       {/* Paywall banner */}
       {authChecked && !hasAccess && (
         <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games and lessons</p>
-            <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
-          </div>
-          <Link href="/signup" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
-            Start 7 Day Free Trial
-          </Link>
+          {trialExpired ? (
+            <>
+              <div>
+                <p className="font-extrabold text-lg mb-1">Your free trial has ended</p>
+                <p className="text-sm text-[#5c5c5c]">Subscribe to keep playing — from $5/month.</p>
+              </div>
+              <Link href="/pricing" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
+                Subscribe Now
+              </Link>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games and lessons</p>
+                <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
+              </div>
+              <Link href="/signup" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
+                Start 7 Day Free Trial
+              </Link>
+            </>
+          )}
         </div>
       )}
 
