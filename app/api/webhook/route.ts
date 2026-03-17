@@ -20,6 +20,84 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 })
   }
 
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session
+    if (session.metadata?.type === 'consulting') {
+      const customerEmail = session.customer_details?.email ?? ''
+      const customerName = session.customer_details?.name ?? 'a new customer'
+
+      // Email to Mel
+      await fetch('https://api.sender.net/v2/transactional/email', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: { name: 'Homeschool Connective', email: 'support@homeschoolconnective.com' },
+          to: [{ email: 'consulting@homeschoolconnective.com' }],
+          subject: 'New consulting signup!',
+          html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+              <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
+              <h2>New consulting signup</h2>
+              <p><strong>Name:</strong> ${customerName}</p>
+              <p><strong>Email:</strong> ${customerEmail}</p>
+              <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+              <h3>Agreed Terms</h3>
+              <ol style="color: #555; font-size: 14px; line-height: 1.7;">
+                <li>No refunds once the intake form has been sent.</li>
+                <li>Email support for 3 months. Replies within 3–5 business days, generally once per week.</li>
+                <li>Curriculum recommendations are suggestions, not guarantees. Final decision is the parent's.</li>
+                <li>Family information will not be shared with any third party.</li>
+                <li>This is an educational consulting service, not licensed tutoring or therapy.</li>
+              </ol>
+            </div>
+          `,
+        }),
+      })
+
+      // Email to customer
+      if (customerEmail) {
+        const intakeFormUrl = process.env.CONSULTING_INTAKE_FORM_URL ?? ''
+        const quizUrl = process.env.CONSULTING_QUIZ_URL ?? ''
+
+        await fetch('https://api.sender.net/v2/transactional/email', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: { name: 'Mel at Homeschool Connective', email: 'consulting@homeschoolconnective.com' },
+            to: [{ email: customerEmail }],
+            subject: 'Welcome! Here\'s your intake form and quiz',
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+                <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
+                <p style="color: #888; font-size: 13px; font-style: italic;">Welcome email from Mel coming soon.</p>
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                ${intakeFormUrl ? `<p><a href="${intakeFormUrl}" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-bottom: 12px;">Complete Your Intake Form →</a></p>` : ''}
+                ${quizUrl ? `<p><a href="${quizUrl}" style="display: inline-block; background: #55b6ca; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none;">Take the Learning Style Quiz →</a></p>` : ''}
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                <h3 style="font-size: 14px;">Your agreed terms</h3>
+                <ol style="color: #555; font-size: 13px; line-height: 1.7;">
+                  <li>No refunds once the intake form has been sent.</li>
+                  <li>Email support for 3 months. Replies within 3–5 business days, generally once per week.</li>
+                  <li>Curriculum recommendations are suggestions, not guarantees. Final decision is yours.</li>
+                  <li>Your family's information will not be shared with any third party.</li>
+                  <li>This is an educational consulting service, not licensed tutoring or therapy.</li>
+                </ol>
+                <p style="margin-top: 24px; color: #888; font-size: 13px;">Questions? Reply to this email — Mel will get back to you.</p>
+              </div>
+            `,
+          }),
+        })
+      }
+    }
+  }
+
   if (event.type === 'customer.subscription.created') {
     const subscription = event.data.object as Stripe.Subscription
     const userId = subscription.metadata?.supabase_user_id
