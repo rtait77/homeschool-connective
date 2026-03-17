@@ -4,6 +4,7 @@ import Script from 'next/script'
 import './globals.css'
 import Navbar from '@/components/layout/navbar'
 import Footer from '@/components/layout/footer'
+import PageViewTracker from '@/components/page-view-tracker'
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nunito.variable} antialiased`}>
+        <PageViewTracker />
         <Navbar />
         <main>{children}</main>
         <Footer />
