@@ -223,7 +223,10 @@ const CONFIG = {
 };
 
 const CORRECT = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
-const WRONG   = ['Sun','Moon','Pluto','Comet','Asteroid','Star','Meteor','Ceres'];
+const WRONG   = ['Dwarf Planet','Vesta','Arrokoth','Moon','Sun','Meteor','Asteroid','Comet'];
+
+const sndCorrect = new Audio('/astroid-crash.mp3');
+const sndWrong   = new Audio('/space-sound-teleport.mp3');
 
 // ─── STATE ────────────────────────────────────────────────────────────────
 let lives, score, blasted, gameActive, spawnTimer, asteroidId, spawnQueue, activeCount;
@@ -349,6 +352,7 @@ function onAsteroidClick(el, isCorrect, label) {
   if (isCorrect) {
     blasted++;
     score += 10;
+    sndCorrect.currentTime = 0; sndCorrect.play().catch(() => {});
     showExplosion(cx, cy);
     el.remove();
     activeCount--;
@@ -356,6 +360,7 @@ function onAsteroidClick(el, isCorrect, label) {
     if (blasted >= CORRECT.length) { endGame(true); return; }
     checkEmpty();
   } else {
+    sndWrong.currentTime = 0; sndWrong.play().catch(() => {});
     loseLife();
     showWrongFlash(cx, cy);
     el.style.outline = '0.3vw solid #ff4444';
