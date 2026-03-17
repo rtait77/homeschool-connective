@@ -714,7 +714,8 @@ export default function GamesPage() {
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
       <h1 className="text-3xl font-extrabold mb-2">Learn</h1>
-      <p className="text-[#5c5c5c] mb-8">Browse our games and lessons. New content added regularly!</p>
+      <p className="text-[#5c5c5c] mb-1">Browse our games and lessons. New content added regularly!</p>
+      <p className="text-sm text-[#5c5c5c] mb-8">All content is secular and designed for Grades K–3.</p>
 
       {/* Paywall banner */}
       {authChecked && !hasAccess && (
