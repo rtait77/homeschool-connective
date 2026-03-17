@@ -25,8 +25,9 @@ export default function SubscribePage() {
         .eq('id', user.id)
         .single()
       const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
+      const trialExpired = profile?.trial_end && new Date(profile.trial_end) <= new Date()
       const subscribed = profile?.subscription_status === 'active'
-      if (trialActive || subscribed) setShowTrial(false)
+      if (trialActive || trialExpired || subscribed) setShowTrial(false)
     }
     checkUser()
   }, [])
