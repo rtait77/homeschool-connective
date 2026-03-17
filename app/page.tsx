@@ -55,7 +55,7 @@ export default function HomePage() {
                 <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Mini Game</p>
                 <h3 className="font-extrabold text-base mb-2">Sun Puzzle – Medium</h3>
                 <p className="text-sm text-[#5c5c5c] flex-1 mb-5">A 9-piece sun jigsaw — can you put it back together and learn a new fact along the way?</p>
-                <a href="/puzzle-sun-medium.html"
+                <a href="/puzzle-sun-medium.html?back=home"
                   className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
                   ▶ Play Now
                 </a>
