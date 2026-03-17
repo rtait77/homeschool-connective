@@ -49,13 +49,13 @@ export default function HomePage() {
             {/* Free Mini Game */}
             <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
               <div className="relative h-44 w-full bg-[#e8e4dc]">
-                <Image src="/thumb-puzzle-easy.png" alt="Planets Puzzle" fill className="object-cover" />
+                <Image src="/the-sun-with-background.png" alt="Sun Puzzle" fill className="object-cover" />
               </div>
               <div className="p-5 flex flex-col flex-1">
                 <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Mini Game</p>
-                <h3 className="font-extrabold text-base mb-2">Planets Puzzle – Easy</h3>
-                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">Piece together the planets of the solar system in this beginner-friendly jigsaw puzzle.</p>
-                <a href="https://view.genially.com/699b8c77ce57456e07ab6ec6" target="_blank" rel="noopener noreferrer"
+                <h3 className="font-extrabold text-base mb-2">Sun Puzzle – Medium</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">A 9-piece sun jigsaw — can you put it back together and learn a new fact along the way?</p>
+                <a href="/puzzle-sun-medium.html"
                   className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
                   ▶ Play Now
                 </a>
