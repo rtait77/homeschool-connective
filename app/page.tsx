@@ -92,7 +92,11 @@ export default function HomePage() {
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Educational Games</p>
             <h2 className="text-2xl font-extrabold mb-4">Immersive Learning Adventures</h2>
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Our educational games use drag-and-drop challenges, voiceover narration, and bite-sized facts to teach kids real content — not just trivia.</p>
-            <p className="text-[#5c5c5c] leading-relaxed">Each game is built around a specific topic so it fits right into your homeschool curriculum or works as a fun stand-alone lesson.</p>
+            <p className="text-[#5c5c5c] leading-relaxed mb-6">Each game is built around a specific topic so it fits right into your homeschool curriculum or works as a fun stand-alone lesson.</p>
+            <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+              ▶ Play Demo
+            </a>
           </div>
         </div>
       </section>
