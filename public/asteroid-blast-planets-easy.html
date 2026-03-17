@@ -218,30 +218,38 @@
 const CONFIG = {
   easyMode: true,
   startLives: 5,
-  totalToBlast: 8,
   spawnInterval: 2200,
-  baseSpeed: 22,
-  speedVariance: 6,
   asteroidSize: 10,
 };
 
-const CORRECT = [
-  'Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'
-];
-const WRONG = [
-  'Sun','Moon','Pluto','Comet','Asteroid','Star','Meteor','Ceres'
-];
+const CORRECT = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
+const WRONG   = ['Sun','Moon','Pluto','Comet','Asteroid','Star','Meteor','Ceres'];
 
 // ─── STATE ────────────────────────────────────────────────────────────────
-let lives, score, blasted, totalSpawned, gameActive, spawnTimer, asteroidId;
+let lives, score, blasted, gameActive, spawnTimer, asteroidId, spawnQueue, activeCount;
+
+function buildQueue() {
+  // All 8 planets in random order, at most 1 wrong one between each planet
+  const shuffled = [...CORRECT].sort(() => Math.random() - 0.5);
+  const queue = [];
+  shuffled.forEach(planet => {
+    // 50% chance of a wrong asteroid before this planet
+    if (Math.random() < 0.5) {
+      queue.push({ label: WRONG[Math.floor(Math.random() * WRONG.length)], isCorrect: false });
+    }
+    queue.push({ label: planet, isCorrect: true });
+  });
+  return queue;
+}
 
 function init() {
   lives = CONFIG.startLives;
   score = 0;
   blasted = 0;
-  totalSpawned = 0;
+  activeCount = 0;
   gameActive = false;
   asteroidId = 0;
+  spawnQueue = buildQueue();
   document.getElementById('game-area').innerHTML = '';
   renderHUD();
 }
@@ -251,49 +259,38 @@ function renderHUD() {
   ld.innerHTML = '';
   for (let i = 0; i < CONFIG.startLives; i++) {
     const icon = document.createElement('span');
-    icon.className = 'life-icon';
     icon.style.fontSize = '2vw';
     icon.textContent = i < lives ? '❤️' : '🖤';
     ld.appendChild(icon);
   }
   document.getElementById('score-num').textContent = score;
-  document.getElementById('progress-fill').style.width =
-    (blasted / CONFIG.totalToBlast * 100) + '%';
+  document.getElementById('progress-fill').style.width = (blasted / CORRECT.length * 100) + '%';
 }
 
 // ─── ASTEROID SPAWNING ────────────────────────────────────────────────────
 function randomBetween(a, b) { return a + Math.random() * (b - a); }
 
-function pickLabel() {
-  const pool = Math.random() < 0.55 ? CORRECT : WRONG;
-  return pool[Math.floor(Math.random() * pool.length)];
+function spawnNext() {
+  if (!gameActive || spawnQueue.length === 0) return;
+  const { label, isCorrect } = spawnQueue.shift();
+  spawnAsteroid(label, isCorrect);
 }
 
-function spawnAsteroid() {
-  if (!gameActive) return;
-  totalSpawned++;
-
-  const label = pickLabel();
-  const isCorrect = CORRECT.includes(label);
+function spawnAsteroid(label, isCorrect) {
+  activeCount++;
   const id = ++asteroidId;
-
   const size = randomBetween(CONFIG.asteroidSize * 0.85, CONFIG.asteroidSize * 1.2);
   const topPct = randomBetween(12, 78);
   const fromLeft = Math.random() < 0.5;
-  const duration = randomBetween(
-    CONFIG.baseSpeed - CONFIG.speedVariance,
-    CONFIG.baseSpeed + CONFIG.speedVariance
-  );
+  const duration = randomBetween(18, 26); // easy = always slow
 
   const el = document.createElement('div');
   el.className = 'asteroid';
   el.dataset.id = id;
-  el.dataset.correct = isCorrect;
-  el.dataset.label = label;
 
   el.style.cssText = `
     top: ${topPct}%;
-    ${fromLeft ? 'left: -14vw' : 'right: -14vw'};
+    left: ${fromLeft ? -size : 100 + size}vw;
     width: ${size}vw;
     height: ${size}vw;
     z-index: 10;
@@ -320,20 +317,21 @@ function spawnAsteroid() {
   document.getElementById('game-area').appendChild(el);
 
   const startX = fromLeft ? -size : (100 + size);
-  const endX = fromLeft ? (100 + size) : -size;
+  const endX   = fromLeft ? (100 + size) : -size;
   const startTime = performance.now();
   const durationMs = duration * 1000;
 
   function drift(now) {
-    if (!gameActive) { el.remove(); return; }
-    const elapsed = now - startTime;
-    const pct = elapsed / durationMs;
+    if (!gameActive) { el.remove(); activeCount--; return; }
+    const pct = (now - startTime) / durationMs;
     if (pct >= 1) {
-      el.remove(); // easy mode: no penalty for missing
+      // Easy mode: no penalty for missing correct ones
+      el.remove();
+      activeCount--;
+      checkEmpty();
       return;
     }
-    const x = startX + (endX - startX) * pct;
-    el.style.left = x + 'vw';
+    el.style.left = (startX + (endX - startX) * pct) + 'vw';
     requestAnimationFrame(drift);
   }
   requestAnimationFrame(drift);
@@ -344,24 +342,31 @@ function onAsteroidClick(el, isCorrect, label) {
   el.classList.add('blasting');
 
   const rect = el.getBoundingClientRect();
-  const stage = document.getElementById('stage');
-  const stageRect = stage.getBoundingClientRect();
-  const cx = ((rect.left + rect.width / 2 - stageRect.left) / stageRect.width * 100).toFixed(1);
-  const cy = ((rect.top + rect.height / 2 - stageRect.top) / stageRect.height * 100).toFixed(1);
+  const sr = document.getElementById('stage').getBoundingClientRect();
+  const cx = ((rect.left + rect.width / 2 - sr.left) / sr.width * 100).toFixed(1);
+  const cy = ((rect.top + rect.height / 2 - sr.top) / sr.height * 100).toFixed(1);
 
   if (isCorrect) {
     blasted++;
     score += 10;
     showExplosion(cx, cy);
     el.remove();
+    activeCount--;
     renderHUD();
-    checkWin();
+    if (blasted >= CORRECT.length) { endGame(true); return; }
+    checkEmpty();
   } else {
     loseLife();
     showWrongFlash(cx, cy);
     el.style.outline = '0.3vw solid #ff4444';
     el.style.filter = 'brightness(0.5) saturate(3)';
-    setTimeout(() => el.remove(), 400);
+    setTimeout(() => { el.remove(); activeCount--; checkEmpty(); }, 400);
+  }
+}
+
+function checkEmpty() {
+  if (gameActive && spawnQueue.length === 0 && activeCount <= 0) {
+    endGame(blasted >= CORRECT.length);
   }
 }
 
@@ -377,7 +382,6 @@ function showExplosion(cx, cy) {
   el.className = 'explosion';
   el.style.left = cx + '%';
   el.style.top = cy + '%';
-
   const count = 8;
   el.innerHTML = `<svg width="12vw" height="12vw" viewBox="0 0 120 120" style="overflow:visible">
     ${Array.from({length:count}, (_,i) => {
@@ -386,19 +390,16 @@ function showExplosion(cx, cy) {
       const x = 60 + r * Math.cos(angle * Math.PI / 180);
       const y = 60 + r * Math.sin(angle * Math.PI / 180);
       const colors = ['#f9d84a','#ff9b3f','#ff6b6b','#fff'];
-      const c = colors[Math.floor(Math.random() * colors.length)];
+      const c = colors[i % colors.length];
       return `<circle cx="${x}" cy="${y}" r="${3+Math.random()*4}" fill="${c}">
         <animate attributeName="r" from="${3+Math.random()*4}" to="0" dur="0.5s" fill="freeze"/>
         <animate attributeName="opacity" from="1" to="0" dur="0.5s" fill="freeze"/>
       </circle>`;
     }).join('')}
-    <text x="60" y="68" text-anchor="middle" font-size="40" opacity="1">
-      💥
+    <text x="60" y="68" text-anchor="middle" font-size="40">💥
       <animate attributeName="opacity" from="1" to="0" dur="0.5s" fill="freeze"/>
-      <animate attributeName="font-size" from="40" to="60" dur="0.3s" fill="freeze"/>
     </text>
   </svg>`;
-
   document.getElementById('game-area').appendChild(el);
   setTimeout(() => el.remove(), 600);
 }
@@ -414,36 +415,26 @@ function showWrongFlash(cx, cy) {
 }
 
 // ─── WIN / LOSE ───────────────────────────────────────────────────────────
-function checkWin() {
-  if (blasted >= CONFIG.totalToBlast) endGame(true);
-}
-
 function endGame(won) {
   gameActive = false;
   clearInterval(spawnTimer);
   document.querySelectorAll('.asteroid').forEach(a => a.remove());
 
   const overlay = document.getElementById('overlay');
-  overlay.innerHTML = '';
-
-  if (won) {
-    overlay.innerHTML = `
-      <div class="star-score">⭐ ${score} points!</div>
-      <h1>Mission Complete!</h1>
-      <p>You blasted all 8 planets!<br>Outstanding astronaut work!</p>
-      <button class="btn" id="play-again-btn">Play Again</button>
-      <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
-    `;
-  } else {
-    overlay.innerHTML = `
-      <h1>🚀 Mission Failed</h1>
-      <p>You scored <strong style="color:#f9d84a">${score} points</strong>.<br>
-      Remember: only blast the <strong>planets</strong>!<br>
-      Sun, Moon, Pluto, and comets are NOT planets.</p>
-      <button class="btn" id="play-again-btn">Try Again</button>
-      <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
-    `;
-  }
+  overlay.innerHTML = won ? `
+    <div class="star-score">⭐ ${score} points!</div>
+    <h1>Mission Complete!</h1>
+    <p>You blasted all 8 planets!<br>Outstanding astronaut work!</p>
+    <button class="btn" id="play-again-btn">Play Again</button>
+    <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
+  ` : `
+    <h1>🚀 Mission Failed</h1>
+    <p>You blasted <strong style="color:#f9d84a">${blasted} of 8 planets</strong>.<br>
+    Remember: only blast the <strong>planets</strong>!<br>
+    Sun, Moon, Pluto, and comets are NOT planets.</p>
+    <button class="btn" id="play-again-btn">Try Again</button>
+    <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
+  `;
   overlay.style.display = 'flex';
   document.getElementById('play-again-btn').addEventListener('click', startGame);
 }
@@ -453,11 +444,10 @@ function startGame() {
   init();
   document.getElementById('overlay').style.display = 'none';
   gameActive = true;
-
-  spawnAsteroid();
+  spawnNext();
   spawnTimer = setInterval(() => {
-    if (blasted >= CONFIG.totalToBlast) return;
-    spawnAsteroid();
+    if (!gameActive) return;
+    if (spawnQueue.length > 0) spawnNext();
   }, CONFIG.spawnInterval);
 }
 
