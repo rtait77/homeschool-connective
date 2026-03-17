@@ -8,10 +8,16 @@ export default function AboutPage() {
         <h1 className="text-3xl font-extrabold mb-2">About</h1>
       </div>
 
+      {/* Mission Statement */}
+      <div className="bg-[#f5f1e9] border-l-4 border-[#ed7c5a] rounded-[14px] px-8 py-7 mb-12">
+        <p className="text-xs font-bold uppercase tracking-widest text-[#ed7c5a] mb-2">Our Mission</p>
+        <p className="text-lg font-extrabold leading-relaxed">Our mission is simple: make learning feel like play. Everything we build is secular, game-based, and made by homeschool moms.</p>
+      </div>
+
       <div className="space-y-5 text-[#1c1c1c] leading-relaxed mb-12">
         <p>Homeschooling is a beautiful and rewarding experience for kids and home educators, but it can also come with challenges, self-doubt, and moments of loneliness. We understand these feelings because we've experienced them too.</p>
         <p>We are two homeschool moms who've had our fair share of difficulties, especially when it comes to finding the "right" curriculum (I can't tell you how many we've tried 🙈). Not only have we "tried them all" but we've also spent years creating different types of educational resources to fit our needs.</p>
-        <p>One thing has always had a good outcome for us — games! Therefore, we have turned our focus to creating interactive, gamified content for Grades 3–6 as well as games for Pre-K–2.</p>
+        <p>One thing has always had a good outcome for us — games! Therefore, we have turned our focus to creating interactive, gamified content for Grades K–3.</p>
         <p>In May 2024, we officially formed an LLC, solidifying our commitment to helping homeschooling families thrive.</p>
         <p className="font-bold">
           Mel &amp; Bec<br />
