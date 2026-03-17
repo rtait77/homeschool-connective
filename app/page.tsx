@@ -21,8 +21,8 @@ export default function HomePage() {
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-4">Interactive, game-based learning for homeschoolers and educators</p>
           <div className="flex items-center justify-center gap-3 mb-8">
-            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">📚 Grades K–3</span>
-            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">🌿 100% Secular</span>
+            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">Grades K–3</span>
+            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
           </div>
           <HeroButtons />
         </div>
