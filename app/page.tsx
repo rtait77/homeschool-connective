@@ -109,7 +109,7 @@ export default function HomePage() {
       <section className="bg-[#f5f1e9] py-14 px-6">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row-reverse items-center gap-10">
           <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
-            <Image src="/thumb-puzzle-easy.png" alt="Mini Games" fill className="object-cover" />
+            <Image src="/thumb-find-pair-outer.png" alt="Mini Games" fill className="object-cover" />
           </div>
           <div className="md:w-1/2">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Mini Games</p>
