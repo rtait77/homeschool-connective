@@ -58,6 +58,7 @@ type Gameplay = {
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-[#d1f5ea] text-[#1a7a52]',
   trialing: 'bg-[#fff3e0] text-[#b45309]',
+  expired: 'bg-[#fde8e8] text-[#991b1b]',
   canceled: 'bg-[#fde8e8] text-[#991b1b]',
   free: 'bg-[#f3f4f6] text-[#6b7280]',
   unknown: 'bg-[#f3f4f6] text-[#6b7280]',
