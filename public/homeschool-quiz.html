@@ -1138,9 +1138,29 @@ function buildChild(cid, num) {
     </div>
   </div>
 
-  <!-- Q9: Demonstrate understanding -->
+  <!-- Q8: Reading feel -->
   <div class="question">
-    <div class="q-label">8. How does your child best demonstrate they've understood something?</div>
+    <div class="q-label">8. How do you feel about your child's reading skills?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q8read_feel" onchange="onSection('${cid}')"> They are good</label>
+      <label><input type="radio" name="${cid}_q8read_feel" onchange="onSection('${cid}')"> They need to improve</label>
+    </div>
+  </div>
+
+  <!-- Q9: Writing feel -->
+  <div class="question">
+    <div class="q-label">9. How do you feel about your child's writing skills?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q9write_feel" onchange="onSection('${cid}')"> They are good</label>
+      <label><input type="radio" name="${cid}_q9write_feel" onchange="onSection('${cid}')"> They need to improve</label>
+    </div>
+  </div>
+
+  <!-- Q10: Demonstrate understanding -->
+  <div class="question">
+    <div class="q-label">10. How does your child best demonstrate they've understood something?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Explaining it back in their own words — verbally</label>
@@ -1155,7 +1175,7 @@ function buildChild(cid, num) {
 
   <!-- Q10: Focus span -->
   <div class="question">
-    <div class="q-label">9. How long can your child realistically focus on something they didn't choose?</div>
+    <div class="q-label">11. How long can your child realistically focus on something they didn't choose?</div>
     <div class="q-note">Choose one</div>
     <div class="options">
       <label><input type="radio" name="${cid}_q10" id="${cid}_q10_short" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> 5 minutes or less</label>
@@ -1176,7 +1196,7 @@ function buildChild(cid, num) {
 
   <!-- Q11: Interests -->
   <div class="question">
-    <div class="q-label">10. What topics or subjects does your child love — and what do they avoid?</div>
+    <div class="q-label">12. What topics or subjects does your child love — and what do they avoid?</div>
     <div class="part-label">They gravitate toward:</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
@@ -1226,7 +1246,7 @@ function buildChild(cid, num) {
 
   <!-- Q12: What else -->
   <div class="question" style="margin-bottom:0">
-    <div class="q-label">11. What else would you like Mel to know about your child?</div>
+    <div class="q-label">13. What else would you like Mel to know about your child?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Is currently in speech, OT, or another therapy</label>
