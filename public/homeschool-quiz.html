@@ -478,6 +478,49 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
           <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 3–5 years</label>
           <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> More than 5 years</label>
         </div>
+
+        <!-- P-Q2 conditional: already homeschooling — experience + goal -->
+        <div class="followup" id="pq2_already_fu">
+          <div class="question">
+            <div class="q-label">How would you describe your current homeschool experience?</div>
+            <div class="q-note">Choose one</div>
+            <div class="options">
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Completely lost — I don't know where to start</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're trying, but it feels chaotic and inconsistent</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We have some things working, but need help in certain areas</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Things are going okay, but I want to level up</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're doing well — I just need accountability and new ideas</label>
+              <label><input type="checkbox" id="pq2_curexp_other_cb" onchange="toggle('pq2_curexp_other_box', this.checked); onSection('parent')"> Other</label>
+            </div>
+            <div id="pq2_curexp_other_box" class="followup">
+              <div class="field-group">
+                <label>Tell us more</label>
+                <input type="text" id="pq2_curexp_other" placeholder="Describe your experience..." oninput="onSection('parent')">
+              </div>
+            </div>
+          </div>
+          <div class="question">
+            <div class="q-label">What is your #1 goal for your homeschool right now?</div>
+            <div class="field-group" style="margin-top:12px;margin-bottom:0">
+              <textarea id="pq2_goal" rows="3" placeholder="e.g. get my child reading independently, find a curriculum that finally sticks..." oninput="onSection('parent')"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- P-Q2 conditional: just starting — feelings -->
+        <div class="followup" id="pq2_new_fu">
+          <div class="question">
+            <div class="q-label">How are you feeling about beginning homeschooling?</div>
+            <div class="q-note">Pick all that apply</div>
+            <div class="options">
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Excited — I can't wait to get started</label>
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Scared or nervous</label>
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Uncertain — not sure what to expect</label>
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Totally lost — I don't know where to begin</label>
+            </div>
+          </div>
+        </div>
+
         <div class="part-label">Have you used a formal curriculum before?</div>
         <div class="q-note">Pick all that apply</div>
         <div class="options">
@@ -495,48 +538,6 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
           <div class="field-group" style="margin:0">
             <label>What curriculum did you try?</label>
             <input type="text" id="pq2_currtried" placeholder="e.g. All About Reading, Math-U-See..." oninput="onSection('parent')">
-          </div>
-        </div>
-      </div>
-
-      <!-- P-Q2 conditional: already homeschooling — experience + goal -->
-      <div class="followup" id="pq2_already_fu">
-        <div class="question">
-          <div class="q-label">How would you describe your current homeschool experience?</div>
-          <div class="q-note">Choose one</div>
-          <div class="options">
-            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Completely lost — I don't know where to start</label>
-            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're trying, but it feels chaotic and inconsistent</label>
-            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We have some things working, but need help in certain areas</label>
-            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Things are going okay, but I want to level up</label>
-            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're doing well — I just need accountability and new ideas</label>
-            <label><input type="checkbox" id="pq2_curexp_other_cb" onchange="toggle('pq2_curexp_other_box', this.checked); onSection('parent')"> Other</label>
-          </div>
-          <div id="pq2_curexp_other_box" class="followup">
-            <div class="field-group">
-              <label>Tell us more</label>
-              <input type="text" id="pq2_curexp_other" placeholder="Describe your experience..." oninput="onSection('parent')">
-            </div>
-          </div>
-        </div>
-        <div class="question">
-          <div class="q-label">What is your #1 goal for your homeschool right now?</div>
-          <div class="field-group" style="margin-top:12px;margin-bottom:0">
-            <textarea id="pq2_goal" rows="3" placeholder="e.g. get my child reading independently, find a curriculum that finally sticks..." oninput="onSection('parent')"></textarea>
-          </div>
-        </div>
-      </div>
-
-      <!-- P-Q2 conditional: just starting — feelings -->
-      <div class="followup" id="pq2_new_fu">
-        <div class="question">
-          <div class="q-label">How are you feeling about beginning homeschooling?</div>
-          <div class="q-note">Pick all that apply</div>
-          <div class="options">
-            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Excited — I can't wait to get started</label>
-            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Scared or nervous</label>
-            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Uncertain — not sure what to expect</label>
-            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Totally lost — I don't know where to begin</label>
           </div>
         </div>
       </div>
