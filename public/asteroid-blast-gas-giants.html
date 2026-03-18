@@ -221,7 +221,7 @@ function playCorrect() { new Audio('/astroid-crash.mp3').play().catch(() => {});
 function playWrong()   { new Audio('/space-sound-teleport.mp3').play().catch(() => {}); }
 
 // ─── STATE ────────────────────────────────────────────────────────────────
-let lives, score, blasted, gameActive, spawnTimer, asteroidId, spawnQueue, activeCount, blastedSet;
+let lives, score, blasted, gameActive, spawnTimer, topUpTimer, asteroidId, spawnQueue, activeCount, blastedSet;
 
 function buildQueue() {
   const remaining = CORRECT.filter(p => !blastedSet.has(p));
@@ -453,6 +453,7 @@ function showMissedFlash(cx, cy, label) {
 function endGame(won) {
   gameActive = false;
   clearInterval(spawnTimer);
+  clearInterval(topUpTimer);
   document.querySelectorAll('.asteroid').forEach(a => a.remove());
 
   const overlay = document.getElementById('overlay');
@@ -477,11 +478,15 @@ function startGame() {
   init();
   document.getElementById('overlay').style.display = 'none';
   gameActive = true;
-  spawnNext();
+  for (let i = 0; i < 3 && spawnQueue.length > 0; i++) spawnNext();
   spawnTimer = setInterval(() => {
     if (!gameActive) return;
     if (spawnQueue.length > 0) spawnNext();
   }, CONFIG.spawnInterval);
+  topUpTimer = setInterval(() => {
+    if (!gameActive || activeCount > 0) return;
+    if (spawnQueue.length > 0) spawnNext();
+  }, 400);
 }
 
 document.getElementById('start-btn').addEventListener('click', startGame);
