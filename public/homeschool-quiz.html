@@ -153,6 +153,28 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
   line-height: 1.5;
 }
 
+/* ── Child entry rows (Before We Begin) ── */
+.child-entry-row {
+  background: #f5f1e9;
+  border: 1.5px solid #d8f0f6;
+  border-radius: 12px;
+  padding: 16px 20px 18px;
+  margin-bottom: 12px;
+}
+.child-entry-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.child-entry-row-label {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #238FA4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* ── Questions ── */
 .question { margin-bottom: 30px; }
 .q-label {
@@ -222,13 +244,13 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
   font-size: 0.91rem;
   font-family: 'Nunito', sans-serif;
   font-weight: 600;
-  background: #f5f1e9;
+  background: #fff;
   transition: border-color 0.15s;
   resize: vertical;
 }
 .field-group input:focus,
 .field-group textarea:focus { outline: none; border-color: #55b6ca; }
-.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 0; }
 .input-row .field-group { margin-bottom: 0; }
 
 /* ── Conditional followup ── */
@@ -270,18 +292,20 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
   transition: all 0.15s;
 }
 .mark-btn:hover { background: #edfaf4; }
-.mark-btn.done { background: #3dbb7e; color: #fff; cursor: default; }
+.mark-btn.done { background: #3dbb7e; color: #fff; }
+.mark-btn.done:hover { background: #2da86e; }
 
 /* ── Add child ── */
-.add-child-wrap { text-align: center; margin-bottom: 28px; }
 .add-child-btn {
-  padding: 12px 28px;
+  display: inline-block;
+  margin-top: 4px;
+  padding: 10px 22px;
   background: #fff;
   border: 2px solid #55b6ca;
   border-radius: 100px;
   color: #238FA4;
   font-family: 'Nunito', sans-serif;
-  font-size: 0.93rem;
+  font-size: 0.9rem;
   font-weight: 800;
   cursor: pointer;
   transition: all 0.15s;
@@ -301,7 +325,6 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
   padding: 4px 10px;
   border-radius: 6px;
   transition: all 0.14s;
-  flex-shrink: 0;
 }
 .remove-btn:hover { color: #ed7c5a; background: #fff0eb; }
 
@@ -371,26 +394,43 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
     <div id="sidebarItems"></div>
   </nav>
 
-  <!-- Main content -->
   <main class="content">
 
-    <!-- ══ PARENT INFO SECTION ══ -->
+    <!-- ══ BEFORE WE BEGIN ══ -->
+    <section class="quiz-section" id="section-intro">
+      <div class="section-header">
+        <div class="section-header-text">
+          <h2>Before We Begin</h2>
+          <p class="subtitle">Enter your details and add all the children you'd like to include — then work through each section at your own pace.</p>
+        </div>
+      </div>
+
+      <div class="input-row" style="margin-bottom:28px">
+        <div class="field-group">
+          <label for="parentName">Your Name *</label>
+          <input type="text" id="parentName" placeholder="Jane Smith" oninput="onSection('intro')">
+        </div>
+        <div class="field-group">
+          <label for="parentEmail">Your Email *</label>
+          <input type="email" id="parentEmail" placeholder="jane@email.com" oninput="onSection('intro')">
+        </div>
+      </div>
+
+      <div id="childEntries"></div>
+
+      <button class="add-child-btn" id="addChildBtn" onclick="addChild()">+ Add Another Child</button>
+
+      <div class="section-footer">
+        <button class="mark-btn" id="mark-intro" onclick="markDone('intro')">Mark as Complete ✓</button>
+      </div>
+    </section>
+
+    <!-- ══ PARENT INFO ══ -->
     <section class="quiz-section" id="section-parent">
       <div class="section-header">
         <div class="section-header-text">
           <h2>About You</h2>
           <p class="subtitle">Tell Mel about yourself and your homeschool before your consultation.</p>
-        </div>
-      </div>
-
-      <div class="input-row">
-        <div class="field-group">
-          <label for="parentName">Your Name *</label>
-          <input type="text" id="parentName" placeholder="Jane Smith" oninput="onSection('parent')">
-        </div>
-        <div class="field-group">
-          <label for="parentEmail">Your Email *</label>
-          <input type="email" id="parentEmail" placeholder="jane@email.com" oninput="onSection('parent')">
         </div>
       </div>
 
@@ -616,12 +656,8 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
       </div>
     </section>
 
-    <!-- Child sections injected here -->
+    <!-- Child quiz sections injected here -->
     <div id="childContainer"></div>
-
-    <div class="add-child-wrap">
-      <button class="add-child-btn" id="addChildBtn" onclick="addChild()">+ Add Another Child</button>
-    </div>
 
     <button class="submit-btn" id="submitBtn" onclick="submitForm()">Send to Mel →</button>
 
@@ -638,19 +674,20 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
 // ── STATE ──────────────────────────────────────────────────────────────────
 let children = []; // [{ id, num, name }]
 let nextNum = 1;
-const status = { parent: 'empty' }; // 'empty' | 'inprogress' | 'complete'
+const status = { intro: 'empty', parent: 'empty' };
 
 // ── NAV RENDER ─────────────────────────────────────────────────────────────
 function renderNav() {
   const sections = [
-    { id: 'parent', label: 'Parent Info' },
+    { id: 'intro',  label: 'Before We Begin' },
+    { id: 'parent', label: 'About You' },
     ...children.map((c, i) => ({ id: c.id, label: c.name || `Child ${i + 1}` }))
   ];
 
   document.getElementById('sidebarItems').innerHTML = sections.map((s, i) => `
     ${i > 0 ? '<div class="sidebar-divider"></div>' : ''}
     <div class="sidebar-item" onclick="goto('${s.id}')">
-      <div class="status-dot ${status[s.id] || ''}" id="dot-${s.id}">${status[s.id] === 'complete' ? '✓' : ''}</div>
+      <div class="status-dot ${status[s.id] || ''}">${status[s.id] === 'complete' ? '✓' : ''}</div>
       <span class="sidebar-label">${s.label}</span>
     </div>
   `).join('');
@@ -672,9 +709,16 @@ function onSection(id) {
 }
 
 function markDone(id) {
-  status[id] = 'complete';
   const btn = document.getElementById('mark-' + id);
-  if (btn) { btn.textContent = 'Completed ✓'; btn.classList.add('done'); }
+  if (status[id] === 'complete') {
+    // Unmark
+    status[id] = 'inprogress';
+    if (btn) { btn.textContent = 'Mark as Complete ✓'; btn.classList.remove('done'); }
+  } else {
+    // Mark complete
+    status[id] = 'complete';
+    if (btn) { btn.textContent = 'Completed ✓ — click to unmark'; btn.classList.add('done'); }
+  }
   renderNav();
 }
 
@@ -684,15 +728,86 @@ function toggle(id, show) {
 }
 
 function checkCurrFu() {
-  toggle('pq2_curr_fu', document.getElementById('pq2_bad')?.checked || document.getElementById('pq2_tried')?.checked);
+  toggle('pq2_curr_fu', !!(document.getElementById('pq2_bad')?.checked || document.getElementById('pq2_tried')?.checked));
 }
 
 function checkReadFu(cid) {
-  toggle(cid + '_q4fu', document.getElementById(cid + '_q4_struggle')?.checked);
+  toggle(cid + '_q4fu', !!document.getElementById(cid + '_q4_struggle')?.checked);
 }
 
 function checkFocusFu(cid) {
-  toggle(cid + '_q10fu', document.getElementById(cid + '_q10_short')?.checked || document.getElementById(cid + '_q10_depends')?.checked);
+  toggle(cid + '_q10fu', !!(document.getElementById(cid + '_q10_short')?.checked || document.getElementById(cid + '_q10_depends')?.checked));
+}
+
+// ── ADD / REMOVE CHILD ─────────────────────────────────────────────────────
+function addChild() {
+  if (children.length >= 6) return;
+  const num = nextNum++;
+  const cid = 'c' + num;
+  children.push({ id: cid, num, name: '' });
+  status[cid] = 'empty';
+
+  // Add entry row in "Before We Begin"
+  const canRemove = children.length > 1;
+  document.getElementById('childEntries').insertAdjacentHTML('beforeend', `
+    <div class="child-entry-row" id="entry-${cid}">
+      <div class="child-entry-row-header">
+        <span class="child-entry-row-label" id="entry-label-${cid}">Child ${children.length}</span>
+        ${canRemove ? `<button class="remove-btn" onclick="removeChild('${cid}')">✕ Remove</button>` : ''}
+      </div>
+      <div class="input-row">
+        <div class="field-group">
+          <label>Child's First Name *</label>
+          <input type="text" id="${cid}_name" placeholder="First name" oninput="onSection('intro'); updateName('${cid}')">
+        </div>
+        <div class="field-group">
+          <label>Age</label>
+          <input type="text" id="${cid}_age" placeholder="e.g. 7" oninput="onSection('intro')">
+        </div>
+      </div>
+    </div>
+  `);
+
+  // Add quiz section
+  document.getElementById('childContainer').insertAdjacentHTML('beforeend', buildChild(cid, num));
+
+  renderNav();
+  updateAddBtn();
+  relabelEntries();
+}
+
+function removeChild(cid) {
+  children = children.filter(c => c.id !== cid);
+  delete status[cid];
+  document.getElementById('entry-' + cid)?.remove();
+  document.getElementById('section-' + cid)?.remove();
+  relabelEntries();
+  renderNav();
+  updateAddBtn();
+}
+
+function updateAddBtn() {
+  const btn = document.getElementById('addChildBtn');
+  btn.disabled = children.length >= 6;
+  btn.textContent = children.length >= 6 ? 'Maximum 6 children reached' : '+ Add Another Child';
+}
+
+function relabelEntries() {
+  children.forEach((c, i) => {
+    const label = document.getElementById('entry-label-' + c.id);
+    if (label) label.textContent = `Child ${i + 1}`;
+  });
+}
+
+function updateName(cid) {
+  const child = children.find(c => c.id === cid);
+  const input = document.getElementById(cid + '_name');
+  if (!child || !input) return;
+  child.name = input.value.trim();
+  // Update section heading
+  const h = document.getElementById(cid + '_heading');
+  if (h) h.textContent = child.name || `Child ${children.indexOf(child) + 1}`;
+  renderNav();
 }
 
 // ── CHILD SECTION BUILDER ──────────────────────────────────────────────────
@@ -703,18 +818,6 @@ function buildChild(cid, num) {
     <div class="section-header-text">
       <h2 id="${cid}_heading">Child ${num}</h2>
       <p class="subtitle">Answer based on what you observe about this child. There are no wrong answers.</p>
-    </div>
-    ${num > 1 ? `<button class="remove-btn" onclick="removeChild('${cid}')">✕ Remove</button>` : ''}
-  </div>
-
-  <div class="input-row">
-    <div class="field-group">
-      <label>Child's Name *</label>
-      <input type="text" id="${cid}_name" placeholder="First name" oninput="onSection('${cid}'); updateName('${cid}')">
-    </div>
-    <div class="field-group">
-      <label>Child's Age</label>
-      <input type="text" id="${cid}_age" placeholder="e.g. 7" oninput="onSection('${cid}')">
     </div>
   </div>
 
@@ -871,7 +974,7 @@ function buildChild(cid, num) {
     </div>
   </div>
 
-  <!-- Q8: Writing (5 parts) -->
+  <!-- Q8: Writing -->
   <div class="question">
     <div class="q-label">8. Writing —</div>
     <div class="part-label">Part A: Where is your child in their writing journey?</div>
@@ -1040,43 +1143,6 @@ function buildChild(cid, num) {
 </section>`;
 }
 
-// ── ADD / REMOVE CHILD ─────────────────────────────────────────────────────
-function addChild() {
-  if (children.length >= 6) return;
-  const num = nextNum++;
-  const cid = 'c' + num;
-  children.push({ id: cid, num, name: '' });
-  status[cid] = 'empty';
-  document.getElementById('childContainer').insertAdjacentHTML('beforeend', buildChild(cid, num));
-  renderNav();
-  updateAddBtn();
-}
-
-function removeChild(cid) {
-  children = children.filter(c => c.id !== cid);
-  delete status[cid];
-  document.getElementById('section-' + cid)?.remove();
-  renderNav();
-  updateAddBtn();
-}
-
-function updateAddBtn() {
-  const btn = document.getElementById('addChildBtn');
-  btn.disabled = children.length >= 6;
-  btn.textContent = children.length >= 6 ? 'Maximum 6 children reached' : '+ Add Another Child';
-}
-
-function updateName(cid) {
-  const child = children.find(c => c.id === cid);
-  const input = document.getElementById(cid + '_name');
-  if (child && input) {
-    child.name = input.value.trim();
-    const h = document.getElementById(cid + '_heading');
-    if (h) h.textContent = child.name || `Child ${child.num}`;
-    renderNav();
-  }
-}
-
 // ── EMAIL BODY ─────────────────────────────────────────────────────────────
 function checked(name) {
   const els = [...document.querySelectorAll(`input[name="${name}"]:checked`)];
@@ -1105,17 +1171,14 @@ ABOUT THE PARENT
 Q1. Why homeschooling:
   • ${checked('pq1')}${document.getElementById('pq1_other')?.checked ? '\n  Other: ' + txt('pq1_other_text') : ''}
 
-Q2. Experience — How long homeschooling:
-  ${radio('pq2_exp')}
-
-Q2. Curriculum experience:
-  ${radio('pq2_curr')}
+Q2. How long homeschooling: ${radio('pq2_exp')}
+Q2. Curriculum experience: ${radio('pq2_curr')}
   What happened: ${txt('pq2_happened')}
   Curriculum tried: ${txt('pq2_currtried')}
 
 Q3. Days per week: ${radio('pq3_days')}
 Q3. Hours per day: ${radio('pq3_hrs')}
-Q3. Number of children homeschooling: ${radio('pq3_num')}
+Q3. Number of children: ${radio('pq3_num')}
 Q3. Other demands:
   • ${checked('pq3_demands')}
 
@@ -1197,7 +1260,6 @@ Q8c. Types of writing engaged with:
   • ${checked(cid + '_q8c')}
 
 Q8d. Spelling: ${radio(cid + '_q8d')}
-
 Q8e. Grammar: ${radio(cid + '_q8e')}
 
 Q8f. Grammar struggles:
@@ -1222,7 +1284,6 @@ Q12. Big picture profile:
 
 `;
   });
-
   return body;
 }
 
@@ -1245,7 +1306,7 @@ async function submitForm() {
   }
   for (const c of children) {
     if (!document.getElementById(c.id + '_name')?.value.trim()) {
-      alert(`Please enter a name for each child.`);
+      alert('Please enter a name for each child.');
       document.getElementById(c.id + '_name')?.focus();
       return;
     }
