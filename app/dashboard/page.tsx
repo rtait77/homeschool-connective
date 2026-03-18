@@ -112,25 +112,18 @@ export default function DashboardPage() {
 
       setFavorites(favData?.map(f => f.game_title) ?? [])
 
-      // Check for consulting purchase
-      const cRes = await fetch('/api/consulting/load-intake')
-      if (cRes.ok) {
-        const cData = await cRes.json()
-        setConsulting({ ends_at: '', intake_completed: cData.status === 'submitted', intake_status: cData.status })
-      } else if (cRes.status !== 404) {
-        // 404 = no consulting record, that's fine
-      }
-      // Also get ends_at from consulting_customers
+      // Check for consulting purchase — consulting_customers is the source of truth
       const { data: consultingRecord } = await supabase
         .from('consulting_customers')
         .select('ends_at, intake_completed')
         .eq('user_id', user.id)
         .single()
       if (consultingRecord) {
-        setConsulting(prev => prev
-          ? { ...prev, ends_at: consultingRecord.ends_at }
-          : { ends_at: consultingRecord.ends_at, intake_completed: consultingRecord.intake_completed, intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft' }
-        )
+        setConsulting({
+          ends_at: consultingRecord.ends_at,
+          intake_completed: consultingRecord.intake_completed,
+          intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft',
+        })
       }
 
       setLoading(false)
