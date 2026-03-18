@@ -648,7 +648,7 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
 
       <!-- P-Q12: Open text -->
       <div class="question" style="margin-bottom:0">
-        <div class="q-label">12. Is there anything else you'd like Mel to know before your consultation?</div>
+        <div class="q-label">12. Is there anything else you'd like Mel to know about you?</div>
         <div class="field-group" style="margin-top:12px;margin-bottom:0">
           <textarea id="pq12" rows="5" placeholder="Share anything else that feels relevant — no detail is too small..." oninput="onSection('parent')"></textarea>
         </div>
@@ -950,16 +950,16 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> They zone out during videos, even ones they chose</label>
       <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> We limit screens significantly — this isn't really an option for us</label>
     </div>
-    <div class="part-label">Part B: How are screens generally used in your home?</div>
+    <div class="part-label">Part B: How does this child use screens day-to-day?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> Screens are a learning tool we're comfortable using regularly</label>
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> We use screens a lot and are happy for curriculum to be screen-based</label>
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> Our child prefers to learn through screens — it's their natural mode</label>
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> Screens are used as a reward or downtime, not for learning</label>
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> We have significant screen limits and prefer minimal screen curriculum</label>
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> Our child gravitates to screens to decompress, not to learn</label>
-      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> We're open to screen-based curriculum but haven't tried it yet</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens primarily for entertainment — YouTube, shows, games</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They gravitate to screens to decompress or regulate — it's a calming tool for them</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They would be on screens all day if we let them</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens creatively — making things, building, coding</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They are fairly balanced — screens are one thing among many</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They're not particularly drawn to screens — they prefer other activities</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> Screen time is limited or restricted in our home</label>
     </div>
   </div>
 
@@ -974,6 +974,8 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — creative or building games (e.g. Minecraft, Roblox)</label>
       <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — escape room or mystery-style games</label>
       <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> They enjoy games for fun but learning doesn't really stick through games for this child</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> My child does not enjoy board games or card games</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> My child does not enjoy video games</label>
     </div>
   </div>
 
@@ -1036,10 +1038,11 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Punctuation and capitalization</label>
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Sentence structure — run-ons or fragments</label>
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Parts of speech</label>
-      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Verb tenses</label>
-      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Subject-verb agreement</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Phrases and clauses</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Labeling sentence parts</label>
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> We're not sure yet — haven't gotten there</label>
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> No significant struggles</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Other</label>
     </div>
   </div>
 
@@ -1110,11 +1113,13 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Math and numbers and patterns</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Art, music, or creative making</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Reading and stories</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Writing</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Building and engineering</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Space and the universe</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> People, relationships, and emotions</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Sports, movement, and the body</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Technology and computers</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Other</label>
     </div>
   </div>
 
