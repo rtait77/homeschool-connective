@@ -1334,6 +1334,7 @@ async function submitForm() {
         subject: `Consultation Quiz — ${name}`,
         from_name: name,
         replyto: email,
+        to: 'consulting@homeschoolconnective.com',
         message: buildEmail(),
       })
     });
