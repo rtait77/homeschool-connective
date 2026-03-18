@@ -266,7 +266,6 @@ function renderHUD() {
     icon.textContent = i < lives ? '❤️' : '🖤';
     ld.appendChild(icon);
   }
-  document.getElementById('score-num').textContent = score;
   document.getElementById('progress-fill').style.width = (blasted / CORRECT.length * 100) + '%';
   document.getElementById('planet-counter').textContent = `🪐 ${blasted} / ${CORRECT.length} planets`;
 }
