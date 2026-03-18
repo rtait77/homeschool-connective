@@ -229,14 +229,14 @@ function playCorrect() { new Audio('/astroid-crash.mp3').play().catch(() => {});
 function playWrong()   { new Audio('/space-sound-teleport.mp3').play().catch(() => {}); }
 
 // ─── STATE ────────────────────────────────────────────────────────────────
-let lives, score, blasted, gameActive, spawnTimer, asteroidId, spawnQueue, activeCount;
+let lives, score, blasted, gameActive, spawnTimer, asteroidId, spawnQueue, activeCount, blastedSet;
 
 function buildQueue() {
-  // All 8 planets in random order, at most 1 wrong one between each planet
-  const shuffled = [...CORRECT].sort(() => Math.random() - 0.5);
+  // Only queue planets not yet blasted, in random order, max 1 wrong between each
+  const remaining = CORRECT.filter(p => !blastedSet.has(p));
+  const shuffled = [...remaining].sort(() => Math.random() - 0.5);
   const queue = [];
   shuffled.forEach(planet => {
-    // 50% chance of a wrong asteroid before this planet
     if (Math.random() < 0.5) {
       queue.push({ label: WRONG[Math.floor(Math.random() * WRONG.length)], isCorrect: false });
     }
@@ -252,6 +252,7 @@ function init() {
   activeCount = 0;
   gameActive = false;
   asteroidId = 0;
+  blastedSet = new Set();
   spawnQueue = buildQueue();
   document.getElementById('game-area').innerHTML = '';
   renderHUD();
@@ -362,7 +363,7 @@ function onAsteroidClick(el, isCorrect, label) {
 
   if (isCorrect) {
     blasted++;
-    score += 10;
+    blastedSet.add(label);
     playCorrect();
     showExplosion(cx, cy);
     el.remove();
@@ -392,10 +393,17 @@ function onMissed(el, label) {
 }
 
 function checkEmpty() {
-  // If queue is empty and nothing on screen, and game still active → end (incomplete win)
-  if (gameActive && spawnQueue.length === 0 && activeCount <= 0) {
-    endGame(blasted >= CORRECT.length);
-  }
+  if (!gameActive || spawnQueue.length > 0 || activeCount > 0) return;
+  if (blasted >= CORRECT.length) { endGame(true); return; }
+  if (lives <= 0) { endGame(false); return; }
+  // Still have lives and unblasted planets — respawn only the missed ones
+  spawnQueue = buildQueue();
+  clearInterval(spawnTimer);
+  spawnNext();
+  spawnTimer = setInterval(() => {
+    if (!gameActive) return;
+    if (spawnQueue.length > 0) spawnNext();
+  }, CONFIG.spawnInterval);
 }
 
 function loseLife() {
