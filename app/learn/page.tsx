@@ -651,6 +651,28 @@ const games = [
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
   },
+  {
+    title: 'Blast the Dwarf Planets',
+    desc: 'Can you tell a dwarf planet from a real one? Blast Pluto, Eris, Haumea, Makemake, and Ceres before they escape!',
+    thumb: '/asteroid-thumbnail-dwarf-planets.jpg',
+    url: '/asteroid-blast-dwarf-planets',
+    topic: 'solar-system',
+    mini: false,
+    types: ['arcade', 'medium'],
+    keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid'],
+    newTab: false,
+  },
+  {
+    title: 'Blast the Dwarf Planets – Easy',
+    desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast all 5 dwarf planets — Pluto, Eris, Haumea, Makemake, and Ceres!',
+    thumb: '/asteroid-thumbnail-dwarf-planets.jpg',
+    url: '/asteroid-blast-dwarf-planets-easy',
+    topic: 'solar-system',
+    mini: false,
+    types: ['arcade', 'easy'],
+    keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid', 'easy'],
+    newTab: false,
+  },
 ]
 
 const topics = [
