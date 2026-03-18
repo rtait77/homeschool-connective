@@ -807,17 +807,18 @@ function updateName(cid) {
   const input = document.getElementById(cid + '_name');
   if (!child || !input) return;
   child.name = input.value.trim();
-  // Update section heading and Q12 name span
+  // Update section heading and all "your child" name spans
   const h = document.getElementById(cid + '_heading');
   if (h) h.textContent = child.name || `Child ${children.indexOf(child) + 1}`;
-  const q12name = document.getElementById(cid + '_q12_name');
-  if (q12name) q12name.textContent = child.name || 'your child';
+  document.querySelectorAll(`.${cid}-name`).forEach(el => {
+    el.textContent = child.name || 'your child';
+  });
   renderNav();
 }
 
 // ── CHILD SECTION BUILDER ──────────────────────────────────────────────────
 function buildChild(cid, num) {
-  return `
+  const html = `
 <section class="quiz-section" id="section-${cid}">
   <div class="section-header">
     <div class="section-header-text">
@@ -1137,7 +1138,7 @@ function buildChild(cid, num) {
 
   <!-- Q12: What else -->
   <div class="question" style="margin-bottom:0">
-    <div class="q-label">12. What else would you like Mel to know about <span id="${cid}_q12_name">your child</span>?</div>
+    <div class="q-label">12. What else would you like Mel to know about your child?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Is currently in speech, OT, or another therapy</label>
@@ -1156,6 +1157,7 @@ function buildChild(cid, num) {
     <button class="mark-btn" id="mark-${cid}" onclick="markDone('${cid}')">Mark as Complete ✓</button>
   </div>
 </section>`;
+  return html.replace(/your child/g, `<span class="${cid}-name">your child</span>`);
 }
 
 // ── EMAIL BODY ─────────────────────────────────────────────────────────────
