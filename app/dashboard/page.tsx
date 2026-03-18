@@ -77,6 +77,11 @@ export default function DashboardPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [hasStripe, setHasStripe] = useState(false)
+  const [consulting, setConsulting] = useState<{
+    ends_at: string
+    intake_completed: boolean
+    intake_status: string
+  } | null>(null)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -106,6 +111,28 @@ export default function DashboardPage() {
         .eq('user_id', user.id)
 
       setFavorites(favData?.map(f => f.game_title) ?? [])
+
+      // Check for consulting purchase
+      const cRes = await fetch('/api/consulting/load-intake')
+      if (cRes.ok) {
+        const cData = await cRes.json()
+        setConsulting({ ends_at: '', intake_completed: cData.status === 'submitted', intake_status: cData.status })
+      } else if (cRes.status !== 404) {
+        // 404 = no consulting record, that's fine
+      }
+      // Also get ends_at from consulting_customers
+      const { data: consultingRecord } = await supabase
+        .from('consulting_customers')
+        .select('ends_at, intake_completed')
+        .eq('user_id', user.id)
+        .single()
+      if (consultingRecord) {
+        setConsulting(prev => prev
+          ? { ...prev, ends_at: consultingRecord.ends_at }
+          : { ends_at: consultingRecord.ends_at, intake_completed: consultingRecord.intake_completed, intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft' }
+        )
+      }
+
       setLoading(false)
     }
     load()
@@ -280,6 +307,46 @@ export default function DashboardPage() {
 
         </div>
       </div>
+
+      {/* Consulting section — only shown if they purchased */}
+      {consulting && (
+        <div className="mb-12">
+          <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting</h2>
+          <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div>
+                <div className="flex items-center gap-3 mb-3 flex-wrap">
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    consulting.intake_completed
+                      ? 'bg-[#d1f5ea] text-[#1a7a52]'
+                      : 'bg-[#fff3e0] text-[#b45309]'
+                  }`}>
+                    {consulting.intake_completed ? 'Intake submitted' : 'Intake form pending'}
+                  </span>
+                  {consulting.ends_at && (() => {
+                    const daysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                    return daysLeft > 0 ? (
+                      <span className="text-xs font-semibold text-[#5c5c5c]">{daysLeft} days remaining in your 3-month window</span>
+                    ) : (
+                      <span className="text-xs font-semibold text-[#991b1b]">3-month window has ended</span>
+                    )
+                  })()}
+                </div>
+                {!consulting.intake_completed ? (
+                  <p className="text-sm text-[#5c5c5c]">Complete your intake form so Mel can get started on your personalized curriculum recommendations.</p>
+                ) : (
+                  <p className="text-sm text-[#5c5c5c]">Mel has your intake form and will be in touch within 3–5 business days. Questions? Email <a href="mailto:consulting@homeschoolconnective.com" className="text-[#55b6ca] font-bold hover:underline">consulting@homeschoolconnective.com</a></p>
+                )}
+              </div>
+              {!consulting.intake_completed && (
+                <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition whitespace-nowrap">
+                  Complete Intake Form →
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* New Games */}
       <div>
