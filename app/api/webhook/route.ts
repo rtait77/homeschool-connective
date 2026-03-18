@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    if (session.metadata?.type === 'consulting') {
+    if (session.metadata?.type === 'consulting' || session.metadata?.type === 'bundle') {
       const customerEmail = session.customer_details?.email ?? ''
       const customerName = session.customer_details?.name ?? 'a new customer'
 
