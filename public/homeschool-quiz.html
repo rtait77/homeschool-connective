@@ -472,11 +472,12 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
           <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> More than 5 years</label>
         </div>
         <div class="part-label">Have you used a formal curriculum before?</div>
+        <div class="q-note">Pick all that apply</div>
         <div class="options">
-          <label><input type="radio" name="pq2_curr" onchange="onSection('parent'); checkCurrFu()"> No — we're just getting started</label>
-          <label><input type="radio" name="pq2_curr" onchange="onSection('parent'); checkCurrFu()"> Yes — and it worked well for us</label>
-          <label><input type="radio" name="pq2_curr" id="pq2_bad" onchange="onSection('parent'); checkCurrFu()"> Yes — and it didn't work well for us</label>
-          <label><input type="radio" name="pq2_curr" id="pq2_tried" onchange="onSection('parent'); checkCurrFu()"> We've tried a few things and are still figuring it out</label>
+          <label><input type="checkbox" name="pq2_curr" onchange="onSection('parent'); checkCurrFu()"> No — we're just getting started</label>
+          <label><input type="checkbox" name="pq2_curr" onchange="onSection('parent'); checkCurrFu()"> Yes — and it worked well for us</label>
+          <label><input type="checkbox" name="pq2_curr" id="pq2_bad" onchange="onSection('parent'); checkCurrFu()"> Yes — and it didn't work well for us</label>
+          <label><input type="checkbox" name="pq2_curr" id="pq2_tried" onchange="onSection('parent'); checkCurrFu()"> We've tried a few things and are still figuring it out</label>
         </div>
         <div class="followup" id="pq2_curr_fu">
           <div class="followup-label">Tell us more:</div>
@@ -1172,7 +1173,8 @@ Q1. Why homeschooling:
   • ${checked('pq1')}${document.getElementById('pq1_other')?.checked ? '\n  Other: ' + txt('pq1_other_text') : ''}
 
 Q2. How long homeschooling: ${radio('pq2_exp')}
-Q2. Curriculum experience: ${radio('pq2_curr')}
+Q2. Curriculum experience:
+  • ${checked('pq2_curr')}
   What happened: ${txt('pq2_happened')}
   Curriculum tried: ${txt('pq2_currtried')}
 
