@@ -570,7 +570,7 @@ const games = [
     url: '/asteroid-blast-planets',
     topic: 'solar-system',
     mini: false,
-    types: ['medium'],
+    types: ['arcade', 'medium'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'planets', 'blast', 'action', 'asteroid'],
     newTab: false,
   },
@@ -581,7 +581,7 @@ const games = [
     url: '/asteroid-blast-planets-easy',
     topic: 'solar-system',
     mini: false,
-    types: ['easy'],
+    types: ['arcade', 'easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
   },
@@ -592,7 +592,7 @@ const games = [
     url: '/asteroid-blast-gas-giants',
     topic: 'solar-system',
     mini: false,
-    types: ['medium'],
+    types: ['arcade', 'medium'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'gas giants', 'outer planets', 'blast', 'action', 'asteroid'],
     newTab: false,
   },
@@ -603,7 +603,7 @@ const games = [
     url: '/asteroid-blast-gas-giants-easy',
     topic: 'solar-system',
     mini: false,
-    types: ['easy'],
+    types: ['arcade', 'easy'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'gas giants', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
   },
@@ -614,7 +614,7 @@ const games = [
     url: '/asteroid-blast-inner-planets',
     topic: 'solar-system',
     mini: false,
-    types: ['medium'],
+    types: ['arcade', 'medium'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'inner planets', 'rocky planets', 'blast', 'action', 'asteroid'],
     newTab: false,
   },
@@ -625,7 +625,7 @@ const games = [
     url: '/asteroid-blast-inner-planets-easy',
     topic: 'solar-system',
     mini: false,
-    types: ['easy'],
+    types: ['arcade', 'easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'inner planets', 'rocky planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
   },
@@ -636,7 +636,7 @@ const games = [
     url: '/asteroid-blast-rings',
     topic: 'solar-system',
     mini: false,
-    types: ['medium'],
+    types: ['arcade', 'medium'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid'],
     newTab: false,
   },
@@ -647,7 +647,7 @@ const games = [
     url: '/asteroid-blast-rings-easy',
     topic: 'solar-system',
     mini: false,
-    types: ['easy'],
+    types: ['arcade', 'easy'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
   },
@@ -660,18 +660,13 @@ const topics = [
 
 const gameTypes = [
   { id: '', label: 'All Types' },
-  { id: 'game', label: 'Games' },
-  { id: 'mini', label: 'Mini Games' },
-  { id: 'lesson', label: 'Lessons' },
-]
-
-const miniGameTypes = [
-  { id: '', label: 'All Mini Games' },
+  { id: 'arcade', label: 'Arcade' },
   { id: 'puzzle', label: 'Puzzles' },
   { id: 'word-search', label: 'Word Search' },
   { id: 'matching', label: 'Matching' },
   { id: 'word-sort', label: 'Word Sort' },
   { id: 'hangman', label: 'Hangman' },
+  { id: 'lesson', label: 'Lessons' },
 ]
 
 const difficulties = [
@@ -685,11 +680,9 @@ const difficulties = [
 export default function GamesPage() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
-  const [gameTypeOpen, setGameTypeOpen] = useState(false)
-  const [miniTypeOpen, setMiniTypeOpen] = useState(false)
+  const [typeOpen, setTypeOpen] = useState(false)
   const [difficultyOpen, setDifficultyOpen] = useState(false)
-  const [activeGameType, setActiveGameType] = useState('')
-  const [activeMiniType, setActiveMiniType] = useState('')
+  const [activeType, setActiveType] = useState('')
   const [activeDifficulty, setActiveDifficulty] = useState('')
   const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
@@ -757,22 +750,13 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeGameType, activeMiniType, activeDifficulty, search])
+  useEffect(() => { setPage(1) }, [topic, activeType, activeDifficulty, search])
 
-  const showDifficulty = activeGameType !== 'lesson'
+  const showDifficulty = activeType !== 'lesson'
 
   const filtered = games.filter(g => {
     if (topic !== 'all' && g.topic !== topic) return false
-    if (activeGameType === 'game') {
-      if (g.mini || g.types.includes('lesson')) return false
-    } else if (activeGameType === 'mini') {
-      if (!g.mini) return false
-    } else if (activeGameType === 'lesson') {
-      if (!g.types.includes('lesson')) return false
-    }
-    if (activeMiniType && activeGameType === 'mini') {
-      if (!g.types.includes(activeMiniType)) return false
-    }
+    if (activeType && !g.types.includes(activeType)) return false
     if (activeDifficulty && showDifficulty) {
       const titleLower = g.title.toLowerCase()
       const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
@@ -785,7 +769,6 @@ export default function GamesPage() {
         g.topic,
         ...g.types,
         ...((g as any).keywords ?? []),
-        g.mini ? 'mini' : '',
       ].join(' ').toLowerCase()
       const queryWords = search.trim().toLowerCase().split(/\s+/)
       const matched = queryWords.every(qw => haystack.includes(qw))
@@ -796,9 +779,6 @@ export default function GamesPage() {
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
-  const fullGames = paginated.filter(g => !g.mini && !g.types.includes('lesson'))
-  const miniGames = paginated.filter(g => g.mini)
-  const lessons = paginated.filter(g => g.types.includes('lesson'))
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
@@ -851,7 +831,7 @@ export default function GamesPage() {
         {/* Topic dropdown */}
         <div className="relative">
           <button
-            onClick={() => { setTopicOpen(o => !o); setGameTypeOpen(false); setMiniTypeOpen(false); setDifficultyOpen(false) }}
+            onClick={() => { setTopicOpen(o => !o); setTypeOpen(false); setDifficultyOpen(false) }}
             className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${topic !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
             {topics.find(t => t.id === topic)?.label}
@@ -871,55 +851,32 @@ export default function GamesPage() {
         {/* Type dropdown */}
         <div className="relative">
           <button
-            onClick={() => { setGameTypeOpen(o => !o); setTopicOpen(false); setMiniTypeOpen(false); setDifficultyOpen(false) }}
-            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeGameType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+            onClick={() => { setTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
-            {gameTypes.find(t => t.id === activeGameType)?.label}
+            {gameTypes.find(t => t.id === activeType)?.label}
             <span className="text-xs">▾</span>
           </button>
-          {gameTypeOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
+          {typeOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
               {gameTypes.map(t => (
                 <button key={t.id} onClick={() => {
-                  setActiveGameType(t.id)
-                  setActiveMiniType('')
+                  setActiveType(t.id)
                   if (t.id === 'lesson') setActiveDifficulty('')
-                  setGameTypeOpen(false)
+                  setTypeOpen(false)
                 }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeGameType === t.id ? 'text-[#55b6ca]' : ''}`}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeType === t.id ? 'text-[#55b6ca]' : ''}`}
                 >{t.label}</button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Mini game sub-type dropdown — only when Mini Games selected */}
-        {activeGameType === 'mini' && (
-          <div className="relative">
-            <button
-              onClick={() => { setMiniTypeOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false); setDifficultyOpen(false) }}
-              className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeMiniType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-            >
-              {miniGameTypes.find(t => t.id === activeMiniType)?.label}
-              <span className="text-xs">▾</span>
-            </button>
-            {miniTypeOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
-                {miniGameTypes.map(t => (
-                  <button key={t.id} onClick={() => { setActiveMiniType(t.id); setMiniTypeOpen(false) }}
-                    className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeMiniType === t.id ? 'text-[#55b6ca]' : ''}`}
-                  >{t.label}</button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
         {/* Difficulty dropdown — hidden for Lessons */}
         {showDifficulty && (
           <div className="relative">
             <button
-              onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false); setMiniTypeOpen(false) }}
+              onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setTypeOpen(false) }}
               className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
             >
               {difficulties.find(d => d.id === activeDifficulty)?.label}
@@ -942,48 +899,20 @@ export default function GamesPage() {
       {/* Results counter */}
       {filtered.length > 0 && (
         <p className="text-sm text-[#5c5c5c] mb-6">
-          {(search.trim() || activeGameType || activeDifficulty || topic !== 'all')
+          {(search.trim() || activeType || activeDifficulty || topic !== 'all')
             ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> games</>
             : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{games.length}</span> games</>
           }
         </p>
       )}
 
-      {/* Full games */}
-      {fullGames.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {fullGames.map(game => (
+      {/* Games grid */}
+      {paginated.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {paginated.map(game => (
             <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
         </div>
-      )}
-
-      {/* Mini games */}
-      {miniGames.length > 0 && (
-        <>
-          {fullGames.length > 0 && (
-            <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mb-4">Mini Games</p>
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {miniGames.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Lessons */}
-      {lessons.length > 0 && (
-        <>
-          {(fullGames.length > 0 || miniGames.length > 0) && (
-            <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mb-4 mt-10">Lessons</p>
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lessons.map(game => (
-              <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
-            ))}
-          </div>
-        </>
       )}
 
       {filtered.length === 0 && (
