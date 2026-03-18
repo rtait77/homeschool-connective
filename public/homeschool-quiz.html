@@ -997,33 +997,9 @@ function buildChild(cid, num) {
     </div>
   </div>
 
-  <!-- Q4: Reading -->
+  <!-- Q4: Read-aloud -->
   <div class="question">
-    <div class="q-label">4. Where is your child with reading right now?</div>
-    <div class="q-note">Choose one</div>
-    <div class="options">
-      <label><input type="radio" name="${cid}_q4" onchange="onSection('${cid}'); checkReadFu('${cid}')"> Not yet reading — working on letters and sounds</label>
-      <label><input type="radio" name="${cid}_q4" onchange="onSection('${cid}'); checkReadFu('${cid}')"> Beginning to read — sounding out short words</label>
-      <label><input type="radio" name="${cid}_q4" onchange="onSection('${cid}'); checkReadFu('${cid}')"> Reading simple books with some effort</label>
-      <label><input type="radio" name="${cid}_q4" onchange="onSection('${cid}'); checkReadFu('${cid}')"> Reading independently at or around grade level</label>
-      <label><input type="radio" name="${cid}_q4" onchange="onSection('${cid}'); checkReadFu('${cid}')"> Reading above grade level or voraciously</label>
-      <label><input type="radio" name="${cid}_q4" id="${cid}_q4_struggle" onchange="onSection('${cid}'); checkReadFu('${cid}')"> Reading is a significant struggle despite their age and effort</label>
-    </div>
-    <div class="followup" id="${cid}_q4fu">
-      <div class="followup-label">Can you tell us more about what the struggle looks like?</div>
-      <div class="options">
-        <label><input type="checkbox" name="${cid}_q4b" onchange="onSection('${cid}')"> Reads words correctly but forgets them a few lines later</label>
-        <label><input type="checkbox" name="${cid}_q4b" onchange="onSection('${cid}')"> Swaps similar-looking words (e.g. "horse" for "house")</label>
-        <label><input type="checkbox" name="${cid}_q4b" onchange="onSection('${cid}')"> Strong comprehension when read TO, but struggles when reading themselves</label>
-        <label><input type="checkbox" name="${cid}_q4b" onchange="onSection('${cid}')"> Avoids reading entirely</label>
-        <label><input type="checkbox" name="${cid}_q4b" onchange="onSection('${cid}')"> Family history of reading difficulty</label>
-      </div>
-    </div>
-  </div>
-
-  <!-- Q5: Read-aloud -->
-  <div class="question">
-    <div class="q-label">5. When your child is being read aloud to — even if they seem distracted:</div>
+    <div class="q-label">4. When your child is being read aloud to — even if they seem distracted:</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They absorb almost everything, even when they look like they're not listening</label>
@@ -1037,7 +1013,7 @@ function buildChild(cid, num) {
 
   <!-- Q6: Videos/screens -->
   <div class="question">
-    <div class="q-label">6. How does your child engage with videos and screens as a learning tool?</div>
+    <div class="q-label">5. How does your child engage with videos and screens as a learning tool?</div>
     <div class="part-label">Part A: Video engagement</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
@@ -1065,7 +1041,7 @@ function buildChild(cid, num) {
 
   <!-- Q7: Games -->
   <div class="question">
-    <div class="q-label">7. Does your child learn well through games?</div>
+    <div class="q-label">6. Does your child learn well through games?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — board games or card games</label>
@@ -1081,7 +1057,7 @@ function buildChild(cid, num) {
 
   <!-- Q8: Reading & Writing -->
   <div class="question">
-    <div class="q-label">8. Reading &amp; Writing —</div>
+    <div class="q-label">7. Reading &amp; Writing —</div>
     <div class="part-label">Part A: Where is your child with reading?</div>
     <div class="q-note">Choose one</div>
     <div class="options">
@@ -1164,7 +1140,7 @@ function buildChild(cid, num) {
 
   <!-- Q9: Demonstrate understanding -->
   <div class="question">
-    <div class="q-label">9. How does your child best demonstrate they've understood something?</div>
+    <div class="q-label">8. How does your child best demonstrate they've understood something?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Explaining it back in their own words — verbally</label>
@@ -1179,7 +1155,7 @@ function buildChild(cid, num) {
 
   <!-- Q10: Focus span -->
   <div class="question">
-    <div class="q-label">10. How long can your child realistically focus on something they didn't choose?</div>
+    <div class="q-label">9. How long can your child realistically focus on something they didn't choose?</div>
     <div class="q-note">Choose one</div>
     <div class="options">
       <label><input type="radio" name="${cid}_q10" id="${cid}_q10_short" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> 5 minutes or less</label>
@@ -1200,7 +1176,7 @@ function buildChild(cid, num) {
 
   <!-- Q11: Interests -->
   <div class="question">
-    <div class="q-label">11. What topics or subjects does your child love — and what do they avoid?</div>
+    <div class="q-label">10. What topics or subjects does your child love — and what do they avoid?</div>
     <div class="part-label">They gravitate toward:</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
@@ -1250,7 +1226,7 @@ function buildChild(cid, num) {
 
   <!-- Q12: What else -->
   <div class="question" style="margin-bottom:0">
-    <div class="q-label">12. What else would you like Mel to know about your child?</div>
+    <div class="q-label">11. What else would you like Mel to know about your child?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Is currently in speech, OT, or another therapy</label>
