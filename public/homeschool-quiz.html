@@ -388,21 +388,18 @@
     </div>
   </div>
 
-  <button class="submit-btn" onclick="submitQuizzes()">✨ See My Results</button>
+  <button class="submit-btn" id="submitBtn" onclick="submitQuizzes()">Send to my consultant</button>
 
-  <!-- RESULTS -->
-  <div class="results-box" id="resultsBox">
+  <!-- THANK YOU -->
+  <div class="results-box" id="resultsBox" style="display:none">
     <div class="results-header">
       <img src="/Logo_Homeschool Connective_Hearts.png" alt="">
-      <h2>Your Homeschool Style Snapshot</h2>
+      <h2 id="thankyouHeading">Thank you!</h2>
     </div>
-    <div id="childResults"></div>
-    <div id="parentResult"></div>
     <div class="followup-note">
-      <strong>What happens next?</strong><br><br>
-      Your full answers are being sent to your consultant for review. Within 2–3 business days, you'll receive a personalized follow-up email with deeper insight into your results, specific curriculum recommendations, and suggested next steps tailored to your family. Keep an eye on your inbox!
+      <strong>Your answers are on their way to your consultant.</strong><br><br>
+      Within 2–3 business days, you'll receive a personalized follow-up email with curriculum recommendations and suggested next steps tailored to your family. Keep an eye on your inbox!
     </div>
-    <a id="emailLink" href="#" class="email-btn">Send results to my consultant</a>
   </div>
 
 </div>
@@ -657,7 +654,7 @@ function getTopScore(prefix, options, count = 10) {
   return Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
 }
 
-function submitQuizzes() {
+async function submitQuizzes() {
   const name = document.getElementById('parentName').value.trim();
   const email = document.getElementById('parentEmail').value.trim();
   if (!name || !email) { alert('Please enter your name and email before submitting.'); return; }
@@ -675,37 +672,38 @@ function submitQuizzes() {
   const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
   if (parentAnswered < 10) { alert('Please answer all questions in the Teaching Style quiz.'); return; }
 
-  // Build child results
-  let childResultsHTML = '';
-  for (const idx of activeChildren) {
-    const childName = document.getElementById(`childName${idx}`).value.trim();
-    const [childKey] = getTopScore(`c${idx}q`, ['visual','auditory','kinesthetic','reading']);
-    const child = childStyles[childKey];
-    childResultsHTML += `
-      <div class="result-card">
-        <h3>🧒 ${childName}'s Learning Style: ${child.label}</h3>
-        <p>${child.desc}</p>
-      </div>`;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'e9fa8d0f-0004-4b87-bdf7-5403329c59cb',
+        subject: `Quiz Results — ${name}`,
+        from_name: name,
+        replyto: email,
+        message: buildEmailBody(name, email),
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('thankyouHeading').textContent = `Thank you, ${name}!`;
+      btn.style.display = 'none';
+      document.getElementById('resultsBox').style.display = 'block';
+      document.getElementById('resultsBox').scrollIntoView({ behavior: 'smooth' });
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Send to my consultant';
+      alert('Something went wrong. Please try again.');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Send to my consultant';
+    alert('Something went wrong. Please try again.');
   }
-  document.getElementById('childResults').innerHTML = childResultsHTML;
-
-  // Parent result
-  const [parentKey] = getTopScore('p', ['structured','relaxed','mixed','unsure']);
-  const parent = parentStyles[parentKey];
-  document.getElementById('parentResult').innerHTML = `
-    <div class="result-card parent-card">
-      <h3>👩‍🏫 Your Teaching Style: ${parent.label}</h3>
-      <p>${parent.desc}</p>
-    </div>`;
-
-  // Build email
-  const subj = encodeURIComponent(`Quiz Results — ${name}`);
-  const body = buildEmailBody(name, email);
-  document.getElementById('emailLink').href =
-    `mailto:consulting@homeschoolconnective.com?subject=${subj}&body=${body}`;
-
-  document.getElementById('resultsBox').style.display = 'block';
-  document.getElementById('resultsBox').scrollIntoView({ behavior: 'smooth' });
 }
 
 function buildEmailBody(name, email) {
@@ -730,7 +728,7 @@ function buildEmailBody(name, email) {
     body += `Q${i} (${pLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
   }
 
-  return encodeURIComponent(body);
+  return body;
 }
 </script>
 </body>
