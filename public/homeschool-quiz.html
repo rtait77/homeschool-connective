@@ -270,8 +270,8 @@
             <input type="text" id="childName1" placeholder="Child's first name">
           </div>
           <div>
-            <label>Age / Grade *</label>
-            <input type="text" id="childAge1" placeholder="e.g. 8 years / 3rd grade">
+            <label>Child's Age *</label>
+            <input type="text" id="childAge1" placeholder="e.g. 8">
           </div>
         </div>
       </div>
@@ -534,7 +534,7 @@ function addChild() {
     <div class="child-entry" id="child-entry-${idx}">
       <div class="child-entry-header">
         <span class="child-entry-label">Child ${activeChildren.length}</span>
-        <button class="remove-child-btn" onclick="removeChild(${idx})">✕ Remove</button>
+        <button class="remove-child-btn" onclick="deleteChild(${idx})">✕ Remove</button>
       </div>
       <div class="name-email" style="margin-bottom:0">
         <div>
@@ -542,8 +542,8 @@ function addChild() {
           <input type="text" id="childName${idx}" placeholder="Child's first name">
         </div>
         <div>
-          <label>Age / Grade *</label>
-          <input type="text" id="childAge${idx}" placeholder="e.g. 8 years / 3rd grade">
+          <label>Child's Age *</label>
+          <input type="text" id="childAge${idx}" placeholder="e.g. 8">
         </div>
       </div>
     </div>`;
@@ -565,7 +565,7 @@ function addChild() {
   updateAddButton();
 }
 
-function removeChild(idx) {
+function deleteChild(idx) {
   activeChildren = activeChildren.filter(i => i !== idx);
   document.getElementById(`child-entry-${idx}`)?.remove();
   document.getElementById(`child-quiz-${idx}`)?.remove();
