@@ -566,7 +566,7 @@ const games = [
   {
     title: 'Blast the Planets',
     desc: 'Asteroids are flying across space! Blast only the real planets — all 8 of them — before they escape. Don\'t shoot the wrong ones or you\'ll lose a life!',
-    thumb: '/thumb-asteroid-blast-planets.svg',
+    thumb: '/asteroid-thumbnail-planets.jpg',
     url: '/asteroid-blast-planets',
     topic: 'solar-system',
     mini: false,
@@ -577,7 +577,7 @@ const games = [
   {
     title: 'Blast the Planets – Easy',
     desc: 'The easy version! Blast all 8 planets as they float slowly across space. 5 lives and no penalty for missing — just don\'t shoot the wrong ones!',
-    thumb: '/thumb-asteroid-blast-planets.svg',
+    thumb: '/asteroid-thumbnail-planets.jpg',
     url: '/asteroid-blast-planets-easy',
     topic: 'solar-system',
     mini: false,
@@ -588,7 +588,7 @@ const games = [
   {
     title: 'Blast the Gas/Ice Giants',
     desc: 'Jupiter and Saturn are gas giants — but did you know Uranus and Neptune are ice giants? Blast all four outer planets as they fly across space!',
-    thumb: '/thumb-asteroid-blast-gas-giants.svg',
+    thumb: '/asteroid-thumbnail-gas-ice-giants.jpg',
     url: '/asteroid-blast-gas-giants',
     topic: 'solar-system',
     mini: false,
@@ -599,7 +599,7 @@ const games = [
   {
     title: 'Blast the Gas/Ice Giants – Easy',
     desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast Jupiter, Saturn, Uranus, and Neptune — gas and ice giants!',
-    thumb: '/thumb-asteroid-blast-gas-giants.svg',
+    thumb: '/asteroid-thumbnail-gas-ice-giants.jpg',
     url: '/asteroid-blast-gas-giants-easy',
     topic: 'solar-system',
     mini: false,
@@ -610,7 +610,7 @@ const games = [
   {
     title: 'Blast the Inner Planets',
     desc: 'Can you tell the inner planets from the outer ones? Blast Mercury, Venus, Earth, and Mars before they fly off the screen!',
-    thumb: '/thumb-asteroid-blast-inner-planets.svg',
+    thumb: '/asteroid-thumbnail-inner-planets.jpg',
     url: '/asteroid-blast-inner-planets',
     topic: 'solar-system',
     mini: false,
@@ -621,7 +621,7 @@ const games = [
   {
     title: 'Blast the Inner Planets – Easy',
     desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast Mercury, Venus, Earth, and Mars — the four inner planets!',
-    thumb: '/thumb-asteroid-blast-inner-planets.svg',
+    thumb: '/asteroid-thumbnail-inner-planets.jpg',
     url: '/asteroid-blast-inner-planets-easy',
     topic: 'solar-system',
     mini: false,
@@ -632,7 +632,7 @@ const games = [
   {
     title: 'Blast Things with Rings',
     desc: 'Did you know ALL four outer planets have rings? Blast Jupiter, Saturn, Uranus, and Neptune — the ringed planets — before they escape!',
-    thumb: '/thumb-asteroid-blast-rings.svg',
+    thumb: '/asteroid-thumbnail-rings.jpg',
     url: '/asteroid-blast-rings',
     topic: 'solar-system',
     mini: false,
@@ -643,7 +643,7 @@ const games = [
   {
     title: 'Blast Things with Rings – Easy',
     desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast all four ringed planets — Jupiter, Saturn, Uranus, and Neptune!',
-    thumb: '/thumb-asteroid-blast-rings.svg',
+    thumb: '/asteroid-thumbnail-rings.jpg',
     url: '/asteroid-blast-rings-easy',
     topic: 'solar-system',
     mini: false,
