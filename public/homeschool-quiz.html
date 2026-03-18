@@ -1055,7 +1055,13 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Labeling sentence parts</label>
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> We're not sure yet — haven't gotten there</label>
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> No significant struggles</label>
-      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Other</label>
+      <label><input type="checkbox" name="${cid}_q8f" id="${cid}_q8f_other" onchange="onSection('${cid}'); toggle('${cid}_q8f_other_fu', this.checked)"> Other</label>
+    </div>
+    <div class="followup" id="${cid}_q8f_other_fu">
+      <div class="followup-label">Please describe:</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q8f_other_text" placeholder="Describe the grammar struggle..." oninput="onSection('${cid}')">
+      </div>
     </div>
   </div>
 
@@ -1132,7 +1138,13 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> People, relationships, and emotions</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Sports, movement, and the body</label>
       <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Technology and computers</label>
-      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Other</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" id="${cid}_q11avoid_other" onchange="onSection('${cid}'); toggle('${cid}_q11avoid_other_fu', this.checked)"> Other</label>
+    </div>
+    <div class="followup" id="${cid}_q11avoid_other_fu">
+      <div class="followup-label">Please describe:</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q11avoid_other_text" placeholder="What do they tend to avoid?" oninput="onSection('${cid}')">
+      </div>
     </div>
   </div>
 
@@ -1143,7 +1155,13 @@ function buildChild(cid, num) {
     <div class="options">
       <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Is currently in speech, OT, or another therapy</label>
       <label><input type="checkbox" name="${cid}_q12" id="${cid}_q12_diag" onchange="onSection('${cid}'); toggle('${cid}_q12fu', this.checked)"> Has been formally assessed or diagnosed</label>
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Other</label>
+      <label><input type="checkbox" name="${cid}_q12" id="${cid}_q12_other" onchange="onSection('${cid}'); toggle('${cid}_q12_other_fu', this.checked)"> Other</label>
+    </div>
+    <div class="followup" id="${cid}_q12_other_fu">
+      <div class="followup-label">Please describe:</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q12_other_text" placeholder="Anything else Mel should know..." oninput="onSection('${cid}')">
+      </div>
     </div>
     <div class="followup" id="${cid}_q12fu">
       <div class="followup-label">Would you like to share the diagnosis? (optional)</div>
@@ -1283,6 +1301,7 @@ Q8e. Grammar: ${radio(cid + '_q8e')}
 
 Q8f. Grammar struggles:
   • ${checked(cid + '_q8f')}
+  Other: ${txt(cid + '_q8f_other_text')}
 
 Q9. How they demonstrate understanding:
   • ${checked(cid + '_q9')}
@@ -1296,10 +1315,12 @@ Q11. Loves (subjects):
 
 Q11. Avoids (subjects):
   • ${checked(cid + '_q11avoid')}
+  Other: ${txt(cid + '_q11avoid_other_text')}
 
-Q12. Big picture profile:
+Q12. What else Mel should know:
   • ${checked(cid + '_q12')}
   Diagnosis (if shared): ${txt(cid + '_q12_diagtext')}
+  Other: ${txt(cid + '_q12_other_text')}
 
 `;
   });
