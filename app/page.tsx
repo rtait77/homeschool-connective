@@ -93,7 +93,6 @@ export default function HomePage() {
             <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
           </div>
           <div className="md:w-1/2">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Educational Games</p>
             <h2 className="text-2xl font-extrabold mb-4">Immersive Learning Adventures</h2>
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Our educational games use drag-and-drop challenges, voiceover narration, and bite-sized facts to teach kids real content — not just trivia.</p>
             <p className="text-[#5c5c5c] leading-relaxed mb-6">Each game is built around a specific topic so it fits right into your homeschool curriculum or works as a fun stand-alone lesson.</p>
@@ -112,7 +111,6 @@ export default function HomePage() {
             <Image src="/thumb-find-pair-outer.png" alt="Mini Games" fill className="object-cover" />
           </div>
           <div className="md:w-1/2">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Mini Games</p>
             <h2 className="text-2xl font-extrabold mb-4">Quick Wins, Big Learning</h2>
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Short on time? Our mini games are perfect for a quick learning boost. Puzzles, word searches, matching games, and word sorts that kids can complete in just a few minutes.</p>
             <p className="text-[#5c5c5c] leading-relaxed">Mini games are a great way to reinforce what kids have already learned, or to introduce a new topic in a low-pressure, fun way.</p>
@@ -127,7 +125,6 @@ export default function HomePage() {
             <Image src="/thumb-lesson-mars.png" alt="Interactive Lessons" fill className="object-cover" />
           </div>
           <div className="md:w-1/2">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Interactive Lessons</p>
             <h2 className="text-2xl font-extrabold mb-4">Bite-Sized Lessons That Stick</h2>
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Our lessons break big topics down into small, manageable chunks — with voiceover narration to guide kids through each one.</p>
             <p className="text-[#5c5c5c] leading-relaxed">Each lesson uses elements like animations, drag-and-drop, and sound effects (varies by lesson).</p>
