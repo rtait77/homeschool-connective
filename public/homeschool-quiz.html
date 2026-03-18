@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homeschool Connective — Curriculum Consultation Quiz</title>
+<title>Homeschool Connective — Consultation Intake Form</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -464,12 +464,12 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
         <div class="q-label">2. How long have you been homeschooling?</div>
         <div class="q-note">Choose one</div>
         <div class="options">
-          <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> We haven't started yet — we're planning ahead</label>
-          <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> Less than 6 months</label>
-          <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> 6 months to 1 year</label>
-          <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> 1–2 years</label>
-          <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> 3–5 years</label>
-          <label><input type="radio" name="pq2_exp" onchange="onSection('parent')"> More than 5 years</label>
+          <label><input type="radio" name="pq2_exp" id="pq2_exp_new" onchange="onSection('parent'); checkExpSection()"> We haven't started yet — we're planning ahead</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> Less than 6 months</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 6 months to 1 year</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 1–2 years</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 3–5 years</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> More than 5 years</label>
         </div>
         <div class="part-label">Have you used a formal curriculum before?</div>
         <div class="q-note">Pick all that apply</div>
@@ -488,6 +488,71 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
           <div class="field-group" style="margin:0">
             <label>What curriculum did you try?</label>
             <input type="text" id="pq2_currtried" placeholder="e.g. All About Reading, Math-U-See..." oninput="onSection('parent')">
+          </div>
+        </div>
+      </div>
+
+      <!-- P-Q2 conditional: already homeschooling — experience + goal -->
+      <div class="followup" id="pq2_already_fu">
+        <div class="question">
+          <div class="q-label">How would you describe your current homeschool experience?</div>
+          <div class="q-note">Choose one</div>
+          <div class="options">
+            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Completely lost — I don't know where to start</label>
+            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're trying, but it feels chaotic and inconsistent</label>
+            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We have some things working, but need help in certain areas</label>
+            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Things are going okay, but I want to level up</label>
+            <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're doing well — I just need accountability and new ideas</label>
+            <label><input type="checkbox" id="pq2_curexp_other_cb" onchange="toggle('pq2_curexp_other_box', this.checked); onSection('parent')"> Other</label>
+          </div>
+          <div id="pq2_curexp_other_box" class="followup">
+            <div class="field-group">
+              <label>Tell us more</label>
+              <input type="text" id="pq2_curexp_other" placeholder="Describe your experience..." oninput="onSection('parent')">
+            </div>
+          </div>
+        </div>
+        <div class="question">
+          <div class="q-label">What is your #1 goal for your homeschool right now?</div>
+          <div class="field-group" style="margin-top:12px;margin-bottom:0">
+            <textarea id="pq2_goal" rows="3" placeholder="e.g. get my child reading independently, find a curriculum that finally sticks..." oninput="onSection('parent')"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- P-Q2 conditional: just starting — feelings -->
+      <div class="followup" id="pq2_new_fu">
+        <div class="question">
+          <div class="q-label">How are you feeling about beginning homeschooling?</div>
+          <div class="q-note">Pick all that apply</div>
+          <div class="options">
+            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Excited — I can't wait to get started</label>
+            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Scared or nervous</label>
+            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Uncertain — not sure what to expect</label>
+            <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Totally lost — I don't know where to begin</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Biggest challenge — always shown -->
+      <div class="question">
+        <div class="q-label">What feels like your biggest challenge right now?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Math</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Reading / Language Arts</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Science</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> History / Social Studies</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Writing</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Scheduling and consistency</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> My child's motivation</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> My own confidence as a teacher</label>
+          <label><input type="checkbox" id="pq2_challenge_other_cb" onchange="toggle('pq2_challenge_other_box', this.checked); onSection('parent')"> Other</label>
+        </div>
+        <div id="pq2_challenge_other_box" class="followup">
+          <div class="field-group">
+            <label>What else?</label>
+            <input type="text" id="pq2_challenge_other" placeholder="Describe your challenge..." oninput="onSection('parent')">
           </div>
         </div>
       </div>
@@ -646,6 +711,22 @@ header p { font-size: 0.93rem; color: #666; font-weight: 600; }
         </div>
       </div>
 
+      <!-- Success 6 months -->
+      <div class="question">
+        <div class="q-label">What would "homeschool success" look like for your family 6 months from now?</div>
+        <div class="field-group" style="margin-top:12px;margin-bottom:0">
+          <textarea id="pq_success" rows="3" placeholder="Describe what success would look like..." oninput="onSection('parent')"></textarea>
+        </div>
+      </div>
+
+      <!-- How did you hear -->
+      <div class="question">
+        <div class="q-label">How did you hear about Homeschool Connective?</div>
+        <div class="field-group" style="margin-top:12px;margin-bottom:0">
+          <input type="text" id="pq_heard" placeholder="e.g. Instagram, a friend, Google..." oninput="onSection('parent')">
+        </div>
+      </div>
+
       <!-- P-Q12: Open text -->
       <div class="question" style="margin-bottom:0">
         <div class="q-label">12. Is there anything else you'd like Mel to know about you?</div>
@@ -728,6 +809,13 @@ function markDone(id) {
 // ── CONDITIONALS ───────────────────────────────────────────────────────────
 function toggle(id, show) {
   document.getElementById(id)?.classList.toggle('show', !!show);
+}
+
+function checkExpSection() {
+  const notStarted = document.getElementById('pq2_exp_new')?.checked;
+  const anySelected = !!document.querySelector('input[name="pq2_exp"]:checked');
+  toggle('pq2_already_fu', anySelected && !notStarted);
+  toggle('pq2_new_fu', !!notStarted);
 }
 
 function checkCurrFu() {
@@ -1210,6 +1298,15 @@ Q1. Why homeschooling:
   • ${checked('pq1')}${document.getElementById('pq1_other')?.checked ? '\n  Other: ' + txt('pq1_other_text') : ''}
 
 Q2. How long homeschooling: ${radio('pq2_exp')}
+
+${document.getElementById('pq2_exp_new')?.checked ? `How they're feeling about starting:
+  • ${checked('pq2_feeling')}` : `Current experience: ${radio('pq2_curexp')}${document.getElementById('pq2_curexp_other_cb')?.checked ? '\n  Other: ' + txt('pq2_curexp_other') : ''}
+
+#1 goal right now: ${txt('pq2_goal')}`}
+
+Biggest challenge right now:
+  • ${checked('pq2_challenge')}${document.getElementById('pq2_challenge_other_cb')?.checked ? '\n  Other: ' + txt('pq2_challenge_other') : ''}
+
 Q2. Curriculum experience:
   • ${checked('pq2_curr')}
   What happened: ${txt('pq2_happened')}
@@ -1243,6 +1340,10 @@ Q10. Co-op/community:
 
 Q11. Personality:
   • ${checked('pq11')}
+
+What "success" looks like in 6 months: ${txt('pq_success')}
+
+How they heard about Homeschool Connective: ${txt('pq_heard')}
 
 Q12. Anything else for Mel:
   ${txt('pq12')}
@@ -1365,7 +1466,7 @@ async function submitForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         access_key: 'e9fa8d0f-0004-4b87-bdf7-5403329c59cb',
-        subject: `Consultation Quiz — ${name}`,
+        subject: `Consultation Intake Form — ${name}`,
         from_name: name,
         replyto: email,
         to: 'consulting@homeschoolconnective.com',
