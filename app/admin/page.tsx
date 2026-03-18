@@ -87,7 +87,7 @@ export default function AdminPage() {
   const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay' | 'analytics'>('overview')
+  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay' | 'analytics' | 'consulting'>('overview')
 
   const [stats, setStats] = useState<Stats | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
@@ -104,6 +104,20 @@ export default function AdminPage() {
   const [gameplay, setGameplay] = useState<Gameplay | null>(null)
   const [gameplayLoading, setGameplayLoading] = useState(false)
   const [gameplayError, setGameplayError] = useState('')
+
+  type ConsultingCustomer = {
+    id: string
+    email: string
+    paid_at: string
+    ends_at: string
+    intake_completed: boolean
+    intake_submitted_at: string | null
+    intake_status: string
+    responses: Record<string, unknown> | null
+  }
+  const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
+  const [consultingLoading, setConsultingLoading] = useState(false)
+  const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null)
 
   const [analytics, setAnalytics] = useState<{
     totalAllTime: number
@@ -166,6 +180,16 @@ export default function AdminPage() {
       .catch(() => setRevenueLoading(false))
   }, [isAdmin, tab])
 
+  // Load consulting when tab changes to 'consulting'
+  useEffect(() => {
+    if (!isAdmin || tab !== 'consulting' || consulting) return
+    setConsultingLoading(true)
+    fetch('/api/admin/consulting')
+      .then(r => r.json())
+      .then(data => { setConsulting(data.customers ?? []); setConsultingLoading(false) })
+      .catch(() => setConsultingLoading(false))
+  }, [isAdmin, tab])
+
   // Load analytics when tab changes to 'analytics'
   useEffect(() => {
     if (!isAdmin || tab !== 'analytics' || analytics) return
@@ -209,6 +233,7 @@ export default function AdminPage() {
     { id: 'revenue', label: 'Revenue' },
     { id: 'gameplay', label: 'Gameplay' },
     { id: 'analytics', label: 'Analytics' },
+    { id: 'consulting', label: 'Consulting' },
   ] as const
 
   return (
@@ -601,8 +626,173 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* CONSULTING TAB */}
+      {tab === 'consulting' && (
+        <div>
+          {consultingLoading && <p className="text-sm text-[#5c5c5c]">Loading consulting customers...</p>}
+          {consulting && consulting.length === 0 && (
+            <p className="text-sm text-[#5c5c5c] bg-[#f5f1e9] rounded-xl px-6 py-8 text-center">No consulting customers yet.</p>
+          )}
+          {consulting && consulting.length > 0 && (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                <StatCard label="Total Clients" value={consulting.length} />
+                <StatCard label="Intake Submitted" value={consulting.filter(c => c.intake_completed).length} />
+                <StatCard label="Pending Intake" value={consulting.filter(c => !c.intake_completed).length} />
+              </div>
+
+              <div className="space-y-3">
+                {consulting.map(c => {
+                  const daysLeft = Math.ceil((new Date(c.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                  const isExpanded = expandedCustomer === c.id
+                  const r = c.responses as Record<string, unknown> | null
+                  return (
+                    <div key={c.id} className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                      <div
+                        className="px-6 py-4 flex items-center justify-between flex-wrap gap-3 cursor-pointer hover:bg-[#fafaf8] transition-colors"
+                        onClick={() => setExpandedCustomer(isExpanded ? null : c.id)}
+                      >
+                        <div className="flex items-center gap-4 flex-wrap">
+                          <span className="font-bold text-sm">{c.email}</span>
+                          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                            c.intake_completed
+                              ? 'bg-[#d1f5ea] text-[#1a7a52]'
+                              : 'bg-[#fff3e0] text-[#b45309]'
+                          }`}>
+                            {c.intake_completed ? 'Intake submitted' : 'Intake pending'}
+                          </span>
+                          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                            daysLeft > 30 ? 'bg-[#f5f1e9] text-[#5c5c5c]' :
+                            daysLeft > 0 ? 'bg-[#fde8e8] text-[#991b1b]' :
+                            'bg-[#fde8e8] text-[#991b1b]'
+                          }`}>
+                            {daysLeft > 0 ? `${daysLeft}d remaining` : 'Expired'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-[#5c5c5c]">
+                          <span>Paid {new Date(c.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                          <span>{isExpanded ? '▲' : '▼'}</span>
+                        </div>
+                      </div>
+
+                      {isExpanded && (
+                        <div className="px-6 pb-6 border-t border-[#e2ddd5]">
+                          {!r ? (
+                            <p className="text-sm text-[#5c5c5c] mt-4">No intake form responses yet.</p>
+                          ) : (
+                            <div className="mt-4 space-y-4 text-sm">
+                              <SummarySection title="Family">
+                                <SummaryRow label="Parent" value={r.parentName as string} />
+                                <SummaryRow label="Child" value={`${r.childName || '—'}, Age ${r.childAge || '—'}, ${r.childGrade || '—'}`} />
+                              </SummarySection>
+
+                              <SummarySection title="Reading">
+                                <SummaryRow label="Level" value={labelFor(r.readingLevel as string, READING_LEVEL_LABELS)} />
+                                <SummaryRow label="Parent's feel" value={r.readingFeel as string} />
+                              </SummarySection>
+
+                              <SummarySection title="Writing">
+                                <SummaryRow label="Level" value={labelFor(r.writingLevel as string, WRITING_LEVEL_LABELS)} />
+                                <SummaryRow label="Parent's feel" value={r.writingFeel as string} />
+                              </SummarySection>
+
+                              <SummarySection title="Spelling & Grammar">
+                                <SummaryRow label="Spelling" value={labelFor(r.spellingFeel as string, FEEL_LABELS)} />
+                                <SummaryRow label="Grammar" value={labelFor(r.grammarFeel as string, FEEL_LABELS)} />
+                                <SummaryRow label="Notes" value={r.spellingNotes as string} />
+                              </SummarySection>
+
+                              <SummarySection title="Learning Profile">
+                                <SummaryRow label="Learning styles" value={Array.isArray(r.learningStyles) ? (r.learningStyles as string[]).join(', ') : '—'} />
+                                <SummaryRow label="Biggest challenges" value={r.biggestChallenges as string} />
+                                <SummaryRow label="Screen time" value={labelFor(r.screenTime as string, SCREEN_TIME_LABELS)} />
+                                <SummaryRow label="Attention span" value={labelFor(r.attentionSpan as string, ATTENTION_LABELS)} />
+                                <SummaryRow label="Loves" value={r.lovesSubjects as string} />
+                                <SummaryRow label="Avoids" value={r.avoidsSubjects as string} />
+                              </SummarySection>
+
+                              <SummarySection title="Background & Goals">
+                                <SummaryRow label="Curriculum" value={r.currentCurriculum as string} />
+                                <SummaryRow label="Homeschooling for" value={labelFor(r.homeschoolingDuration as string, DURATION_LABELS)} />
+                                <SummaryRow label="#1 goal" value={r.primaryGoal as string} />
+                                <SummaryRow label="Additional notes" value={r.additionalNotes as string} />
+                              </SummarySection>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
     </div>
   )
+}
+
+function SummarySection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h4 className="font-extrabold text-xs uppercase tracking-wide text-[#5c5c5c] mb-2">{title}</h4>
+      <div className="bg-[#f5f1e9] rounded-xl px-4 py-3 space-y-1.5">{children}</div>
+    </div>
+  )
+}
+
+function SummaryRow({ label, value }: { label: string; value: string | undefined }) {
+  if (!value) return null
+  return (
+    <div className="flex gap-2 text-sm">
+      <span className="font-bold text-[#5c5c5c] min-w-[130px] shrink-0">{label}:</span>
+      <span className="text-[#1c1c1c]">{value}</span>
+    </div>
+  )
+}
+
+function labelFor(value: string, map: Record<string, string>) {
+  return map[value] ?? value ?? '—'
+}
+
+const READING_LEVEL_LABELS: Record<string, string> = {
+  'not-yet-reading': 'Not yet reading',
+  'beginning-reader': 'Beginning reader',
+  'grade-level': 'At grade level',
+  'above-grade-level': 'Above grade level',
+}
+const WRITING_LEVEL_LABELS: Record<string, string> = {
+  'not-yet-writing': 'Not yet writing',
+  'forming-letters': 'Forming letters',
+  'sentences': 'Writing sentences',
+  'paragraphs': 'Writing paragraphs',
+  'above-grade-level': 'Above grade level',
+}
+const FEEL_LABELS: Record<string, string> = {
+  'needs-work': 'Needs a lot of work',
+  'on-track': 'On track',
+  'ahead': 'Ahead of where I expected',
+}
+const SCREEN_TIME_LABELS: Record<string, string> = {
+  'under-1hr': 'Less than 1 hour',
+  '1-2hrs': '1–2 hours',
+  '2-3hrs': '2–3 hours',
+  'over-3hrs': 'More than 3 hours',
+}
+const ATTENTION_LABELS: Record<string, string> = {
+  'a-few-minutes': 'A few minutes',
+  '10-15min': '10–15 minutes',
+  '20-30min': '20–30 minutes',
+  '30-plus': '30+ minutes',
+}
+const DURATION_LABELS: Record<string, string> = {
+  'just-starting': 'Just starting out',
+  'less-than-1yr': 'Less than 1 year',
+  '1-2yrs': '1–2 years',
+  '3-5yrs': '3–5 years',
+  '5plus-yrs': '5+ years',
 }
 
 function formatDuration(seconds: number) {
