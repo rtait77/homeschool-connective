@@ -4,48 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Homeschool Connective — Homeschool Style Quizzes</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Georgia', serif; background: #fdf6ee; color: #3b2f1e; }
+  body { font-family: 'Nunito', sans-serif; background: #f5f1e9; color: #1c1c1c; }
 
   header {
-    background: #6b4f35;
-    color: #fdf6ee;
+    background: #238FA4;
+    color: #fff;
     text-align: center;
-    padding: 40px 20px 30px;
+    padding: 32px 20px 28px;
   }
-  header h1 { font-size: 2rem; letter-spacing: 1px; }
-  header p { margin-top: 8px; font-size: 1rem; opacity: 0.85; font-style: italic; }
+  header img.main-logo { height: 56px; display: block; margin: 0 auto 10px; }
+  header p { font-size: 1rem; opacity: 0.9; font-weight: 600; }
 
   .container { max-width: 780px; margin: 40px auto; padding: 0 20px 60px; }
 
   .quiz-section {
     background: #fff;
-    border-radius: 14px;
+    border-radius: 16px;
     padding: 36px 40px;
     margin-bottom: 36px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-    border-top: 6px solid #a07850;
+    border-top: 6px solid #ed7c5a;
   }
+  .quiz-section.quiz-2 { border-top-color: #55b6ca; }
 
   .quiz-section h2 {
-    font-size: 1.4rem;
-    color: #6b4f35;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #238FA4;
     margin-bottom: 6px;
   }
   .quiz-section .subtitle {
     font-size: 0.9rem;
-    color: #888;
+    color: #777;
     margin-bottom: 28px;
-    font-style: italic;
+    font-weight: 600;
   }
 
   .question { margin-bottom: 28px; }
   .question p {
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 800;
     margin-bottom: 12px;
-    color: #3b2f1e;
+    color: #1c1c1c;
     line-height: 1.5;
   }
 
@@ -54,16 +57,17 @@
     align-items: flex-start;
     gap: 10px;
     padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, border-color 0.15s;
     font-size: 0.95rem;
+    font-weight: 600;
     line-height: 1.4;
     margin-bottom: 6px;
-    border: 1.5px solid #e8ddd0;
+    border: 1.5px solid #a6e5f1;
   }
-  .options label:hover { background: #fdf0e0; border-color: #c9a87a; }
-  .options input[type="radio"] { margin-top: 3px; accent-color: #a07850; flex-shrink: 0; }
+  .options label:hover { background: #eaf7fb; border-color: #55b6ca; }
+  .options input[type="radio"] { margin-top: 3px; accent-color: #ed7c5a; flex-shrink: 0; }
 
   .name-email {
     display: grid;
@@ -74,59 +78,71 @@
   .name-email input {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid #e8ddd0;
-    border-radius: 8px;
+    border: 1.5px solid #a6e5f1;
+    border-radius: 10px;
     font-size: 0.95rem;
-    font-family: Georgia, serif;
-    background: #fdf6ee;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    background: #f5f1e9;
   }
-  .name-email input:focus { outline: none; border-color: #a07850; }
-  .name-email label { display: block; font-size: 0.85rem; color: #888; margin-bottom: 5px; }
+  .name-email input:focus { outline: none; border-color: #55b6ca; }
+  .name-email label { display: block; font-size: 0.85rem; font-weight: 700; color: #777; margin-bottom: 5px; }
 
   .submit-btn {
     display: block;
     width: 100%;
     padding: 16px;
-    background: #6b4f35;
+    background: #ed7c5a;
     color: #fff;
     font-size: 1.1rem;
-    font-family: Georgia, serif;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
     border: none;
-    border-radius: 10px;
+    border-radius: 100px;
     cursor: pointer;
-    letter-spacing: 0.5px;
-    transition: background 0.2s;
+    letter-spacing: 0.3px;
+    transition: background 0.2s, transform 0.1s;
     margin-top: 10px;
   }
-  .submit-btn:hover { background: #a07850; }
+  .submit-btn:hover { background: #238FA4; transform: scale(1.01); }
 
   .results-box {
     display: none;
-    background: #fdf0e0;
-    border: 2px solid #a07850;
-    border-radius: 14px;
+    background: #f5f1e9;
+    border: 2px solid #55b6ca;
+    border-radius: 16px;
     padding: 36px 40px;
     margin-bottom: 36px;
   }
-  .results-box h2 { color: #6b4f35; margin-bottom: 20px; font-size: 1.4rem; }
+  .results-box .results-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .results-box .results-header img { height: 44px; }
+  .results-box h2 { color: #238FA4; font-size: 1.4rem; font-weight: 900; }
   .result-card {
     background: #fff;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 20px 24px;
     margin-bottom: 16px;
-    border-left: 5px solid #a07850;
+    border-left: 5px solid #ed7c5a;
   }
-  .result-card h3 { color: #6b4f35; margin-bottom: 8px; font-size: 1.1rem; }
-  .result-card p { font-size: 0.95rem; line-height: 1.6; color: #4a3b2a; }
-  .result-score { font-size: 0.8rem; color: #a07850; margin-top: 6px; font-style: italic; }
+  .result-card.parent-card { border-left-color: #55b6ca; }
+  .result-card.align-card { border-left-color: #238FA4; }
+  .result-card h3 { color: #238FA4; margin-bottom: 8px; font-size: 1.05rem; font-weight: 800; }
+  .result-card p { font-size: 0.95rem; line-height: 1.6; color: #1c1c1c; font-weight: 600; }
+  .result-score { font-size: 0.8rem; color: #ed7c5a; margin-top: 6px; font-weight: 700; }
 
   .followup-note {
-    background: #6b4f35;
-    color: #fdf6ee;
-    border-radius: 10px;
+    background: #238FA4;
+    color: #fff;
+    border-radius: 12px;
     padding: 20px 24px;
     margin-top: 20px;
     font-size: 0.95rem;
+    font-weight: 600;
     line-height: 1.6;
   }
 
@@ -134,29 +150,31 @@
     display: inline-block;
     margin-top: 20px;
     padding: 14px 28px;
-    background: #a07850;
+    background: #ed7c5a;
     color: #fff;
-    border-radius: 8px;
-    font-family: Georgia, serif;
+    border-radius: 100px;
+    font-family: 'Nunito', sans-serif;
     font-size: 1rem;
+    font-weight: 900;
     text-decoration: none;
     transition: background 0.2s;
   }
-  .email-btn:hover { background: #6b4f35; }
+  .email-btn:hover { background: #238FA4; }
 
   .progress-bar {
-    height: 5px;
-    background: #e8ddd0;
+    height: 6px;
+    background: #a6e5f1;
     border-radius: 3px;
     margin-bottom: 28px;
     overflow: hidden;
   }
   .progress-fill {
     height: 100%;
-    background: #a07850;
+    background: #ed7c5a;
     border-radius: 3px;
     transition: width 0.3s;
   }
+  .quiz-2 .progress-fill { background: #55b6ca; }
 
   @media (max-width: 600px) {
     .quiz-section, .results-box { padding: 24px 20px; }
@@ -167,7 +185,7 @@
 <body>
 
 <header>
-  <h1>🌿 Homeschool Connective Consulting</h1>
+  <img src="/Logo.png" alt="Homeschool Connective" class="main-logo">
   <p>Discover how your child learns — and how you teach best</p>
 </header>
 
@@ -305,7 +323,7 @@
   </div>
 
   <!-- QUIZ 2: PARENT TEACHING STYLE -->
-  <div class="quiz-section" id="parentQuizSection">
+  <div class="quiz-section quiz-2" id="parentQuizSection">
     <h2>👩‍🏫 Quiz 2: Your Teaching Style</h2>
     <p class="subtitle">Answer honestly — there are no wrong answers! This helps us match you with approaches that feel natural to YOU.</p>
     <div class="progress-bar"><div class="progress-fill" id="parentProgress" style="width:0%"></div></div>
@@ -415,7 +433,10 @@
 
   <!-- RESULTS -->
   <div class="results-box" id="resultsBox">
-    <h2>🌿 Your Homeschool Style Snapshot</h2>
+    <div class="results-header">
+      <img src="/Logo_Homeschool Connective_Hearts.png" alt="">
+      <h2>Your Homeschool Style Snapshot</h2>
+    </div>
     <div id="childResult"></div>
     <div id="parentResult"></div>
     <div id="alignmentNote"></div>
@@ -532,7 +553,7 @@ function submitQuizzes() {
     </div>`;
 
   document.getElementById('parentResult').innerHTML = `
-    <div class="result-card">
+    <div class="result-card parent-card">
       <h3>👩‍🏫 Your Teaching Style: ${parent.label}</h3>
       <p>${parent.desc}</p>
     </div>`;
@@ -547,7 +568,7 @@ function submitQuizzes() {
   const alignNote = alignments[alignKey] || "Your consultant will share personalized insight on how your teaching style and your child's learning style complement each other — and where to watch for friction.";
 
   document.getElementById('alignmentNote').innerHTML = `
-    <div class="result-card" style="border-left-color:#6b4f35">
+    <div class="result-card align-card">
       <h3>✨ Style Alignment Note</h3>
       <p>${alignNote}</p>
     </div>`;
