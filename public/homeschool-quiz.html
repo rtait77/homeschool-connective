@@ -29,7 +29,6 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.07);
     border-top: 6px solid #ed7c5a;
   }
-  .quiz-section.quiz-2 { border-top-color: #ed7c5a; }
 
   .quiz-section h2 {
     font-size: 1.35rem;
@@ -70,11 +69,12 @@
   .options label:hover { background: #eaf7fb; border-color: #55b6ca; }
   .options input[type="radio"] { margin-top: 3px; accent-color: #ed7c5a; flex-shrink: 0; }
 
+  /* Contact / child entry fields */
   .name-email {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-bottom: 28px;
+    margin-bottom: 16px;
   }
   .name-email input {
     width: 100%;
@@ -89,6 +89,57 @@
   .name-email input:focus { outline: none; border-color: #55b6ca; }
   .name-email label { display: block; font-size: 0.85rem; font-weight: 700; color: #777; margin-bottom: 5px; }
 
+  /* Child entry row */
+  .child-entry {
+    border: 1.5px solid #a6e5f1;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: #f5f1e9;
+  }
+  .child-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .child-entry-label {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #238FA4;
+  }
+  .remove-child-btn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .remove-child-btn:hover { color: #ed7c5a; background: #fff0eb; }
+
+  .add-child-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 10px 22px;
+    background: #fff;
+    border: 2px solid #55b6ca;
+    border-radius: 100px;
+    color: #238FA4;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .add-child-btn:hover { background: #eaf7fb; border-color: #238FA4; }
+  .add-child-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* Submit button */
   .submit-btn {
     display: block;
     width: 100%;
@@ -107,6 +158,7 @@
   }
   .submit-btn:hover { background: #238FA4; transform: scale(1.01); }
 
+  /* Results */
   .results-box {
     display: none;
     background: #f5f1e9;
@@ -134,7 +186,6 @@
   .result-card.align-card { border-left-color: #238FA4; }
   .result-card h3 { color: #238FA4; margin-bottom: 8px; font-size: 1.05rem; font-weight: 800; }
   .result-card p { font-size: 0.95rem; line-height: 1.6; color: #1c1c1c; font-weight: 600; }
-  .result-score { font-size: 0.8rem; color: #ed7c5a; margin-top: 6px; font-weight: 700; }
 
   .followup-note {
     background: #238FA4;
@@ -175,7 +226,6 @@
     border-radius: 3px;
     transition: width 0.3s;
   }
-  .quiz-2 .progress-fill { background: #55b6ca; }
 
   @media (max-width: 600px) {
     .quiz-section, .results-box { padding: 24px 20px; }
@@ -196,7 +246,8 @@
   <div class="quiz-section">
     <h2>Before We Begin</h2>
     <p class="subtitle">Just a couple quick details so we can send you your personalized follow-up.</p>
-    <div class="name-email">
+
+    <div class="name-email" style="margin-bottom:28px">
       <div>
         <label for="parentName">Your Name *</label>
         <input type="text" id="parentName" placeholder="Jane Smith">
@@ -205,126 +256,42 @@
         <label for="parentEmail">Your Email *</label>
         <input type="email" id="parentEmail" placeholder="jane@email.com">
       </div>
-      <div>
-        <label for="childName">Child's Name *</label>
-        <input type="text" id="childName" placeholder="Child's first name">
-      </div>
-      <div>
-        <label for="childAge">Child's Age / Grade *</label>
-        <input type="text" id="childAge" placeholder="e.g. 8 years / 3rd grade">
+    </div>
+
+    <div id="children-list">
+      <!-- Child 1 always shown -->
+      <div class="child-entry" id="child-entry-1">
+        <div class="child-entry-header">
+          <span class="child-entry-label">Child 1</span>
+        </div>
+        <div class="name-email" style="margin-bottom:0">
+          <div>
+            <label>Child's Name *</label>
+            <input type="text" id="childName1" placeholder="Child's first name">
+          </div>
+          <div>
+            <label>Age / Grade *</label>
+            <input type="text" id="childAge1" placeholder="e.g. 8 years / 3rd grade">
+          </div>
+        </div>
       </div>
     </div>
+
+    <button class="add-child-btn" id="addChildBtn" onclick="addChild()">+ Add Another Child</button>
   </div>
 
-  <!-- QUIZ 1: CHILD'S LEARNING STYLE -->
-  <div class="quiz-section" id="childQuizSection">
-    <h2>🧒 Quiz 1: Your Child's Learning Style</h2>
-    <p class="subtitle">Answer each question based on what you observe about your child. Choose the option that fits MOST of the time.</p>
-    <div class="progress-bar"><div class="progress-fill" id="childProgress" style="width:0%"></div></div>
-
-    <div class="question">
-      <p>1. When your child is trying to learn something new, they do best when...</p>
-      <div class="options">
-        <label><input type="radio" name="c1" value="visual"> They can see it — diagrams, pictures, videos, or demonstrations</label>
-        <label><input type="radio" name="c1" value="auditory"> Someone explains it out loud and they can ask questions</label>
-        <label><input type="radio" name="c1" value="kinesthetic"> They can try it themselves — touch it, build it, or move through it</label>
-        <label><input type="radio" name="c1" value="reading"> They can read about it or write it down in their own words</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>2. When your child is bored or restless during a lesson, they typically...</p>
-      <div class="options">
-        <label><input type="radio" name="c2" value="kinesthetic"> Start fidgeting, moving around, or wanting to do something with their hands</label>
-        <label><input type="radio" name="c2" value="visual"> Start doodling, looking around, or seem distracted by things in the room</label>
-        <label><input type="radio" name="c2" value="auditory"> Talk more, hum, or make sounds</label>
-        <label><input type="radio" name="c2" value="reading"> Reach for a book or start writing something else</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>3. When your child remembers something they learned, it's usually because...</p>
-      <div class="options">
-        <label><input type="radio" name="c3" value="visual"> They can picture it in their mind — like a chart or a scene</label>
-        <label><input type="radio" name="c3" value="auditory"> They remember hearing it explained or talked about</label>
-        <label><input type="radio" name="c3" value="kinesthetic"> They did something physical connected to it — a project or activity</label>
-        <label><input type="radio" name="c3" value="reading"> They read it or wrote it down somewhere</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>4. Your child's favorite type of activity or assignment tends to be...</p>
-      <div class="options">
-        <label><input type="radio" name="c4" value="kinesthetic"> Hands-on projects, experiments, crafts, or building things</label>
-        <label><input type="radio" name="c4" value="visual"> Watching videos, looking at maps, or creating visual displays</label>
-        <label><input type="radio" name="c4" value="reading"> Reading books, writing stories, or doing workbook pages</label>
-        <label><input type="radio" name="c4" value="auditory"> Listening to audiobooks, podcasts, or having discussions</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>5. When your child plays on their own, they most often...</p>
-      <div class="options">
-        <label><input type="radio" name="c5" value="kinesthetic"> Build things, act things out, or play physically active games</label>
-        <label><input type="radio" name="c5" value="visual"> Draw, color, watch things, or arrange items creatively</label>
-        <label><input type="radio" name="c5" value="reading"> Read, look through books, or write/draw stories</label>
-        <label><input type="radio" name="c5" value="auditory"> Sing, talk out loud, listen to music, or narrate what they're doing</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>6. When you give your child directions, they follow best when you...</p>
-      <div class="options">
-        <label><input type="radio" name="c6" value="visual"> Show them with a visual example or write the steps down</label>
-        <label><input type="radio" name="c6" value="auditory"> Say it clearly out loud, step by step</label>
-        <label><input type="radio" name="c6" value="kinesthetic"> Let them walk through it with you physically first</label>
-        <label><input type="radio" name="c6" value="reading"> Give them a written list they can refer back to</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>7. How long can your child typically focus during a lesson before needing a break?</p>
-      <div class="options">
-        <label><input type="radio" name="c7" value="short"> 5–10 minutes — attention span is very short</label>
-        <label><input type="radio" name="c7" value="medium"> 15–20 minutes with some redirection</label>
-        <label><input type="radio" name="c7" value="long"> 30+ minutes if they're engaged in the topic</label>
-        <label><input type="radio" name="c7" value="varies"> It varies a lot depending on the subject</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>8. Your child seems to thrive with...</p>
-      <div class="options">
-        <label><input type="radio" name="c8" value="structure"> A predictable routine — same time, same order every day</label>
-        <label><input type="radio" name="c8" value="flexible"> Flexibility — they do better when they have some choice in what/when</label>
-        <label><input type="radio" name="c8" value="mixed"> A mix — some structure but room to follow their interests</label>
-        <label><input type="radio" name="c8" value="unsure"> I'm still figuring out what works for them</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>9. When your child is upset or frustrated with a lesson, they most often...</p>
-      <div class="options">
-        <label><input type="radio" name="c9" value="kinesthetic"> Physically shut down — push away from the table or need to move</label>
-        <label><input type="radio" name="c9" value="auditory"> Verbalize it loudly — cry, argue, or talk through their frustration</label>
-        <label><input type="radio" name="c9" value="visual"> Shut down quietly and stare off or look away</label>
-        <label><input type="radio" name="c9" value="reading"> Ask to do something else or switch to a book/writing</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>10. Overall, which sentence best describes your child as a learner?</p>
-      <div class="options">
-        <label><input type="radio" name="c10" value="visual"> They need to SEE it to understand it</label>
-        <label><input type="radio" name="c10" value="auditory"> They need to HEAR it and TALK about it</label>
-        <label><input type="radio" name="c10" value="kinesthetic"> They need to DO it and MOVE through it</label>
-        <label><input type="radio" name="c10" value="reading"> They need to READ it and WRITE it</label>
-      </div>
+  <!-- CHILD QUIZ SECTIONS (child 1 always shown, others added dynamically) -->
+  <div id="child-quizzes">
+    <div class="quiz-section" id="child-quiz-1">
+      <h2>🧒 Child 1's Learning Style</h2>
+      <p class="subtitle">Answer each question based on what you observe about your child. Choose the option that fits MOST of the time.</p>
+      <div class="progress-bar"><div class="progress-fill" id="childProgress1" style="width:0%"></div></div>
+      <!-- Questions injected by JS -->
     </div>
   </div>
 
   <!-- QUIZ 2: PARENT TEACHING STYLE -->
-  <div class="quiz-section quiz-2" id="parentQuizSection">
+  <div class="quiz-section" id="parentQuizSection">
     <h2>👩‍🏫 Quiz 2: Your Teaching Style</h2>
     <p class="subtitle">Answer honestly — there are no wrong answers! This helps us match you with approaches that feel natural to YOU.</p>
     <div class="progress-bar"><div class="progress-fill" id="parentProgress" style="width:0%"></div></div>
@@ -338,7 +305,6 @@
         <label><input type="radio" name="p1" value="unsure"> I honestly don't know yet — I'm still figuring it out</label>
       </div>
     </div>
-
     <div class="question">
       <p>2. When it comes to curriculum, you prefer...</p>
       <div class="options">
@@ -348,7 +314,6 @@
         <label><input type="radio" name="p2" value="unsure"> I'm not sure — I need guidance on this</label>
       </div>
     </div>
-
     <div class="question">
       <p>3. When a lesson doesn't go as planned, you typically...</p>
       <div class="options">
@@ -358,7 +323,6 @@
         <label><input type="radio" name="p3" value="unsure"> Feel overwhelmed — I'm not sure how to handle it</label>
       </div>
     </div>
-
     <div class="question">
       <p>4. Your natural strengths as a teacher are...</p>
       <div class="options">
@@ -368,7 +332,6 @@
         <label><input type="radio" name="p4" value="unsure"> I'm still discovering my strengths as a homeschool teacher</label>
       </div>
     </div>
-
     <div class="question">
       <p>5. When it comes to record-keeping and tracking progress, you...</p>
       <div class="options">
@@ -378,7 +341,6 @@
         <label><input type="radio" name="p5" value="unsure"> I'm not sure what I'm supposed to be tracking</label>
       </div>
     </div>
-
     <div class="question">
       <p>6. When your child is struggling with a concept, you most naturally...</p>
       <div class="options">
@@ -388,7 +350,6 @@
         <label><input type="radio" name="p6" value="unsure"> Feel stuck and unsure what to do next</label>
       </div>
     </div>
-
     <div class="question">
       <p>7. How many hours per day are you aiming to do "formal" schoolwork?</p>
       <div class="options">
@@ -398,7 +359,6 @@
         <label><input type="radio" name="p7" value="unsure"> I'm not sure what's realistic or appropriate</label>
       </div>
     </div>
-
     <div class="question">
       <p>8. When you think about your homeschool philosophy, you most identify with...</p>
       <div class="options">
@@ -408,7 +368,6 @@
         <label><input type="radio" name="p8" value="unsure"> I don't know the difference yet — I need help understanding my options</label>
       </div>
     </div>
-
     <div class="question">
       <p>9. At the end of a homeschool day, you feel most satisfied when...</p>
       <div class="options">
@@ -418,7 +377,6 @@
         <label><input type="radio" name="p9" value="unsure"> Honestly, most days I just feel relieved it's over</label>
       </div>
     </div>
-
     <div class="question">
       <p>10. Right now, your biggest challenge as a homeschool teacher is...</p>
       <div class="options">
@@ -438,19 +396,218 @@
       <img src="/Logo_Homeschool Connective_Hearts.png" alt="">
       <h2>Your Homeschool Style Snapshot</h2>
     </div>
-    <div id="childResult"></div>
+    <div id="childResults"></div>
     <div id="parentResult"></div>
-    <div id="alignmentNote"></div>
     <div class="followup-note">
       <strong>What happens next?</strong><br><br>
-      Your full answers are being sent to your consultant for review. Within 2–3 business days, you'll receive a personalized follow-up email with deeper insight into your results, specific curriculum recommendations, and suggested next steps tailored to your family. Keep an eye on your inbox! 🌱
+      Your full answers are being sent to your consultant for review. Within 2–3 business days, you'll receive a personalized follow-up email with deeper insight into your results, specific curriculum recommendations, and suggested next steps tailored to your family. Keep an eye on your inbox!
     </div>
-    <a id="emailLink" href="#" class="email-btn">📧 Send My Results to Mel</a>
+    <a id="emailLink" href="#" class="email-btn">Send Results to Your Consultant</a>
   </div>
 
 </div>
 
 <script>
+// ─── CHILD QUESTIONS TEMPLATE ─────────────────────────────────────────────
+const CHILD_QUESTIONS = [
+  {
+    q: "When your child is trying to learn something new, they do best when...",
+    options: [
+      { val: "visual",      text: "They can see it — diagrams, pictures, videos, or demonstrations" },
+      { val: "auditory",    text: "Someone explains it out loud and they can ask questions" },
+      { val: "kinesthetic", text: "They can try it themselves — touch it, build it, or move through it" },
+      { val: "reading",     text: "They can read about it or write it down in their own words" },
+    ]
+  },
+  {
+    q: "When your child is bored or restless during a lesson, they typically...",
+    options: [
+      { val: "kinesthetic", text: "Start fidgeting, moving around, or wanting to do something with their hands" },
+      { val: "visual",      text: "Start doodling, looking around, or seem distracted by things in the room" },
+      { val: "auditory",    text: "Talk more, hum, or make sounds" },
+      { val: "reading",     text: "Reach for a book or start writing something else" },
+    ]
+  },
+  {
+    q: "When your child remembers something they learned, it's usually because...",
+    options: [
+      { val: "visual",      text: "They can picture it in their mind — like a chart or a scene" },
+      { val: "auditory",    text: "They remember hearing it explained or talked about" },
+      { val: "kinesthetic", text: "They did something physical connected to it — a project or activity" },
+      { val: "reading",     text: "They read it or wrote it down somewhere" },
+    ]
+  },
+  {
+    q: "Your child's favorite type of activity or assignment tends to be...",
+    options: [
+      { val: "kinesthetic", text: "Hands-on projects, experiments, crafts, or building things" },
+      { val: "visual",      text: "Watching videos, looking at maps, or creating visual displays" },
+      { val: "reading",     text: "Reading books, writing stories, or doing workbook pages" },
+      { val: "auditory",    text: "Listening to audiobooks, podcasts, or having discussions" },
+    ]
+  },
+  {
+    q: "When your child plays on their own, they most often...",
+    options: [
+      { val: "kinesthetic", text: "Build things, act things out, or play physically active games" },
+      { val: "visual",      text: "Draw, color, watch things, or arrange items creatively" },
+      { val: "reading",     text: "Read, look through books, or write/draw stories" },
+      { val: "auditory",    text: "Sing, talk out loud, listen to music, or narrate what they're doing" },
+    ]
+  },
+  {
+    q: "When you give your child directions, they follow best when you...",
+    options: [
+      { val: "visual",      text: "Show them with a visual example or write the steps down" },
+      { val: "auditory",    text: "Say it clearly out loud, step by step" },
+      { val: "kinesthetic", text: "Let them walk through it with you physically first" },
+      { val: "reading",     text: "Give them a written list they can refer back to" },
+    ]
+  },
+  {
+    q: "How long can your child typically focus during a lesson before needing a break?",
+    options: [
+      { val: "short",   text: "5–10 minutes — attention span is very short" },
+      { val: "medium",  text: "15–20 minutes with some redirection" },
+      { val: "long",    text: "30+ minutes if they're engaged in the topic" },
+      { val: "varies",  text: "It varies a lot depending on the subject" },
+    ]
+  },
+  {
+    q: "Your child seems to thrive with...",
+    options: [
+      { val: "structure",  text: "A predictable routine — same time, same order every day" },
+      { val: "flexible",   text: "Flexibility — they do better when they have some choice in what/when" },
+      { val: "mixed",      text: "A mix — some structure but room to follow their interests" },
+      { val: "unsure",     text: "I'm still figuring out what works for them" },
+    ]
+  },
+  {
+    q: "When your child is upset or frustrated with a lesson, they most often...",
+    options: [
+      { val: "kinesthetic", text: "Physically shut down — push away from the table or need to move" },
+      { val: "auditory",    text: "Verbalize it loudly — cry, argue, or talk through their frustration" },
+      { val: "visual",      text: "Shut down quietly and stare off or look away" },
+      { val: "reading",     text: "Ask to do something else or switch to a book/writing" },
+    ]
+  },
+  {
+    q: "Overall, which sentence best describes your child as a learner?",
+    options: [
+      { val: "visual",      text: "They need to SEE it to understand it" },
+      { val: "auditory",    text: "They need to HEAR it and TALK about it" },
+      { val: "kinesthetic", text: "They need to DO it and MOVE through it" },
+      { val: "reading",     text: "They need to READ it and WRITE it" },
+    ]
+  },
+];
+
+// ─── CHILD MANAGEMENT ─────────────────────────────────────────────────────
+const MAX_CHILDREN = 6;
+let activeChildren = [1]; // tracks active child indices
+let nextChildId = 2;
+
+function renderChildQuiz(idx) {
+  return CHILD_QUESTIONS.map((q, qi) => `
+    <div class="question">
+      <p>${qi + 1}. ${q.q}</p>
+      <div class="options">
+        ${q.options.map(o => `<label><input type="radio" name="c${idx}q${qi+1}" value="${o.val}"> ${o.text}</label>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Inject quiz for child 1 on load
+document.getElementById('child-quiz-1').insertAdjacentHTML('beforeend', renderChildQuiz(1));
+document.querySelectorAll('#child-quiz-1 input[type="radio"]').forEach(r =>
+  r.addEventListener('change', () => updateChildProgress(1))
+);
+
+function addChild() {
+  if (activeChildren.length >= MAX_CHILDREN) return;
+  const idx = nextChildId++;
+  activeChildren.push(idx);
+
+  // Add child info entry
+  const entryHTML = `
+    <div class="child-entry" id="child-entry-${idx}">
+      <div class="child-entry-header">
+        <span class="child-entry-label">Child ${activeChildren.length}</span>
+        <button class="remove-child-btn" onclick="removeChild(${idx})">✕ Remove</button>
+      </div>
+      <div class="name-email" style="margin-bottom:0">
+        <div>
+          <label>Child's Name *</label>
+          <input type="text" id="childName${idx}" placeholder="Child's first name">
+        </div>
+        <div>
+          <label>Age / Grade *</label>
+          <input type="text" id="childAge${idx}" placeholder="e.g. 8 years / 3rd grade">
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('children-list').insertAdjacentHTML('beforeend', entryHTML);
+
+  // Add quiz section before parent quiz
+  const quizHTML = `
+    <div class="quiz-section" id="child-quiz-${idx}">
+      <h2>🧒 Child ${activeChildren.length}'s Learning Style</h2>
+      <p class="subtitle">Answer each question based on what you observe about this child.</p>
+      <div class="progress-bar"><div class="progress-fill" id="childProgress${idx}" style="width:0%"></div></div>
+      ${renderChildQuiz(idx)}
+    </div>`;
+  document.getElementById('parentQuizSection').insertAdjacentHTML('beforebegin', quizHTML);
+  document.querySelectorAll(`#child-quiz-${idx} input[type="radio"]`).forEach(r =>
+    r.addEventListener('change', () => updateChildProgress(idx))
+  );
+
+  updateAddButton();
+}
+
+function removeChild(idx) {
+  activeChildren = activeChildren.filter(i => i !== idx);
+  document.getElementById(`child-entry-${idx}`)?.remove();
+  document.getElementById(`child-quiz-${idx}`)?.remove();
+  // Re-label remaining children
+  relabelChildren();
+  updateAddButton();
+}
+
+function relabelChildren() {
+  activeChildren.forEach((idx, pos) => {
+    const label = document.querySelector(`#child-entry-${idx} .child-entry-label`);
+    const quizH2 = document.querySelector(`#child-quiz-${idx} h2`);
+    if (label) label.textContent = `Child ${pos + 1}`;
+    if (quizH2) quizH2.textContent = `🧒 Child ${pos + 1}'s Learning Style`;
+  });
+}
+
+function updateAddButton() {
+  const btn = document.getElementById('addChildBtn');
+  btn.disabled = activeChildren.length >= MAX_CHILDREN;
+  btn.textContent = activeChildren.length >= MAX_CHILDREN
+    ? 'Maximum 6 children reached'
+    : '+ Add Another Child';
+}
+
+function updateChildProgress(idx) {
+  const answered = document.querySelectorAll(`[name^="c${idx}q"]:checked`).length;
+  const bar = document.getElementById(`childProgress${idx}`);
+  if (bar) bar.style.width = (answered / 10 * 100) + '%';
+  // Also update parent progress
+  const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
+  document.getElementById('parentProgress').style.width = (parentAnswered / 10 * 100) + '%';
+}
+
+document.querySelectorAll('[name^="p"]').forEach(r =>
+  r.addEventListener('change', () => {
+    const answered = document.querySelectorAll('[name^="p"]:checked').length;
+    document.getElementById('parentProgress').style.width = (answered / 10 * 100) + '%';
+  })
+);
+
+// ─── RESULT DEFINITIONS ───────────────────────────────────────────────────
 const childStyles = {
   visual: {
     label: "Visual Learner",
@@ -489,97 +646,91 @@ const parentStyles = {
   }
 };
 
-function getTopScore(prefix, options) {
+// ─── SUBMIT ───────────────────────────────────────────────────────────────
+function getTopScore(prefix, options, count = 10) {
   const scores = {};
   options.forEach(o => scores[o] = 0);
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= count; i++) {
     const el = document.querySelector(`input[name="${prefix}${i}"]:checked`);
     if (el && scores[el.value] !== undefined) scores[el.value]++;
   }
-  return Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+  return Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
 }
-
-function buildEmailBody() {
-  const name = document.getElementById('parentName').value;
-  const email = document.getElementById('parentEmail').value;
-  const child = document.getElementById('childName').value;
-  const age = document.getElementById('childAge').value;
-
-  let body = `NEW QUIZ SUBMISSION\n\nParent: ${name}\nEmail: ${email}\nChild: ${child}\nAge/Grade: ${age}\n\n--- CHILD LEARNING STYLE ANSWERS ---\n`;
-  const cLabels = ["When learning something new","When bored/restless","How they remember","Favorite activity","How they play","Following directions","Attention span","Thrives with","When frustrated","Overall description"];
-  for (let i = 1; i <= 10; i++) {
-    const el = document.querySelector(`input[name="c${i}"]:checked`);
-    body += `Q${i} (${cLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
-  }
-  body += `\n--- PARENT TEACHING STYLE ANSWERS ---\n`;
-  const pLabels = ["Ideal homeschool day","Curriculum preference","When lesson fails","Natural strengths","Record-keeping","Child struggling","Hours per day","Philosophy","End of day satisfaction","Biggest challenge"];
-  for (let i = 1; i <= 10; i++) {
-    const el = document.querySelector(`input[name="p${i}"]:checked`);
-    body += `Q${i} (${pLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
-  }
-  return encodeURIComponent(body);
-}
-
-function updateProgress() {
-  const childAnswered = document.querySelectorAll('[name^="c"]:checked').length;
-  const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
-  document.getElementById('childProgress').style.width = (childAnswered / 10 * 100) + '%';
-  document.getElementById('parentProgress').style.width = (parentAnswered / 10 * 100) + '%';
-}
-
-document.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', updateProgress));
 
 function submitQuizzes() {
   const name = document.getElementById('parentName').value.trim();
   const email = document.getElementById('parentEmail').value.trim();
   if (!name || !email) { alert('Please enter your name and email before submitting.'); return; }
 
-  const childAnswered = document.querySelectorAll('[name^="c"]:checked').length;
-  const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
-  if (childAnswered < 10 || parentAnswered < 10) {
-    alert('Please answer all questions in both quizzes before submitting!');
-    return;
+  // Validate all children have names and all questions answered
+  for (const idx of activeChildren) {
+    const childName = document.getElementById(`childName${idx}`)?.value.trim();
+    if (!childName) { alert('Please enter a name for each child.'); return; }
+    const answered = document.querySelectorAll(`[name^="c${idx}q"]:checked`).length;
+    if (answered < 10) {
+      alert(`Please answer all 10 questions for ${childName || 'each child'} before submitting.`);
+      return;
+    }
   }
+  const parentAnswered = document.querySelectorAll('[name^="p"]:checked').length;
+  if (parentAnswered < 10) { alert('Please answer all questions in the Teaching Style quiz.'); return; }
 
-  const [childKey] = getTopScore('c', ['visual','auditory','kinesthetic','reading']);
+  // Build child results
+  let childResultsHTML = '';
+  for (const idx of activeChildren) {
+    const childName = document.getElementById(`childName${idx}`).value.trim();
+    const [childKey] = getTopScore(`c${idx}q`, ['visual','auditory','kinesthetic','reading']);
+    const child = childStyles[childKey];
+    childResultsHTML += `
+      <div class="result-card">
+        <h3>🧒 ${childName}'s Learning Style: ${child.label}</h3>
+        <p>${child.desc}</p>
+      </div>`;
+  }
+  document.getElementById('childResults').innerHTML = childResultsHTML;
+
+  // Parent result
   const [parentKey] = getTopScore('p', ['structured','relaxed','mixed','unsure']);
-
-  const child = childStyles[childKey];
   const parent = parentStyles[parentKey];
-
-  document.getElementById('childResult').innerHTML = `
-    <div class="result-card">
-      <h3>🧒 ${document.getElementById('childName').value}'s Learning Style: ${child.label}</h3>
-      <p>${child.desc}</p>
-    </div>`;
-
   document.getElementById('parentResult').innerHTML = `
     <div class="result-card parent-card">
       <h3>👩‍🏫 Your Teaching Style: ${parent.label}</h3>
       <p>${parent.desc}</p>
     </div>`;
 
-  const alignments = {
-    'structured-visual': "Great news — your structured approach pairs beautifully with your child's visual learning style. Organized, colorful curricula with charts and visual schedules will work wonderfully for your family.",
-    'structured-kinesthetic': "There's a natural tension here to work with — your preference for structure combined with your child's need for movement means building active learning INTO your schedule will be key.",
-    'relaxed-kinesthetic': "What a natural fit! Your flexible approach gives your hands-on learner room to explore, build, and discover. Project-based and interest-led learning will feel like a dream for you both.",
-    'mixed-reading': "Your eclectic teaching style gives you the flexibility to lean into reading and writing activities your child loves while still keeping things organized and progressive.",
-  };
-  const alignKey = `${parentKey}-${childKey}`;
-  const alignNote = alignments[alignKey] || "Your consultant will share personalized insight on how your teaching style and your child's learning style complement each other — and where to watch for friction.";
-
-  document.getElementById('alignmentNote').innerHTML = `
-    <div class="result-card align-card">
-      <h3>✨ Style Alignment Note</h3>
-      <p>${alignNote}</p>
-    </div>`;
-
-  const subj = encodeURIComponent(`Quiz Results — ${name} & ${document.getElementById('childName').value}`);
-  const body = buildEmailBody();
-  document.getElementById('emailLink').href = `mailto:consulting@homeschoolconnective.com?subject=${subj}&body=${body}`;
+  // Build email
+  const subj = encodeURIComponent(`Quiz Results — ${name}`);
+  const body = buildEmailBody(name, email);
+  document.getElementById('emailLink').href =
+    `mailto:consulting@homeschoolconnective.com?subject=${subj}&body=${body}`;
 
   document.getElementById('resultsBox').style.display = 'block';
   document.getElementById('resultsBox').scrollIntoView({ behavior: 'smooth' });
+}
+
+function buildEmailBody(name, email) {
+  const cLabels = ["When learning something new","When bored/restless","How they remember","Favorite activity","How they play","Following directions","Attention span","Thrives with","When frustrated","Overall description"];
+  const pLabels = ["Ideal homeschool day","Curriculum preference","When lesson fails","Natural strengths","Record-keeping","Child struggling","Hours per day","Philosophy","End of day satisfaction","Biggest challenge"];
+
+  let body = `NEW QUIZ SUBMISSION\n\nParent: ${name}\nEmail: ${email}\n`;
+
+  for (const idx of activeChildren) {
+    const childName = document.getElementById(`childName${idx}`)?.value || '';
+    const childAge  = document.getElementById(`childAge${idx}`)?.value  || '';
+    body += `\n--- CHILD: ${childName} (${childAge}) ---\n`;
+    for (let i = 1; i <= 10; i++) {
+      const el = document.querySelector(`input[name="c${idx}q${i}"]:checked`);
+      body += `Q${i} (${cLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
+    }
+  }
+
+  body += `\n--- PARENT TEACHING STYLE ---\n`;
+  for (let i = 1; i <= 10; i++) {
+    const el = document.querySelector(`input[name="p${i}"]:checked`);
+    body += `Q${i} (${pLabels[i-1]}): ${el ? el.parentElement.textContent.trim() : 'Not answered'}\n`;
+  }
+
+  return encodeURIComponent(body);
 }
 </script>
 </body>
