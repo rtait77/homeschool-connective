@@ -1118,10 +1118,13 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> People, relationships, and emotions</label>
       <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Sports, movement, and the body</label>
       <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Technology and computers</label>
+      <label><input type="checkbox" id="${cid}_q11love_other_cb" name="${cid}_q11love" onchange="toggle('${cid}_q11love_other_box', this.checked); onSection('${cid}')"> Other</label>
     </div>
-    <div class="field-group" style="margin-top:10px">
-      <label>Other (optional)</label>
-      <input type="text" id="${cid}_q11love_other" placeholder="e.g. dinosaurs, trains, ancient Egypt..." oninput="onSection('${cid}')">
+    <div id="${cid}_q11love_other_box" class="followup">
+      <div class="field-group">
+        <label>What are they into?</label>
+        <input type="text" id="${cid}_q11love_other" placeholder="e.g. dinosaurs, trains, ancient Egypt..." oninput="onSection('${cid}')">
+      </div>
     </div>
     <div class="part-label">They tend to avoid or dread:</div>
     <div class="q-note">Pick all that apply</div>
