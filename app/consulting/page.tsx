@@ -3,13 +3,34 @@
 import Image from 'next/image'
 import { useState } from 'react'
 
+type Plan = 'consulting' | 'bundle-monthly' | 'bundle-yearly'
+
+const PLAN_LABELS: Record<Plan, string> = {
+  'consulting': 'Sign Up & Pay — $47',
+  'bundle-monthly': 'Sign Up & Pay — $52',
+  'bundle-yearly': 'Sign Up & Pay — $97',
+}
+
 export default function ConsultingPage() {
   const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [plan, setPlan] = useState<Plan>('consulting')
 
   async function handleCheckout() {
     setLoading(true)
-    const res = await fetch('/api/checkout-consulting', { method: 'POST' })
+    let endpoint = '/api/checkout-consulting'
+    let body: string | undefined
+
+    if (plan === 'bundle-monthly' || plan === 'bundle-yearly') {
+      endpoint = '/api/checkout-bundle'
+      body = JSON.stringify({ plan: plan === 'bundle-monthly' ? 'monthly' : 'yearly' })
+    }
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    })
     const { url } = await res.json()
     window.location.href = url
   }
@@ -78,24 +99,97 @@ export default function ConsultingPage() {
         </div>
       </div>
 
-      {/* What you get */}
-      <div className="bg-white border-2 border-[#55b6ca] rounded-[14px] p-8 mb-14" style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.08)' }}>
-        <h3 className="font-extrabold text-xl mb-5 text-center">What You Get</h3>
-        <ul className="space-y-3 max-w-[500px] mx-auto">
-          {[
-            'A personalized intake form to share your family\'s story',
-            'A learning style & teaching style quiz',
-            'Custom curriculum recommendations from Mel',
-            '3 months of email support — ask questions, get real answers',
-          ].map(item => (
-            <li key={item} className="flex items-start gap-3 text-sm">
-              <span className="text-[#ed7c5a] font-extrabold text-base mt-0.5">✓</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="text-center text-4xl font-extrabold mt-8 mb-1">$47</p>
-        <p className="text-center text-sm text-[#5c5c5c]">One-time payment. No subscription.</p>
+      {/* Pricing options */}
+      <div className="mb-10">
+        <h2 className="text-2xl font-extrabold mb-2 text-center">Choose Your Plan</h2>
+        <p className="text-sm text-[#5c5c5c] text-center mb-8">Consulting includes everything above. Add a games subscription to get full access to all our educational games and lessons too.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+          {/* Consulting only */}
+          <button
+            type="button"
+            onClick={() => setPlan('consulting')}
+            className={`rounded-2xl p-6 text-left border-2 transition-all cursor-pointer ${
+              plan === 'consulting'
+                ? 'border-[#ed7c5a] bg-white'
+                : 'border-[#e2ddd5] bg-white hover:border-[#ed7c5a]'
+            }`}
+            style={{ boxShadow: plan === 'consulting' ? '0 4px 20px rgba(237,124,90,0.18)' : '0 2px 12px rgba(0,0,0,0.06)' }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <span className="font-extrabold text-base">Consulting Only</span>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${plan === 'consulting' ? 'border-[#ed7c5a] bg-[#ed7c5a]' : 'border-[#ddd8cc]'}`}>
+                {plan === 'consulting' && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
+            </div>
+            <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0.5">$47</p>
+            <p className="text-xs text-[#5c5c5c] mb-5">one-time payment</p>
+            <ul className="text-sm text-[#5c5c5c] space-y-2">
+              <li>✓ Intake form + learning style quiz</li>
+              <li>✓ Custom curriculum recommendations</li>
+              <li>✓ 3 months of email support</li>
+            </ul>
+          </button>
+
+          {/* Bundle monthly */}
+          <button
+            type="button"
+            onClick={() => setPlan('bundle-monthly')}
+            className={`rounded-2xl p-6 text-left border-2 transition-all cursor-pointer ${
+              plan === 'bundle-monthly'
+                ? 'border-[#ed7c5a] bg-white'
+                : 'border-[#e2ddd5] bg-white hover:border-[#ed7c5a]'
+            }`}
+            style={{ boxShadow: plan === 'bundle-monthly' ? '0 4px 20px rgba(237,124,90,0.18)' : '0 2px 12px rgba(0,0,0,0.06)' }}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <span className="font-extrabold text-base">Consulting + Monthly Games</span>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${plan === 'bundle-monthly' ? 'border-[#ed7c5a] bg-[#ed7c5a]' : 'border-[#ddd8cc]'}`}>
+                {plan === 'bundle-monthly' && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
+            </div>
+            <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0.5">$52</p>
+            <p className="text-xs text-[#5c5c5c] mb-5">today, then $5/month</p>
+            <ul className="text-sm text-[#5c5c5c] space-y-2">
+              <li>✓ Everything in Consulting Only</li>
+              <li>✓ Full access to all games & lessons</li>
+              <li>✓ New content as it's added</li>
+              <li>✓ Cancel games anytime</li>
+            </ul>
+          </button>
+
+          {/* Bundle yearly */}
+          <div className="relative">
+            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#55b6ca] text-white text-xs font-bold px-4 py-1 rounded-full whitespace-nowrap z-10">BEST VALUE</span>
+            <button
+              type="button"
+              onClick={() => setPlan('bundle-yearly')}
+              className={`w-full h-full rounded-2xl p-6 text-left border-2 transition-all cursor-pointer ${
+                plan === 'bundle-yearly'
+                  ? 'border-[#ed7c5a] bg-white'
+                  : 'border-[#e2ddd5] bg-white hover:border-[#ed7c5a]'
+              }`}
+              style={{ boxShadow: plan === 'bundle-yearly' ? '0 4px 20px rgba(237,124,90,0.18)' : '0 2px 12px rgba(0,0,0,0.06)' }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-extrabold text-base">Consulting + Yearly Games</span>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${plan === 'bundle-yearly' ? 'border-[#ed7c5a] bg-[#ed7c5a]' : 'border-[#ddd8cc]'}`}>
+                  {plan === 'bundle-yearly' && <div className="w-2 h-2 rounded-full bg-white" />}
+                </div>
+              </div>
+              <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0.5">$97</p>
+              <p className="text-xs text-[#5c5c5c] mb-5">today, then $50/year — save $10!</p>
+              <ul className="text-sm text-[#5c5c5c] space-y-2">
+                <li>✓ Everything in Consulting Only</li>
+                <li>✓ Full access to all games & lessons</li>
+                <li>✓ New content as it's added</li>
+                <li>✓ Best value on games</li>
+              </ul>
+            </button>
+          </div>
+
+        </div>
       </div>
 
       {/* Contract */}
@@ -128,7 +222,7 @@ export default function ConsultingPage() {
         disabled={!agreed || loading}
         className="w-full bg-[#ed7c5a] text-white font-extrabold text-lg py-4 rounded-xl hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        {loading ? 'Redirecting to payment...' : 'Sign Up & Pay — $47'}
+        {loading ? 'Redirecting to payment...' : PLAN_LABELS[plan]}
       </button>
       <p className="text-center text-xs text-[#5c5c5c] mt-3">Secure payment via Stripe. You'll receive a confirmation email right after payment.</p>
 
