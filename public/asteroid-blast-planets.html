@@ -286,14 +286,16 @@ function spawnAsteroid(label, isCorrect) {
   const topPct = randomBetween(12, 78);
   const fromLeft = Math.random() < 0.5;
 
-  // Regular mode: ~35% of asteroids are fast, some very fast
+  // Speed distribution: 20% very fast, 35% fast, 30% medium, 15% slow stragglers
   const speedRoll = Math.random();
-  const duration = speedRoll < 0.15
-    ? randomBetween(3, 6)    // very fast ~15%
-    : speedRoll < 0.35
-    ? randomBetween(7, 11)   // fast ~20%
-    : randomBetween(14, 20); // normal ~65%
-  const isFast = speedRoll < 0.35;
+  const duration = speedRoll < 0.20
+    ? randomBetween(3, 5)    // very fast ~20%
+    : speedRoll < 0.55
+    ? randomBetween(6, 10)   // fast ~35%
+    : speedRoll < 0.85
+    ? randomBetween(11, 16)  // medium ~30%
+    : randomBetween(22, 30); // slow stragglers ~15%
+  const isFast = speedRoll < 0.55;
 
   const el = document.createElement('div');
   el.className = 'asteroid';
