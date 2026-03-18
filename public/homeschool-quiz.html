@@ -807,9 +807,11 @@ function updateName(cid) {
   const input = document.getElementById(cid + '_name');
   if (!child || !input) return;
   child.name = input.value.trim();
-  // Update section heading
+  // Update section heading and Q12 name span
   const h = document.getElementById(cid + '_heading');
   if (h) h.textContent = child.name || `Child ${children.indexOf(child) + 1}`;
+  const q12name = document.getElementById(cid + '_q12_name');
+  if (q12name) q12name.textContent = child.name || 'your child';
   renderNav();
 }
 
@@ -1133,19 +1135,14 @@ function buildChild(cid, num) {
     </div>
   </div>
 
-  <!-- Q12: Big picture -->
+  <!-- Q12: What else -->
   <div class="question" style="margin-bottom:0">
-    <div class="q-label">12. Which of these sound like your child right now?</div>
+    <div class="q-label">12. What else would you like Mel to know about <span id="${cid}_q12_name">your child</span>?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Loves to read independently</label>
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Loves being read to but resists reading themselves</label>
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Learns best by doing and moving — sitting still is a battle</label>
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Needs a parent nearby to start or stay on task</label>
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Can work independently once they get going</label>
-      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Has very intense emotions around school or learning</label>
       <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Is currently in speech, OT, or another therapy</label>
       <label><input type="checkbox" name="${cid}_q12" id="${cid}_q12_diag" onchange="onSection('${cid}'); toggle('${cid}_q12fu', this.checked)"> Has been formally assessed or diagnosed</label>
+      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Other</label>
     </div>
     <div class="followup" id="${cid}_q12fu">
       <div class="followup-label">Would you like to share the diagnosis? (optional)</div>
