@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asteroid Blast – Gas Giants</title>
+  <title>Asteroid Blast – Gas/Ice Giants</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -193,14 +193,14 @@
 <div id="stage">
   <div id="hud">
     <div id="lives-display"></div>
-    <div id="prompt">BLAST THE <span>GAS GIANTS</span>!</div>
-    <div id="planet-counter" style="font-size:1.8vw;font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">🌌 0 / 4 gas giants</div>
+    <div id="prompt">BLAST THE <span>GAS/ICE GIANTS</span>!</div>
+    <div id="planet-counter" style="font-size:1.8vw;font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">🌌 0 / 4 gas/ice giants</div>
   </div>
   <div id="progress-bar"><div id="progress-fill"></div></div>
   <div id="game-area"></div>
   <div id="overlay">
     <h1>🚀 Asteroid Blast!</h1>
-    <p>Blast only the <strong style="color:#f9d84a">GAS GIANTS</strong>!<br>Don't shoot the others — you'll lose a life!</p>
+    <p>Blast only the <strong style="color:#f9d84a">GAS/ICE GIANTS</strong>!<br>Don't shoot the others — you'll lose a life!</p>
     <button class="btn" id="start-btn">START MISSION</button>
   </div>
 </div>
@@ -259,7 +259,7 @@ function renderHUD() {
     ld.appendChild(icon);
   }
   document.getElementById('progress-fill').style.width = (blasted / CORRECT.length * 100) + '%';
-  document.getElementById('planet-counter').textContent = `🌌 ${blasted} / ${CORRECT.length} gas giants`;
+  document.getElementById('planet-counter').textContent = `🌌 ${blasted} / ${CORRECT.length} gas/ice giants`;
 }
 
 // ─── ASTEROID SPAWNING ────────────────────────────────────────────────────
@@ -459,13 +459,13 @@ function endGame(won) {
   const overlay = document.getElementById('overlay');
   overlay.innerHTML = won ? `
     <h1>Mission Complete!</h1>
-    <p>You blasted all 4 gas giants!<br>Jupiter, Saturn, Uranus, and Neptune — the big outer planets!</p>
+    <p>You blasted all 4 gas/ice giants!<br>Jupiter, Saturn, Uranus, and Neptune — the big outer planets!</p>
     <button class="btn" id="play-again-btn">Play Again</button>
     <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
   ` : `
     <h1>🚀 Mission Failed</h1>
-    <p>You blasted <strong style="color:#f9d84a">${blasted} of 4 gas giants</strong>.<br>
-    Remember: only blast the <strong>gas giants</strong>!</p>
+    <p>You blasted <strong style="color:#f9d84a">${blasted} of 4 gas/ice giants</strong>.<br>
+    Remember: only blast the <strong>gas/ice giants</strong>!</p>
     <button class="btn" id="play-again-btn">Try Again</button>
     <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
   `;
