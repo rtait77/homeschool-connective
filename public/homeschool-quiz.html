@@ -979,10 +979,20 @@ function buildChild(cid, num) {
     </div>
   </div>
 
-  <!-- Q8: Writing -->
+  <!-- Q8: Reading & Writing -->
   <div class="question">
-    <div class="q-label">8. Writing —</div>
-    <div class="part-label">Part A: Where is your child in their writing journey?</div>
+    <div class="q-label">8. Reading &amp; Writing —</div>
+    <div class="part-label">Part A: Where is your child with reading?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Not yet reading — working on letters and sounds</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Beginning to read — sounding out short words</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading simple books with some effort</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading independently at or around grade level</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading above grade level or voraciously</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading is a significant struggle despite their age and effort</label>
+    </div>
+    <div class="part-label">Part B: Where is your child in their writing journey?</div>
     <div class="q-note">Choose one</div>
     <div class="options">
       <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Not yet writing — working on pencil grip and pre-writing shapes</label>
@@ -993,7 +1003,7 @@ function buildChild(cid, num) {
       <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing multi-paragraph pieces or short essays</label>
       <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing longer pieces, stories, or structured essays</label>
     </div>
-    <div class="part-label">Part B: How does your child experience the physical act of writing?</div>
+    <div class="part-label">Part C: How does your child experience the physical act of writing?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> They have a lot to say but their handwriting can't keep up with their ideas — this causes real frustration</label>
@@ -1003,7 +1013,7 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> Handwriting is fine — it's not a barrier for them</label>
       <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> Writing is not yet developmentally expected for this child's age</label>
     </div>
-    <div class="part-label">Part C: What kinds of writing does your child engage with?</div>
+    <div class="part-label">Part D: What kinds of writing does your child engage with?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> Creative writing — stories, imaginative pieces</label>
@@ -1012,7 +1022,7 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> Poetry or rhyming text — they enjoy it or gravitate toward it</label>
       <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> They avoid writing in any form</label>
     </div>
-    <div class="part-label">Part D: Where is your child with spelling?</div>
+    <div class="part-label">Part E: Where is your child with spelling?</div>
     <div class="q-note">Choose one</div>
     <div class="options">
       <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Not yet working on spelling formally</label>
@@ -1022,7 +1032,7 @@ function buildChild(cid, num) {
       <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Spelling is strong and mostly accurate</label>
       <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Spelling is a real strength</label>
     </div>
-    <div class="part-label">Part E: Where is your child with grammar?</div>
+    <div class="part-label">Part F: Where is your child with grammar?</div>
     <div class="q-note">Choose one</div>
     <div class="options">
       <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Not yet working on grammar formally</label>
@@ -1032,7 +1042,7 @@ function buildChild(cid, num) {
       <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Working on more complex grammar — clauses, tenses, agreement</label>
       <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Grammar is a strength</label>
     </div>
-    <div class="part-label">Part F: Grammar areas of struggle</div>
+    <div class="part-label">Part G: Grammar areas of struggle</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Punctuation and capitalization</label>
@@ -1260,7 +1270,8 @@ Q6b. Screen use at home:
 Q7. Games:
   • ${checked(cid + '_q7')}
 
-Q8a. Writing stage: ${radio(cid + '_q8a')}
+Q8a. Reading level: ${radio(cid + '_q8_read')}
+Q8b. Writing stage: ${radio(cid + '_q8a')}
 
 Q8b. Physical writing experience:
   • ${checked(cid + '_q8b')}
