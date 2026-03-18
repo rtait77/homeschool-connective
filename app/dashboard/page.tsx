@@ -234,7 +234,7 @@ export default function DashboardPage() {
               <p className="font-semibold text-sm">{email}</p>
             </div>
             <div>
-              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Plan</p>
+              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Games Plan</p>
               {isActive && <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>}
               {isTrialing && <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">{daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial</span>}
               {!isActive && !isTrialing && <span className="text-sm text-[#5c5c5c]">No active plan</span>}
@@ -308,38 +308,38 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Consulting section — only shown if they purchased */}
-      {consulting && (
+      {/* Consulting section — only shown if they purchased consulting */}
+      {consulting?.ends_at && (
         <div className="mb-12">
-          <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting</h2>
-          <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+          <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting with Mel</h2>
+          <div className={`rounded-2xl p-6 border ${consulting.intake_completed ? 'bg-white border-[#e2ddd5]' : 'bg-[#fff9f7] border-[#ed7c5a]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
             <div className="flex items-start justify-between flex-wrap gap-4">
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3 flex-wrap">
                   <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                     consulting.intake_completed
                       ? 'bg-[#d1f5ea] text-[#1a7a52]'
-                      : 'bg-[#fff3e0] text-[#b45309]'
+                      : 'bg-[#ed7c5a] text-white'
                   }`}>
-                    {consulting.intake_completed ? 'Intake submitted' : 'Intake form pending'}
+                    {consulting.intake_completed ? 'Intake submitted' : 'Action needed — complete your intake form'}
                   </span>
-                  {consulting.ends_at && (() => {
+                  {(() => {
                     const daysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
                     return daysLeft > 0 ? (
-                      <span className="text-xs font-semibold text-[#5c5c5c]">{daysLeft} days remaining in your 3-month window</span>
+                      <span className="text-xs font-semibold text-[#5c5c5c]">{daysLeft} days left in your 3-month window</span>
                     ) : (
                       <span className="text-xs font-semibold text-[#991b1b]">3-month window has ended</span>
                     )
                   })()}
                 </div>
                 {!consulting.intake_completed ? (
-                  <p className="text-sm text-[#5c5c5c]">Complete your intake form so Mel can get started on your personalized curriculum recommendations.</p>
+                  <p className="text-sm text-[#5c5c5c]">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
                 ) : (
-                  <p className="text-sm text-[#5c5c5c]">Mel has your intake form and will be in touch within 3–5 business days. Questions? Email <a href="mailto:consulting@homeschoolconnective.com" className="text-[#55b6ca] font-bold hover:underline">consulting@homeschoolconnective.com</a></p>
+                  <p className="text-sm text-[#5c5c5c]">Mel has your answers and will be in touch within 3–5 business days. Questions? Email <a href="mailto:consulting@homeschoolconnective.com" className="text-[#55b6ca] font-bold hover:underline">consulting@homeschoolconnective.com</a></p>
                 )}
               </div>
               {!consulting.intake_completed && (
-                <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition whitespace-nowrap">
+                <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition whitespace-nowrap">
                   Complete Intake Form →
                 </Link>
               )}
