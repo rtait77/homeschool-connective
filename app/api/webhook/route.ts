@@ -26,6 +26,27 @@ export async function POST(req: NextRequest) {
       const customerEmail = session.customer_details?.email ?? ''
       const customerName = session.customer_details?.name ?? 'a new customer'
 
+      // Find Supabase user_id — prefer metadata, fallback to email lookup
+      let userId: string | null = session.metadata?.supabase_user_id ?? null
+      if (!userId && customerEmail) {
+        const { data: authData } = await supabase.auth.admin.listUsers({ perPage: 1000 })
+        const found = (authData?.users ?? []).find(u => u.email === customerEmail)
+        userId = found?.id ?? null
+      }
+
+      // Create consulting_customers record
+      if (userId) {
+        const paidAt = new Date()
+        const endsAt = new Date(paidAt)
+        endsAt.setMonth(endsAt.getMonth() + 3)
+        await supabase.from('consulting_customers').insert({
+          user_id: userId,
+          stripe_session_id: session.id,
+          paid_at: paidAt.toISOString(),
+          ends_at: endsAt.toISOString(),
+        })
+      }
+
       // Email to Mel
       await fetch('https://api.sender.net/v2/transactional/email', {
         method: 'POST',
@@ -72,14 +93,14 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify({
             from: { name: 'Mel at Homeschool Connective', email: 'consulting@homeschoolconnective.com' },
             to: [{ email: customerEmail }],
-            subject: 'Welcome! Here\'s your intake form and quiz',
+            subject: 'Welcome! Here\'s your intake form',
             html: `
               <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
-                <p style="color: #888; font-size: 13px; font-style: italic;">Welcome email from Mel coming soon.</p>
+                <p style="color: #888; font-size: 13px; font-style: italic;">Welcome email from Mel coming soon. In the meantime, please complete your intake form below — your 3-month window starts today!</p>
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
-                ${intakeFormUrl ? `<p><a href="${intakeFormUrl}" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-bottom: 12px;">Complete Your Intake Form →</a></p>` : ''}
-                ${quizUrl ? `<p><a href="${quizUrl}" style="display: inline-block; background: #55b6ca; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none;">Take the Learning Style Quiz →</a></p>` : ''}
+                <p><a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/intake" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-bottom: 12px;">Complete Your Intake Form →</a></p>
+                ${quizUrl ? `<p style="margin-top: 12px;"><a href="${quizUrl}" style="display: inline-block; background: #55b6ca; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none;">Take the Learning Style Quiz →</a></p>` : ''}
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
                 <h3 style="font-size: 14px;">Your agreed terms</h3>
                 <ol style="color: #555; font-size: 13px; line-height: 1.7;">
