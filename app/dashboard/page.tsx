@@ -328,7 +328,10 @@ export default function DashboardPage() {
                 {!consulting.intake_completed ? (
                   <p className="text-sm text-[#5c5c5c]">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
                 ) : (
-                  <p className="text-sm text-[#5c5c5c]">Mel has your answers and will be in touch within 3–5 business days. Questions? Email <a href="mailto:consulting@homeschoolconnective.com" className="text-[#55b6ca] font-bold hover:underline">consulting@homeschoolconnective.com</a></p>
+                  <div>
+                    <p className="text-sm text-[#5c5c5c] mb-2">Mel has your answers and will be in touch within 3–5 business days. Questions? Email <a href="mailto:consulting@homeschoolconnective.com" className="text-[#55b6ca] font-bold hover:underline">consulting@homeschoolconnective.com</a></p>
+                    <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
+                  </div>
                 )}
               </div>
               {!consulting.intake_completed && (
