@@ -684,8 +684,8 @@ export default function AdminPage() {
                               {(() => {
                                 type Child = Record<string, unknown>
                                 const children: Child[] = Array.isArray(r.children) ? r.children as Child[] : []
-                                const arrStr = (v: unknown) => Array.isArray(v) ? (v as string[]).filter(Boolean).join(', ') || '—' : (v as string) || '—'
-                                const s = (v: unknown) => (v as string) || '—'
+                                const toArr = (v: unknown): string[] => Array.isArray(v) ? (v as string[]).filter(Boolean) : []
+                                const s = (v: unknown): string => (typeof v === 'string' && v) ? v : '—'
                                 return (
                                   <>
                                     <SummarySection title="Family">
@@ -697,26 +697,27 @@ export default function AdminPage() {
                                     </SummarySection>
 
                                     <SummarySection title="About the Parent">
-                                      <SummaryRow label="Why homeschooling" value={arrStr(r.whyHomeschooling)} />
+                                      <SummaryRow label="Why homeschooling" value={toArr(r.whyHomeschooling)} />
                                       <SummaryRow label="Experience" value={s(r.experienceLength)} />
                                       <SummaryRow label="Current experience" value={s(r.currentExperience)} />
                                       <SummaryRow label="#1 goal" value={s(r.primaryGoal)} />
-                                      <SummaryRow label="Biggest challenges" value={arrStr(r.biggestChallenges)} />
-                                      <SummaryRow label="Curriculum tried" value={`${arrStr(r.curriculumExperience)}${s(r.curriculumTried) !== '—' ? ` — ${r.curriculumTried}` : ''}`} />
+                                      <SummaryRow label="Biggest challenges" value={toArr(r.biggestChallenges)} />
+                                      <SummaryRow label="Curriculum experience" value={toArr(r.curriculumExperience)} />
+                                      <SummaryRow label="Curriculum tried" value={s(r.curriculumTried)} />
                                     </SummarySection>
 
                                     <SummarySection title="Schedule & Approach">
                                       <SummaryRow label="Days/week" value={s(r.daysPerWeek)} />
                                       <SummaryRow label="Hours/day" value={s(r.hoursPerDay)} />
-                                      <SummaryRow label="Other demands" value={arrStr(r.otherDemands)} />
-                                      <SummaryRow label="Ideal day" value={arrStr(r.idealDay)} />
-                                      <SummaryRow label="Teaching style" value={arrStr(r.teachingStyle)} />
-                                      <SummaryRow label="Screens" value={arrStr(r.screenAttitude)} />
-                                      <SummaryRow label="Progress measurement" value={arrStr(r.progressMeasurement)} />
+                                      <SummaryRow label="Other demands" value={toArr(r.otherDemands)} />
+                                      <SummaryRow label="Ideal day" value={toArr(r.idealDay)} />
+                                      <SummaryRow label="Teaching style" value={toArr(r.teachingStyle)} />
+                                      <SummaryRow label="Screens" value={toArr(r.screenAttitude)} />
+                                      <SummaryRow label="Progress measurement" value={toArr(r.progressMeasurement)} />
                                       <SummaryRow label="Prep willingness" value={s(r.prepWillingness)} />
-                                      <SummaryRow label="Environment" value={arrStr(r.learningEnvironment)} />
-                                      <SummaryRow label="Co-op" value={arrStr(r.coopParticipation)} />
-                                      <SummaryRow label="Personality" value={arrStr(r.parentPersonality)} />
+                                      <SummaryRow label="Environment" value={toArr(r.learningEnvironment)} />
+                                      <SummaryRow label="Co-op" value={toArr(r.coopParticipation)} />
+                                      <SummaryRow label="Personality" value={toArr(r.parentPersonality)} />
                                     </SummarySection>
 
                                     <SummarySection title="Vision & Context">
@@ -729,22 +730,23 @@ export default function AdminPage() {
                                       <SummarySection key={i} title={`${s(c.name) !== '—' ? s(c.name) : `Child ${i + 1}`} — Learning Profile`}>
                                         <SummaryRow label="Reading" value={`${s(c.readingLevel)} — feels ${s(c.readingFeel)}`} />
                                         <SummaryRow label="Writing" value={`${s(c.writingStage)} — feels ${s(c.writingFeel)}`} />
-                                        <SummaryRow label="Physical writing" value={arrStr(c.physicalWriting)} />
+                                        <SummaryRow label="Physical writing" value={toArr(c.physicalWriting)} />
                                         <SummaryRow label="Spelling" value={`${s(c.spellingLevel)} — feels ${s(c.spellingFeel)}`} />
                                         <SummaryRow label="Grammar" value={`${s(c.grammarLevel)} — feels ${s(c.grammarFeel)}`} />
-                                        <SummaryRow label="Grammar struggles" value={arrStr(c.grammarStruggles)} />
+                                        <SummaryRow label="Grammar struggles" value={toArr(c.grammarStruggles)} />
                                         <SummaryRow label="Focus span" value={s(c.focusSpan)} />
-                                        <SummaryRow label="Regulation" value={arrStr(c.regulation)} />
-                                        <SummaryRow label="Frustration (child)" value={arrStr(c.frustrationChild)} />
-                                        <SummaryRow label="Frustration (parent)" value={arrStr(c.frustrationParent)} />
-                                        <SummaryRow label="New tasks" value={arrStr(c.newTasks)} />
-                                        <SummaryRow label="Hard tasks" value={arrStr(c.hardTasks)} />
-                                        <SummaryRow label="Demonstrates learning" value={arrStr(c.demonstratesUnderstanding)} />
-                                        <SummaryRow label="Loves" value={`${arrStr(c.lovesSubjects)}${s(c.lovesOther) !== '—' ? ` + ${c.lovesOther}` : ''}`} />
-                                        <SummaryRow label="Avoids" value={arrStr(c.avoidsSubjects)} />
-                                        <SummaryRow label="Games" value={arrStr(c.games)} />
-                                        <SummaryRow label="Videos" value={arrStr(c.videoEngagement)} />
-                                        <SummaryRow label="Extra info" value={`${arrStr(c.extraInfo)}${s(c.diagnosis) !== '—' ? ` (${c.diagnosis})` : ''}`} />
+                                        <SummaryRow label="Regulation" value={toArr(c.regulation)} />
+                                        <SummaryRow label="Frustration (child)" value={toArr(c.frustrationChild)} />
+                                        <SummaryRow label="Frustration (parent)" value={toArr(c.frustrationParent)} />
+                                        <SummaryRow label="New tasks" value={toArr(c.newTasks)} />
+                                        <SummaryRow label="Hard tasks" value={toArr(c.hardTasks)} />
+                                        <SummaryRow label="Demonstrates learning" value={toArr(c.demonstratesUnderstanding)} />
+                                        <SummaryRow label="Loves" value={toArr(c.lovesSubjects)} />
+                                        <SummaryRow label="Avoids" value={toArr(c.avoidsSubjects)} />
+                                        <SummaryRow label="Games" value={toArr(c.games)} />
+                                        <SummaryRow label="Videos" value={toArr(c.videoEngagement)} />
+                                        <SummaryRow label="Extra info" value={toArr(c.extraInfo)} />
+                                        {s(c.diagnosis) !== '—' && <SummaryRow label="Diagnosis" value={s(c.diagnosis)} />}
                                       </SummarySection>
                                     ))}
                                   </>
@@ -776,8 +778,18 @@ function SummarySection({ title, children }: { title: string; children: React.Re
   )
 }
 
-function SummaryRow({ label, value }: { label: string; value: string | undefined }) {
-  if (!value) return null
+function SummaryRow({ label, value }: { label: string; value: string | string[] | undefined }) {
+  if (!value || value === '—' || (Array.isArray(value) && value.length === 0)) return null
+  if (Array.isArray(value)) {
+    return (
+      <div className="flex gap-2 text-sm">
+        <span className="font-bold text-[#5c5c5c] min-w-[130px] shrink-0">{label}:</span>
+        <ul className="list-disc ml-4 space-y-0.5 text-[#1c1c1c]">
+          {value.map((item, i) => <li key={i}>{item}</li>)}
+        </ul>
+      </div>
+    )
+  }
   return (
     <div className="flex gap-2 text-sm">
       <span className="font-bold text-[#5c5c5c] min-w-[130px] shrink-0">{label}:</span>
