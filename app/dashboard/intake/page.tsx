@@ -178,7 +178,7 @@ export default function IntakePage() {
       const res = await fetch('/api/consulting/load-intake')
       if (res.ok) {
         const data = await res.json()
-        if (data.status === 'submitted') { setSubmitted(true); setLoading(false); return }
+        if (data.status === 'submitted') setSubmitted(true)
         if (data.responses) {
           const r = data.responses
           // Migrate from old single-child format
@@ -290,17 +290,6 @@ export default function IntakePage() {
 
   if (loading) return <div className="max-w-[760px] mx-auto px-6 py-14 text-[#5c5c5c] text-sm">Loading...</div>
 
-  if (submitted) {
-    return (
-      <div className="max-w-[760px] mx-auto px-6 py-20 text-center">
-        <div className="text-5xl mb-6">🎉</div>
-        <h1 className="text-2xl font-extrabold mb-3">Form submitted!</h1>
-        <p className="text-[#5c5c5c] mb-8">Mel will review your answers and be in touch soon. You can expect to hear back within 3–5 business days.</p>
-        <a href="/dashboard" className="inline-block bg-[#ed7c5a] text-white font-bold px-7 py-3 rounded-xl text-sm hover:opacity-90 transition">Back to My Dashboard</a>
-      </div>
-    )
-  }
-
   const sections = [
     {
       title: 'Before We Begin',
@@ -344,12 +333,22 @@ export default function IntakePage() {
         <p className="text-sm text-[#5c5c5c]">Fill this out at your own pace — your progress saves automatically. Once you submit, Mel will review and be in touch.</p>
       </div>
 
+      {submitted && (
+        <div className="mb-6 bg-[#edfaf4] border-2 border-[#3dbb7e] rounded-2xl px-6 py-4 flex items-start justify-between gap-4">
+          <div>
+            <p className="font-extrabold text-sm text-[#1a7a52] mb-0.5">Form submitted</p>
+            <p className="text-sm text-[#5c5c5c]">Your answers are with Mel. This is a read-only copy.</p>
+          </div>
+          <a href="/dashboard" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap">← Dashboard</a>
+        </div>
+      )}
+
       {/* Section pills */}
       <div className="flex gap-1.5 mb-8 flex-wrap">
         {sections.map((s, i) => (
           <button
             key={i}
-            onClick={() => setSection(i)}
+            onClick={() => { setSection(i); window.scrollTo({ top: 0 }) }}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
               i === section
                 ? 'bg-[#ed7c5a] text-white'
@@ -364,7 +363,7 @@ export default function IntakePage() {
       </div>
 
       {/* Section card */}
-      <div className="bg-white rounded-2xl p-8 border border-[#e2ddd5] mb-6" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+      <div className={`bg-white rounded-2xl p-8 border border-[#e2ddd5] mb-6 ${submitted ? 'pointer-events-none opacity-80' : ''}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
         <h2 className="text-lg font-extrabold mb-6 text-[#ed7c5a]">{sections[section].title}</h2>
         <div className="space-y-8">
           {sections[section].content}
@@ -376,30 +375,32 @@ export default function IntakePage() {
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex gap-2">
           {section > 0 && (
-            <button onClick={() => setSection(s => s - 1)} className="px-5 py-2.5 rounded-xl border-2 border-[#ddd8cc] text-sm font-bold text-[#5c5c5c] hover:border-[#1c1c1c] transition cursor-pointer">
+            <button onClick={() => { setSection(s => s - 1); window.scrollTo({ top: 0 }) }} className="px-5 py-2.5 rounded-xl border-2 border-[#ddd8cc] text-sm font-bold text-[#5c5c5c] hover:border-[#1c1c1c] transition cursor-pointer">
               ← Back
             </button>
           )}
           {section < sections.length - 1 && (
-            <button onClick={() => setSection(s => s + 1)} className="px-5 py-2.5 rounded-xl bg-[#55b6ca] text-white text-sm font-bold hover:opacity-90 transition cursor-pointer">
+            <button onClick={() => { setSection(s => s + 1); window.scrollTo({ top: 0 }) }} className="px-5 py-2.5 rounded-xl bg-[#55b6ca] text-white text-sm font-bold hover:opacity-90 transition cursor-pointer">
               Next →
             </button>
           )}
         </div>
         <div className="flex items-center gap-3">
-          {savedAt && (
+          {!submitted && savedAt && (
             <span className="text-xs text-[#5c5c5c]">
               Saved {new Date(savedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
             </span>
           )}
-          <button
-            onClick={saveProgress}
-            disabled={saving}
-            className="px-5 py-2.5 rounded-xl border-2 border-[#55b6ca] text-[#55b6ca] text-sm font-bold hover:bg-[#55b6ca] hover:text-white transition disabled:opacity-50 cursor-pointer"
-          >
-            {saving ? 'Saving...' : 'Save Progress'}
-          </button>
-          {section === sections.length - 1 && (
+          {!submitted && (
+            <button
+              onClick={saveProgress}
+              disabled={saving}
+              className="px-5 py-2.5 rounded-xl border-2 border-[#55b6ca] text-[#55b6ca] text-sm font-bold hover:bg-[#55b6ca] hover:text-white transition disabled:opacity-50 cursor-pointer"
+            >
+              {saving ? 'Saving...' : 'Save Progress'}
+            </button>
+          )}
+          {!submitted && section === sections.length - 1 && (
             <button
               onClick={handleSubmit}
               disabled={submitting}
