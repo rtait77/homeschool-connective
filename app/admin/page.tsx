@@ -782,11 +782,13 @@ function SummaryRow({ label, value }: { label: string; value: string | string[] 
   if (!value || value === '—' || (Array.isArray(value) && value.length === 0)) return null
   if (Array.isArray(value)) {
     return (
-      <div className="flex gap-2 text-sm">
+      <div className="flex gap-2 text-sm items-start">
         <span className="font-bold text-[#5c5c5c] min-w-[130px] shrink-0">{label}:</span>
-        <ul className="list-disc ml-4 space-y-0.5 text-[#1c1c1c]">
-          {value.map((item, i) => <li key={i}>{item}</li>)}
-        </ul>
+        <div className="flex flex-wrap gap-1.5">
+          {value.map((item, i) => (
+            <span key={i} className="bg-white border border-[#ddd8cc] rounded-full px-2.5 py-0.5 text-xs font-semibold text-[#1c1c1c]">{item}</span>
+          ))}
+        </div>
       </div>
     )
   }
