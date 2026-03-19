@@ -681,42 +681,75 @@ export default function AdminPage() {
                             <p className="text-sm text-[#5c5c5c] mt-4">No intake form responses yet.</p>
                           ) : (
                             <div className="mt-4 space-y-4 text-sm">
-                              <SummarySection title="Family">
-                                <SummaryRow label="Parent" value={r.parentName as string} />
-                                <SummaryRow label="Child" value={`${r.childName || '—'}, Age ${r.childAge || '—'}, ${r.childGrade || '—'}`} />
-                              </SummarySection>
+                              {(() => {
+                                type Child = Record<string, unknown>
+                                const children: Child[] = Array.isArray(r.children) ? r.children as Child[] : []
+                                const arrStr = (v: unknown) => Array.isArray(v) ? (v as string[]).filter(Boolean).join(', ') || '—' : (v as string) || '—'
+                                const s = (v: unknown) => (v as string) || '—'
+                                return (
+                                  <>
+                                    <SummarySection title="Family">
+                                      <SummaryRow label="Parent" value={s(r.parentName)} />
+                                      <SummaryRow label="State" value={s(r.parentState)} />
+                                      {children.map((c, i) => (
+                                        <SummaryRow key={i} label={`Child ${i + 1}`} value={`${s(c.name)}, Age ${s(c.age)}`} />
+                                      ))}
+                                    </SummarySection>
 
-                              <SummarySection title="Reading">
-                                <SummaryRow label="Level" value={labelFor(r.readingLevel as string, READING_LEVEL_LABELS)} />
-                                <SummaryRow label="Parent's feel" value={r.readingFeel as string} />
-                              </SummarySection>
+                                    <SummarySection title="About the Parent">
+                                      <SummaryRow label="Why homeschooling" value={arrStr(r.whyHomeschooling)} />
+                                      <SummaryRow label="Experience" value={s(r.experienceLength)} />
+                                      <SummaryRow label="Current experience" value={s(r.currentExperience)} />
+                                      <SummaryRow label="#1 goal" value={s(r.primaryGoal)} />
+                                      <SummaryRow label="Biggest challenges" value={arrStr(r.biggestChallenges)} />
+                                      <SummaryRow label="Curriculum tried" value={`${arrStr(r.curriculumExperience)}${s(r.curriculumTried) !== '—' ? ` — ${r.curriculumTried}` : ''}`} />
+                                    </SummarySection>
 
-                              <SummarySection title="Writing">
-                                <SummaryRow label="Level" value={labelFor(r.writingLevel as string, WRITING_LEVEL_LABELS)} />
-                                <SummaryRow label="Parent's feel" value={r.writingFeel as string} />
-                              </SummarySection>
+                                    <SummarySection title="Schedule & Approach">
+                                      <SummaryRow label="Days/week" value={s(r.daysPerWeek)} />
+                                      <SummaryRow label="Hours/day" value={s(r.hoursPerDay)} />
+                                      <SummaryRow label="Other demands" value={arrStr(r.otherDemands)} />
+                                      <SummaryRow label="Ideal day" value={arrStr(r.idealDay)} />
+                                      <SummaryRow label="Teaching style" value={arrStr(r.teachingStyle)} />
+                                      <SummaryRow label="Screens" value={arrStr(r.screenAttitude)} />
+                                      <SummaryRow label="Progress measurement" value={arrStr(r.progressMeasurement)} />
+                                      <SummaryRow label="Prep willingness" value={s(r.prepWillingness)} />
+                                      <SummaryRow label="Environment" value={arrStr(r.learningEnvironment)} />
+                                      <SummaryRow label="Co-op" value={arrStr(r.coopParticipation)} />
+                                      <SummaryRow label="Personality" value={arrStr(r.parentPersonality)} />
+                                    </SummarySection>
 
-                              <SummarySection title="Spelling & Grammar">
-                                <SummaryRow label="Spelling" value={labelFor(r.spellingFeel as string, FEEL_LABELS)} />
-                                <SummaryRow label="Grammar" value={labelFor(r.grammarFeel as string, FEEL_LABELS)} />
-                                <SummaryRow label="Notes" value={r.spellingNotes as string} />
-                              </SummarySection>
+                                    <SummarySection title="Vision & Context">
+                                      <SummaryRow label="Success in 6 months" value={s(r.successVision)} />
+                                      <SummaryRow label="How they heard" value={s(r.howHeard)} />
+                                      <SummaryRow label="Parent notes" value={s(r.parentNotes)} />
+                                    </SummarySection>
 
-                              <SummarySection title="Learning Profile">
-                                <SummaryRow label="Learning styles" value={Array.isArray(r.learningStyles) ? (r.learningStyles as string[]).join(', ') : '—'} />
-                                <SummaryRow label="Biggest challenges" value={r.biggestChallenges as string} />
-                                <SummaryRow label="Screen time" value={labelFor(r.screenTime as string, SCREEN_TIME_LABELS)} />
-                                <SummaryRow label="Attention span" value={labelFor(r.attentionSpan as string, ATTENTION_LABELS)} />
-                                <SummaryRow label="Loves" value={r.lovesSubjects as string} />
-                                <SummaryRow label="Avoids" value={r.avoidsSubjects as string} />
-                              </SummarySection>
-
-                              <SummarySection title="Background & Goals">
-                                <SummaryRow label="Curriculum" value={r.currentCurriculum as string} />
-                                <SummaryRow label="Homeschooling for" value={labelFor(r.homeschoolingDuration as string, DURATION_LABELS)} />
-                                <SummaryRow label="#1 goal" value={r.primaryGoal as string} />
-                                <SummaryRow label="Additional notes" value={r.additionalNotes as string} />
-                              </SummarySection>
+                                    {children.map((c, i) => (
+                                      <SummarySection key={i} title={`${s(c.name) !== '—' ? s(c.name) : `Child ${i + 1}`} — Learning Profile`}>
+                                        <SummaryRow label="Reading" value={`${s(c.readingLevel)} — feels ${s(c.readingFeel)}`} />
+                                        <SummaryRow label="Writing" value={`${s(c.writingStage)} — feels ${s(c.writingFeel)}`} />
+                                        <SummaryRow label="Physical writing" value={arrStr(c.physicalWriting)} />
+                                        <SummaryRow label="Spelling" value={`${s(c.spellingLevel)} — feels ${s(c.spellingFeel)}`} />
+                                        <SummaryRow label="Grammar" value={`${s(c.grammarLevel)} — feels ${s(c.grammarFeel)}`} />
+                                        <SummaryRow label="Grammar struggles" value={arrStr(c.grammarStruggles)} />
+                                        <SummaryRow label="Focus span" value={s(c.focusSpan)} />
+                                        <SummaryRow label="Regulation" value={arrStr(c.regulation)} />
+                                        <SummaryRow label="Frustration (child)" value={arrStr(c.frustrationChild)} />
+                                        <SummaryRow label="Frustration (parent)" value={arrStr(c.frustrationParent)} />
+                                        <SummaryRow label="New tasks" value={arrStr(c.newTasks)} />
+                                        <SummaryRow label="Hard tasks" value={arrStr(c.hardTasks)} />
+                                        <SummaryRow label="Demonstrates learning" value={arrStr(c.demonstratesUnderstanding)} />
+                                        <SummaryRow label="Loves" value={`${arrStr(c.lovesSubjects)}${s(c.lovesOther) !== '—' ? ` + ${c.lovesOther}` : ''}`} />
+                                        <SummaryRow label="Avoids" value={arrStr(c.avoidsSubjects)} />
+                                        <SummaryRow label="Games" value={arrStr(c.games)} />
+                                        <SummaryRow label="Videos" value={arrStr(c.videoEngagement)} />
+                                        <SummaryRow label="Extra info" value={`${arrStr(c.extraInfo)}${s(c.diagnosis) !== '—' ? ` (${c.diagnosis})` : ''}`} />
+                                      </SummarySection>
+                                    ))}
+                                  </>
+                                )
+                              })()}
                             </div>
                           )}
                         </div>
@@ -751,48 +784,6 @@ function SummaryRow({ label, value }: { label: string; value: string | undefined
       <span className="text-[#1c1c1c]">{value}</span>
     </div>
   )
-}
-
-function labelFor(value: string, map: Record<string, string>) {
-  return map[value] ?? value ?? '—'
-}
-
-const READING_LEVEL_LABELS: Record<string, string> = {
-  'not-yet-reading': 'Not yet reading',
-  'beginning-reader': 'Beginning reader',
-  'grade-level': 'At grade level',
-  'above-grade-level': 'Above grade level',
-}
-const WRITING_LEVEL_LABELS: Record<string, string> = {
-  'not-yet-writing': 'Not yet writing',
-  'forming-letters': 'Forming letters',
-  'sentences': 'Writing sentences',
-  'paragraphs': 'Writing paragraphs',
-  'above-grade-level': 'Above grade level',
-}
-const FEEL_LABELS: Record<string, string> = {
-  'needs-work': 'Needs a lot of work',
-  'on-track': 'On track',
-  'ahead': 'Ahead of where I expected',
-}
-const SCREEN_TIME_LABELS: Record<string, string> = {
-  'under-1hr': 'Less than 1 hour',
-  '1-2hrs': '1–2 hours',
-  '2-3hrs': '2–3 hours',
-  'over-3hrs': 'More than 3 hours',
-}
-const ATTENTION_LABELS: Record<string, string> = {
-  'a-few-minutes': 'A few minutes',
-  '10-15min': '10–15 minutes',
-  '20-30min': '20–30 minutes',
-  '30-plus': '30+ minutes',
-}
-const DURATION_LABELS: Record<string, string> = {
-  'just-starting': 'Just starting out',
-  'less-than-1yr': 'Less than 1 year',
-  '1-2yrs': '1–2 years',
-  '3-5yrs': '3–5 years',
-  '5plus-yrs': '5+ years',
 }
 
 function formatDuration(seconds: number) {
