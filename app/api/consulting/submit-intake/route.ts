@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import nodemailer from 'nodemailer'
+
+const titanTransport = nodemailer.createTransport({
+  host: 'smtp.titan.email',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'consulting@homeschoolconnective.com',
+    pass: process.env.TITAN_SMTP_PASSWORD,
+  },
+})
 
 function formatSummaryEmail(email: string, r: Record<string, unknown>) {
   const learningStyles = Array.isArray(r.learningStyles) ? (r.learningStyles as string[]).join(', ') : '—'
@@ -155,19 +166,12 @@ export async function POST(req: NextRequest) {
     .update({ intake_completed: true, intake_submitted_at: now })
     .eq('id', customer.id)
 
-  // Email Mel with formatted summary
-  await fetch('https://api.sender.net/v2/transactional/email', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: { name: 'Homeschool Connective', email: 'support@homeschoolconnective.com' },
-      to: [{ email: 'consulting@homeschoolconnective.com' }],
-      subject: `Intake form submitted — ${responses.childName || user.email}`,
-      html: formatSummaryEmail(user.email ?? '', responses),
-    }),
+  // Email Mel with formatted summary (via Titan SMTP)
+  await titanTransport.sendMail({
+    from: '"Homeschool Connective" <consulting@homeschoolconnective.com>',
+    to: 'consulting@homeschoolconnective.com',
+    subject: `Intake form submitted — ${responses.childName || user.email}`,
+    html: formatSummaryEmail(user.email ?? '', responses),
   })
 
   return NextResponse.json({ ok: true })
