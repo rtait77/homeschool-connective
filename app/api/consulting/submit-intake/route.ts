@@ -15,101 +15,80 @@ const titanTransport = nodemailer.createTransport({
 })
 
 function formatSummaryEmail(email: string, r: Record<string, unknown>) {
-  const learningStyles = Array.isArray(r.learningStyles) ? (r.learningStyles as string[]).join(', ') : '—'
+  type Child = Record<string, unknown>
+  const children: Child[] = Array.isArray(r.children) ? r.children as Child[] : []
+  const arrStr = (v: unknown): string => Array.isArray(v) ? (v as string[]).filter(Boolean).join(', ') || '—' : '—'
+  const s = (v: unknown): string => (typeof v === 'string' && v) ? v : '—'
+
+  const row = (label: string, val: string) => val && val !== '—' ? `<p style="margin:3px 0"><strong>${label}:</strong> ${val}</p>` : ''
+
+  const childHtml = children.map((c, i) => `
+    <h3 style="font-size:15px;margin:16px 0 8px;color:#238FA4">${s(c.name) !== '—' ? s(c.name) : `Child ${i + 1}`} — Age ${s(c.age)}</h3>
+    ${row('Reading', `${s(c.readingLevel)} — feels ${s(c.readingFeel)}`)}
+    ${row('Writing', `${s(c.writingStage)} — feels ${s(c.writingFeel)}`)}
+    ${row('Physical writing', arrStr(c.physicalWriting))}
+    ${row('Spelling', `${s(c.spellingLevel)} — feels ${s(c.spellingFeel)}`)}
+    ${row('Grammar', `${s(c.grammarLevel)} — feels ${s(c.grammarFeel)}`)}
+    ${row('Grammar struggles', arrStr(c.grammarStruggles))}
+    ${row('Focus span', s(c.focusSpan))}
+    ${row('Regulation', arrStr(c.regulation))}
+    ${row('Frustration (child)', arrStr(c.frustrationChild))}
+    ${row('Frustration (parent)', arrStr(c.frustrationParent))}
+    ${row('Frustration works?', s(c.frustrationWorks))}
+    ${row('New tasks', arrStr(c.newTasks))}
+    ${row('Hard tasks', arrStr(c.hardTasks))}
+    ${row('Demonstrates learning', arrStr(c.demonstratesUnderstanding))}
+    ${row('Loves', `${arrStr(c.lovesSubjects)}${s(c.lovesOther) !== '—' ? ` + ${c.lovesOther}` : ''}`)}
+    ${row('Avoids', arrStr(c.avoidsSubjects))}
+    ${row('Games', arrStr(c.games))}
+    ${row('Video/screens', arrStr(c.videoEngagement))}
+    ${row('Extra info', `${arrStr(c.extraInfo)}${s(c.diagnosis) !== '—' ? ` — Diagnosis: ${c.diagnosis}` : ''}${s(c.extraOther) !== '—' ? ` — ${c.extraOther}` : ''}`)}
+  `).join('<hr style="border:none;border-top:1px solid #e2ddd5;margin:12px 0" />')
+
+  const hr = '<hr style="border:none;border-top:1px solid #e2ddd5;margin:20px 0" />'
 
   return `
-    <div style="font-family: sans-serif; max-width: 640px; margin: 0 auto; padding: 32px; color: #1c1c1c;">
-      <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 44px; margin-bottom: 24px;" />
-      <h2 style="color: #ed7c5a;">New Intake Form Submission</h2>
-      <p style="color: #5c5c5c; font-size: 14px;"><strong>Customer:</strong> ${email} &nbsp;|&nbsp; <strong>Submitted:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-
-      <hr style="border: none; border-top: 1px solid #e2ddd5; margin: 20px 0;" />
-
-      <h3 style="font-size: 16px; margin-bottom: 8px;">Family</h3>
-      <p style="margin: 4px 0;"><strong>Parent:</strong> ${r.parentName || '—'}</p>
-      <p style="margin: 4px 0;"><strong>Child:</strong> ${r.childName || '—'}, Age ${r.childAge || '—'}, ${r.childGrade || '—'}</p>
-
-      <hr style="border: none; border-top: 1px solid #e2ddd5; margin: 20px 0;" />
-
-      <h3 style="font-size: 16px; margin-bottom: 8px;">Reading</h3>
-      <p style="margin: 4px 0;"><strong>Level:</strong> ${formatOption(r.readingLevel as string, READING_LEVELS)}</p>
-      <p style="margin: 4px 0;"><strong>Parent's thoughts:</strong> ${r.readingFeel || '—'}</p>
-
-      <hr style="border: none; border-top: 1px solid #e2ddd5; margin: 20px 0;" />
-
-      <h3 style="font-size: 16px; margin-bottom: 8px;">Writing</h3>
-      <p style="margin: 4px 0;"><strong>Level:</strong> ${formatOption(r.writingLevel as string, WRITING_LEVELS)}</p>
-      <p style="margin: 4px 0;"><strong>Parent's thoughts:</strong> ${r.writingFeel || '—'}</p>
-
-      <hr style="border: none; border-top: 1px solid #e2ddd5; margin: 20px 0;" />
-
-      <h3 style="font-size: 16px; margin-bottom: 8px;">Spelling & Grammar</h3>
-      <p style="margin: 4px 0;"><strong>Spelling:</strong> ${formatOption(r.spellingFeel as string, FEEL_OPTIONS)}</p>
-      <p style="margin: 4px 0;"><strong>Grammar:</strong> ${formatOption(r.grammarFeel as string, FEEL_OPTIONS)}</p>
-      <p style="margin: 4px 0;"><strong>Notes:</strong> ${r.spellingNotes || '—'}</p>
-
-      <hr style="border: none; border-top: 1px solid #e2ddd5; margin: 20px 0;" />
-
-      <h3 style="font-size: 16px; margin-bottom: 8px;">Learning Profile</h3>
-      <p style="margin: 4px 0;"><strong>Learning styles:</strong> ${learningStyles || '—'}</p>
-      <p style="margin: 4px 0;"><strong>Biggest challenges:</strong> ${r.biggestChallenges || '—'}</p>
-      <p style="margin: 4px 0;"><strong>Screen time:</strong> ${formatOption(r.screenTime as string, SCREEN_TIME_OPTIONS)}</p>
-      <p style="margin: 4px 0;"><strong>Attention span:</strong> ${formatOption(r.attentionSpan as string, ATTENTION_OPTIONS)}</p>
-      <p style="margin: 4px 0;"><strong>Loves:</strong> ${r.lovesSubjects || '—'}</p>
-      <p style="margin: 4px 0;"><strong>Avoids:</strong> ${r.avoidsSubjects || '—'}</p>
-
-      <hr style="border: none; border-top: 1px solid #e2ddd5; margin: 20px 0;" />
-
-      <h3 style="font-size: 16px; margin-bottom: 8px;">Background & Goals</h3>
-      <p style="margin: 4px 0;"><strong>Current curriculum:</strong> ${r.currentCurriculum || '—'}</p>
-      <p style="margin: 4px 0;"><strong>How long homeschooling:</strong> ${formatOption(r.homeschoolingDuration as string, DURATION_OPTIONS)}</p>
-      <p style="margin: 4px 0;"><strong>#1 goal:</strong> ${r.primaryGoal || '—'}</p>
-      <p style="margin: 4px 0;"><strong>Additional notes:</strong> ${r.additionalNotes || '—'}</p>
+    <div style="font-family:sans-serif;max-width:700px;margin:0 auto;padding:32px;color:#1c1c1c">
+      <h2 style="color:#ed7c5a;margin-bottom:4px">New Intake Form Submission</h2>
+      <p style="color:#5c5c5c;font-size:14px"><strong>Customer:</strong> ${email} &nbsp;|&nbsp; <strong>Submitted:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+      ${hr}
+      <h3 style="font-size:16px;margin-bottom:8px">Family</h3>
+      ${row('Parent', s(r.parentName))}
+      ${row('State', s(r.parentState))}
+      ${row('Children', children.map((c, i) => `${s(c.name) !== '—' ? s(c.name) : `Child ${i+1}`} (age ${s(c.age)})`).join(', ') || '—')}
+      ${hr}
+      <h3 style="font-size:16px;margin-bottom:8px">About the Parent</h3>
+      ${row('Why homeschooling', `${arrStr(r.whyHomeschooling)}${s(r.whyOther) !== '—' ? ` — ${r.whyOther}` : ''}`)}
+      ${row('Experience', s(r.experienceLength))}
+      ${row('Current experience', s(r.currentExperience))}
+      ${row('#1 goal', s(r.primaryGoal))}
+      ${row('Starting feelings', arrStr(r.startingFeelings))}
+      ${row('Biggest challenges', `${arrStr(r.biggestChallenges)}${s(r.biggestChallengesOther) !== '—' ? ` — ${r.biggestChallengesOther}` : ''}`)}
+      ${row('Curriculum experience', `${arrStr(r.curriculumExperience)}${s(r.curriculumHappened) !== '—' ? ` | ${r.curriculumHappened}` : ''}${s(r.curriculumTried) !== '—' ? ` | Tried: ${r.curriculumTried}` : ''}`)}
+      ${hr}
+      <h3 style="font-size:16px;margin-bottom:8px">Schedule &amp; Approach</h3>
+      ${row('Days/week', s(r.daysPerWeek))}
+      ${row('Hours/day', s(r.hoursPerDay))}
+      ${row('Other demands', arrStr(r.otherDemands))}
+      ${row('Ideal day', arrStr(r.idealDay))}
+      ${row('Teaching style', arrStr(r.teachingStyle))}
+      ${row('Screens', arrStr(r.screenAttitude))}
+      ${row('Progress measurement', arrStr(r.progressMeasurement))}
+      ${row('Prep willingness', s(r.prepWillingness))}
+      ${row('Environment', arrStr(r.learningEnvironment))}
+      ${row('Co-op', arrStr(r.coopParticipation))}
+      ${row('Personality', arrStr(r.parentPersonality))}
+      ${hr}
+      <h3 style="font-size:16px;margin-bottom:8px">Vision &amp; Context</h3>
+      ${row('Success in 6 months', s(r.successVision))}
+      ${row('How they heard', s(r.howHeard))}
+      ${row('Parent notes', s(r.parentNotes))}
+      ${hr}
+      <h3 style="font-size:16px;margin-bottom:12px">Per Child</h3>
+      ${childHtml || '<p>No child data submitted.</p>'}
     </div>
   `
 }
-
-function formatOption(value: string, options: { value: string; label: string }[]) {
-  return options.find(o => o.value === value)?.label ?? value ?? '—'
-}
-
-const READING_LEVELS = [
-  { value: 'not-yet-reading', label: 'Not yet reading' },
-  { value: 'beginning-reader', label: 'Beginning reader' },
-  { value: 'grade-level', label: 'At grade level' },
-  { value: 'above-grade-level', label: 'Above grade level' },
-]
-const WRITING_LEVELS = [
-  { value: 'not-yet-writing', label: 'Not yet writing' },
-  { value: 'forming-letters', label: 'Forming letters' },
-  { value: 'sentences', label: 'Writing sentences' },
-  { value: 'paragraphs', label: 'Writing paragraphs' },
-  { value: 'above-grade-level', label: 'Above grade level' },
-]
-const FEEL_OPTIONS = [
-  { value: 'needs-work', label: 'Needs a lot of work' },
-  { value: 'on-track', label: 'On track' },
-  { value: 'ahead', label: 'Ahead of where I expected' },
-]
-const SCREEN_TIME_OPTIONS = [
-  { value: 'under-1hr', label: 'Less than 1 hour' },
-  { value: '1-2hrs', label: '1–2 hours' },
-  { value: '2-3hrs', label: '2–3 hours' },
-  { value: 'over-3hrs', label: 'More than 3 hours' },
-]
-const ATTENTION_OPTIONS = [
-  { value: 'a-few-minutes', label: 'A few minutes' },
-  { value: '10-15min', label: '10–15 minutes' },
-  { value: '20-30min', label: '20–30 minutes' },
-  { value: '30-plus', label: '30+ minutes' },
-]
-const DURATION_OPTIONS = [
-  { value: 'just-starting', label: 'Just starting out' },
-  { value: 'less-than-1yr', label: 'Less than 1 year' },
-  { value: '1-2yrs', label: '1–2 years' },
-  { value: '3-5yrs', label: '3–5 years' },
-  { value: '5plus-yrs', label: '5+ years' },
-]
 
 export async function POST(req: NextRequest) {
   const cookieStore = await cookies()
@@ -167,12 +146,19 @@ export async function POST(req: NextRequest) {
     .eq('id', customer.id)
 
   // Email Mel with formatted summary (via Titan SMTP)
-  await titanTransport.sendMail({
-    from: '"Homeschool Connective" <consulting@homeschoolconnective.com>',
-    to: 'consulting@homeschoolconnective.com',
-    subject: `Intake form submitted — ${responses.childName || user.email}`,
-    html: formatSummaryEmail(user.email ?? '', responses),
-  })
+  const firstChildName = Array.isArray(responses.children) && responses.children[0]?.name
+    ? responses.children[0].name
+    : (responses.parentName || user.email)
+  try {
+    await titanTransport.sendMail({
+      from: '"Homeschool Connective" <consulting@homeschoolconnective.com>',
+      to: 'consulting@homeschoolconnective.com',
+      subject: `Intake form submitted — ${firstChildName}`,
+      html: formatSummaryEmail(user.email ?? '', responses),
+    })
+  } catch (emailErr) {
+    console.error('Failed to send intake notification email:', emailErr)
+  }
 
   return NextResponse.json({ ok: true })
 }
