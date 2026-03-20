@@ -38,14 +38,26 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* See what we built CTA */}
+      <div className="mt-10 text-center">
+        <a
+          href="/learn"
+          className="inline-block bg-[#ed7c5a] text-white font-extrabold px-8 py-4 rounded-xl hover:opacity-90 transition text-base"
+        >
+          See What We've Built →
+        </a>
+      </div>
+
       {/* Melanie */}
-      <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-[14px]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+      <div className="flex flex-col md:flex-row gap-6 mt-10 p-6 bg-white rounded-[14px]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
         <div className="flex-shrink-0">
           <Image src="/melanie.avif" alt="Melanie Miller" width={140} height={140} className="rounded-full object-cover w-[140px] h-[140px]" />
         </div>
         <div>
           <h3 className="font-extrabold text-lg mb-3">Melanie Miller | Founder and Chief Marketing Manager</h3>
-          <p className="text-[#5c5c5c] text-sm leading-relaxed">Melanie has been homeschooling for over 20 years. Now that her children are grown, she homeschools her grandchildren. She has experience teaching and loves to create teacher resources and curriculum for a variety of ages.</p>
+          <p className="text-[#5c5c5c] text-sm leading-relaxed mb-2">With over 25 years of homeschooling experience, I have dedicated my life to nurturing young learners and supporting families on their educational journeys. I began homeschooling my own children in 2000, and today I have the joy of homeschooling my grandchildren.</p>
+          <p className="text-[#5c5c5c] text-sm leading-relaxed mb-2">Along the way, I have worked in a homeschool co-op as assistant director, at church nursery as coordinator, and a pre-K center as lead teacher, giving me a well-rounded perspective on how children learn best in a variety of settings. I am passionate about coming alongside other homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children's needs.</p>
+          <p className="text-[#5c5c5c] text-sm leading-relaxed">I also create educational resources designed specifically for homeschoolers in grades Pre-K through 3rd grade, with a focus on making learning engaging, accessible, and effective for all types of learners.</p>
         </div>
       </div>
 
