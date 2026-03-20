@@ -2,7 +2,7 @@ const posts = [
   {
     href: '/tips/why-play-is-important',
     img: '/blog-play-blocks.avif',
-    date: 'November 11, 2025',
+    date: 'October 21, 2025',
     tag: 'Game-Based Learning',
     title: 'Why Play is Important',
     excerpt: "Play's Essential Function in Homeschooling: Fostering Development and Education. Homeschooling provides a distinctive and adaptable educational path, enabling parents to customize their child's learning...",
@@ -10,7 +10,7 @@ const posts = [
   {
     href: '/tips/homeschooling-101',
     img: '/blog-101-coloring.avif',
-    date: 'November 11, 2025',
+    date: 'March 17, 2025',
     tag: 'Homeschool Planning',
     title: 'Homeschooling 101',
     excerpt: 'How to Homeschool: Six Steps to Get Started. Getting started with homeschooling can be very overwhelming! We are here to help!',
@@ -18,7 +18,7 @@ const posts = [
   {
     href: '/tips/learning-styles',
     img: '/blog-ls-infographic.avif',
-    date: 'November 11, 2025',
+    date: 'August 5, 2025',
     tag: 'Homeschool Planning',
     title: 'Learning Styles',
     excerpt: "Ah, the wild world of homeschooling! Back when I started, the idea of learning styles was as mysterious to me as finding socks in the dryer. My son and I were flying by the seat of our pants! 🤣",
@@ -26,7 +26,7 @@ const posts = [
   {
     href: '/tips/homeschool-beginnings',
     img: '/blog-beginnings-mel-family.avif',
-    date: 'November 10, 2025',
+    date: 'February 3, 2025',
     tag: 'Our Story',
     title: 'Homeschool Beginnings',
     excerpt: "Hi! I'm Mel! I've been married to my wonderful husband for 30 years, and together we've raised four amazing kids. These days, we're enjoying a whole new chapter as grandparents to four grandkids...",
@@ -34,7 +34,7 @@ const posts = [
   {
     href: '/tips/homeschooling-methods',
     img: '/blog-methods-coloring.avif',
-    date: 'November 11, 2025',
+    date: 'June 12, 2025',
     tag: 'Homeschool Planning',
     title: 'Homeschooling Methods',
     excerpt: "Lately, homeschooling has been getting pretty popular. More and more families are into it, wanting to customize education to match their kids' needs and interests...",
@@ -42,7 +42,7 @@ const posts = [
   {
     href: '/tips/deschooling',
     img: '/blog-deschooling-kids-log.avif',
-    date: 'November 11, 2025',
+    date: 'April 28, 2025',
     tag: 'Homeschool Planning',
     title: 'Deschooling',
     excerpt: 'Deschooling is the process of adjusting to a learning environment outside of traditional schooling. It involves both children and parents transitioning from structured conventional methods...',
@@ -76,6 +76,16 @@ export default function TipsPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-14 py-8 border-t border-[#ddd8cc] text-center">
+          <p className="text-[#5c5c5c] mb-3">Looking for fun, game-based learning for Grades K–3?</p>
+          <a
+            href="/learn"
+            className="inline-block bg-[#ed7c5a] text-white font-extrabold px-8 py-3 rounded-xl hover:opacity-90 transition"
+          >
+            Try Our Free Games →
+          </a>
         </div>
       </div>
 
