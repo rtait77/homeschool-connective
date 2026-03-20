@@ -628,140 +628,210 @@ export default function AdminPage() {
 
       {/* CONSULTING TAB */}
       {tab === 'consulting' && (
-        <div>
-          {consultingLoading && <p className="text-sm text-[#5c5c5c]">Loading consulting customers...</p>}
-          {consulting && consulting.length === 0 && (
-            <p className="text-sm text-[#5c5c5c] bg-[#f5f1e9] rounded-xl px-6 py-8 text-center">No consulting customers yet.</p>
-          )}
-          {consulting && consulting.length > 0 && (
-            <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-                <StatCard label="Total Clients" value={consulting.length} />
-                <StatCard label="Intake Submitted" value={consulting.filter(c => c.intake_completed).length} />
-                <StatCard label="Pending Intake" value={consulting.filter(c => !c.intake_completed).length} />
-              </div>
+        <div style={{ fontFamily: "'Lexend', 'Nunito', sans-serif", lineHeight: '1.8', letterSpacing: '0.02em' }}>
+          <style>{`@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700;800&display=swap');`}</style>
 
-              <div className="space-y-3">
-                {consulting.map(c => {
-                  const daysLeft = Math.ceil((new Date(c.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-                  const isExpanded = expandedCustomer === c.id
-                  const r = c.responses as Record<string, unknown> | null
-                  return (
-                    <div key={c.id} className="bg-white rounded-2xl border border-[#e2ddd5] overflow-hidden" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-                      <div
-                        className="px-6 py-4 flex items-center justify-between flex-wrap gap-3 cursor-pointer hover:bg-[#fafaf8] transition-colors"
-                        onClick={() => setExpandedCustomer(isExpanded ? null : c.id)}
-                      >
-                        <div className="flex items-center gap-4 flex-wrap">
-                          <span className="font-bold text-sm">{c.email}</span>
-                          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                            c.intake_completed
-                              ? 'bg-[#d1f5ea] text-[#1a7a52]'
-                              : 'bg-[#fff3e0] text-[#b45309]'
-                          }`}>
-                            {c.intake_completed ? 'Intake submitted' : 'Intake pending'}
-                          </span>
-                          <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                            daysLeft > 30 ? 'bg-[#f5f1e9] text-[#5c5c5c]' :
-                            daysLeft > 0 ? 'bg-[#fde8e8] text-[#991b1b]' :
-                            'bg-[#fde8e8] text-[#991b1b]'
-                          }`}>
-                            {daysLeft > 0 ? `${daysLeft}d remaining` : 'Expired'}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-4 text-xs text-[#5c5c5c]">
-                          <span>Paid {new Date(c.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                          <span>{isExpanded ? '▲' : '▼'}</span>
-                        </div>
-                      </div>
+          {/* Dark wrapper */}
+          <div style={{ backgroundColor: '#1a1c1e', borderRadius: '1.25rem', padding: '2rem' }}>
 
-                      {isExpanded && (
-                        <div className="px-6 pb-6 border-t border-[#e2ddd5]">
-                          {!r ? (
-                            <p className="text-sm text-[#5c5c5c] mt-4">No intake form responses yet.</p>
-                          ) : (
-                            <div className="mt-4 space-y-4 text-sm">
-                              {(() => {
+            {consultingLoading && <p style={{ color: '#a09890', fontSize: '0.9rem' }}>Loading consulting customers...</p>}
+            {consulting && consulting.length === 0 && (
+              <p style={{ color: '#a09890', fontSize: '0.9rem', textAlign: 'center', padding: '2rem' }}>No consulting customers yet.</p>
+            )}
+
+            {consulting && consulting.length > 0 && (
+              <>
+                {/* Dark stat cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+                  {[
+                    { label: 'Total Clients', value: consulting.length },
+                    { label: 'Intake Submitted', value: consulting.filter(c => c.intake_completed).length },
+                    { label: 'Pending Intake', value: consulting.filter(c => !c.intake_completed).length },
+                  ].map(card => (
+                    <div key={card.label} style={{ backgroundColor: '#24282b', borderRadius: '1rem', padding: '1.25rem 1.5rem', border: '1px solid #3d4248' }}>
+                      <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#a09890', marginBottom: '0.25rem' }}>{card.label}</p>
+                      <p style={{ fontSize: '2rem', fontWeight: 800, color: '#e8e0d5' }}>{card.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Client rows */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {consulting.map(c => {
+                    const daysLeft = Math.ceil((new Date(c.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                    const isExpanded = expandedCustomer === c.id
+                    const r = c.responses as Record<string, unknown> | null
+                    return (
+                      <div key={c.id} style={{ backgroundColor: '#24282b', borderRadius: '1rem', border: '1px solid #3d4248', overflow: 'hidden' }}>
+
+                        {/* Row header */}
+                        <div
+                          style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', cursor: 'pointer' }}
+                          onClick={() => setExpandedCustomer(isExpanded ? null : c.id)}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.9rem' }}>{c.email}</span>
+                            <span style={{
+                              fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.75rem', borderRadius: '999px',
+                              backgroundColor: c.intake_completed ? '#1a3a2a' : '#3a2a10',
+                              color: c.intake_completed ? '#5bb87a' : '#f0c040'
+                            }}>
+                              {c.intake_completed ? 'Intake submitted' : 'Intake pending'}
+                            </span>
+                            <span style={{
+                              fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.75rem', borderRadius: '999px',
+                              backgroundColor: daysLeft > 30 ? '#2a2e32' : '#3a1a1a',
+                              color: daysLeft > 30 ? '#a09890' : '#f87171'
+                            }}>
+                              {daysLeft > 0 ? `${daysLeft}d remaining` : 'Expired'}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.8rem', color: '#a09890' }}>
+                            <span>Paid {new Date(c.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span>{isExpanded ? '▲' : '▼'}</span>
+                          </div>
+                        </div>
+
+                        {/* Expanded content */}
+                        {isExpanded && (
+                          <div style={{ borderTop: '1px solid #3d4248', padding: '1.5rem' }}>
+                            {!r ? (
+                              <p style={{ color: '#a09890', fontSize: '0.9rem', marginTop: '0.5rem' }}>No intake form responses yet.</p>
+                            ) : (
+                              (() => {
                                 type Child = Record<string, unknown>
                                 const children: Child[] = Array.isArray(r.children) ? r.children as Child[] : []
                                 const toArr = (v: unknown): string[] => Array.isArray(v) ? (v as string[]).filter(Boolean) : []
                                 const s = (v: unknown): string => (typeof v === 'string' && v) ? v : '—'
                                 return (
-                                  <>
-                                    <SummarySection title="Family">
-                                      <SummaryRow label="Parent" value={s(r.parentName)} />
-                                      <SummaryRow label="State" value={s(r.parentState)} />
-                                      {children.map((c, i) => (
-                                        <SummaryRow key={i} label={`Child ${i + 1}`} value={`${s(c.name)}, Age ${s(c.age)}`} />
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+                                    {/* QUICK GLANCE CARD */}
+                                    <div style={{ backgroundColor: '#1a1c1e', borderRadius: '0.875rem', padding: '1.25rem 1.5rem', border: '1px solid #55b6ca' }}>
+                                      <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#55b6ca', marginBottom: '1rem' }}>Quick Glance</p>
+                                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                        <div>
+                                          <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Parent</p>
+                                          <p style={{ color: '#e8e0d5', fontWeight: 600 }}>{s(r.parentName)} — {s(r.parentState)}</p>
+                                        </div>
+                                        <div>
+                                          <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Experience</p>
+                                          <p style={{ color: '#e8e0d5', fontWeight: 600 }}>{s(r.experienceLength)}</p>
+                                        </div>
+                                        <div>
+                                          <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Schedule</p>
+                                          <p style={{ color: '#e8e0d5', fontWeight: 600 }}>{s(r.daysPerWeek)} days · {s(r.hoursPerDay)}</p>
+                                        </div>
+                                        {children.length > 0 && (
+                                          <div>
+                                            <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Children</p>
+                                            {children.map((ch, i) => (
+                                              <p key={i} style={{ color: '#e8e0d5', fontWeight: 600 }}>{s(ch.name)}, Age {s(ch.age)}</p>
+                                            ))}
+                                          </div>
+                                        )}
+                                        {s(r.primaryGoal) !== '—' && (
+                                          <div style={{ gridColumn: '1 / -1' }}>
+                                            <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>#1 Goal</p>
+                                            <p style={{ color: '#f0c040', fontWeight: 600 }}>{s(r.primaryGoal)}</p>
+                                          </div>
+                                        )}
+                                        {toArr(r.biggestChallenges).length > 0 && (
+                                          <div style={{ gridColumn: '1 / -1' }}>
+                                            <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Biggest Challenges</p>
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                                              {toArr(r.biggestChallenges).map((ch, i) => (
+                                                <span key={i} style={{ backgroundColor: '#3a1a1a', color: '#f87171', fontSize: '0.78rem', fontWeight: 700, padding: '0.2rem 0.65rem', borderRadius: '999px' }}>{ch}</span>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        )}
+                                        {children.filter(ch => s(ch.diagnosis) !== '—').length > 0 && (
+                                          <div style={{ gridColumn: '1 / -1' }}>
+                                            <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Diagnosis / Special Needs</p>
+                                            {children.filter(ch => s(ch.diagnosis) !== '—').map((ch, i) => (
+                                              <p key={i} style={{ color: '#f87171', fontWeight: 600 }}>{s(ch.name)}: {s(ch.diagnosis)}</p>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+
+                                    {/* FULL DETAIL SECTIONS */}
+                                    <DarkSummarySection title="Family" color="#b19cd9">
+                                      <DarkSummaryRow label="Parent" value={s(r.parentName)} />
+                                      <DarkSummaryRow label="State" value={s(r.parentState)} />
+                                      {children.map((ch, i) => (
+                                        <DarkSummaryRow key={i} label={`Child ${i + 1}`} value={`${s(ch.name)}, Age ${s(ch.age)}`} />
                                       ))}
-                                    </SummarySection>
+                                    </DarkSummarySection>
 
-                                    <SummarySection title="About the Parent">
-                                      <SummaryRow label="Why homeschooling" value={toArr(r.whyHomeschooling)} />
-                                      <SummaryRow label="Experience" value={s(r.experienceLength)} />
-                                      <SummaryRow label="Current experience" value={s(r.currentExperience)} />
-                                      <SummaryRow label="#1 goal" value={s(r.primaryGoal)} />
-                                      <SummaryRow label="Biggest challenges" value={toArr(r.biggestChallenges)} />
-                                      <SummaryRow label="Curriculum experience" value={toArr(r.curriculumExperience)} />
-                                      <SummaryRow label="Curriculum tried" value={s(r.curriculumTried)} />
-                                    </SummarySection>
+                                    <DarkSummarySection title="About the Parent" color="#ed7c5a">
+                                      <DarkSummaryRow label="Why homeschooling" value={toArr(r.whyHomeschooling)} />
+                                      <DarkSummaryRow label="Experience" value={s(r.experienceLength)} />
+                                      <DarkSummaryRow label="Current experience" value={s(r.currentExperience)} />
+                                      <DarkSummaryRow label="#1 goal" value={s(r.primaryGoal)} />
+                                      <DarkSummaryRow label="Biggest challenges" value={toArr(r.biggestChallenges)} />
+                                      <DarkSummaryRow label="Curriculum experience" value={toArr(r.curriculumExperience)} />
+                                      <DarkSummaryRow label="Curriculum tried" value={s(r.curriculumTried)} />
+                                    </DarkSummarySection>
 
-                                    <SummarySection title="Schedule & Approach">
-                                      <SummaryRow label="Days/week" value={s(r.daysPerWeek)} />
-                                      <SummaryRow label="Hours/day" value={s(r.hoursPerDay)} />
-                                      <SummaryRow label="Other demands" value={toArr(r.otherDemands)} />
-                                      <SummaryRow label="Ideal day" value={toArr(r.idealDay)} />
-                                      <SummaryRow label="Teaching style" value={toArr(r.teachingStyle)} />
-                                      <SummaryRow label="Screens" value={toArr(r.screenAttitude)} />
-                                      <SummaryRow label="Progress measurement" value={toArr(r.progressMeasurement)} />
-                                      <SummaryRow label="Prep willingness" value={s(r.prepWillingness)} />
-                                      <SummaryRow label="Environment" value={toArr(r.learningEnvironment)} />
-                                      <SummaryRow label="Co-op" value={toArr(r.coopParticipation)} />
-                                      <SummaryRow label="Personality" value={toArr(r.parentPersonality)} />
-                                    </SummarySection>
+                                    <DarkSummarySection title="Schedule & Approach" color="#55b6ca">
+                                      <DarkSummaryRow label="Days/week" value={s(r.daysPerWeek)} />
+                                      <DarkSummaryRow label="Hours/day" value={s(r.hoursPerDay)} />
+                                      <DarkSummaryRow label="Other demands" value={toArr(r.otherDemands)} />
+                                      <DarkSummaryRow label="Ideal day" value={toArr(r.idealDay)} />
+                                      <DarkSummaryRow label="Teaching style" value={toArr(r.teachingStyle)} />
+                                      <DarkSummaryRow label="Screens" value={toArr(r.screenAttitude)} />
+                                      <DarkSummaryRow label="Progress measurement" value={toArr(r.progressMeasurement)} />
+                                      <DarkSummaryRow label="Prep willingness" value={s(r.prepWillingness)} />
+                                      <DarkSummaryRow label="Environment" value={toArr(r.learningEnvironment)} />
+                                      <DarkSummaryRow label="Co-op" value={toArr(r.coopParticipation)} />
+                                      <DarkSummaryRow label="Personality" value={toArr(r.parentPersonality)} />
+                                    </DarkSummarySection>
 
-                                    <SummarySection title="Vision & Context">
-                                      <SummaryRow label="Success in 6 months" value={s(r.successVision)} />
-                                      <SummaryRow label="How they heard" value={s(r.howHeard)} />
-                                      <SummaryRow label="Parent notes" value={s(r.parentNotes)} />
-                                    </SummarySection>
+                                    <DarkSummarySection title="Vision & Context" color="#5bb87a">
+                                      <DarkSummaryRow label="Success in 6 months" value={s(r.successVision)} />
+                                      <DarkSummaryRow label="How they heard" value={s(r.howHeard)} />
+                                      <DarkSummaryRow label="Parent notes" value={s(r.parentNotes)} />
+                                    </DarkSummarySection>
 
-                                    {children.map((c, i) => (
-                                      <SummarySection key={i} title={`${s(c.name) !== '—' ? s(c.name) : `Child ${i + 1}`} — Learning Profile`}>
-                                        <SummaryRow label="Reading" value={`${s(c.readingLevel)} — feels ${s(c.readingFeel)}`} />
-                                        <SummaryRow label="Writing" value={`${s(c.writingStage)} — feels ${s(c.writingFeel)}`} />
-                                        <SummaryRow label="Physical writing" value={toArr(c.physicalWriting)} />
-                                        <SummaryRow label="Spelling" value={`${s(c.spellingLevel)} — feels ${s(c.spellingFeel)}`} />
-                                        <SummaryRow label="Grammar" value={`${s(c.grammarLevel)} — feels ${s(c.grammarFeel)}`} />
-                                        <SummaryRow label="Grammar struggles" value={toArr(c.grammarStruggles)} />
-                                        <SummaryRow label="Focus span" value={s(c.focusSpan)} />
-                                        <SummaryRow label="Regulation" value={toArr(c.regulation)} />
-                                        <SummaryRow label="Frustration (child)" value={toArr(c.frustrationChild)} />
-                                        <SummaryRow label="Frustration (parent)" value={toArr(c.frustrationParent)} />
-                                        <SummaryRow label="New tasks" value={toArr(c.newTasks)} />
-                                        <SummaryRow label="Hard tasks" value={toArr(c.hardTasks)} />
-                                        <SummaryRow label="Demonstrates learning" value={toArr(c.demonstratesUnderstanding)} />
-                                        <SummaryRow label="Loves" value={toArr(c.lovesSubjects)} />
-                                        <SummaryRow label="Avoids" value={toArr(c.avoidsSubjects)} />
-                                        <SummaryRow label="Games" value={toArr(c.games)} />
-                                        <SummaryRow label="Videos" value={toArr(c.videoEngagement)} />
-                                        <SummaryRow label="Extra info" value={toArr(c.extraInfo)} />
-                                        {s(c.diagnosis) !== '—' && <SummaryRow label="Diagnosis" value={s(c.diagnosis)} />}
-                                      </SummarySection>
+                                    {children.map((ch, i) => (
+                                      <DarkSummarySection key={i} title={`${s(ch.name) !== '—' ? s(ch.name) : `Child ${i + 1}`} — Learning Profile`} color="#f0c040">
+                                        <DarkSummaryRow label="Reading" value={`${s(ch.readingLevel)} — feels ${s(ch.readingFeel)}`} />
+                                        <DarkSummaryRow label="Writing" value={`${s(ch.writingStage)} — feels ${s(ch.writingFeel)}`} />
+                                        <DarkSummaryRow label="Physical writing" value={toArr(ch.physicalWriting)} />
+                                        <DarkSummaryRow label="Spelling" value={`${s(ch.spellingLevel)} — feels ${s(ch.spellingFeel)}`} />
+                                        <DarkSummaryRow label="Grammar" value={`${s(ch.grammarLevel)} — feels ${s(ch.grammarFeel)}`} />
+                                        <DarkSummaryRow label="Grammar struggles" value={toArr(ch.grammarStruggles)} />
+                                        <DarkSummaryRow label="Focus span" value={s(ch.focusSpan)} />
+                                        <DarkSummaryRow label="Regulation" value={toArr(ch.regulation)} />
+                                        <DarkSummaryRow label="Frustration (child)" value={toArr(ch.frustrationChild)} />
+                                        <DarkSummaryRow label="Frustration (parent)" value={toArr(ch.frustrationParent)} />
+                                        <DarkSummaryRow label="New tasks" value={toArr(ch.newTasks)} />
+                                        <DarkSummaryRow label="Hard tasks" value={toArr(ch.hardTasks)} />
+                                        <DarkSummaryRow label="Demonstrates learning" value={toArr(ch.demonstratesUnderstanding)} />
+                                        <DarkSummaryRow label="Loves" value={toArr(ch.lovesSubjects)} />
+                                        <DarkSummaryRow label="Avoids" value={toArr(ch.avoidsSubjects)} />
+                                        <DarkSummaryRow label="Games" value={toArr(ch.games)} />
+                                        <DarkSummaryRow label="Videos" value={toArr(ch.videoEngagement)} />
+                                        <DarkSummaryRow label="Extra info" value={toArr(ch.extraInfo)} />
+                                        {s(ch.diagnosis) !== '—' && <DarkSummaryRow label="Diagnosis" value={s(ch.diagnosis)} />}
+                                      </DarkSummarySection>
                                     ))}
-                                  </>
+                                  </div>
                                 )
-                              })()}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            </>
-          )}
+                              })()
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
 
@@ -769,31 +839,33 @@ export default function AdminPage() {
   )
 }
 
-function SummarySection({ title, children }: { title: string; children: React.ReactNode }) {
+function DarkSummarySection({ title, color, children }: { title: string; color: string; children: React.ReactNode }) {
   return (
     <div>
-      <h4 className="font-extrabold text-xs uppercase tracking-wide text-[#5c5c5c] mb-2">{title}</h4>
-      <div className="bg-[#f5f1e9] rounded-xl px-4 py-3 space-y-1.5">{children}</div>
+      <h4 style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color, marginBottom: '0.5rem' }}>{title}</h4>
+      <div style={{ backgroundColor: '#2e3338', borderRadius: '0.75rem', padding: '0.875rem 1.1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', borderLeft: `3px solid ${color}` }}>
+        {children}
+      </div>
     </div>
   )
 }
 
-function SummaryRow({ label, value }: { label: string; value: string | string[] | undefined }) {
+function DarkSummaryRow({ label, value }: { label: string; value: string | string[] | undefined }) {
   if (!value || value === '—' || (Array.isArray(value) && value.length === 0)) return null
   if (Array.isArray(value)) {
     return (
-      <div className="flex gap-2 text-sm items-start">
-        <span className="font-bold text-[#5c5c5c] min-w-[185px] shrink-0">{label}:</span>
-        <ul className="list-disc ml-4 space-y-0.5 text-[#1c1c1c]">
+      <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.9rem', alignItems: 'flex-start' }}>
+        <span style={{ fontWeight: 700, color: '#a09890', minWidth: '185px', flexShrink: 0 }}>{label}:</span>
+        <ul style={{ margin: '0 0 0 1rem', padding: 0, color: '#e8e0d5', listStyleType: 'disc', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
           {value.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
       </div>
     )
   }
   return (
-    <div className="flex gap-2 text-sm">
-      <span className="font-bold text-[#5c5c5c] min-w-[185px] shrink-0">{label}:</span>
-      <span className="text-[#1c1c1c]">{value}</span>
+    <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.9rem' }}>
+      <span style={{ fontWeight: 700, color: '#a09890', minWidth: '185px', flexShrink: 0 }}>{label}:</span>
+      <span style={{ color: '#e8e0d5' }}>{value}</span>
     </div>
   )
 }
