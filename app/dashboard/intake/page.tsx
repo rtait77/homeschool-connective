@@ -45,6 +45,7 @@ type IntakeForm = {
   learningEnvironment: string[]
   coopParticipation: string[]
   parentPersonality: string[]
+  religiousPreference: string
   successVision: string; howHeard: string; parentNotes: string
 }
 
@@ -87,6 +88,7 @@ const EMPTY: IntakeForm = {
   learningEnvironment: [],
   coopParticipation: [],
   parentPersonality: [],
+  religiousPreference: '',
   successVision: '', howHeard: '', parentNotes: '',
 }
 
@@ -773,6 +775,18 @@ function SectionParent({
           ]}
           values={form.parentPersonality}
           onChange={v => toggleCheck('parentPersonality', v)}
+        />
+      </QBlock>
+
+      <QBlock num={12} label="When it comes to curriculum and resources, do you have a preference?" note="Choose one">
+        <RadioList
+          options={[
+            'Secular only — I prefer no religious content',
+            'Christian / faith-based — I prefer resources that reflect our faith',
+            'Either is fine — open to both secular and faith-based recommendations',
+          ]}
+          value={form.religiousPreference}
+          onChange={v => set('religiousPreference', v)}
         />
       </QBlock>
 
