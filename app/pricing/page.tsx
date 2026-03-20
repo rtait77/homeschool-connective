@@ -47,7 +47,8 @@ export default function SubscribePage() {
   return (
     <div className="max-w-[900px] mx-auto px-6 py-16">
       <h1 className="text-3xl font-extrabold text-center mb-2">Get Full Access</h1>
-      <p className="text-center text-[#5c5c5c] mb-4">All games, all topics, new content added regularly.</p>
+      <p className="text-center text-[#5c5c5c] mb-1">All games, all topics, new content added regularly.</p>
+      <p className="text-center text-sm text-[#5c5c5c] mb-4">Grades K–3 · Secular · Game-Based Learning</p>
 
       {/* Free trial CTA — hidden for users already trialing or subscribed */}
       {showTrial && (
