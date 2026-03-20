@@ -754,6 +754,12 @@ export default function AdminPage() {
                                             ))}
                                           </div>
                                         )}
+                                        {s(r.religiousPreference) !== '—' && (
+                                          <div style={{ gridColumn: '1 / -1' }}>
+                                            <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.2rem' }}>Resource Preference</p>
+                                            <p style={{ color: '#55b6ca', fontWeight: 600 }}>{s(r.religiousPreference)}</p>
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
 
@@ -791,6 +797,7 @@ export default function AdminPage() {
                                     </DarkSummarySection>
 
                                     <DarkSummarySection title="Vision & Context" color="#5bb87a">
+                                      <DarkSummaryRow label="Resource preference" value={s(r.religiousPreference)} />
                                       <DarkSummaryRow label="Success in 6 months" value={s(r.successVision)} />
                                       <DarkSummaryRow label="How they heard" value={s(r.howHeard)} />
                                       <DarkSummaryRow label="Parent notes" value={s(r.parentNotes)} />
