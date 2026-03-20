@@ -783,7 +783,7 @@ function SummaryRow({ label, value }: { label: string; value: string | string[] 
   if (Array.isArray(value)) {
     return (
       <div className="flex gap-2 text-sm items-start">
-        <span className="font-bold text-[#5c5c5c] min-w-[130px] shrink-0">{label}:</span>
+        <span className="font-bold text-[#5c5c5c] min-w-[185px] shrink-0">{label}:</span>
         <ul className="list-disc ml-4 space-y-0.5 text-[#1c1c1c]">
           {value.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
@@ -792,7 +792,7 @@ function SummaryRow({ label, value }: { label: string; value: string | string[] 
   }
   return (
     <div className="flex gap-2 text-sm">
-      <span className="font-bold text-[#5c5c5c] min-w-[130px] shrink-0">{label}:</span>
+      <span className="font-bold text-[#5c5c5c] min-w-[185px] shrink-0">{label}:</span>
       <span className="text-[#1c1c1c]">{value}</span>
     </div>
   )
