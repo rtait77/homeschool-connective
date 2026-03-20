@@ -8,28 +8,12 @@ const posts = [
     excerpt: "Play's Essential Function in Homeschooling: Fostering Development and Education. Homeschooling provides a distinctive and adaptable educational path, enabling parents to customize their child's learning...",
   },
   {
-    href: '/tips/homeschooling-101',
-    img: '/blog-101-coloring.avif',
-    date: 'March 17, 2025',
-    tag: 'Homeschool Planning',
-    title: 'Homeschooling 101',
-    excerpt: 'How to Homeschool: Six Steps to Get Started. Getting started with homeschooling can be very overwhelming! We are here to help!',
-  },
-  {
     href: '/tips/learning-styles',
     img: '/blog-ls-infographic.avif',
     date: 'August 5, 2025',
     tag: 'Homeschool Planning',
     title: 'Learning Styles',
     excerpt: "Ah, the wild world of homeschooling! Back when I started, the idea of learning styles was as mysterious to me as finding socks in the dryer. My son and I were flying by the seat of our pants! 🤣",
-  },
-  {
-    href: '/tips/homeschool-beginnings',
-    img: '/blog-beginnings-mel-family.avif',
-    date: 'February 3, 2025',
-    tag: 'Our Story',
-    title: 'Homeschool Beginnings',
-    excerpt: "Hi! I'm Mel! I've been married to my wonderful husband for 30 years, and together we've raised four amazing kids. These days, we're enjoying a whole new chapter as grandparents to four grandkids...",
   },
   {
     href: '/tips/homeschooling-methods',
@@ -46,6 +30,22 @@ const posts = [
     tag: 'Homeschool Planning',
     title: 'Deschooling',
     excerpt: 'Deschooling is the process of adjusting to a learning environment outside of traditional schooling. It involves both children and parents transitioning from structured conventional methods...',
+  },
+  {
+    href: '/tips/homeschooling-101',
+    img: '/blog-101-coloring.avif',
+    date: 'March 17, 2025',
+    tag: 'Homeschool Planning',
+    title: 'Homeschooling 101',
+    excerpt: 'How to Homeschool: Six Steps to Get Started. Getting started with homeschooling can be very overwhelming! We are here to help!',
+  },
+  {
+    href: '/tips/homeschool-beginnings',
+    img: '/blog-beginnings-mel-family.avif',
+    date: 'February 3, 2025',
+    tag: 'Our Story',
+    title: 'Homeschool Beginnings',
+    excerpt: "Hi! I'm Mel! I've been married to my wonderful husband for 30 years, and together we've raised four amazing kids. These days, we're enjoying a whole new chapter as grandparents to four grandkids...",
   },
 ]
 
@@ -81,7 +81,7 @@ export default function TipsPage() {
         <div className="mt-14 py-8 border-t border-[#ddd8cc] text-center">
           <p className="text-[#5c5c5c] mb-3">Looking for fun, game-based learning for Grades K–3?</p>
           <a
-            href="/learn"
+            href="/#free-games"
             className="inline-block bg-[#ed7c5a] text-white font-extrabold px-8 py-3 rounded-xl hover:opacity-90 transition"
           >
             Try Our Free Games →
