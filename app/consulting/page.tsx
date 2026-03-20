@@ -52,7 +52,9 @@ export default function ConsultingPage() {
         <div>
           <p className="text-sm font-bold text-[#55b6ca] uppercase tracking-widest mb-2">One-on-One Help</p>
           <h1 className="text-3xl font-extrabold mb-3">Personalized Homeschool Consulting with Mel</h1>
-          <p className="text-[#5c5c5c]">Bio coming soon.</p>
+          <p className="text-[#5c5c5c] mb-3">With over 25 years of homeschooling experience, I have dedicated my life to nurturing young learners and supporting families on their educational journeys. I began homeschooling my own children in 2000, and today I have the joy of homeschooling my grandchildren.</p>
+          <p className="text-[#5c5c5c] mb-3">Along the way, I have worked in a homeschool co-op as assistant director, at church nursery as coordinator, and a pre-K center as lead teacher, giving me a well-rounded perspective on how children learn best in a variety of settings. I am passionate about coming alongside other homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children's needs.</p>
+          <p className="text-[#5c5c5c]">I also create educational resources designed specifically for homeschoolers in grades Pre-K through 3rd grade, with a focus on making learning engaging, accessible, and effective for all types of learners.</p>
         </div>
       </div>
 
