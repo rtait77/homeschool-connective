@@ -26,6 +26,16 @@ export default function AboutPage() {
         </p>
       </div>
 
+      {/* See what we built CTA */}
+      <div className="mb-10 text-center">
+        <a
+          href="/learn"
+          className="inline-block bg-[#ed7c5a] text-white font-extrabold px-8 py-4 rounded-xl hover:opacity-90 transition text-base"
+        >
+          See What We've Built →
+        </a>
+      </div>
+
       {/* Rebecca */}
       <div className="flex flex-col md:flex-row gap-6 mb-10 p-6 bg-white rounded-[14px]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
         <div className="flex-shrink-0">
@@ -36,16 +46,6 @@ export default function AboutPage() {
           <p className="text-[#5c5c5c] text-sm leading-relaxed mb-2">Rebecca has been homeschooling for over 10 years and has spent much of that time building hands-on, creative learning experiences for kids. She holds a bachelor's degree in business and she co-founded Homeschool Connective where she develops interactive online courses and gamified curriculum for homeschoolers. Her goal is to create fun, engaging ways for kids to learn complex topics.</p>
           <p className="text-[#5c5c5c] text-sm leading-relaxed">Rebecca teaches at a microschool for homeschoolers, and she also serves on Parent Council as the school's Clubs Coordinator. She also co-leads after school clubs.</p>
         </div>
-      </div>
-
-      {/* See what we built CTA */}
-      <div className="mt-10 text-center">
-        <a
-          href="/learn"
-          className="inline-block bg-[#ed7c5a] text-white font-extrabold px-8 py-4 rounded-xl hover:opacity-90 transition text-base"
-        >
-          See What We've Built →
-        </a>
       </div>
 
       {/* Melanie */}
