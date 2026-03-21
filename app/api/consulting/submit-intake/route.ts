@@ -124,6 +124,8 @@ export async function POST(req: NextRequest) {
     .eq('user_id', user.id)
     .single()
 
+  const isResubmit = existing?.status === 'submitted'
+
   if (existing) {
     await admin
       .from('consulting_intake_responses')
@@ -141,19 +143,68 @@ export async function POST(req: NextRequest) {
     .update({ intake_completed: true, intake_submitted_at: now })
     .eq('id', customer.id)
 
-  // Email Mel with formatted summary (via Titan SMTP)
   const firstChildName = Array.isArray(responses.children) && responses.children[0]?.name
     ? responses.children[0].name
     : (responses.parentName || user.email)
+  const parentName = typeof responses.parentName === 'string' && responses.parentName
+    ? responses.parentName.split(' ')[0]
+    : 'there'
+
+  // Email Mel with formatted summary
   try {
     await titanTransport.sendMail({
       from: '"Homeschool Connective" <consulting@homeschoolconnective.com>',
       to: 'consulting@homeschoolconnective.com',
-      subject: `Intake form submitted — ${firstChildName}`,
+      subject: `${isResubmit ? '[Updated] ' : ''}Intake form submitted — ${firstChildName}`,
       html: formatSummaryEmail(user.email ?? '', responses),
     })
   } catch (emailErr) {
     console.error('Failed to send intake notification email:', emailErr)
+  }
+
+  // Confirmation email to client
+  const clientSubject = isResubmit
+    ? 'Your intake form has been updated'
+    : 'We received your intake form!'
+  const clientHtml = isResubmit
+    ? `
+      <div style="font-family:'Helvetica Neue',Helvetica,sans-serif;max-width:600px;margin:0 auto;padding:32px 16px;background:#f5f1e9;">
+        <div style="text-align:center;margin-bottom:28px;">
+          <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height:48px;" />
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
+          <h2 style="font-size:22px;font-weight:800;color:#1c1c1c;margin-bottom:12px;">Got your update, ${parentName}!</h2>
+          <p style="font-size:15px;line-height:1.7;color:#444;margin-bottom:16px;">We've received your updated intake form. Mel will take another look at your answers and be in touch!</p>
+          <p style="font-size:15px;line-height:1.7;color:#444;margin-bottom:24px;">In the meantime, if you have questions or anything you'd like to add, just reply to this email.</p>
+          <p style="font-size:14px;color:#888;">— Mel &amp; the Homeschool Connective team</p>
+          <p style="font-size:13px;color:#aaa;">consulting@homeschoolconnective.com</p>
+        </div>
+        <p style="text-align:center;font-size:12px;color:#aaa;margin-top:24px;">Homeschool Connective · <a href="https://homeschoolconnective.com" style="color:#aaa;">homeschoolconnective.com</a></p>
+      </div>`
+    : `
+      <div style="font-family:'Helvetica Neue',Helvetica,sans-serif;max-width:600px;margin:0 auto;padding:32px 16px;background:#f5f1e9;">
+        <div style="text-align:center;margin-bottom:28px;">
+          <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height:48px;" />
+        </div>
+        <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
+          <h2 style="font-size:22px;font-weight:800;color:#1c1c1c;margin-bottom:12px;">We got it, ${parentName}!</h2>
+          <p style="font-size:15px;line-height:1.7;color:#444;margin-bottom:16px;">Thanks so much for filling out your intake form! Mel will review your answers and put together your personalized curriculum recommendations.</p>
+          <p style="font-size:15px;line-height:1.7;color:#444;margin-bottom:24px;">You'll receive an email when your report is ready. In the meantime, if you have questions or anything you'd like to add, just reply to this email.</p>
+          <p style="font-size:14px;color:#888;">— Mel &amp; the Homeschool Connective team</p>
+          <p style="font-size:13px;color:#aaa;">consulting@homeschoolconnective.com</p>
+        </div>
+        <p style="text-align:center;font-size:12px;color:#aaa;margin-top:24px;">Homeschool Connective · <a href="https://homeschoolconnective.com" style="color:#aaa;">homeschoolconnective.com</a></p>
+      </div>`
+
+  try {
+    await titanTransport.sendMail({
+      from: '"Mel at Homeschool Connective" <consulting@homeschoolconnective.com>',
+      to: user.email!,
+      subject: clientSubject,
+      html: clientHtml,
+    })
+  } catch (emailErr) {
+    console.error('Failed to send client confirmation email:', emailErr)
   }
 
   return NextResponse.json({ ok: true })
