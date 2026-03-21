@@ -1461,6 +1461,7 @@ export default function AdminPage() {
                         <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
                           {r.subjects?.map(s => <span key={s} style={{ fontSize: '0.68rem', fontWeight: 700, backgroundColor: '#1a3a2a', color: '#5bb87a', padding: '1px 7px', borderRadius: 999 }}>{s}</span>)}
                           {r.grade_levels?.map(g => <span key={g} style={{ fontSize: '0.68rem', color: '#a09890', padding: '1px 7px', borderRadius: 999, backgroundColor: '#2e3338' }}>{g}</span>)}
+                          {r.match_tags?.map(t => <span key={t} style={{ fontSize: '0.68rem', color: '#55b6ca', padding: '1px 7px', borderRadius: 999, backgroundColor: '#0e2a33' }}>{t}</span>)}
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
