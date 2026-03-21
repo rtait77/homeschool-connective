@@ -133,9 +133,41 @@ export default function AdminPage() {
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
   const [consultingLoading, setConsultingLoading] = useState(false)
   const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null)
+  type ReportItem = { id: string; resource_id: string; reason: string; sort_order: number }
   const [recs, setRecs] = useState<Record<string, Recommendation[]>>({})
   const [recsLoading, setRecsLoading] = useState<Record<string, boolean>>({})
   const [recsError, setRecsError] = useState<Record<string, string>>({})
+  const [reportItems, setReportItems] = useState<Record<string, ReportItem[]>>({})
+  const [reportLoading, setReportLoading] = useState<Record<string, boolean>>({})
+
+  async function loadReportItems(customerId: string) {
+    const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
+    if (res.ok) {
+      const data = await res.json()
+      setReportItems(prev => ({ ...prev, [customerId]: data.items ?? [] }))
+    }
+  }
+
+  async function addToReport(customerId: string, rec: Recommendation) {
+    setReportLoading(prev => ({ ...prev, [rec.resource_id]: true }))
+    const res = await fetch('/api/consulting/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: customerId, resource_id: rec.resource_id, name: rec.name, reason: rec.reason }),
+    })
+    if (res.ok) {
+      await loadReportItems(customerId)
+    }
+    setReportLoading(prev => ({ ...prev, [rec.resource_id]: false }))
+  }
+
+  async function removeFromReport(customerId: string, itemId: string) {
+    await fetch(`/api/consulting/report?item_id=${itemId}`, { method: 'DELETE' })
+    setReportItems(prev => ({
+      ...prev,
+      [customerId]: (prev[customerId] ?? []).filter(i => i.id !== itemId),
+    }))
+  }
 
   async function generateRecs(customerId: string) {
     setRecsLoading(prev => ({ ...prev, [customerId]: true }))
@@ -703,7 +735,11 @@ export default function AdminPage() {
                         {/* Row header */}
                         <div
                           style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', cursor: 'pointer' }}
-                          onClick={() => setExpandedCustomer(isExpanded ? null : c.id)}
+                          onClick={() => {
+                            const next = isExpanded ? null : c.id
+                            setExpandedCustomer(next)
+                            if (next && !reportItems[next]) loadReportItems(next)
+                          }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                             <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.9rem' }}>{c.email}</span>
@@ -842,7 +878,29 @@ export default function AdminPage() {
                                                   <span key={g} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{g}</span>
                                                 ))}
                                               </div>
-                                              <p style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: '1.6' }}>{rec.reason}</p>
+                                              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginTop: '0.25rem' }}>
+                                                <p style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: '1.6', flex: 1 }}>{rec.reason}</p>
+                                                {(() => {
+                                                  const inReport = (reportItems[c.id] ?? []).find(i => i.resource_id === rec.resource_id)
+                                                  const loading = reportLoading[rec.resource_id]
+                                                  return inReport ? (
+                                                    <button
+                                                      onClick={() => removeFromReport(c.id, inReport.id)}
+                                                      style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #5bb87a', color: '#5bb87a', backgroundColor: '#1a3a2a', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                                    >
+                                                      ✓ In Report — Remove
+                                                    </button>
+                                                  ) : (
+                                                    <button
+                                                      onClick={() => addToReport(c.id, rec)}
+                                                      disabled={loading}
+                                                      style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #55b6ca', color: loading ? '#a09890' : '#55b6ca', backgroundColor: 'transparent', cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap' }}
+                                                    >
+                                                      {loading ? 'Adding...' : '+ Add to Report'}
+                                                    </button>
+                                                  )
+                                                })()}
+                                              </div>
                                             </div>
                                           ))}
                                         </div>
