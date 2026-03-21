@@ -1126,6 +1126,86 @@ export default function AdminPage() {
                                       </div>
                                     </div>
 
+                                    {/* REPORT BUILDER */}
+                                    {reportItems[c.id] !== undefined && (
+                                      <div style={{ backgroundColor: '#12201a', borderRadius: '1rem', padding: '1.25rem 1.5rem', border: '2px solid #2a4a35' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                            <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a', margin: 0 }}>
+                                              📋 Report
+                                            </p>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 800, backgroundColor: (reportItems[c.id] ?? []).length > 0 ? '#5bb87a' : '#3d4248', color: (reportItems[c.id] ?? []).length > 0 ? '#0a1f14' : '#a09890', padding: '0.1rem 0.6rem', borderRadius: '999px' }}>
+                                              {(reportItems[c.id] ?? []).length} item{(reportItems[c.id] ?? []).length !== 1 ? 's' : ''}
+                                            </span>
+                                            {reportMeta[c.id]?.sent_at && (
+                                              <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700 }}>
+                                                ✓ Sent {new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString()}
+                                              </span>
+                                            )}
+                                          </div>
+                                          {(reportItems[c.id] ?? []).length > 0 && (
+                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                              <button
+                                                onClick={() => setPreviewCustomer(c.id)}
+                                                style={{ fontSize: '0.78rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '1px solid #55b6ca', color: '#55b6ca', backgroundColor: 'transparent', cursor: 'pointer' }}
+                                              >Preview</button>
+                                              <button
+                                                onClick={() => sendReport(c.id, c.email)}
+                                                disabled={sendingReport[c.id]}
+                                                style={{ fontSize: '0.78rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: 'none', backgroundColor: sendingReport[c.id] ? '#3d4248' : '#5bb87a', color: sendingReport[c.id] ? '#a09890' : '#0a1f14', cursor: sendingReport[c.id] ? 'default' : 'pointer' }}
+                                              >{sendingReport[c.id] ? 'Sending…' : 'Send Report'}</button>
+                                              {sendSuccess[c.id] && <span style={{ fontSize: '0.78rem', color: '#5bb87a', fontWeight: 700, alignSelf: 'center' }}>✓ Sent!</span>}
+                                            </div>
+                                          )}
+                                        </div>
+
+                                        {(reportItems[c.id] ?? []).length === 0 ? (
+                                          <p style={{ color: '#5a7a65', fontSize: '0.85rem', fontStyle: 'italic', margin: 0 }}>
+                                            No items yet — click &ldquo;+ Add to Report&rdquo; on any recommendation below.
+                                          </p>
+                                        ) : (
+                                          <>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+                                              {(reportItems[c.id] ?? []).map((item, idx) => {
+                                                const name = item.resources?.name
+                                                  ?? recs[c.id]?.find(r => r.resource_id === item.resource_id)?.name
+                                                  ?? item.resource_id
+                                                return (
+                                                  <div key={item.id} style={{ backgroundColor: '#1a2e22', borderRadius: '0.75rem', padding: '0.75rem 1rem', border: '1px solid #2a4a35', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5bb87a', minWidth: '1.25rem', paddingTop: '0.15rem' }}>#{idx + 1}</span>
+                                                    <div style={{ flex: 1 }}>
+                                                      <p style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.9rem', marginBottom: '0.35rem' }}>{name}</p>
+                                                      <textarea
+                                                        defaultValue={item.reason}
+                                                        onBlur={(e) => updateItemReason(c.id, item.id, e.target.value)}
+                                                        rows={2}
+                                                        placeholder="Reason for recommending this..."
+                                                        style={{ width: '100%', backgroundColor: '#0f1a13', border: '1px solid #2a4a35', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.82rem', padding: '0.4rem 0.6rem', resize: 'vertical', lineHeight: '1.5', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                                                      />
+                                                    </div>
+                                                    <button
+                                                      onClick={() => removeFromReport(c.id, item.id)}
+                                                      style={{ flexShrink: 0, fontSize: '1rem', color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', paddingTop: '0.05rem', lineHeight: 1 }}
+                                                    >✕</button>
+                                                  </div>
+                                                )
+                                              })}
+                                            </div>
+                                            <div style={{ marginBottom: '0.75rem' }}>
+                                              <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#5a7a65', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>Custom Intro (optional)</p>
+                                              <textarea
+                                                value={customIntros[c.id] ?? ''}
+                                                onChange={(e) => setCustomIntros(prev => ({ ...prev, [c.id]: e.target.value }))}
+                                                rows={3}
+                                                placeholder="Hi! Based on your intake form, here are my top picks for your family..."
+                                                style={{ width: '100%', backgroundColor: '#0f1a13', border: '1px solid #2a4a35', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.85rem', padding: '0.5rem 0.75rem', resize: 'vertical', lineHeight: '1.6', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                                              />
+                                            </div>
+                                          </>
+                                        )}
+                                      </div>
+                                    )}
+
                                     {/* RECOMMENDATIONS */}
                                     <div>
                                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
@@ -1197,90 +1277,6 @@ export default function AdminPage() {
                                         </div>
                                       )}
                                     </div>
-
-                                    {/* REPORT BUILDER */}
-                                    {reportItems[c.id] !== undefined && (
-                                      <div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
-                                          <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a' }}>
-                                            Report Builder
-                                          </p>
-                                          {reportMeta[c.id]?.sent_at && (
-                                            <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700 }}>
-                                              ✓ Sent {new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString()}
-                                            </span>
-                                          )}
-                                          <span style={{ fontSize: '0.72rem', color: '#a09890' }}>
-                                            {(reportItems[c.id] ?? []).length} item{(reportItems[c.id] ?? []).length !== 1 ? 's' : ''}
-                                          </span>
-                                        </div>
-
-                                        {(reportItems[c.id] ?? []).length === 0 ? (
-                                          <p style={{ color: '#a09890', fontSize: '0.85rem', fontStyle: 'italic', marginBottom: '0.5rem' }}>
-                                            No items yet — add resources from the recommendations above.
-                                          </p>
-                                        ) : (
-                                          <>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
-                                              {(reportItems[c.id] ?? []).map((item, idx) => {
-                                                const name = item.resources?.name
-                                                  ?? recs[c.id]?.find(r => r.resource_id === item.resource_id)?.name
-                                                  ?? item.resource_id
-                                                return (
-                                                  <div key={item.id} style={{ backgroundColor: '#1a1c1e', borderRadius: '0.75rem', padding: '0.85rem 1rem', border: '1px solid #3d4248', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5bb87a', minWidth: '1.25rem', paddingTop: '0.15rem' }}>#{idx + 1}</span>
-                                                    <div style={{ flex: 1 }}>
-                                                      <p style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.9rem', marginBottom: '0.35rem' }}>{name}</p>
-                                                      <textarea
-                                                        defaultValue={item.reason}
-                                                        onBlur={(e) => updateItemReason(c.id, item.id, e.target.value)}
-                                                        rows={2}
-                                                        placeholder="Reason for recommending this..."
-                                                        style={{ width: '100%', backgroundColor: '#13151a', border: '1px solid #3d4248', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.82rem', padding: '0.4rem 0.6rem', resize: 'vertical', lineHeight: '1.5', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                                                      />
-                                                    </div>
-                                                    <button
-                                                      onClick={() => removeFromReport(c.id, item.id)}
-                                                      style={{ flexShrink: 0, fontSize: '1rem', color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', paddingTop: '0.05rem', lineHeight: 1 }}
-                                                    >✕</button>
-                                                  </div>
-                                                )
-                                              })}
-                                            </div>
-
-                                            <div style={{ marginBottom: '1rem' }}>
-                                              <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>Custom Intro (optional)</p>
-                                              <textarea
-                                                value={customIntros[c.id] ?? ''}
-                                                onChange={(e) => setCustomIntros(prev => ({ ...prev, [c.id]: e.target.value }))}
-                                                rows={3}
-                                                placeholder={`Hi! Based on your intake form, here are my top picks for your family...`}
-                                                style={{ width: '100%', backgroundColor: '#13151a', border: '1px solid #3d4248', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.85rem', padding: '0.5rem 0.75rem', resize: 'vertical', lineHeight: '1.6', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                                              />
-                                            </div>
-
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                                              <button
-                                                onClick={() => setPreviewCustomer(c.id)}
-                                                style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.25rem', borderRadius: '999px', border: '2px solid #55b6ca', color: '#55b6ca', backgroundColor: 'transparent', cursor: 'pointer' }}
-                                              >
-                                                Preview
-                                              </button>
-                                              <button
-                                                onClick={() => sendReport(c.id, c.email)}
-                                                disabled={sendingReport[c.id]}
-                                                style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.5rem', borderRadius: '999px', border: 'none', backgroundColor: sendingReport[c.id] ? '#3d4248' : '#5bb87a', color: sendingReport[c.id] ? '#a09890' : '#0a1f14', cursor: sendingReport[c.id] ? 'default' : 'pointer' }}
-                                              >
-                                                {sendingReport[c.id] ? 'Sending...' : `Send Report to ${c.email}`}
-                                              </button>
-                                              {sendSuccess[c.id] && (
-                                                <span style={{ fontSize: '0.85rem', color: '#5bb87a', fontWeight: 700 }}>✓ Report sent!</span>
-                                              )}
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    )}
 
                                     {/* FULL DETAIL SECTIONS */}
                                     <DarkSummarySection title="Family" color="#b19cd9">
