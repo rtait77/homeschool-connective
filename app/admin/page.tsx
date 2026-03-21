@@ -208,6 +208,7 @@ export default function AdminPage() {
     matched_tags: { tag: string; sources: { question: string; answer: string }[] }[]
     christian_lite_warning: boolean
     reason: string
+    suggested_for: string[]
   }
 
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
@@ -246,7 +247,7 @@ export default function AdminPage() {
     const res = await fetch('/api/consulting/report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_id: customerId, resource_id: rec.resource_id, name: rec.name, reason: rec.reason }),
+      body: JSON.stringify({ customer_id: customerId, resource_id: rec.resource_id, name: rec.name, reason: rec.reason, for_people: rec.suggested_for ?? [] }),
     })
     if (res.ok) {
       await loadReportItems(customerId)
@@ -1211,6 +1212,9 @@ export default function AdminPage() {
                                                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                                                     <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem' }}>#{idx + 1}</span>
                                                     <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.95rem' }}>{rec.name}</span>
+                                                    {(rec.suggested_for ?? []).map(p => (
+                                                      <span key={p} style={{ fontSize: '0.62rem', fontWeight: 800, padding: '1px 8px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#3a1a0a' : '#0e2233', color: p === 'Parent' ? '#f0a070' : '#7dd3fc' }}>{p}</span>
+                                                    ))}
                                                     {rec.christian_lite_warning && (
                                                       <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#3a2a10', color: '#f0c040', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>⚠️ christian lite</span>
                                                     )}
