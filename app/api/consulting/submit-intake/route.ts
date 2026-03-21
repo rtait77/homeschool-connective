@@ -124,10 +124,6 @@ export async function POST(req: NextRequest) {
     .eq('user_id', user.id)
     .single()
 
-  if (existing?.status === 'submitted') {
-    return NextResponse.json({ error: 'Already submitted' }, { status: 400 })
-  }
-
   if (existing) {
     await admin
       .from('consulting_intake_responses')
