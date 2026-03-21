@@ -33,8 +33,9 @@ export async function GET() {
     .eq('user_id', user.id)
     .single()
 
+  const TEST_EMAILS = ['rebeccatait77@gmail.com', 'aniedawn4@outlook.com']
   let reportSent = false
-  if (customer) {
+  if (customer && !TEST_EMAILS.includes(user.email ?? '')) {
     const { data: report } = await admin
       .from('reports')
       .select('status')
