@@ -341,7 +341,12 @@ export default function IntakePage() {
             <p className="font-extrabold text-sm text-[#1a7a52] mb-0.5">Form submitted</p>
             <p className="text-sm text-[#5c5c5c]">Your answers are with Mel. This is a read-only copy.</p>
           </div>
-          <a href="/dashboard" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap">← Dashboard</a>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <button onClick={() => setSubmitted(false)} className="text-sm font-bold text-[#ed7c5a] hover:underline whitespace-nowrap cursor-pointer">
+              Edit &amp; Resubmit
+            </button>
+            <a href="/dashboard" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap">← Dashboard</a>
+          </div>
         </div>
       )}
 
