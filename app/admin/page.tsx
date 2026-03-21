@@ -400,6 +400,21 @@ export default function AdminPage() {
     })
   }, [])
 
+  const isDarkTab = tab === 'consulting' || tab === 'resources'
+  useEffect(() => {
+    if (isDarkTab) {
+      document.body.style.backgroundColor = '#16191c'
+      document.body.style.color = '#e8e0d5'
+    } else {
+      document.body.style.backgroundColor = ''
+      document.body.style.color = ''
+    }
+    return () => {
+      document.body.style.backgroundColor = ''
+      document.body.style.color = ''
+    }
+  }, [isDarkTab])
+
   // Load overview stats on mount
   useEffect(() => {
     if (!isAdmin) return
@@ -609,12 +624,12 @@ export default function AdminPage() {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-extrabold mb-1">Admin Dashboard</h1>
-        <p className="text-sm text-[#5c5c5c]">Homeschool Connective — internal view</p>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.2rem', color: isDarkTab ? '#e8e0d5' : '#1c1c1c' }}>Admin Dashboard</h1>
+        <p style={{ fontSize: '0.85rem', color: isDarkTab ? '#a09890' : '#5c5c5c' }}>Homeschool Connective — internal view</p>
       </div>
 
       {/* Tab nav */}
-      <div className="flex gap-2 mb-8 border-b border-[#e2ddd5]">
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', borderBottom: `1px solid ${isDarkTab ? '#3d4248' : '#e2ddd5'}` }}>
         {tabs.map(t => (
           <button
             key={t.id}
@@ -622,11 +637,15 @@ export default function AdminPage() {
               setTab(t.id)
               if (t.id === 'resources' && !resources) loadResources()
             }}
-            className={`px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all -mb-px cursor-pointer ${
-              tab === t.id
-                ? 'border-[#ed7c5a] text-[#ed7c5a] bg-white'
-                : 'border-transparent text-[#5c5c5c] hover:text-[#ed7c5a]'
-            }`}
+            style={{
+              padding: '0.625rem 1.25rem', fontSize: '0.875rem', fontWeight: 700,
+              borderRadius: '0.5rem 0.5rem 0 0', borderBottom: '2px solid',
+              marginBottom: '-1px', cursor: 'pointer', transition: 'all 0.15s',
+              borderBottomColor: tab === t.id ? '#ed7c5a' : 'transparent',
+              color: tab === t.id ? '#ed7c5a' : isDarkTab ? '#a09890' : '#5c5c5c',
+              backgroundColor: tab === t.id ? (isDarkTab ? '#24282b' : '#fff') : 'transparent',
+              border: 'none', borderBottom: tab === t.id ? '2px solid #ed7c5a' : '2px solid transparent',
+            }}
           >
             {t.label}
           </button>
