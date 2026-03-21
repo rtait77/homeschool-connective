@@ -1550,7 +1550,10 @@ function ResourceForm({
         {field('Name *', 'name', 'e.g. Khan Academy')}
         {field('Subjects (comma-separated)', 'subjects', 'math, science')}
         {field('Grade Levels (comma-separated)', 'grade_levels', 'K–5, grades 3+')}
-        {field('Price Range', 'price_range', 'Free, $, $$, $$$')}
+        <div>
+          {field('Price Range', 'price_range', 'Free, $, $$, $$$')}
+          <p style={{ fontSize: '0.65rem', color: '#a09890', marginTop: '0.3rem' }}>Free = free · $ = under $30/yr · $$ = $30–$100/yr · $$$ = $100+/yr</p>
+        </div>
         {select('Requires Screen', 'requires_screen', ['no', 'optional', 'yes'])}
         {field('Time per Lesson', 'time_per_lesson', '20–30 min/day')}
         {field('Parent Prep', 'parent_prep', 'minimal, moderate, significant')}
