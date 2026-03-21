@@ -1465,7 +1465,16 @@ export default function AdminPage() {
           {resources && !addingResource && !editingResource && (
             <div style={{ backgroundColor: '#24282b', borderRadius: '1rem', border: '1px solid #3d4248', overflow: 'hidden' }}>
               {resources
-                .filter(r => !resourceSearch || r.name.toLowerCase().includes(resourceSearch.toLowerCase()) || r.subjects?.join(' ').toLowerCase().includes(resourceSearch.toLowerCase()))
+                .filter(r => {
+                  if (!resourceSearch) return true
+                  const q = resourceSearch.toLowerCase()
+                  return r.name.toLowerCase().includes(q) ||
+                    r.subjects?.join(' ').toLowerCase().includes(q) ||
+                    r.grade_levels?.join(' ').toLowerCase().includes(q) ||
+                    r.match_tags?.join(' ').toLowerCase().includes(q) ||
+                    r.price_range?.toLowerCase().includes(q) ||
+                    r.religious_pref?.toLowerCase().includes(q)
+                })
                 .map((r, i, arr) => (
                   <div key={r.id} style={{ padding: '0.875rem 1.1rem', borderBottom: i < arr.length - 1 ? '1px solid #3d4248' : 'none' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
