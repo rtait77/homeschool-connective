@@ -31,7 +31,7 @@ export async function GET() {
   const admin = await getAdmin()
   const { data, error } = await admin
     .from('resources')
-    .select('id, name, subjects, grade_levels, price_range, requires_screen, time_per_lesson, parent_prep, religious_pref, match_tags, url, description, approved')
+    .select('id, name, subjects, grade_levels, price_range, requires_screen, time_per_lesson, parent_prep, religious_pref, match_tags, url, description, approved, resource_type')
     .order('name', { ascending: true })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
