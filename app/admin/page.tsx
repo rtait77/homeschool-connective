@@ -212,6 +212,8 @@ export default function AdminPage() {
   const [customIntros, setCustomIntros] = useState<Record<string, string>>({})
   const [sendingReport, setSendingReport] = useState<Record<string, boolean>>({})
   const [sendSuccess, setSendSuccess] = useState<Record<string, boolean>>({})
+  const [sendError, setSendError] = useState<Record<string, string>>({})
+  const [previewExpanded, setPreviewExpanded] = useState<Record<string, boolean>>({})
   const [previewCustomer, setPreviewCustomer] = useState<string | null>(null)
   const [tagPopup, setTagPopup] = useState<{ name: string; tags: { tag: string; sources: { question: string; answer: string }[] }[] } | null>(null)
 
@@ -262,6 +264,7 @@ export default function AdminPage() {
 
   async function sendReport(customerId: string, clientEmail: string) {
     setSendingReport(prev => ({ ...prev, [customerId]: true }))
+    setSendError(prev => ({ ...prev, [customerId]: '' }))
     // Save custom intro first
     const meta = reportMeta[customerId]
     if (meta) {
@@ -279,6 +282,9 @@ export default function AdminPage() {
     if (res.ok) {
       setSendSuccess(prev => ({ ...prev, [customerId]: true }))
       await loadReportItems(customerId)
+    } else {
+      const d = await res.json()
+      setSendError(prev => ({ ...prev, [customerId]: d.error ?? 'Failed to send' }))
     }
     setSendingReport(prev => ({ ...prev, [customerId]: false }))
   }
@@ -1200,17 +1206,32 @@ export default function AdminPage() {
                                       {/* RIGHT: Live email preview */}
                                       {recs[c.id] && (
                                         <div style={{ position: 'sticky', top: '1rem' }}>
-                                          <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a', marginBottom: '0.6rem' }}>
-                                            📧 Report Preview
-                                            {(reportItems[c.id] ?? []).length > 0 && (
-                                              <span style={{ marginLeft: '0.5rem', backgroundColor: '#5bb87a', color: '#0a1f14', borderRadius: '999px', padding: '0.05rem 0.5rem', fontSize: '0.7rem' }}>
-                                                {(reportItems[c.id] ?? []).length}
-                                              </span>
-                                            )}
-                                          </p>
+                                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+                                            <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a', margin: 0 }}>
+                                              📧 Report Preview
+                                              {(reportItems[c.id] ?? []).length > 0 && (
+                                                <span style={{ marginLeft: '0.5rem', backgroundColor: '#5bb87a', color: '#0a1f14', borderRadius: '999px', padding: '0.05rem 0.5rem', fontSize: '0.7rem' }}>
+                                                  {(reportItems[c.id] ?? []).length}
+                                                </span>
+                                              )}
+                                            </p>
+                                            <button
+                                              onClick={() => setPreviewExpanded(prev => ({ ...prev, [c.id]: !prev[c.id] }))}
+                                              style={{ fontSize: '0.7rem', color: '#a09890', background: 'none', border: '1px solid #a09890', borderRadius: '999px', padding: '0.15rem 0.6rem', cursor: 'pointer' }}
+                                            >
+                                              {previewExpanded[c.id] ? 'Collapse ↑' : 'Expand ↓'}
+                                            </button>
+                                          </div>
                                           <div style={{ backgroundColor: '#f5f1e9', borderRadius: '0.75rem', overflow: 'hidden', border: '1px solid #d8d0c4' }}>
                                             {/* Preview body */}
-                                            <div style={{ padding: '1rem', maxHeight: '55vh', overflowY: 'auto' }}>
+                                            <div style={{ padding: '1rem', maxHeight: previewExpanded[c.id] ? '80vh' : '55vh', overflowY: 'auto', transition: 'max-height 0.2s' }}>
+                                              {/* Email header */}
+                                              <div style={{ textAlign: 'center', marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px solid #e8e0d5' }}>
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style={{ height: 36 }} />
+                                                <p style={{ fontSize: '0.85rem', fontWeight: 800, color: '#1c1c1c', margin: '0.4rem 0 0.1rem' }}>Your Personalized Curriculum Report</p>
+                                                <p style={{ fontSize: '0.7rem', color: '#a09890', margin: 0 }}>From Mel at Homeschool Connective</p>
+                                              </div>
                                               {/* Intro textarea */}
                                               <textarea
                                                 value={customIntros[c.id] ?? ''}
@@ -1219,6 +1240,7 @@ export default function AdminPage() {
                                                 placeholder="Add a personal intro for the client (optional)..."
                                                 style={{ width: '100%', backgroundColor: '#fff', border: '1px dashed #c8bfb5', borderRadius: '0.5rem', color: '#444', fontSize: '0.78rem', padding: '0.5rem 0.6rem', resize: 'vertical', lineHeight: '1.6', fontFamily: 'Georgia, serif', marginBottom: '0.75rem', boxSizing: 'border-box' }}
                                               />
+                                              <p style={{ fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#ed7c5a', marginBottom: '0.5rem' }}>My Top Picks for Your Family</p>
                                               {(reportItems[c.id] ?? []).length === 0 ? (
                                                 <p style={{ color: '#a09890', fontSize: '0.8rem', fontStyle: 'italic', textAlign: 'center', padding: '1rem 0' }}>
                                                   Click &ldquo;+ Add&rdquo; on any recommendation →
@@ -1255,19 +1277,32 @@ export default function AdminPage() {
                                                   })}
                                                 </div>
                                               )}
+                                              {/* Email footer */}
+                                              <div style={{ marginTop: '1rem', paddingTop: '0.75rem', borderTop: '1px solid #e8e0d5' }}>
+                                                <p style={{ fontSize: '0.72rem', color: '#a09890', lineHeight: 1.6, margin: '0 0 0.2rem' }}>Questions about any of these? Just reply to this email — I&apos;m happy to talk through them with you!</p>
+                                                <p style={{ fontSize: '0.72rem', color: '#a09890', margin: '0 0 0.1rem' }}>— Mel</p>
+                                                <p style={{ fontSize: '0.65rem', color: '#c8bfb5', margin: 0 }}>consulting@homeschoolconnective.com</p>
+                                              </div>
                                             </div>
                                             {/* Send bar */}
-                                            <div style={{ borderTop: '1px solid #d8d0c4', padding: '0.75rem 1rem', backgroundColor: '#ede9e1', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                              {reportMeta[c.id]?.sent_at && (
-                                                <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700, marginRight: 'auto' }}>✓ Sent {new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString()}</span>
+                                            <div style={{ borderTop: '1px solid #d8d0c4', padding: '0.75rem 1rem', backgroundColor: '#ede9e1' }}>
+                                              {sendError[c.id] && (
+                                                <p style={{ fontSize: '0.72rem', color: '#c0392b', fontWeight: 700, marginBottom: '0.5rem' }}>⚠ {sendError[c.id]}</p>
                                               )}
-                                              <button
-                                                onClick={() => sendReport(c.id, c.email)}
-                                                disabled={sendingReport[c.id] || (reportItems[c.id] ?? []).length === 0}
-                                                style={{ flex: 1, fontSize: '0.8rem', fontWeight: 700, padding: '0.5rem 0.75rem', borderRadius: '999px', border: 'none', backgroundColor: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? '#c8bfb5' : '#5bb87a', color: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? '#888' : '#0a1f14', cursor: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? 'default' : 'pointer' }}
-                                              >
-                                                {sendingReport[c.id] ? 'Sending…' : sendSuccess[c.id] ? '✓ Sent!' : `Send to ${c.email.split('@')[0]}`}
-                                              </button>
+                                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                                {(sendSuccess[c.id] || reportMeta[c.id]?.sent_at) && (
+                                                  <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700, marginRight: 'auto' }}>
+                                                    ✓ Sent {reportMeta[c.id]?.sent_at ? new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString() : 'just now'}
+                                                  </span>
+                                                )}
+                                                <button
+                                                  onClick={() => sendReport(c.id, c.email)}
+                                                  disabled={sendingReport[c.id] || (reportItems[c.id] ?? []).length === 0}
+                                                  style={{ flex: 1, fontSize: '0.8rem', fontWeight: 700, padding: '0.5rem 0.75rem', borderRadius: '999px', border: 'none', backgroundColor: sendSuccess[c.id] || reportMeta[c.id]?.sent_at ? '#2a6e45' : (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? '#c8bfb5' : '#5bb87a', color: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? '#888' : '#fff', cursor: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? 'default' : 'pointer' }}
+                                                >
+                                                  {sendingReport[c.id] ? 'Sending…' : sendSuccess[c.id] || reportMeta[c.id]?.sent_at ? '✓ Sent — Send Again?' : `Send to ${c.email.split('@')[0]}`}
+                                                </button>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
