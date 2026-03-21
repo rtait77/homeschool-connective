@@ -82,29 +82,21 @@ export async function POST(req: NextRequest) {
     ? `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;white-space:pre-line;">${report.custom_intro.replace(/\n/g, '<br>')}</p>`
     : `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;">Hi! I've put together your personalized curriculum recommendations based on your intake form. I hope these are a great fit for your family!</p>`
 
-  const screenLabel = (val: string) => {
-    if (val === 'yes') return '🖥 Screen-based'
-    if (val === 'optional') return '🖥 Screen optional'
-    return '📚 No screen'
-  }
-
   const itemsHtml = items.map((item, idx) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const r = item.resources as any
     const isChristianLite = r?.religious_pref === 'christian_lite'
+    const subtext = [
+      r?.price_range,
+      isChristianLite ? 'Note: contains light faith references' : null,
+    ].filter(Boolean).join(' · ')
     return `
       <div style="margin-bottom:20px;padding:20px;background:#fff;border-radius:12px;border:1px solid #e8e0d5;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
           <span style="font-size:13px;font-weight:800;color:#55b6ca;min-width:24px;">#${idx + 1}</span>
           <div style="flex:1;">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-              <span style="font-size:17px;font-weight:800;color:#1c1c1c;">${r?.name ?? 'Resource'}</span>
-              ${isChristianLite ? '<span style="font-size:12px;font-weight:700;background:#fff8e1;color:#b45309;padding:2px 10px;border-radius:999px;border:1px solid #f0c040;">⚠️ Contains light faith references</span>' : ''}
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <span style="font-size:12px;font-weight:700;background:#f5f1e9;color:#5c5c5c;padding:2px 10px;border-radius:999px;">${r?.price_range ?? ''}</span>
-              <span style="font-size:12px;font-weight:700;background:#f5f1e9;color:#5c5c5c;padding:2px 10px;border-radius:999px;">${screenLabel(r?.requires_screen ?? '')}</span>
-            </div>
+            <p style="font-size:17px;font-weight:800;color:#1c1c1c;margin:0 0 4px;">${r?.name ?? 'Resource'}</p>
+            ${subtext ? `<p style="font-size:12px;color:#a09890;margin:0 0 10px;">${subtext}</p>` : '<p style="margin:0 0 10px;"></p>'}
             <p style="font-size:15px;line-height:1.6;color:#444;margin:0;">${item.reason}</p>
             ${r?.url ? `<a href="${r.url}" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:700;color:#ed7c5a;text-decoration:none;">Learn more →</a>` : ''}
           </div>
