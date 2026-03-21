@@ -1056,6 +1056,11 @@ export default function AdminPage() {
                             </span>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '0.8rem', color: '#a09890' }}>
+                            {(reportMeta[c.id]?.sent_at || sendSuccess[c.id]) && (
+                              <span style={{ color: '#5bb87a', fontWeight: 700 }}>
+                                ✓ Report sent {reportMeta[c.id]?.sent_at ? new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'just now'}
+                              </span>
+                            )}
                             <span>Paid {new Date(c.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                             <span>{isExpanded ? '▲' : '▼'}</span>
                           </div>
