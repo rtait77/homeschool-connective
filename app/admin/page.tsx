@@ -1445,14 +1445,14 @@ export default function AdminPage() {
 
           {/* Resources list */}
           {resources && !addingResource && !editingResource && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div style={{ backgroundColor: '#24282b', borderRadius: '1rem', border: '1px solid #3d4248', overflow: 'hidden' }}>
               {resources
                 .filter(r => !resourceSearch || r.name.toLowerCase().includes(resourceSearch.toLowerCase()) || r.subjects?.join(' ').toLowerCase().includes(resourceSearch.toLowerCase()))
-                .map(r => (
-                  <div key={r.id} style={{ backgroundColor: '#24282b', borderRadius: '0.875rem', padding: '0.875rem 1.1rem', border: '1px solid #3d4248' }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                .map((r, i, arr) => (
+                  <div key={r.id} style={{ padding: '0.875rem 1.1rem', borderBottom: i < arr.length - 1 ? '1px solid #3d4248' : 'none' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.3rem' }}>
                           <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#e8e0d5' }}>{r.name}</span>
                           <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '1px 8px', borderRadius: 999, backgroundColor: r.religious_pref === 'christian' ? '#3a1a1a' : r.religious_pref === 'christian_lite' ? '#3a2a10' : r.religious_pref === 'neutral' ? '#2a2e32' : '#1a3a2a', color: r.religious_pref === 'christian' ? '#f87171' : r.religious_pref === 'christian_lite' ? '#f0c040' : r.religious_pref === 'neutral' ? '#a09890' : '#5bb87a' }}>{r.religious_pref}</span>
                           <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', padding: '1px 8px', borderRadius: 999, backgroundColor: '#2e3338' }}>{r.price_range}</span>
