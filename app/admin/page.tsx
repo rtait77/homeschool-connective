@@ -127,8 +127,76 @@ export default function AdminPage() {
     religious_pref: string
     score: number
     matched_tag_count: number
+    matched_tags: string[]
     christian_lite_warning: boolean
     reason: string
+  }
+
+  const TAG_LABELS: Record<string, string> = {
+    dyslexia: 'Great for learners with dyslexia',
+    ADHD: 'Works well for kids with ADHD',
+    gentle_pacing: 'Gentle, no-pressure pace',
+    step_by_step: 'Breaks concepts into small, manageable steps',
+    encouraging_format: 'Warm, encouraging format — builds confidence',
+    mastery_based: 'Mastery-based — move forward when ready, not on a timer',
+    no_time_pressure: 'No time pressure',
+    hands_on: 'Hands-on and tactile',
+    kinesthetic: 'Great for kids who learn by doing and moving',
+    game_based: 'Turns learning into a game',
+    visual_learner: 'Highly visual',
+    auditory_learner: 'Works well for auditory learners',
+    discussion_based: 'Built around conversation and discussion',
+    read_aloud: 'Designed to be read aloud together',
+    literature_based: 'Uses real books and stories',
+    self_paced: 'Fully self-paced',
+    independent_learner: 'Can run independently with minimal parent involvement',
+    teacher_led: 'Teacher-led — parent stays actively involved',
+    low_prep: 'Very little prep — open and go',
+    structured: 'Clear structure and predictable daily plan',
+    flexible_schedule: 'Fits a flexible or irregular schedule',
+    short_lessons: 'Short lessons — great for short attention spans',
+    minimal_time: 'Works well in a shorter school day',
+    multi_child_friendly: 'Works across multiple grade levels at once',
+    gifted: 'Well-suited for advanced or gifted learners',
+    interest_led: "Follows the child's natural interests",
+    project_based: 'Project-based and exploratory',
+    no_screen: 'Completely screen-free',
+    movement_friendly: 'Works well for kids who need to move',
+    short_attention: 'Designed for shorter attention spans',
+    reluctant_writer: 'Great for reluctant or resistant writers',
+    struggling_reader: 'Specifically designed for struggling readers',
+    struggling_spelling: 'Highly effective for spelling struggles',
+    early_reading: 'Designed for early readers',
+    pre_reading: 'Perfect for pre-reading foundations',
+    stem: 'Covers STEM through hands-on activities',
+    video_friendly: 'Includes video instruction',
+    teacher_intensive: 'Rewards significant parent involvement',
+    full_week_ok: 'Works with a full 5-day school week',
+    spiral_approach: 'Spiral approach — constantly revisits and reinforces past concepts',
+    screen_optional: 'Screen use is optional',
+    requires_screen: 'Screen-based',
+    advanced_reading: 'For advanced or above-grade-level readers',
+    grade_level_reading: 'For on-grade-level readers',
+    developing_reading: 'For developing readers',
+    early_writing: 'For early-stage writers',
+    developing_writing: 'For developing writers',
+    advanced_writing: 'For advanced writers',
+    early_spelling: 'For early-stage spelling',
+    christian: 'Faith-integrated content',
+    christian_lite: 'Light faith references (widely used by secular families)',
+    neutral: 'Avoids religious content entirely',
+    secular: 'Secular — no religious content',
+    sensory_friendly: 'Sensory-friendly',
+    child_led: 'Child-led learning',
+    low_structure: 'Low structure — relaxed and flexible approach',
+    math: 'Matches math need',
+    science: 'Matches science need',
+    history: 'Matches history need',
+    reading: 'Matches reading need',
+    writing: 'Matches writing need',
+    spelling: 'Matches spelling need',
+    language_arts: 'Matches language arts need',
+    grammar: 'Matches grammar need',
   }
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
   const [consultingLoading, setConsultingLoading] = useState(false)
@@ -145,6 +213,7 @@ export default function AdminPage() {
   const [sendingReport, setSendingReport] = useState<Record<string, boolean>>({})
   const [sendSuccess, setSendSuccess] = useState<Record<string, boolean>>({})
   const [previewCustomer, setPreviewCustomer] = useState<string | null>(null)
+  const [tagPopup, setTagPopup] = useState<{ name: string; tags: string[] } | null>(null)
 
   async function loadReportItems(customerId: string) {
     const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
@@ -477,6 +546,40 @@ export default function AdminPage() {
                 <p style={{ fontSize: 13, color: '#888' }}>— Mel</p>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tag Popup */}
+      {tagPopup && (
+        <div
+          onClick={() => setTagPopup(null)}
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ backgroundColor: '#1e2126', borderRadius: 14, padding: '24px 28px', maxWidth: 480, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,0.5)', border: '1px solid #3d4248' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <div>
+                <p style={{ fontSize: '0.7rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Matched Tags</p>
+                <p style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.95rem' }}>{tagPopup.name}</p>
+              </div>
+              <button onClick={() => setTagPopup(null)} style={{ color: '#a09890', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1, marginLeft: 12 }}>✕</button>
+            </div>
+            {tagPopup.tags.length === 0 ? (
+              <p style={{ color: '#a09890', fontSize: '0.85rem', fontStyle: 'italic' }}>No direct tag matches — scored from subject boosts or profile signals.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {tagPopup.tags.map(tag => (
+                  <div key={tag} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2a3a4a', color: '#55b6ca', padding: '2px 8px', borderRadius: 999, flexShrink: 0, marginTop: 1 }}>{tag}</span>
+                    <span style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: 1.5 }}>{TAG_LABELS[tag] ?? tag}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p style={{ fontSize: '0.75rem', color: '#5c6068', marginTop: 16 }}>These tags came from the family&apos;s intake form answers and matched this resource&apos;s tag list.</p>
           </div>
         </div>
       )}
@@ -1044,7 +1147,7 @@ export default function AdminPage() {
                                                   <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: rec.requires_screen === 'yes' ? '#7dd3fc' : rec.requires_screen === 'optional' ? '#86efac' : '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>
                                                     {rec.requires_screen === 'yes' ? '🖥 screen' : rec.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}
                                                   </span>
-                                                  <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>{rec.matched_tag_count} tags matched</span>
+                                                  <button onClick={() => setTagPopup({ name: rec.name, tags: rec.matched_tags ?? [] })} style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#55b6ca', padding: '0.15rem 0.6rem', borderRadius: '999px', border: 'none', cursor: 'pointer', textDecoration: 'underline dotted' }}>{rec.matched_tag_count} tags matched ⓘ</button>
                                                 </div>
                                               </div>
                                               <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
