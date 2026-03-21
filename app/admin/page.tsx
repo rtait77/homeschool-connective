@@ -1126,156 +1126,153 @@ export default function AdminPage() {
                                       </div>
                                     </div>
 
-                                    {/* REPORT BUILDER */}
-                                    {reportItems[c.id] !== undefined && (
-                                      <div style={{ backgroundColor: '#12201a', borderRadius: '1rem', padding: '1.25rem 1.5rem', border: '2px solid #2a4a35' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                            <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a', margin: 0 }}>
-                                              📋 Report
-                                            </p>
-                                            <span style={{ fontSize: '0.8rem', fontWeight: 800, backgroundColor: (reportItems[c.id] ?? []).length > 0 ? '#5bb87a' : '#3d4248', color: (reportItems[c.id] ?? []).length > 0 ? '#0a1f14' : '#a09890', padding: '0.1rem 0.6rem', borderRadius: '999px' }}>
-                                              {(reportItems[c.id] ?? []).length} item{(reportItems[c.id] ?? []).length !== 1 ? 's' : ''}
-                                            </span>
-                                            {reportMeta[c.id]?.sent_at && (
-                                              <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700 }}>
-                                                ✓ Sent {new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString()}
+                                    {/* RECOMMENDATIONS + LIVE PREVIEW side by side */}
+                                    <div style={{ display: 'grid', gridTemplateColumns: recs[c.id] ? '1fr 320px' : '1fr', gap: '1.5rem', alignItems: 'start' }}>
+
+                                      {/* LEFT: Recommendations */}
+                                      <div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                                          <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a' }}>Curriculum Recommendations</p>
+                                          <button
+                                            onClick={() => generateRecs(c.id)}
+                                            disabled={recsLoading[c.id]}
+                                            style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.35rem 1rem', borderRadius: '999px', border: '2px solid #ed7c5a', color: recsLoading[c.id] ? '#a09890' : '#ed7c5a', backgroundColor: 'transparent', cursor: recsLoading[c.id] ? 'default' : 'pointer' }}
+                                          >
+                                            {recsLoading[c.id] ? 'Generating...' : recs[c.id] ? 'Regenerate' : 'Generate Recommendations'}
+                                          </button>
+                                        </div>
+                                        {recsError[c.id] && (
+                                          <p style={{ color: '#f87171', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{recsError[c.id]}</p>
+                                        )}
+                                        {recs[c.id] && (
+                                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                            {recs[c.id].map((rec, idx) => (
+                                              <div key={rec.resource_id} style={{ backgroundColor: '#1a1c1e', borderRadius: '0.75rem', padding: '1rem 1.25rem', border: `1px solid ${(reportItems[c.id] ?? []).find(i => i.resource_id === rec.resource_id) ? '#2a4a35' : rec.christian_lite_warning ? '#7a5a10' : '#3d4248'}` }}>
+                                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
+                                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem' }}>#{idx + 1}</span>
+                                                    <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.95rem' }}>{rec.name}</span>
+                                                    {rec.christian_lite_warning && (
+                                                      <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#3a2a10', color: '#f0c040', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>⚠️ christian lite</span>
+                                                    )}
+                                                  </div>
+                                                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>{rec.price_range}</span>
+                                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: rec.requires_screen === 'yes' ? '#7dd3fc' : rec.requires_screen === 'optional' ? '#86efac' : '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>
+                                                      {rec.requires_screen === 'yes' ? '🖥 screen' : rec.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}
+                                                    </span>
+                                                    <button onClick={() => setTagPopup({ name: rec.name, tags: rec.matched_tags ?? [] })} style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#55b6ca', padding: '0.15rem 0.6rem', borderRadius: '999px', border: 'none', cursor: 'pointer', textDecoration: 'underline dotted' }}>{rec.matched_tag_count} tags matched ⓘ</button>
+                                                  </div>
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                                                  {rec.subjects?.map(sub => (
+                                                    <span key={sub} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2a3a2e', color: '#5bb87a', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{sub}</span>
+                                                  ))}
+                                                  {rec.grade_levels?.map(g => (
+                                                    <span key={g} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{g}</span>
+                                                  ))}
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginTop: '0.25rem' }}>
+                                                  <p style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: '1.6', flex: 1 }}>{rec.reason}</p>
+                                                  {(() => {
+                                                    const inReport = (reportItems[c.id] ?? []).find(i => i.resource_id === rec.resource_id)
+                                                    const loading = reportLoading[rec.resource_id]
+                                                    return inReport ? (
+                                                      <button
+                                                        onClick={() => removeFromReport(c.id, inReport.id)}
+                                                        style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #5bb87a', color: '#5bb87a', backgroundColor: '#1a3a2a', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                                      >✓ Added</button>
+                                                    ) : (
+                                                      <button
+                                                        onClick={() => addToReport(c.id, rec)}
+                                                        disabled={loading}
+                                                        style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #55b6ca', color: loading ? '#a09890' : '#55b6ca', backgroundColor: 'transparent', cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap' }}
+                                                      >{loading ? '...' : '+ Add'}</button>
+                                                    )
+                                                  })()}
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      {/* RIGHT: Live email preview */}
+                                      {recs[c.id] && (
+                                        <div style={{ position: 'sticky', top: '1rem' }}>
+                                          <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a', marginBottom: '0.6rem' }}>
+                                            📧 Report Preview
+                                            {(reportItems[c.id] ?? []).length > 0 && (
+                                              <span style={{ marginLeft: '0.5rem', backgroundColor: '#5bb87a', color: '#0a1f14', borderRadius: '999px', padding: '0.05rem 0.5rem', fontSize: '0.7rem' }}>
+                                                {(reportItems[c.id] ?? []).length}
                                               </span>
                                             )}
-                                          </div>
-                                          {(reportItems[c.id] ?? []).length > 0 && (
-                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                              <button
-                                                onClick={() => setPreviewCustomer(c.id)}
-                                                style={{ fontSize: '0.78rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '1px solid #55b6ca', color: '#55b6ca', backgroundColor: 'transparent', cursor: 'pointer' }}
-                                              >Preview</button>
-                                              <button
-                                                onClick={() => sendReport(c.id, c.email)}
-                                                disabled={sendingReport[c.id]}
-                                                style={{ fontSize: '0.78rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: 'none', backgroundColor: sendingReport[c.id] ? '#3d4248' : '#5bb87a', color: sendingReport[c.id] ? '#a09890' : '#0a1f14', cursor: sendingReport[c.id] ? 'default' : 'pointer' }}
-                                              >{sendingReport[c.id] ? 'Sending…' : 'Send Report'}</button>
-                                              {sendSuccess[c.id] && <span style={{ fontSize: '0.78rem', color: '#5bb87a', fontWeight: 700, alignSelf: 'center' }}>✓ Sent!</span>}
-                                            </div>
-                                          )}
-                                        </div>
-
-                                        {(reportItems[c.id] ?? []).length === 0 ? (
-                                          <p style={{ color: '#5a7a65', fontSize: '0.85rem', fontStyle: 'italic', margin: 0 }}>
-                                            No items yet — click &ldquo;+ Add to Report&rdquo; on any recommendation below.
                                           </p>
-                                        ) : (
-                                          <>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
-                                              {(reportItems[c.id] ?? []).map((item, idx) => {
-                                                const name = item.resources?.name
-                                                  ?? recs[c.id]?.find(r => r.resource_id === item.resource_id)?.name
-                                                  ?? item.resource_id
-                                                return (
-                                                  <div key={item.id} style={{ backgroundColor: '#1a2e22', borderRadius: '0.75rem', padding: '0.75rem 1rem', border: '1px solid #2a4a35', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5bb87a', minWidth: '1.25rem', paddingTop: '0.15rem' }}>#{idx + 1}</span>
-                                                    <div style={{ flex: 1 }}>
-                                                      <p style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.9rem', marginBottom: '0.35rem' }}>{name}</p>
-                                                      <textarea
-                                                        defaultValue={item.reason}
-                                                        onBlur={(e) => updateItemReason(c.id, item.id, e.target.value)}
-                                                        rows={2}
-                                                        placeholder="Reason for recommending this..."
-                                                        style={{ width: '100%', backgroundColor: '#0f1a13', border: '1px solid #2a4a35', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.82rem', padding: '0.4rem 0.6rem', resize: 'vertical', lineHeight: '1.5', fontFamily: 'inherit', boxSizing: 'border-box' }}
-                                                      />
-                                                    </div>
-                                                    <button
-                                                      onClick={() => removeFromReport(c.id, item.id)}
-                                                      style={{ flexShrink: 0, fontSize: '1rem', color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', paddingTop: '0.05rem', lineHeight: 1 }}
-                                                    >✕</button>
-                                                  </div>
-                                                )
-                                              })}
-                                            </div>
-                                            <div style={{ marginBottom: '0.75rem' }}>
-                                              <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#5a7a65', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>Custom Intro (optional)</p>
+                                          <div style={{ backgroundColor: '#f5f1e9', borderRadius: '0.75rem', overflow: 'hidden', border: '1px solid #d8d0c4' }}>
+                                            {/* Preview body */}
+                                            <div style={{ padding: '1rem', maxHeight: '55vh', overflowY: 'auto' }}>
+                                              {/* Intro textarea */}
                                               <textarea
                                                 value={customIntros[c.id] ?? ''}
                                                 onChange={(e) => setCustomIntros(prev => ({ ...prev, [c.id]: e.target.value }))}
                                                 rows={3}
-                                                placeholder="Hi! Based on your intake form, here are my top picks for your family..."
-                                                style={{ width: '100%', backgroundColor: '#0f1a13', border: '1px solid #2a4a35', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.85rem', padding: '0.5rem 0.75rem', resize: 'vertical', lineHeight: '1.6', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                                                placeholder="Add a personal intro for the client (optional)..."
+                                                style={{ width: '100%', backgroundColor: '#fff', border: '1px dashed #c8bfb5', borderRadius: '0.5rem', color: '#444', fontSize: '0.78rem', padding: '0.5rem 0.6rem', resize: 'vertical', lineHeight: '1.6', fontFamily: 'Georgia, serif', marginBottom: '0.75rem', boxSizing: 'border-box' }}
                                               />
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    )}
-
-                                    {/* RECOMMENDATIONS */}
-                                    <div>
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
-                                        <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a' }}>Curriculum Recommendations</p>
-                                        <button
-                                          onClick={() => generateRecs(c.id)}
-                                          disabled={recsLoading[c.id]}
-                                          style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.35rem 1rem', borderRadius: '999px', border: '2px solid #ed7c5a', color: recsLoading[c.id] ? '#a09890' : '#ed7c5a', backgroundColor: 'transparent', cursor: recsLoading[c.id] ? 'default' : 'pointer' }}
-                                        >
-                                          {recsLoading[c.id] ? 'Generating...' : recs[c.id] ? 'Regenerate' : 'Generate Recommendations'}
-                                        </button>
-                                      </div>
-                                      {recsError[c.id] && (
-                                        <p style={{ color: '#f87171', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{recsError[c.id]}</p>
-                                      )}
-                                      {recs[c.id] && (
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                                          {recs[c.id].map((rec, idx) => (
-                                            <div key={rec.resource_id} style={{ backgroundColor: '#1a1c1e', borderRadius: '0.75rem', padding: '1rem 1.25rem', border: `1px solid ${rec.christian_lite_warning ? '#7a5a10' : '#3d4248'}` }}>
-                                              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
-                                                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem' }}>#{idx + 1}</span>
-                                                  <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.95rem' }}>{rec.name}</span>
-                                                  {rec.christian_lite_warning && (
-                                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#3a2a10', color: '#f0c040', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>⚠️ christian lite</span>
-                                                  )}
+                                              {(reportItems[c.id] ?? []).length === 0 ? (
+                                                <p style={{ color: '#a09890', fontSize: '0.8rem', fontStyle: 'italic', textAlign: 'center', padding: '1rem 0' }}>
+                                                  Click &ldquo;+ Add&rdquo; on any recommendation →
+                                                </p>
+                                              ) : (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                                  {(reportItems[c.id] ?? []).map((item, idx) => {
+                                                    const name = item.resources?.name ?? recs[c.id]?.find(r => r.resource_id === item.resource_id)?.name ?? '—'
+                                                    const screen = item.resources?.requires_screen
+                                                    return (
+                                                      <div key={item.id} style={{ backgroundColor: '#fff', borderRadius: '0.5rem', padding: '0.65rem 0.75rem', border: '1px solid #e8e0d5' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
+                                                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                            <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#55b6ca' }}>#{idx + 1}</span>
+                                                            <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#1c1c1c' }}>{name}</span>
+                                                          </div>
+                                                          <button onClick={() => removeFromReport(c.id, item.id)} style={{ fontSize: '0.75rem', color: '#ccc', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>✕</button>
+                                                        </div>
+                                                        {item.resources?.price_range && (
+                                                          <div style={{ display: 'flex', gap: '0.3rem', marginBottom: '0.3rem' }}>
+                                                            <span style={{ fontSize: '0.65rem', backgroundColor: '#f5f1e9', color: '#5c5c5c', padding: '1px 6px', borderRadius: 999 }}>{item.resources.price_range}</span>
+                                                            <span style={{ fontSize: '0.65rem', backgroundColor: '#f5f1e9', color: '#5c5c5c', padding: '1px 6px', borderRadius: 999 }}>{screen === 'yes' ? '🖥 screen' : screen === 'optional' ? '🖥 optional' : '📚 no screen'}</span>
+                                                          </div>
+                                                        )}
+                                                        <textarea
+                                                          defaultValue={item.reason}
+                                                          onBlur={(e) => updateItemReason(c.id, item.id, e.target.value)}
+                                                          rows={2}
+                                                          placeholder="Reason..."
+                                                          style={{ width: '100%', backgroundColor: 'transparent', border: 'none', borderTop: '1px dashed #e8e0d5', color: '#444', fontSize: '0.75rem', padding: '0.3rem 0', resize: 'none', lineHeight: '1.5', fontFamily: 'Georgia, serif', boxSizing: 'border-box', marginTop: '0.3rem' }}
+                                                        />
+                                                      </div>
+                                                    )
+                                                  })}
                                                 </div>
-                                                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                                                  <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>{rec.price_range}</span>
-                                                  <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: rec.requires_screen === 'yes' ? '#7dd3fc' : rec.requires_screen === 'optional' ? '#86efac' : '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>
-                                                    {rec.requires_screen === 'yes' ? '🖥 screen' : rec.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}
-                                                  </span>
-                                                  <button onClick={() => setTagPopup({ name: rec.name, tags: rec.matched_tags ?? [] })} style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#55b6ca', padding: '0.15rem 0.6rem', borderRadius: '999px', border: 'none', cursor: 'pointer', textDecoration: 'underline dotted' }}>{rec.matched_tag_count} tags matched ⓘ</button>
-                                                </div>
-                                              </div>
-                                              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                                                {rec.subjects?.map(sub => (
-                                                  <span key={sub} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2a3a2e', color: '#5bb87a', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{sub}</span>
-                                                ))}
-                                                {rec.grade_levels?.map(g => (
-                                                  <span key={g} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{g}</span>
-                                                ))}
-                                              </div>
-                                              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginTop: '0.25rem' }}>
-                                                <p style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: '1.6', flex: 1 }}>{rec.reason}</p>
-                                                {(() => {
-                                                  const inReport = (reportItems[c.id] ?? []).find(i => i.resource_id === rec.resource_id)
-                                                  const loading = reportLoading[rec.resource_id]
-                                                  return inReport ? (
-                                                    <button
-                                                      onClick={() => removeFromReport(c.id, inReport.id)}
-                                                      style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #5bb87a', color: '#5bb87a', backgroundColor: '#1a3a2a', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                                                    >
-                                                      ✓ In Report — Remove
-                                                    </button>
-                                                  ) : (
-                                                    <button
-                                                      onClick={() => addToReport(c.id, rec)}
-                                                      disabled={loading}
-                                                      style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #55b6ca', color: loading ? '#a09890' : '#55b6ca', backgroundColor: 'transparent', cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap' }}
-                                                    >
-                                                      {loading ? 'Adding...' : '+ Add to Report'}
-                                                    </button>
-                                                  )
-                                                })()}
-                                              </div>
+                                              )}
                                             </div>
-                                          ))}
+                                            {/* Send bar */}
+                                            <div style={{ borderTop: '1px solid #d8d0c4', padding: '0.75rem 1rem', backgroundColor: '#ede9e1', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                              {reportMeta[c.id]?.sent_at && (
+                                                <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700, marginRight: 'auto' }}>✓ Sent {new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString()}</span>
+                                              )}
+                                              <button
+                                                onClick={() => sendReport(c.id, c.email)}
+                                                disabled={sendingReport[c.id] || (reportItems[c.id] ?? []).length === 0}
+                                                style={{ flex: 1, fontSize: '0.8rem', fontWeight: 700, padding: '0.5rem 0.75rem', borderRadius: '999px', border: 'none', backgroundColor: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? '#c8bfb5' : '#5bb87a', color: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? '#888' : '#0a1f14', cursor: (reportItems[c.id] ?? []).length === 0 || sendingReport[c.id] ? 'default' : 'pointer' }}
+                                              >
+                                                {sendingReport[c.id] ? 'Sending…' : sendSuccess[c.id] ? '✓ Sent!' : `Send to ${c.email.split('@')[0]}`}
+                                              </button>
+                                            </div>
+                                          </div>
                                         </div>
                                       )}
+
                                     </div>
 
                                     {/* FULL DETAIL SECTIONS */}
