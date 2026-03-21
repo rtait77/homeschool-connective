@@ -345,7 +345,7 @@ export default function IntakePage() {
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
             {!reportSent && (
-              <button onClick={() => setSubmitted(false)} className="text-sm font-bold text-[#ed7c5a] hover:underline whitespace-nowrap cursor-pointer">
+              <button onClick={() => { setSubmitted(false); setError('') }} className="text-sm font-bold text-[#ed7c5a] hover:underline whitespace-nowrap cursor-pointer">
                 Edit &amp; Resubmit
               </button>
             )}
