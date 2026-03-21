@@ -87,7 +87,7 @@ export default function AdminPage() {
   const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay' | 'analytics' | 'consulting'>('overview')
+  const [tab, setTab] = useState<'overview' | 'users' | 'revenue' | 'gameplay' | 'analytics' | 'consulting' | 'resources'>('overview')
 
   const [stats, setStats] = useState<Stats | null>(null)
   const [statsLoading, setStatsLoading] = useState(false)
@@ -144,6 +144,7 @@ export default function AdminPage() {
   const [customIntros, setCustomIntros] = useState<Record<string, string>>({})
   const [sendingReport, setSendingReport] = useState<Record<string, boolean>>({})
   const [sendSuccess, setSendSuccess] = useState<Record<string, boolean>>({})
+  const [previewCustomer, setPreviewCustomer] = useState<string | null>(null)
 
   async function loadReportItems(customerId: string) {
     const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
@@ -239,6 +240,73 @@ export default function AdminPage() {
     recentVisits: { path: string; visited_at: string; user_id: string | null }[]
   } | null>(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
+
+  type Resource = {
+    id: string; name: string; subjects: string[]; grade_levels: string[]
+    price_range: string; requires_screen: string; time_per_lesson: string
+    parent_prep: string; religious_pref: string; match_tags: string[]
+    url: string | null; description: string | null; approved: boolean
+  }
+  const blankResource = (): Omit<Resource, 'id' | 'approved'> => ({
+    name: '', subjects: [], grade_levels: [], price_range: '', requires_screen: 'no',
+    time_per_lesson: '', parent_prep: '', religious_pref: 'secular', match_tags: [],
+    url: '', description: '',
+  })
+  const [resources, setResources] = useState<Resource[] | null>(null)
+  const [resourcesLoading, setResourcesLoading] = useState(false)
+  const [editingResource, setEditingResource] = useState<Resource | null>(null)
+  const [addingResource, setAddingResource] = useState(false)
+  const [newResource, setNewResource] = useState(blankResource())
+  const [resourceSaving, setResourceSaving] = useState(false)
+  const [resourceSearch, setResourceSearch] = useState('')
+
+  async function loadResources() {
+    setResourcesLoading(true)
+    const res = await fetch('/api/admin/resources')
+    if (res.ok) {
+      const data = await res.json()
+      setResources(data.resources)
+    }
+    setResourcesLoading(false)
+  }
+
+  async function saveNewResource() {
+    setResourceSaving(true)
+    const payload = {
+      ...newResource,
+      subjects: typeof newResource.subjects === 'string' ? (newResource.subjects as string).split(',').map(s => s.trim()).filter(Boolean) : newResource.subjects,
+      grade_levels: typeof newResource.grade_levels === 'string' ? (newResource.grade_levels as string).split(',').map(s => s.trim()).filter(Boolean) : newResource.grade_levels,
+      match_tags: typeof newResource.match_tags === 'string' ? (newResource.match_tags as string).split(',').map(s => s.trim()).filter(Boolean) : newResource.match_tags,
+    }
+    const res = await fetch('/api/admin/resources', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    if (res.ok) {
+      setAddingResource(false)
+      setNewResource(blankResource())
+      await loadResources()
+    }
+    setResourceSaving(false)
+  }
+
+  async function saveEditResource() {
+    if (!editingResource) return
+    setResourceSaving(true)
+    const payload = {
+      ...editingResource,
+      subjects: typeof editingResource.subjects === 'string' ? (editingResource.subjects as string).split(',').map(s => s.trim()).filter(Boolean) : editingResource.subjects,
+      grade_levels: typeof editingResource.grade_levels === 'string' ? (editingResource.grade_levels as string).split(',').map(s => s.trim()).filter(Boolean) : editingResource.grade_levels,
+      match_tags: typeof editingResource.match_tags === 'string' ? (editingResource.match_tags as string).split(',').map(s => s.trim()).filter(Boolean) : editingResource.match_tags,
+    }
+    await fetch('/api/admin/resources', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    setEditingResource(null)
+    await loadResources()
+    setResourceSaving(false)
+  }
+
+  async function deleteResource(id: string, name: string) {
+    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return
+    await fetch(`/api/admin/resources?id=${id}`, { method: 'DELETE' })
+    setResources(prev => prev?.filter(r => r.id !== id) ?? null)
+  }
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -346,10 +414,72 @@ export default function AdminPage() {
     { id: 'gameplay', label: 'Gameplay' },
     { id: 'analytics', label: 'Analytics' },
     { id: 'consulting', label: 'Consulting' },
+    { id: 'resources', label: 'Resources' },
   ] as const
+
+  // Preview modal data
+  const previewItems = previewCustomer ? (reportItems[previewCustomer] ?? []) : []
+  const previewIntro = previewCustomer ? (customIntros[previewCustomer] ?? '') : ''
+  const previewClientEmail = previewCustomer ? (consulting?.find(c => c.id === previewCustomer)?.email ?? '') : ''
 
   return (
     <div className="max-w-[1200px] mx-auto px-6 py-10">
+
+      {/* Report Preview Modal */}
+      {previewCustomer && (
+        <div
+          onClick={() => setPreviewCustomer(null)}
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1000, overflowY: 'auto', padding: '40px 16px' }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: 640, margin: '0 auto', backgroundColor: '#f5f1e9', borderRadius: 16, overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.4)' }}
+          >
+            {/* Modal header */}
+            <div style={{ backgroundColor: '#1c1c1c', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Preview — {previewClientEmail}</span>
+              <button onClick={() => setPreviewCustomer(null)} style={{ color: '#a09890', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', lineHeight: 1 }}>✕</button>
+            </div>
+            {/* Email body preview */}
+            <div style={{ padding: '32px 28px' }}>
+              <div style={{ textAlign: 'center', marginBottom: 28 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style={{ height: 48 }} />
+              </div>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1c1c1c', marginBottom: 4 }}>Your Personalized Curriculum Report</h2>
+              <p style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>From Mel at Homeschool Connective</p>
+              <p style={{ fontSize: 15, lineHeight: 1.7, color: '#444', marginBottom: 24, whiteSpace: 'pre-line' }}>
+                {previewIntro || 'Hi! I\'ve put together your personalized curriculum recommendations based on your intake form. I hope these are a great fit for your family!'}
+              </p>
+              <p style={{ fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ed7c5a', marginBottom: 14 }}>My Top Picks for Your Family</p>
+              {previewItems.length === 0 ? (
+                <p style={{ color: '#888', fontStyle: 'italic' }}>No items in report yet.</p>
+              ) : previewItems.map((item, idx) => {
+                const name = item.resources?.name ?? recs[previewCustomer!]?.find(r => r.resource_id === item.resource_id)?.name ?? item.resource_id
+                const screen = item.resources?.requires_screen
+                const screenLabel = screen === 'yes' ? '🖥 Screen-based' : screen === 'optional' ? '🖥 Screen optional' : '📚 No screen'
+                return (
+                  <div key={item.id} style={{ marginBottom: 16, padding: '16px 18px', background: '#fff', borderRadius: 10, border: '1px solid #e8e0d5' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: 12, fontWeight: 800, color: '#55b6ca' }}>#{idx + 1}</span>
+                      <span style={{ fontSize: 16, fontWeight: 800, color: '#1c1c1c' }}>{name}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
+                      {item.resources?.price_range && <span style={{ fontSize: 11, fontWeight: 700, background: '#f5f1e9', color: '#5c5c5c', padding: '2px 8px', borderRadius: 999 }}>{item.resources.price_range}</span>}
+                      <span style={{ fontSize: 11, fontWeight: 700, background: '#f5f1e9', color: '#5c5c5c', padding: '2px 8px', borderRadius: 999 }}>{screenLabel}</span>
+                    </div>
+                    <p style={{ fontSize: 14, lineHeight: 1.6, color: '#444', margin: 0 }}>{item.reason}</p>
+                  </div>
+                )
+              })}
+              <div style={{ marginTop: 28, paddingTop: 20, borderTop: '1px solid #e8e0d5' }}>
+                <p style={{ fontSize: 13, color: '#888', lineHeight: 1.6 }}>Questions about any of these? Just reply to this email — I&apos;m happy to talk through them with you!</p>
+                <p style={{ fontSize: 13, color: '#888' }}>— Mel</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <div className="mb-8">
@@ -362,7 +492,10 @@ export default function AdminPage() {
         {tabs.map(t => (
           <button
             key={t.id}
-            onClick={() => setTab(t.id)}
+            onClick={() => {
+              setTab(t.id)
+              if (t.id === 'resources' && !resources) loadResources()
+            }}
             className={`px-5 py-2.5 text-sm font-bold rounded-t-lg border-b-2 transition-all -mb-px cursor-pointer ${
               tab === t.id
                 ? 'border-[#ed7c5a] text-[#ed7c5a] bg-white'
@@ -1012,7 +1145,13 @@ export default function AdminPage() {
                                               />
                                             </div>
 
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                              <button
+                                                onClick={() => setPreviewCustomer(c.id)}
+                                                style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.25rem', borderRadius: '999px', border: '2px solid #55b6ca', color: '#55b6ca', backgroundColor: 'transparent', cursor: 'pointer' }}
+                                              >
+                                                Preview
+                                              </button>
                                               <button
                                                 onClick={() => sendReport(c.id, c.email)}
                                                 disabled={sendingReport[c.id]}
@@ -1108,6 +1247,158 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* RESOURCES TAB */}
+      {tab === 'resources' && (
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h2 className="text-lg font-extrabold mb-1">Curriculum Resources</h2>
+              <p className="text-sm text-[#5c5c5c]">{resources?.length ?? 0} resources in database</p>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <input
+                value={resourceSearch}
+                onChange={e => setResourceSearch(e.target.value)}
+                placeholder="Search resources..."
+                style={{ padding: '0.45rem 0.85rem', borderRadius: 999, border: '1px solid #e2ddd5', fontSize: '0.85rem', width: 200 }}
+              />
+              <button
+                onClick={() => { setAddingResource(true); setNewResource(blankResource()) }}
+                style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.45rem 1.2rem', borderRadius: 999, border: 'none', backgroundColor: '#ed7c5a', color: '#fff', cursor: 'pointer' }}
+              >
+                + Add Resource
+              </button>
+            </div>
+          </div>
+
+          {resourcesLoading && <p className="text-sm text-[#5c5c5c]">Loading resources...</p>}
+
+          {/* Add Resource form */}
+          {addingResource && (
+            <ResourceForm
+              data={newResource}
+              onChange={v => setNewResource(prev => ({ ...prev, ...v }))}
+              onSave={saveNewResource}
+              onCancel={() => setAddingResource(false)}
+              saving={resourceSaving}
+              title="Add New Resource"
+            />
+          )}
+
+          {/* Edit Resource form */}
+          {editingResource && (
+            <ResourceForm
+              data={editingResource}
+              onChange={v => setEditingResource(prev => prev ? { ...prev, ...v } : null)}
+              onSave={saveEditResource}
+              onCancel={() => setEditingResource(null)}
+              saving={resourceSaving}
+              title={`Edit: ${editingResource.name}`}
+            />
+          )}
+
+          {/* Resources list */}
+          {resources && !addingResource && !editingResource && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {resources
+                .filter(r => !resourceSearch || r.name.toLowerCase().includes(resourceSearch.toLowerCase()) || r.subjects?.join(' ').toLowerCase().includes(resourceSearch.toLowerCase()))
+                .map(r => (
+                  <div key={r.id} className="bg-white rounded-2xl p-4 border border-[#e2ddd5]" style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
+                          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c' }}>{r.name}</span>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px', borderRadius: 999, backgroundColor: r.religious_pref === 'christian' ? '#fde8e8' : r.religious_pref === 'christian_lite' ? '#fff8e1' : r.religious_pref === 'neutral' ? '#f3f4f6' : '#e8f5ef', color: r.religious_pref === 'christian' ? '#991b1b' : r.religious_pref === 'christian_lite' ? '#b45309' : r.religious_pref === 'neutral' ? '#6b7280' : '#1a7a52' }}>{r.religious_pref}</span>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', padding: '2px 8px', borderRadius: 999, backgroundColor: '#f5f1e9' }}>{r.price_range}</span>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', padding: '2px 8px', borderRadius: 999, backgroundColor: '#f5f1e9' }}>{r.requires_screen === 'yes' ? '🖥 screen' : r.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                          {r.subjects?.map(s => <span key={s} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#e8f5ef', color: '#1a7a52', padding: '1px 7px', borderRadius: 999 }}>{s}</span>)}
+                          {r.grade_levels?.map(g => <span key={g} style={{ fontSize: '0.7rem', color: '#5c5c5c', padding: '1px 7px', borderRadius: 999, backgroundColor: '#f5f1e9' }}>{g}</span>)}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                        <button onClick={() => setEditingResource(r)} style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: 999, border: '1px solid #e2ddd5', backgroundColor: 'transparent', cursor: 'pointer', color: '#5c5c5c' }}>Edit</button>
+                        <button onClick={() => deleteResource(r.id, r.name)} style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: 999, border: '1px solid #fca5a5', backgroundColor: 'transparent', cursor: 'pointer', color: '#991b1b' }}>Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          )}
+        </div>
+      )}
+
+    </div>
+  )
+}
+
+function ResourceForm({
+  data, onChange, onSave, onCancel, saving, title,
+}: {
+  data: Record<string, unknown>
+  onChange: (v: Record<string, unknown>) => void
+  onSave: () => void
+  onCancel: () => void
+  saving: boolean
+  title: string
+}) {
+  const field = (label: string, key: string, placeholder?: string) => (
+    <div>
+      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }}>{label}</label>
+      <input
+        value={Array.isArray(data[key]) ? (data[key] as string[]).join(', ') : (data[key] as string) ?? ''}
+        onChange={e => onChange({ [key]: e.target.value })}
+        placeholder={placeholder}
+        style={{ width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #e2ddd5', borderRadius: 8, fontSize: '0.9rem', boxSizing: 'border-box' as const }}
+      />
+    </div>
+  )
+  const select = (label: string, key: string, options: string[]) => (
+    <div>
+      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }}>{label}</label>
+      <select
+        value={(data[key] as string) ?? ''}
+        onChange={e => onChange({ [key]: e.target.value })}
+        style={{ width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #e2ddd5', borderRadius: 8, fontSize: '0.9rem' }}
+      >
+        {options.map(o => <option key={o} value={o}>{o}</option>)}
+      </select>
+    </div>
+  )
+  return (
+    <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5] mb-6" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+      <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1.25rem', color: '#1c1c1c' }}>{title}</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.85rem', marginBottom: '1.25rem' }}>
+        {field('Name *', 'name', 'e.g. Khan Academy')}
+        {field('Subjects (comma-separated)', 'subjects', 'math, science')}
+        {field('Grade Levels (comma-separated)', 'grade_levels', 'K–5, grades 3+')}
+        {field('Price Range', 'price_range', 'Free, $, $$, $$$')}
+        {select('Requires Screen', 'requires_screen', ['no', 'optional', 'yes'])}
+        {field('Time per Lesson', 'time_per_lesson', '20–30 min/day')}
+        {field('Parent Prep', 'parent_prep', 'minimal, moderate, significant')}
+        {select('Religious Preference', 'religious_pref', ['secular', 'neutral', 'christian_lite', 'christian'])}
+        {field('Match Tags (comma-separated)', 'match_tags', 'math, structured, mastery_based')}
+        {field('URL', 'url', 'https://...')}
+      </div>
+      <div style={{ marginBottom: '1.25rem' }}>
+        <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }}>Description</label>
+        <textarea
+          value={(data['description'] as string) ?? ''}
+          onChange={e => onChange({ description: e.target.value })}
+          rows={2}
+          style={{ width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #e2ddd5', borderRadius: 8, fontSize: '0.9rem', resize: 'vertical', boxSizing: 'border-box' as const }}
+        />
+      </div>
+      <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <button onClick={onSave} disabled={saving} style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.5rem', borderRadius: 999, border: 'none', backgroundColor: saving ? '#ccc' : '#ed7c5a', color: '#fff', cursor: saving ? 'default' : 'pointer' }}>
+          {saving ? 'Saving...' : 'Save Resource'}
+        </button>
+        <button onClick={onCancel} style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.25rem', borderRadius: 999, border: '1px solid #e2ddd5', backgroundColor: 'transparent', cursor: 'pointer', color: '#5c5c5c' }}>
+          Cancel
+        </button>
+      </div>
     </div>
   )
 }
