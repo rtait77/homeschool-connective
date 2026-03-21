@@ -441,7 +441,13 @@ export default function AdminPage() {
     setConsultingLoading(true)
     fetch('/api/admin/consulting')
       .then(r => r.json())
-      .then(data => { setConsulting(data.customers ?? []); setConsultingLoading(false) })
+      .then(data => {
+        const customers = data.customers ?? []
+        setConsulting(customers)
+        setConsultingLoading(false)
+        // Load report meta for all customers so sent status shows on collapsed rows
+        customers.forEach((c: { id: string }) => loadReportItems(c.id))
+      })
       .catch(() => setConsultingLoading(false))
   }, [isAdmin, tab])
 
