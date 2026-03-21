@@ -521,7 +521,7 @@ export default function AdminPage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style={{ height: 48 }} />
               </div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1c1c1c', marginBottom: 4 }}>Your Personalized Curriculum Report</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1c1c1c', marginBottom: 4 }}>Your Personalized Recommendations</h2>
               <p style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>From Mel at Homeschool Connective</p>
               <p style={{ fontSize: 15, lineHeight: 1.7, color: '#444', marginBottom: 24, whiteSpace: 'pre-line' }}>
                 {previewIntro || 'Hi! I\'ve put together your personalized curriculum recommendations based on your intake form. I hope these are a great fit for your family!'}
@@ -1234,7 +1234,7 @@ export default function AdminPage() {
                                               <div style={{ textAlign: 'center', marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px solid #e8e0d5' }}>
                                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style={{ height: 36 }} />
-                                                <p style={{ fontSize: '0.85rem', fontWeight: 800, color: '#1c1c1c', margin: '0.4rem 0 0.1rem' }}>Your Personalized Curriculum Report</p>
+                                                <p style={{ fontSize: '0.85rem', fontWeight: 800, color: '#1c1c1c', margin: '0.4rem 0 0.1rem' }}>Your Personalized Recommendations</p>
                                                 <p style={{ fontSize: '0.7rem', color: '#a09890', margin: 0 }}>From Mel at Homeschool Connective</p>
                                               </div>
                                               {/* Intro textarea */}
