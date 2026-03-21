@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
   const { data: items } = await admin
     .from('report_items')
-    .select('id, resource_id, reason, sort_order')
+    .select('id, resource_id, reason, sort_order, resources(name, price_range, requires_screen)')
     .eq('report_id', report.id)
     .order('sort_order', { ascending: true })
 
@@ -111,6 +111,27 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
   return NextResponse.json({ item, report_id: report.id })
+}
+
+// PATCH /api/consulting/report — update item reason or report custom_intro
+export async function PATCH(req: NextRequest) {
+  const user = await checkAdmin()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { item_id, reason, report_id, custom_intro } = await req.json()
+  const admin = await getAdmin()
+
+  if (item_id && reason !== undefined) {
+    await admin.from('report_items').update({ reason }).eq('id', item_id)
+    return NextResponse.json({ ok: true })
+  }
+
+  if (report_id && custom_intro !== undefined) {
+    await admin.from('reports').update({ custom_intro }).eq('id', report_id)
+    return NextResponse.json({ ok: true })
+  }
+
+  return NextResponse.json({ error: 'item_id+reason or report_id+custom_intro required' }, { status: 400 })
 }
 
 // DELETE /api/consulting/report?item_id=xxx — remove item from report
