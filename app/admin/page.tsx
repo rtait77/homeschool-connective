@@ -1213,7 +1213,7 @@ export default function AdminPage() {
                                                     <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem' }}>#{idx + 1}</span>
                                                     <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.95rem' }}>{rec.name}</span>
                                                     {(rec.suggested_for ?? []).map(p => (
-                                                      <span key={p} style={{ fontSize: '0.62rem', fontWeight: 800, padding: '1px 8px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#3a1a0a' : '#0e2233', color: p === 'Parent' ? '#f0a070' : '#7dd3fc' }}>{p}</span>
+                                                      <span key={p} style={{ fontSize: '0.62rem', fontWeight: 800, padding: '1px 8px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#3a1030' : '#1e1535', color: p === 'Parent' ? '#f472b6' : '#c084fc' }}>{p}</span>
                                                     ))}
                                                     {rec.christian_lite_warning && (
                                                       <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#3a2a10', color: '#f0c040', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>⚠️ christian lite</span>
@@ -1258,7 +1258,7 @@ export default function AdminPage() {
                                                                     const next = sel ? current.filter((p: string) => p !== person) : [...current, person]
                                                                     updateItemForPeople(c.id, inReport.id, next)
                                                                   }}
-                                                                  style={{ fontSize: '0.62rem', fontWeight: 700, padding: '1px 7px', borderRadius: 999, border: 'none', cursor: 'pointer', backgroundColor: sel ? (person === 'Parent' ? '#fde8e0' : '#e0f4f8') : '#2e3338', color: sel ? (person === 'Parent' ? '#c0522a' : '#1a7a8e') : '#a09890' }}
+                                                                  style={{ fontSize: '0.62rem', fontWeight: 700, padding: '1px 7px', borderRadius: 999, border: 'none', cursor: 'pointer', backgroundColor: sel ? (person === 'Parent' ? '#3a1030' : '#1e1535') : '#2e3338', color: sel ? (person === 'Parent' ? '#f472b6' : '#c084fc') : '#a09890' }}
                                                                 >
                                                                   {person}
                                                                 </button>
@@ -1329,7 +1329,7 @@ export default function AdminPage() {
                                                             <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#55b6ca' }}>#{idx + 1}</span>
                                                             <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#1c1c1c' }}>{name}</span>
                                                             {(item.for_people ?? []).map(p => (
-                                                              <span key={p} style={{ fontSize: '0.6rem', fontWeight: 800, padding: '1px 7px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#fde8e0' : '#e0f4f8', color: p === 'Parent' ? '#c0522a' : '#1a7a8e' }}>{p}</span>
+                                                              <span key={p} style={{ fontSize: '0.6rem', fontWeight: 800, padding: '1px 7px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#3a1030' : '#1e1535', color: p === 'Parent' ? '#f472b6' : '#c084fc' }}>{p}</span>
                                                             ))}
                                                           </div>
                                                           <button onClick={() => removeFromReport(c.id, item.id)} style={{ fontSize: '0.75rem', color: '#ccc', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>✕</button>
@@ -1355,7 +1355,7 @@ export default function AdminPage() {
                                                                   const next = sel ? current.filter((p: string) => p !== person) : [...current, person]
                                                                   updateItemForPeople(c.id, item.id, next)
                                                                 }}
-                                                                style={{ fontSize: '0.62rem', fontWeight: 700, padding: '1px 7px', borderRadius: 999, border: 'none', cursor: 'pointer', backgroundColor: sel ? (person === 'Parent' ? '#fde8e0' : '#e0f4f8') : '#f0ebe4', color: sel ? (person === 'Parent' ? '#c0522a' : '#1a7a8e') : '#a09890' }}
+                                                                style={{ fontSize: '0.62rem', fontWeight: 700, padding: '1px 7px', borderRadius: 999, border: 'none', cursor: 'pointer', backgroundColor: sel ? (person === 'Parent' ? '#f9d0e8' : '#e8d9ff') : '#f0ebe4', color: sel ? (person === 'Parent' ? '#9d174d' : '#6d28d9') : '#a09890' }}
                                                               >
                                                                 {person}
                                                               </button>
