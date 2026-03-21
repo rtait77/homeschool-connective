@@ -150,6 +150,17 @@ const TAG_LABELS: Record<string, string> = {
   grammar: 'Matches grammar need',
 }
 
+const RESOURCE_TYPE_COLORS: Record<string, string> = {
+  curriculum: '#ed7c5a',
+  book: '#55b6ca',
+  website: '#9b7fd4',
+  video: '#f0c040',
+  toy: '#5bb87a',
+  app: '#4a9eff',
+  other: '#a09890',
+}
+const RESOURCE_TYPES = ['', 'curriculum', 'book', 'website', 'video', 'toy', 'app', 'other']
+
 export default function AdminPage() {
   const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
@@ -202,7 +213,7 @@ export default function AdminPage() {
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
   const [consultingLoading, setConsultingLoading] = useState(false)
   const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null)
-  type ReportItem = { id: string; resource_id: string; reason: string; sort_order: number; resources?: { name: string; price_range: string; requires_screen: string } | null }
+  type ReportItem = { id: string; resource_id: string; reason: string; sort_order: number; for_people: string[]; resources?: { name: string; price_range: string; requires_screen: string } | null }
   type ReportMeta = { id: string; status: string; custom_intro: string | null; sent_at: string | null }
   const [recs, setRecs] = useState<Record<string, Recommendation[]>>({})
   const [recsLoading, setRecsLoading] = useState<Record<string, boolean>>({})
@@ -260,6 +271,18 @@ export default function AdminPage() {
     setReportItems(prev => ({
       ...prev,
       [customerId]: (prev[customerId] ?? []).map(i => i.id === itemId ? { ...i, reason: newReason } : i),
+    }))
+  }
+
+  async function updateItemForPeople(customerId: string, itemId: string, forPeople: string[]) {
+    await fetch('/api/consulting/report', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item_id: itemId, for_people: forPeople }),
+    })
+    setReportItems(prev => ({
+      ...prev,
+      [customerId]: (prev[customerId] ?? []).map(i => i.id === itemId ? { ...i, for_people: forPeople } : i),
     }))
   }
 
@@ -321,12 +344,12 @@ export default function AdminPage() {
     id: string; name: string; subjects: string[]; grade_levels: string[]
     price_range: string; requires_screen: string; time_per_lesson: string
     parent_prep: string; religious_pref: string; match_tags: string[]
-    url: string | null; description: string | null; approved: boolean
+    url: string | null; description: string | null; approved: boolean; resource_type: string | null
   }
   const blankResource = (): Omit<Resource, 'id' | 'approved'> => ({
     name: '', subjects: [], grade_levels: [], price_range: '', requires_screen: 'no',
     time_per_lesson: '', parent_prep: '', religious_pref: 'secular', match_tags: [],
-    url: '', description: '',
+    url: '', description: '', resource_type: null,
   })
   const [resources, setResources] = useState<Resource[] | null>(null)
   const [resourcesLoading, setResourcesLoading] = useState(false)
@@ -1282,9 +1305,12 @@ export default function AdminPage() {
                                                     return (
                                                       <div key={item.id} style={{ backgroundColor: '#fff', borderRadius: '0.5rem', padding: '0.65rem 0.75rem', border: '1px solid #e8e0d5' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
-                                                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                                                             <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#55b6ca' }}>#{idx + 1}</span>
                                                             <span style={{ fontWeight: 800, fontSize: '0.82rem', color: '#1c1c1c' }}>{name}</span>
+                                                            {(item.for_people ?? []).map(p => (
+                                                              <span key={p} style={{ fontSize: '0.6rem', fontWeight: 800, padding: '1px 7px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#fde8e0' : '#e0f4f8', color: p === 'Parent' ? '#c0522a' : '#1a7a8e' }}>{p}</span>
+                                                            ))}
                                                           </div>
                                                           <button onClick={() => removeFromReport(c.id, item.id)} style={{ fontSize: '0.75rem', color: '#ccc', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>✕</button>
                                                         </div>
@@ -1295,6 +1321,27 @@ export default function AdminPage() {
                                                           placeholder="Reason..."
                                                           style={{ width: '100%', backgroundColor: 'transparent', border: 'none', borderTop: '1px dashed #e8e0d5', color: '#444', fontSize: '0.75rem', padding: '0.3rem 0', resize: 'none', lineHeight: '1.5', fontFamily: 'Georgia, serif', boxSizing: 'border-box', marginTop: '0.3rem' }}
                                                         />
+                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', alignItems: 'center', marginTop: '0.4rem', paddingTop: '0.35rem', borderTop: '1px dashed #f0ebe4' }}>
+                                                          <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.05em', marginRight: '0.15rem' }}>For:</span>
+                                                          {['Parent', ...children.map((ch: Record<string, unknown>, ci: number) => {
+                                                            const n = typeof ch.name === 'string' && ch.name ? ch.name : `Child ${ci + 1}`
+                                                            return n
+                                                          })].map(person => {
+                                                            const sel = (item.for_people ?? []).includes(person)
+                                                            return (
+                                                              <button key={person} type="button"
+                                                                onClick={() => {
+                                                                  const current = item.for_people ?? []
+                                                                  const next = sel ? current.filter((p: string) => p !== person) : [...current, person]
+                                                                  updateItemForPeople(c.id, item.id, next)
+                                                                }}
+                                                                style={{ fontSize: '0.62rem', fontWeight: 700, padding: '1px 7px', borderRadius: 999, border: 'none', cursor: 'pointer', backgroundColor: sel ? (person === 'Parent' ? '#fde8e0' : '#e0f4f8') : '#f0ebe4', color: sel ? (person === 'Parent' ? '#c0522a' : '#1a7a8e') : '#a09890' }}
+                                                              >
+                                                                {person}
+                                                              </button>
+                                                            )
+                                                          })}
+                                                        </div>
                                                       </div>
                                                     )
                                                   })}
@@ -1477,11 +1524,12 @@ export default function AdminPage() {
                     r.religious_pref?.toLowerCase().includes(q)
                 })
                 .map((r, i, arr) => (
-                  <div key={r.id} style={{ padding: '0.875rem 1.1rem', borderBottom: i < arr.length - 1 ? '1px solid #3d4248' : 'none' }}>
+                  <div key={r.id} style={{ padding: '0.875rem 1.1rem', borderBottom: i < arr.length - 1 ? '1px solid #3d4248' : 'none', borderLeft: `4px solid ${RESOURCE_TYPE_COLORS[r.resource_type ?? ''] ?? '#3d4248'}` }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.3rem' }}>
                           <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#e8e0d5' }}>{r.name}</span>
+                          {r.resource_type && <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '1px 8px', borderRadius: 999, backgroundColor: `${RESOURCE_TYPE_COLORS[r.resource_type] ?? '#3d4248'}22`, color: RESOURCE_TYPE_COLORS[r.resource_type] ?? '#a09890' }}>{r.resource_type}</span>}
                           <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '1px 8px', borderRadius: 999, backgroundColor: r.religious_pref === 'christian' ? '#3a1a1a' : r.religious_pref === 'christian_lite' ? '#3a2a10' : r.religious_pref === 'neutral' ? '#2a2e32' : '#1a3a2a', color: r.religious_pref === 'christian' ? '#f87171' : r.religious_pref === 'christian_lite' ? '#f0c040' : r.religious_pref === 'neutral' ? '#a09890' : '#5bb87a' }}>{r.religious_pref}</span>
                           <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', padding: '1px 8px', borderRadius: 999, backgroundColor: '#2e3338' }}>{r.price_range}</span>
                           <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', padding: '1px 8px', borderRadius: 999, backgroundColor: '#2e3338' }}>{r.requires_screen === 'yes' ? '🖥 screen' : r.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}</span>
@@ -1558,6 +1606,7 @@ function ResourceForm({
         {select('Requires Screen', 'requires_screen', ['no', 'optional', 'yes'])}
         {field('Time per Lesson', 'time_per_lesson', '20–30 min/day')}
         {field('Parent Prep', 'parent_prep', 'minimal, moderate, significant')}
+        {select('Resource Type', 'resource_type', RESOURCE_TYPES)}
         {select('Religious Preference', 'religious_pref', ['secular', 'neutral', 'christian_lite', 'christian'])}
         <div style={{ gridColumn: '1 / -1' }}>
           <label style={labelStyle}>Match Tags</label>
