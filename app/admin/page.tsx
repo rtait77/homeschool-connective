@@ -1217,9 +1217,6 @@ export default function AdminPage() {
                                                   </div>
                                                   <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                                                     <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>{rec.price_range}</span>
-                                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: rec.requires_screen === 'yes' ? '#7dd3fc' : rec.requires_screen === 'optional' ? '#86efac' : '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>
-                                                      {rec.requires_screen === 'yes' ? '🖥 screen' : rec.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}
-                                                    </span>
                                                     <button onClick={() => setTagPopup({ name: rec.name, tags: rec.matched_tags ?? [] })} style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#55b6ca', padding: '0.15rem 0.6rem', borderRadius: '999px', border: 'none', cursor: 'pointer', textDecoration: 'underline dotted' }}>{rec.matched_tag_count} tags matched ⓘ</button>
                                                   </div>
                                                 </div>
