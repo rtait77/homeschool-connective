@@ -115,9 +115,45 @@ export default function AdminPage() {
     intake_status: string
     responses: Record<string, unknown> | null
   }
+  type Recommendation = {
+    resource_id: string
+    name: string
+    subjects: string[]
+    grade_levels: string[]
+    price_range: string
+    requires_screen: string
+    time_per_lesson: string
+    parent_prep: string
+    religious_pref: string
+    score: number
+    matched_tag_count: number
+    christian_lite_warning: boolean
+    reason: string
+  }
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
   const [consultingLoading, setConsultingLoading] = useState(false)
   const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null)
+  const [recs, setRecs] = useState<Record<string, Recommendation[]>>({})
+  const [recsLoading, setRecsLoading] = useState<Record<string, boolean>>({})
+  const [recsError, setRecsError] = useState<Record<string, string>>({})
+
+  async function generateRecs(customerId: string) {
+    setRecsLoading(prev => ({ ...prev, [customerId]: true }))
+    setRecsError(prev => ({ ...prev, [customerId]: '' }))
+    try {
+      const res = await fetch('/api/consulting/recommend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer_id: customerId }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to generate recommendations')
+      setRecs(prev => ({ ...prev, [customerId]: data.recommendations }))
+    } catch (e) {
+      setRecsError(prev => ({ ...prev, [customerId]: (e as Error).message }))
+    }
+    setRecsLoading(prev => ({ ...prev, [customerId]: false }))
+  }
 
   const [analytics, setAnalytics] = useState<{
     totalAllTime: number
@@ -761,6 +797,56 @@ export default function AdminPage() {
                                           </div>
                                         )}
                                       </div>
+                                    </div>
+
+                                    {/* RECOMMENDATIONS */}
+                                    <div>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                                        <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a' }}>Curriculum Recommendations</p>
+                                        <button
+                                          onClick={() => generateRecs(c.id)}
+                                          disabled={recsLoading[c.id]}
+                                          style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.35rem 1rem', borderRadius: '999px', border: '2px solid #ed7c5a', color: recsLoading[c.id] ? '#a09890' : '#ed7c5a', backgroundColor: 'transparent', cursor: recsLoading[c.id] ? 'default' : 'pointer' }}
+                                        >
+                                          {recsLoading[c.id] ? 'Generating...' : recs[c.id] ? 'Regenerate' : 'Generate Recommendations'}
+                                        </button>
+                                      </div>
+                                      {recsError[c.id] && (
+                                        <p style={{ color: '#f87171', fontSize: '0.85rem', marginBottom: '0.75rem' }}>{recsError[c.id]}</p>
+                                      )}
+                                      {recs[c.id] && (
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                                          {recs[c.id].map((rec, idx) => (
+                                            <div key={rec.resource_id} style={{ backgroundColor: '#1a1c1e', borderRadius: '0.75rem', padding: '1rem 1.25rem', border: `1px solid ${rec.christian_lite_warning ? '#7a5a10' : '#3d4248'}` }}>
+                                              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+                                                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem' }}>#{idx + 1}</span>
+                                                  <span style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.95rem' }}>{rec.name}</span>
+                                                  {rec.christian_lite_warning && (
+                                                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#3a2a10', color: '#f0c040', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>⚠️ christian lite</span>
+                                                  )}
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                                                  <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>{rec.price_range}</span>
+                                                  <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: rec.requires_screen === 'yes' ? '#7dd3fc' : rec.requires_screen === 'optional' ? '#86efac' : '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>
+                                                    {rec.requires_screen === 'yes' ? '🖥 screen' : rec.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}
+                                                  </span>
+                                                  <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.15rem 0.6rem', borderRadius: '999px' }}>{rec.matched_tag_count} tags matched</span>
+                                                </div>
+                                              </div>
+                                              <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                                                {rec.subjects?.map(sub => (
+                                                  <span key={sub} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2a3a2e', color: '#5bb87a', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{sub}</span>
+                                                ))}
+                                                {rec.grade_levels?.map(g => (
+                                                  <span key={g} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{g}</span>
+                                                ))}
+                                              </div>
+                                              <p style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: '1.6' }}>{rec.reason}</p>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
                                     </div>
 
                                     {/* FULL DETAIL SECTIONS */}
