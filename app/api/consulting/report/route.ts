@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
   const { data: items } = await admin
     .from('report_items')
-    .select('id, resource_id, reason, sort_order, resources(name, price_range, requires_screen)')
+    .select('id, resource_id, reason, sort_order, for_people, resources(name, price_range, requires_screen)')
     .eq('report_id', report.id)
     .order('sort_order', { ascending: true })
 
@@ -118,11 +118,16 @@ export async function PATCH(req: NextRequest) {
   const user = await checkAdmin()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { item_id, reason, report_id, custom_intro } = await req.json()
+  const { item_id, reason, for_people, report_id, custom_intro } = await req.json()
   const admin = await getAdmin()
 
-  if (item_id && reason !== undefined) {
-    await admin.from('report_items').update({ reason }).eq('id', item_id)
+  if (item_id) {
+    const updates: Record<string, unknown> = {}
+    if (reason !== undefined) updates.reason = reason
+    if (for_people !== undefined) updates.for_people = for_people
+    if (Object.keys(updates).length > 0) {
+      await admin.from('report_items').update(updates).eq('id', item_id)
+    }
     return NextResponse.json({ ok: true })
   }
 
