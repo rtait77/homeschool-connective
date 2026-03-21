@@ -41,7 +41,7 @@ export async function GET() {
   // Get items with resource details
   const { data: items } = await admin
     .from('report_items')
-    .select('id, reason, sort_order, resources(name, price_range, requires_screen, url, description, subjects, grade_levels)')
+    .select('id, reason, sort_order, for_people, resources(name, price_range, requires_screen, url, description, subjects, grade_levels)')
     .eq('report_id', report.id)
     .order('sort_order', { ascending: true })
 
