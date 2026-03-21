@@ -145,6 +145,9 @@ export async function POST(req: NextRequest) {
         ${intro}
         ${itemsHtml}
         <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e8e0d5;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <a href="https://homeschoolconnective.com/dashboard/report" style="display:inline-block;background:#ed7c5a;color:#fff;font-weight:700;font-size:15px;padding:12px 28px;border-radius:999px;text-decoration:none;">⬇ View &amp; Download as PDF</a>
+          </div>
           <p style="font-size:14px;color:#888;line-height:1.6;">Questions about any of these? Just reply to this email — I'm happy to talk through them with you!</p>
           <p style="font-size:14px;color:#888;">— Mel</p>
           <p style="font-size:13px;color:#aaa;margin-top:4px;">consulting@homeschoolconnective.com</p>
