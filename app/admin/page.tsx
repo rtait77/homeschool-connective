@@ -127,7 +127,7 @@ export default function AdminPage() {
     religious_pref: string
     score: number
     matched_tag_count: number
-    matched_tags: string[]
+    matched_tags: { tag: string; sources: { question: string; answer: string }[] }[]
     christian_lite_warning: boolean
     reason: string
   }
@@ -213,7 +213,7 @@ export default function AdminPage() {
   const [sendingReport, setSendingReport] = useState<Record<string, boolean>>({})
   const [sendSuccess, setSendSuccess] = useState<Record<string, boolean>>({})
   const [previewCustomer, setPreviewCustomer] = useState<string | null>(null)
-  const [tagPopup, setTagPopup] = useState<{ name: string; tags: string[] } | null>(null)
+  const [tagPopup, setTagPopup] = useState<{ name: string; tags: { tag: string; sources: { question: string; answer: string }[] }[] } | null>(null)
 
   async function loadReportItems(customerId: string) {
     const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
@@ -570,16 +570,27 @@ export default function AdminPage() {
             {tagPopup.tags.length === 0 ? (
               <p style={{ color: '#a09890', fontSize: '0.85rem', fontStyle: 'italic' }}>No direct tag matches — scored from subject boosts or profile signals.</p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {tagPopup.tags.map(tag => (
-                  <div key={tag} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2a3a4a', color: '#55b6ca', padding: '2px 8px', borderRadius: 999, flexShrink: 0, marginTop: 1 }}>{tag}</span>
-                    <span style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: 1.5 }}>{TAG_LABELS[tag] ?? tag}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '60vh', overflowY: 'auto' }}>
+                {tagPopup.tags.map(({ tag, sources }) => (
+                  <div key={tag} style={{ backgroundColor: '#13151a', borderRadius: 8, padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: sources.length ? 8 : 0 }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2a3a4a', color: '#55b6ca', padding: '2px 8px', borderRadius: 999, flexShrink: 0, marginTop: 1 }}>{tag}</span>
+                      <span style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: 1.5 }}>{TAG_LABELS[tag] ?? tag}</span>
+                    </div>
+                    {sources.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, paddingLeft: 4 }}>
+                        {sources.map((src, i) => (
+                          <div key={i} style={{ fontSize: '0.75rem', color: '#6a7280', lineHeight: 1.5 }}>
+                            <span style={{ color: '#a09890', fontWeight: 700 }}>{src.question}:</span>{' '}
+                            <span style={{ color: '#6a7280', fontStyle: 'italic' }}>&ldquo;{src.answer.length > 80 ? src.answer.slice(0, 80) + '…' : src.answer}&rdquo;</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             )}
-            <p style={{ fontSize: '0.75rem', color: '#5c6068', marginTop: 16 }}>These tags came from the family&apos;s intake form answers and matched this resource&apos;s tag list.</p>
           </div>
         </div>
       )}
