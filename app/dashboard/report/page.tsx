@@ -92,7 +92,7 @@ export default function ClientReportPage() {
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/Logo.png" alt="Homeschool Connective" style={{ height: 52, marginBottom: 24 }} />
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 8 }}>Your Curriculum Report</h1>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 8 }}>Your Personalized Recommendations</h1>
           <p style={{ fontSize: '0.85rem', color: '#888' }}>
             From Mel at Homeschool Connective
             {report?.sent_at && ` · ${new Date(report.sent_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}
@@ -120,10 +120,7 @@ export default function ClientReportPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem', paddingTop: 3 }}>#{idx + 1}</span>
                   <div style={{ flex: 1 }}>
-                    <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1c1c1c', margin: '0 0 4px' }}>{r?.name ?? 'Resource'}</h2>
-                    {r?.price_range && (
-                      <p style={{ fontSize: '0.78rem', color: '#a09890', margin: '0 0 10px' }}>{r.price_range}</p>
-                    )}
+                    <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1c1c1c', margin: '0 0 8px' }}>{r?.name ?? 'Resource'}</h2>
                     <p style={{ fontSize: '0.95rem', lineHeight: 1.7, color: '#444', margin: '0 0 12px' }}>{item.reason}</p>
                     {r?.url && (
                       <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ed7c5a', textDecoration: 'none' }}>
