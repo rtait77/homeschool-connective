@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
   const { data: items } = await admin
     .from('report_items')
-    .select('id, reason, sort_order, resources(name, price_range, requires_screen, religious_pref, url, description)')
+    .select('id, reason, sort_order, for_people, resources(name, price_range, requires_screen, religious_pref, url, description)')
     .eq('report_id', report.id)
     .order('sort_order', { ascending: true })
 
@@ -82,24 +82,57 @@ export async function POST(req: NextRequest) {
     ? `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;white-space:pre-line;">${report.custom_intro.replace(/\n/g, '<br>')}</p>`
     : `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;">Hi! I've put together your personalized curriculum recommendations based on your intake form. I hope these are a great fit for your family!</p>`
 
-  const itemsHtml = items.map((item, idx) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const r = item.resources as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const typedItems = items as any[]
+  const hasAssignments = typedItems.some(i => (i.for_people ?? []).length > 0)
+
+  function buildItemHtml(item: typeof typedItems[0], idx: number) {
+    const r = item.resources
     const isChristianLite = r?.religious_pref === 'christian_lite'
+    const allPeople: string[] = item.for_people ?? []
+    const tagHtml = allPeople.length > 1
+      ? allPeople.map((p: string) => `<span style="font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:${p === 'Parent' ? '#fde8e0' : '#e0f4f8'};color:${p === 'Parent' ? '#c0522a' : '#1a7a8e'};margin-right:4px;">${p}</span>`).join('')
+      : ''
     return `
-      <div style="margin-bottom:20px;padding:20px;background:#fff;border-radius:12px;border:1px solid #e8e0d5;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+      <div style="margin-bottom:16px;padding:20px;background:#fff;border-radius:12px;border:1px solid #e8e0d5;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
         <div style="display:flex;align-items:flex-start;gap:12px;">
           <span style="font-size:13px;font-weight:800;color:#55b6ca;min-width:24px;">#${idx + 1}</span>
           <div style="flex:1;">
-            <p style="font-size:17px;font-weight:800;color:#1c1c1c;margin:0 0 8px;">${r?.name ?? 'Resource'}</p>
+            <p style="font-size:17px;font-weight:800;color:#1c1c1c;margin:0 0 4px;">${r?.name ?? 'Resource'}</p>
+            ${tagHtml ? `<p style="margin:0 0 8px;">${tagHtml}</p>` : ''}
             ${isChristianLite ? '<p style="font-size:12px;color:#a09890;margin:0 0 8px;">Note: contains light faith references</p>' : ''}
             <p style="font-size:15px;line-height:1.6;color:#444;margin:0;">${item.reason}</p>
             ${r?.url ? `<a href="${r.url}" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:700;color:#ed7c5a;text-decoration:none;">Learn more →</a>` : ''}
           </div>
         </div>
-      </div>
-    `
-  }).join('')
+      </div>`
+  }
+
+  let itemsHtml: string
+  if (hasAssignments) {
+    const groups: Record<string, typeof typedItems> = {}
+    const peopleOrder: string[] = []
+    typedItems.forEach(item => {
+      const primary: string = (item.for_people ?? [])[0] ?? 'General'
+      if (!groups[primary]) { groups[primary] = []; peopleOrder.push(primary) }
+      groups[primary].push(item)
+    })
+    peopleOrder.sort((a, b) => {
+      if (a === 'General') return 1; if (b === 'General') return -1
+      if (a === 'Parent') return 1; if (b === 'Parent') return -1
+      return 0
+    })
+    let globalIdx = 0
+    itemsHtml = peopleOrder.map(person => {
+      const sectionTitle = person === 'Parent' ? 'Parent Resources' : person === 'General' ? 'General Recommendations' : `For ${person}`
+      const color = person === 'Parent' ? '#ed7c5a' : '#55b6ca'
+      const sectionItems = groups[person].map(item => buildItemHtml(item, ++globalIdx)).join('')
+      return `<p style="font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:${color};margin:24px 0 12px 0;">${sectionTitle}</p>${sectionItems}`
+    }).join('')
+  } else {
+    itemsHtml = `<h3 style="font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#ed7c5a;margin-bottom:16px;">My Top Picks for Your Family</h3>` +
+      typedItems.map((item, idx) => buildItemHtml(item, idx + 1)).join('')
+  }
 
   const html = `
     <div style="font-family:'Helvetica Neue',Helvetica,sans-serif;max-width:640px;margin:0 auto;padding:32px 16px;background:#f5f1e9;">
@@ -110,7 +143,6 @@ export async function POST(req: NextRequest) {
         <h2 style="font-size:24px;font-weight:800;color:#1c1c1c;margin-bottom:8px;">Your Personalized Recommendations</h2>
         <p style="font-size:14px;color:#888;margin-bottom:24px;">From Mel at Homeschool Connective</p>
         ${intro}
-        <h3 style="font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#ed7c5a;margin-bottom:16px;">My Top Picks for Your Family</h3>
         ${itemsHtml}
         <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e8e0d5;">
           <p style="font-size:14px;color:#888;line-height:1.6;">Questions about any of these? Just reply to this email — I'm happy to talk through them with you!</p>
