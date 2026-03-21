@@ -639,9 +639,8 @@ export default function AdminPage() {
             }}
             style={{
               padding: '0.625rem 1.25rem', fontSize: '0.875rem', fontWeight: 700,
-              borderRadius: '0.5rem 0.5rem 0 0', borderBottom: '2px solid',
+              borderRadius: '0.5rem 0.5rem 0 0',
               marginBottom: '-1px', cursor: 'pointer', transition: 'all 0.15s',
-              borderBottomColor: tab === t.id ? '#ed7c5a' : 'transparent',
               color: tab === t.id ? '#ed7c5a' : isDarkTab ? '#a09890' : '#5c5c5c',
               backgroundColor: tab === t.id ? (isDarkTab ? '#24282b' : '#fff') : 'transparent',
               border: 'none', borderBottom: tab === t.id ? '2px solid #ed7c5a' : '2px solid transparent',
