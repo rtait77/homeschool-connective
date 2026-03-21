@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
     const isChristianLite = r?.religious_pref === 'christian_lite'
     const allPeople: string[] = item.for_people ?? []
     const tagHtml = allPeople.length > 1
-      ? allPeople.map((p: string) => `<span style="font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:${p === 'Parent' ? '#fde8e0' : '#e0f4f8'};color:${p === 'Parent' ? '#c0522a' : '#1a7a8e'};margin-right:4px;">${p}</span>`).join('')
+      ? allPeople.map((p: string) => `<span style="font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:${p === 'Parent' ? '#f9d0e8' : '#e8d9ff'};color:${p === 'Parent' ? '#9d174d' : '#6d28d9'};margin-right:4px;">${p}</span>`).join('')
       : ''
     return `
       <div style="margin-bottom:16px;padding:20px;background:#fff;border-radius:12px;border:1px solid #e8e0d5;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
