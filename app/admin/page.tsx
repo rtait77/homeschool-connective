@@ -83,6 +83,73 @@ function StatCard({ label, value, sub }: { label: string; value: number | string
   )
 }
 
+const TAG_LABELS: Record<string, string> = {
+  dyslexia: 'Great for learners with dyslexia',
+  ADHD: 'Works well for kids with ADHD',
+  gentle_pacing: 'Gentle, no-pressure pace',
+  step_by_step: 'Breaks concepts into small, manageable steps',
+  encouraging_format: 'Warm, encouraging format — builds confidence',
+  mastery_based: 'Mastery-based — move forward when ready, not on a timer',
+  no_time_pressure: 'No time pressure',
+  hands_on: 'Hands-on and tactile',
+  kinesthetic: 'Great for kids who learn by doing and moving',
+  game_based: 'Turns learning into a game',
+  visual_learner: 'Highly visual',
+  auditory_learner: 'Works well for auditory learners',
+  discussion_based: 'Built around conversation and discussion',
+  read_aloud: 'Designed to be read aloud together',
+  literature_based: 'Uses real books and stories',
+  self_paced: 'Fully self-paced',
+  independent_learner: 'Can run independently with minimal parent involvement',
+  teacher_led: 'Teacher-led — parent stays actively involved',
+  low_prep: 'Very little prep — open and go',
+  structured: 'Clear structure and predictable daily plan',
+  flexible_schedule: 'Fits a flexible or irregular schedule',
+  short_lessons: 'Short lessons — great for short attention spans',
+  minimal_time: 'Works well in a shorter school day',
+  multi_child_friendly: 'Works across multiple grade levels at once',
+  gifted: 'Well-suited for advanced or gifted learners',
+  interest_led: "Follows the child's natural interests",
+  project_based: 'Project-based and exploratory',
+  no_screen: 'Completely screen-free',
+  movement_friendly: 'Works well for kids who need to move',
+  short_attention: 'Designed for shorter attention spans',
+  reluctant_writer: 'Great for reluctant or resistant writers',
+  struggling_reader: 'Specifically designed for struggling readers',
+  struggling_spelling: 'Highly effective for spelling struggles',
+  early_reading: 'Designed for early readers',
+  pre_reading: 'Perfect for pre-reading foundations',
+  stem: 'Covers STEM through hands-on activities',
+  video_friendly: 'Includes video instruction',
+  teacher_intensive: 'Rewards significant parent involvement',
+  full_week_ok: 'Works with a full 5-day school week',
+  spiral_approach: 'Spiral approach — constantly revisits and reinforces past concepts',
+  screen_optional: 'Screen use is optional',
+  requires_screen: 'Screen-based',
+  advanced_reading: 'For advanced or above-grade-level readers',
+  grade_level_reading: 'For on-grade-level readers',
+  developing_reading: 'For developing readers',
+  early_writing: 'For early-stage writers',
+  developing_writing: 'For developing writers',
+  advanced_writing: 'For advanced writers',
+  early_spelling: 'For early-stage spelling',
+  christian: 'Faith-integrated content',
+  christian_lite: 'Light faith references (widely used by secular families)',
+  neutral: 'Avoids religious content entirely',
+  secular: 'Secular — no religious content',
+  sensory_friendly: 'Sensory-friendly',
+  child_led: 'Child-led learning',
+  low_structure: 'Low structure — relaxed and flexible approach',
+  math: 'Matches math need',
+  science: 'Matches science need',
+  history: 'Matches history need',
+  reading: 'Matches reading need',
+  writing: 'Matches writing need',
+  spelling: 'Matches spelling need',
+  language_arts: 'Matches language arts need',
+  grammar: 'Matches grammar need',
+}
+
 export default function AdminPage() {
   const router = useRouter()
   const [authChecked, setAuthChecked] = useState(false)
@@ -132,72 +199,6 @@ export default function AdminPage() {
     reason: string
   }
 
-  const TAG_LABELS: Record<string, string> = {
-    dyslexia: 'Great for learners with dyslexia',
-    ADHD: 'Works well for kids with ADHD',
-    gentle_pacing: 'Gentle, no-pressure pace',
-    step_by_step: 'Breaks concepts into small, manageable steps',
-    encouraging_format: 'Warm, encouraging format — builds confidence',
-    mastery_based: 'Mastery-based — move forward when ready, not on a timer',
-    no_time_pressure: 'No time pressure',
-    hands_on: 'Hands-on and tactile',
-    kinesthetic: 'Great for kids who learn by doing and moving',
-    game_based: 'Turns learning into a game',
-    visual_learner: 'Highly visual',
-    auditory_learner: 'Works well for auditory learners',
-    discussion_based: 'Built around conversation and discussion',
-    read_aloud: 'Designed to be read aloud together',
-    literature_based: 'Uses real books and stories',
-    self_paced: 'Fully self-paced',
-    independent_learner: 'Can run independently with minimal parent involvement',
-    teacher_led: 'Teacher-led — parent stays actively involved',
-    low_prep: 'Very little prep — open and go',
-    structured: 'Clear structure and predictable daily plan',
-    flexible_schedule: 'Fits a flexible or irregular schedule',
-    short_lessons: 'Short lessons — great for short attention spans',
-    minimal_time: 'Works well in a shorter school day',
-    multi_child_friendly: 'Works across multiple grade levels at once',
-    gifted: 'Well-suited for advanced or gifted learners',
-    interest_led: "Follows the child's natural interests",
-    project_based: 'Project-based and exploratory',
-    no_screen: 'Completely screen-free',
-    movement_friendly: 'Works well for kids who need to move',
-    short_attention: 'Designed for shorter attention spans',
-    reluctant_writer: 'Great for reluctant or resistant writers',
-    struggling_reader: 'Specifically designed for struggling readers',
-    struggling_spelling: 'Highly effective for spelling struggles',
-    early_reading: 'Designed for early readers',
-    pre_reading: 'Perfect for pre-reading foundations',
-    stem: 'Covers STEM through hands-on activities',
-    video_friendly: 'Includes video instruction',
-    teacher_intensive: 'Rewards significant parent involvement',
-    full_week_ok: 'Works with a full 5-day school week',
-    spiral_approach: 'Spiral approach — constantly revisits and reinforces past concepts',
-    screen_optional: 'Screen use is optional',
-    requires_screen: 'Screen-based',
-    advanced_reading: 'For advanced or above-grade-level readers',
-    grade_level_reading: 'For on-grade-level readers',
-    developing_reading: 'For developing readers',
-    early_writing: 'For early-stage writers',
-    developing_writing: 'For developing writers',
-    advanced_writing: 'For advanced writers',
-    early_spelling: 'For early-stage spelling',
-    christian: 'Faith-integrated content',
-    christian_lite: 'Light faith references (widely used by secular families)',
-    neutral: 'Avoids religious content entirely',
-    secular: 'Secular — no religious content',
-    sensory_friendly: 'Sensory-friendly',
-    child_led: 'Child-led learning',
-    low_structure: 'Low structure — relaxed and flexible approach',
-    math: 'Matches math need',
-    science: 'Matches science need',
-    history: 'Matches history need',
-    reading: 'Matches reading need',
-    writing: 'Matches writing need',
-    spelling: 'Matches spelling need',
-    language_arts: 'Matches language arts need',
-    grammar: 'Matches grammar need',
-  }
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
   const [consultingLoading, setConsultingLoading] = useState(false)
   const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null)
@@ -1558,7 +1559,32 @@ function ResourceForm({
         {field('Time per Lesson', 'time_per_lesson', '20–30 min/day')}
         {field('Parent Prep', 'parent_prep', 'minimal, moderate, significant')}
         {select('Religious Preference', 'religious_pref', ['secular', 'neutral', 'christian_lite', 'christian'])}
-        {field('Match Tags (comma-separated)', 'match_tags', 'math, structured, mastery_based')}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={labelStyle}>Match Tags</label>
+          <p style={{ fontSize: '0.65rem', color: '#a09890', marginBottom: '0.5rem' }}>Click to toggle. Selected tags are highlighted.</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+            {Object.keys(TAG_LABELS).map(tag => {
+              const selected = ((data['match_tags'] as string[] | string | undefined)
+                ? (Array.isArray(data['match_tags']) ? data['match_tags'] : (data['match_tags'] as string).split(',').map((t: string) => t.trim()).filter(Boolean))
+                : []).includes(tag)
+              const current: string[] = Array.isArray(data['match_tags']) ? data['match_tags'] as string[] : (data['match_tags'] as string || '').split(',').map((t: string) => t.trim()).filter(Boolean)
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => {
+                    const next = selected ? current.filter(t => t !== tag) : [...current, tag]
+                    onChange({ match_tags: next })
+                  }}
+                  style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 10px', borderRadius: 999, cursor: 'pointer', border: 'none', backgroundColor: selected ? '#55b6ca' : '#2e3338', color: selected ? '#0e1f24' : '#a09890', transition: 'all 0.1s' }}
+                  title={TAG_LABELS[tag]}
+                >
+                  {tag}
+                </button>
+              )
+            })}
+          </div>
+        </div>
         {field('URL', 'url', 'https://...')}
       </div>
       <div style={{ marginBottom: '1.25rem' }}>
