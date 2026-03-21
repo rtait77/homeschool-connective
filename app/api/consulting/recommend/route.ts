@@ -707,6 +707,7 @@ export async function POST(req: NextRequest) {
       religious_pref: resource.religious_pref,
       score,
       matched_tag_count: matchedTags.length,
+      matched_tags: matchedTags,
       christian_lite_warning: warning,
       reason: generateReason(resource, matchedTags, warning),
     }))
