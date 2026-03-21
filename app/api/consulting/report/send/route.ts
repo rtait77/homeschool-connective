@@ -131,6 +131,7 @@ export async function POST(req: NextRequest) {
     await titanTransport.sendMail({
       from: '"Mel at Homeschool Connective" <consulting@homeschoolconnective.com>',
       to: clientEmail,
+      bcc: 'consulting@homeschoolconnective.com',
       subject: 'Your Personalized Curriculum Recommendations from Mel',
       html,
     })
