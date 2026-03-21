@@ -2,8 +2,19 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import nodemailer from 'nodemailer'
 
 const ADMIN_EMAIL = 'support@homeschoolconnective.com'
+
+const titanTransport = nodemailer.createTransport({
+  host: 'smtp.titan.email',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'consulting@homeschoolconnective.com',
+    pass: process.env.TITAN_SMTP_PASSWORD,
+  },
+})
 
 async function getAdmin() {
   return createClient(
@@ -68,7 +79,7 @@ export async function POST(req: NextRequest) {
 
   // Build HTML email
   const intro = report.custom_intro?.trim()
-    ? `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;">${report.custom_intro.replace(/\n/g, '<br>')}</p>`
+    ? `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;white-space:pre-line;">${report.custom_intro.replace(/\n/g, '<br>')}</p>`
     : `<p style="font-size:16px;line-height:1.7;color:#444;margin-bottom:24px;">Hi! I've put together your personalized curriculum recommendations based on your intake form. I hope these are a great fit for your family!</p>`
 
   const screenLabel = (val: string) => {
@@ -116,30 +127,24 @@ export async function POST(req: NextRequest) {
         <div style="margin-top:32px;padding-top:24px;border-top:1px solid #e8e0d5;">
           <p style="font-size:14px;color:#888;line-height:1.6;">Questions about any of these? Just reply to this email — I'm happy to talk through them with you!</p>
           <p style="font-size:14px;color:#888;">— Mel</p>
+          <p style="font-size:13px;color:#aaa;margin-top:4px;">consulting@homeschoolconnective.com</p>
         </div>
       </div>
       <p style="text-align:center;font-size:12px;color:#aaa;margin-top:24px;">Homeschool Connective · <a href="https://homeschoolconnective.com" style="color:#aaa;">homeschoolconnective.com</a></p>
     </div>
   `
 
-  // Send via Sender.net
-  const sendRes = await fetch('https://api.sender.net/v2/transactional/email', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: { name: 'Mel at Homeschool Connective', email: 'consulting@homeschoolconnective.com' },
-      to: [{ email: clientEmail }],
+  // Send via Titan SMTP
+  try {
+    await titanTransport.sendMail({
+      from: '"Mel at Homeschool Connective" <consulting@homeschoolconnective.com>',
+      to: clientEmail,
       subject: 'Your Personalized Curriculum Recommendations from Mel',
       html,
-    }),
-  })
-
-  if (!sendRes.ok) {
-    const err = await sendRes.text()
-    return NextResponse.json({ error: `Email send failed: ${err}` }, { status: 500 })
+    })
+  } catch (err) {
+    console.error('Failed to send report email:', err)
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 
   // Mark report as sent
