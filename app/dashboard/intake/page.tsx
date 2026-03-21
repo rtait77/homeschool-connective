@@ -162,6 +162,7 @@ export default function IntakePage() {
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState<IntakeForm>(EMPTY)
   const [submitted, setSubmitted] = useState(false)
+  const [reportSent, setReportSent] = useState(false)
   const [saving, setSaving] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [savedAt, setSavedAt] = useState<string | null>(null)
@@ -181,6 +182,7 @@ export default function IntakePage() {
       if (res.ok) {
         const data = await res.json()
         if (data.status === 'submitted') setSubmitted(true)
+        if (data.report_sent) setReportSent(true)
         if (data.responses) {
           const r = data.responses
           // Migrate from old single-child format
@@ -342,9 +344,11 @@ export default function IntakePage() {
             <p className="text-sm text-[#5c5c5c]">Your answers are with Mel. This is a read-only copy.</p>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
-            <button onClick={() => setSubmitted(false)} className="text-sm font-bold text-[#ed7c5a] hover:underline whitespace-nowrap cursor-pointer">
-              Edit &amp; Resubmit
-            </button>
+            {!reportSent && (
+              <button onClick={() => setSubmitted(false)} className="text-sm font-bold text-[#ed7c5a] hover:underline whitespace-nowrap cursor-pointer">
+                Edit &amp; Resubmit
+              </button>
+            )}
             <a href="/dashboard" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap">← Dashboard</a>
           </div>
         </div>
