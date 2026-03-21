@@ -87,6 +87,13 @@ export default function ClientReportPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f1e9', fontFamily: 'Nunito, sans-serif' }}>
+      <style>{`
+        @media print {
+          .no-print { display: none !important; }
+          body { background: #fff !important; }
+          @page { margin: 1.5cm; }
+        }
+      `}</style>
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '48px 20px' }}>
 
         {/* Header */}
@@ -94,10 +101,17 @@ export default function ClientReportPage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/Logo.png" alt="Homeschool Connective" style={{ height: 52, marginBottom: 24 }} />
           <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 8 }}>Your Personalized Recommendations</h1>
-          <p style={{ fontSize: '0.85rem', color: '#888' }}>
+          <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: 20 }}>
             From Mel at Homeschool Connective
             {report?.sent_at && ` · ${new Date(report.sent_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}
           </p>
+          <button
+            onClick={() => window.print()}
+            className="no-print"
+            style={{ backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, border: 'none', cursor: 'pointer' }}
+          >
+            ⬇ Download PDF
+          </button>
         </div>
 
         {/* Custom intro */}
