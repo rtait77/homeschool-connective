@@ -133,18 +133,27 @@ export default function AdminPage() {
   const [consulting, setConsulting] = useState<ConsultingCustomer[] | null>(null)
   const [consultingLoading, setConsultingLoading] = useState(false)
   const [expandedCustomer, setExpandedCustomer] = useState<string | null>(null)
-  type ReportItem = { id: string; resource_id: string; reason: string; sort_order: number }
+  type ReportItem = { id: string; resource_id: string; reason: string; sort_order: number; resources?: { name: string; price_range: string; requires_screen: string } | null }
+  type ReportMeta = { id: string; status: string; custom_intro: string | null; sent_at: string | null }
   const [recs, setRecs] = useState<Record<string, Recommendation[]>>({})
   const [recsLoading, setRecsLoading] = useState<Record<string, boolean>>({})
   const [recsError, setRecsError] = useState<Record<string, string>>({})
   const [reportItems, setReportItems] = useState<Record<string, ReportItem[]>>({})
+  const [reportMeta, setReportMeta] = useState<Record<string, ReportMeta | null>>({})
   const [reportLoading, setReportLoading] = useState<Record<string, boolean>>({})
+  const [customIntros, setCustomIntros] = useState<Record<string, string>>({})
+  const [sendingReport, setSendingReport] = useState<Record<string, boolean>>({})
+  const [sendSuccess, setSendSuccess] = useState<Record<string, boolean>>({})
 
   async function loadReportItems(customerId: string) {
     const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
     if (res.ok) {
       const data = await res.json()
       setReportItems(prev => ({ ...prev, [customerId]: data.items ?? [] }))
+      setReportMeta(prev => ({ ...prev, [customerId]: data.report ?? null }))
+      if (data.report?.custom_intro) {
+        setCustomIntros(prev => ({ ...prev, [customerId]: data.report.custom_intro }))
+      }
     }
   }
 
@@ -167,6 +176,41 @@ export default function AdminPage() {
       ...prev,
       [customerId]: (prev[customerId] ?? []).filter(i => i.id !== itemId),
     }))
+  }
+
+  async function updateItemReason(customerId: string, itemId: string, newReason: string) {
+    await fetch('/api/consulting/report', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item_id: itemId, reason: newReason }),
+    })
+    setReportItems(prev => ({
+      ...prev,
+      [customerId]: (prev[customerId] ?? []).map(i => i.id === itemId ? { ...i, reason: newReason } : i),
+    }))
+  }
+
+  async function sendReport(customerId: string, clientEmail: string) {
+    setSendingReport(prev => ({ ...prev, [customerId]: true }))
+    // Save custom intro first
+    const meta = reportMeta[customerId]
+    if (meta) {
+      await fetch('/api/consulting/report', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ report_id: meta.id, custom_intro: customIntros[customerId] ?? '' }),
+      })
+    }
+    const res = await fetch('/api/consulting/report/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: customerId }),
+    })
+    if (res.ok) {
+      setSendSuccess(prev => ({ ...prev, [customerId]: true }))
+      await loadReportItems(customerId)
+    }
+    setSendingReport(prev => ({ ...prev, [customerId]: false }))
   }
 
   async function generateRecs(customerId: string) {
@@ -906,6 +950,84 @@ export default function AdminPage() {
                                         </div>
                                       )}
                                     </div>
+
+                                    {/* REPORT BUILDER */}
+                                    {reportItems[c.id] !== undefined && (
+                                      <div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                                          <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5bb87a' }}>
+                                            Report Builder
+                                          </p>
+                                          {reportMeta[c.id]?.sent_at && (
+                                            <span style={{ fontSize: '0.72rem', color: '#5bb87a', fontWeight: 700 }}>
+                                              ✓ Sent {new Date(reportMeta[c.id]!.sent_at!).toLocaleDateString()}
+                                            </span>
+                                          )}
+                                          <span style={{ fontSize: '0.72rem', color: '#a09890' }}>
+                                            {(reportItems[c.id] ?? []).length} item{(reportItems[c.id] ?? []).length !== 1 ? 's' : ''}
+                                          </span>
+                                        </div>
+
+                                        {(reportItems[c.id] ?? []).length === 0 ? (
+                                          <p style={{ color: '#a09890', fontSize: '0.85rem', fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                                            No items yet — add resources from the recommendations above.
+                                          </p>
+                                        ) : (
+                                          <>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1rem' }}>
+                                              {(reportItems[c.id] ?? []).map((item, idx) => {
+                                                const name = item.resources?.name
+                                                  ?? recs[c.id]?.find(r => r.resource_id === item.resource_id)?.name
+                                                  ?? item.resource_id
+                                                return (
+                                                  <div key={item.id} style={{ backgroundColor: '#1a1c1e', borderRadius: '0.75rem', padding: '0.85rem 1rem', border: '1px solid #3d4248', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#5bb87a', minWidth: '1.25rem', paddingTop: '0.15rem' }}>#{idx + 1}</span>
+                                                    <div style={{ flex: 1 }}>
+                                                      <p style={{ fontWeight: 700, color: '#e8e0d5', fontSize: '0.9rem', marginBottom: '0.35rem' }}>{name}</p>
+                                                      <textarea
+                                                        defaultValue={item.reason}
+                                                        onBlur={(e) => updateItemReason(c.id, item.id, e.target.value)}
+                                                        rows={2}
+                                                        placeholder="Reason for recommending this..."
+                                                        style={{ width: '100%', backgroundColor: '#13151a', border: '1px solid #3d4248', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.82rem', padding: '0.4rem 0.6rem', resize: 'vertical', lineHeight: '1.5', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                                                      />
+                                                    </div>
+                                                    <button
+                                                      onClick={() => removeFromReport(c.id, item.id)}
+                                                      style={{ flexShrink: 0, fontSize: '1rem', color: '#f87171', background: 'none', border: 'none', cursor: 'pointer', paddingTop: '0.05rem', lineHeight: 1 }}
+                                                    >✕</button>
+                                                  </div>
+                                                )
+                                              })}
+                                            </div>
+
+                                            <div style={{ marginBottom: '1rem' }}>
+                                              <p style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '0.4rem' }}>Custom Intro (optional)</p>
+                                              <textarea
+                                                value={customIntros[c.id] ?? ''}
+                                                onChange={(e) => setCustomIntros(prev => ({ ...prev, [c.id]: e.target.value }))}
+                                                rows={3}
+                                                placeholder={`Hi! Based on your intake form, here are my top picks for your family...`}
+                                                style={{ width: '100%', backgroundColor: '#13151a', border: '1px solid #3d4248', borderRadius: '0.5rem', color: '#c8bfb5', fontSize: '0.85rem', padding: '0.5rem 0.75rem', resize: 'vertical', lineHeight: '1.6', fontFamily: 'inherit', boxSizing: 'border-box' }}
+                                              />
+                                            </div>
+
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                                              <button
+                                                onClick={() => sendReport(c.id, c.email)}
+                                                disabled={sendingReport[c.id]}
+                                                style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.5rem', borderRadius: '999px', border: 'none', backgroundColor: sendingReport[c.id] ? '#3d4248' : '#5bb87a', color: sendingReport[c.id] ? '#a09890' : '#0a1f14', cursor: sendingReport[c.id] ? 'default' : 'pointer' }}
+                                              >
+                                                {sendingReport[c.id] ? 'Sending...' : `Send Report to ${c.email}`}
+                                              </button>
+                                              {sendSuccess[c.id] && (
+                                                <span style={{ fontSize: '0.85rem', color: '#5bb87a', fontWeight: 700 }}>✓ Report sent!</span>
+                                              )}
+                                            </div>
+                                          </>
+                                        )}
+                                      </div>
+                                    )}
 
                                     {/* FULL DETAIL SECTIONS */}
                                     <DarkSummarySection title="Family" color="#b19cd9">
