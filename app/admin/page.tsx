@@ -1254,7 +1254,6 @@ export default function AdminPage() {
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
                                                   {(reportItems[c.id] ?? []).map((item, idx) => {
                                                     const name = item.resources?.name ?? recs[c.id]?.find(r => r.resource_id === item.resource_id)?.name ?? '—'
-                                                    const screen = item.resources?.requires_screen
                                                     return (
                                                       <div key={item.id} style={{ backgroundColor: '#fff', borderRadius: '0.5rem', padding: '0.65rem 0.75rem', border: '1px solid #e8e0d5' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.3rem' }}>
@@ -1264,12 +1263,6 @@ export default function AdminPage() {
                                                           </div>
                                                           <button onClick={() => removeFromReport(c.id, item.id)} style={{ fontSize: '0.75rem', color: '#ccc', background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}>✕</button>
                                                         </div>
-                                                        {item.resources?.price_range && (
-                                                          <div style={{ display: 'flex', gap: '0.3rem', marginBottom: '0.3rem' }}>
-                                                            <span style={{ fontSize: '0.65rem', backgroundColor: '#f5f1e9', color: '#5c5c5c', padding: '1px 6px', borderRadius: 999 }}>{item.resources.price_range}</span>
-                                                            <span style={{ fontSize: '0.65rem', backgroundColor: '#f5f1e9', color: '#5c5c5c', padding: '1px 6px', borderRadius: 999 }}>{screen === 'yes' ? '🖥 screen' : screen === 'optional' ? '🖥 optional' : '📚 no screen'}</span>
-                                                          </div>
-                                                        )}
                                                         <textarea
                                                           defaultValue={item.reason}
                                                           onBlur={(e) => updateItemReason(c.id, item.id, e.target.value)}
