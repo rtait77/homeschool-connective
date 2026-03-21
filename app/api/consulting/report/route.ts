@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   const user = await checkAdmin()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { customer_id, resource_id, name, reason } = await req.json()
+  const { customer_id, resource_id, name, reason, for_people } = await req.json()
   if (!customer_id || !resource_id) {
     return NextResponse.json({ error: 'customer_id and resource_id required' }, { status: 400 })
   }
@@ -104,8 +104,8 @@ export async function POST(req: NextRequest) {
 
   const { data: item, error } = await admin
     .from('report_items')
-    .insert({ report_id: report.id, resource_id, reason: reason ?? name ?? '', sort_order })
-    .select('id, resource_id, reason, sort_order')
+    .insert({ report_id: report.id, resource_id, reason: reason ?? name ?? '', sort_order, for_people: for_people ?? [] })
+    .select('id, resource_id, reason, sort_order, for_people')
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
