@@ -155,7 +155,7 @@ export default function ClientReportPage() {
                               {allPeople.length > 1 && (
                                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
                                   {allPeople.map(p => (
-                                    <span key={p} style={{ fontSize: '0.72rem', fontWeight: 800, padding: '2px 10px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#fde8e0' : '#e0f4f8', color: p === 'Parent' ? '#c0522a' : '#1a7a8e' }}>{p}</span>
+                                    <span key={p} style={{ fontSize: '0.72rem', fontWeight: 800, padding: '2px 10px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#f9d0e8' : '#e8d9ff', color: p === 'Parent' ? '#9d174d' : '#6d28d9' }}>{p}</span>
                                   ))}
                                 </div>
                               )}
