@@ -1398,15 +1398,15 @@ export default function AdminPage() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <h2 className="text-lg font-extrabold mb-1">Curriculum Resources</h2>
-              <p className="text-sm text-[#5c5c5c]">{resources?.length ?? 0} resources in database</p>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#e8e0d5', marginBottom: '0.2rem' }}>Curriculum Resources</h2>
+              <p style={{ fontSize: '0.8rem', color: '#a09890' }}>{resources?.length ?? 0} resources in database</p>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
               <input
                 value={resourceSearch}
                 onChange={e => setResourceSearch(e.target.value)}
                 placeholder="Search resources..."
-                style={{ padding: '0.45rem 0.85rem', borderRadius: 999, border: '1px solid #e2ddd5', fontSize: '0.85rem', width: 200 }}
+                style={{ padding: '0.45rem 0.85rem', borderRadius: 999, border: '1px solid #3d4248', backgroundColor: '#2e3338', color: '#e8e0d5', fontSize: '0.85rem', width: 200 }}
               />
               <button
                 onClick={() => { setAddingResource(true); setNewResource(blankResource()) }}
@@ -1417,7 +1417,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {resourcesLoading && <p className="text-sm text-[#5c5c5c]">Loading resources...</p>}
+          {resourcesLoading && <p style={{ fontSize: '0.85rem', color: '#a09890' }}>Loading resources...</p>}
 
           {/* Add Resource form */}
           {addingResource && (
@@ -1445,27 +1445,27 @@ export default function AdminPage() {
 
           {/* Resources list */}
           {resources && !addingResource && !editingResource && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {resources
                 .filter(r => !resourceSearch || r.name.toLowerCase().includes(resourceSearch.toLowerCase()) || r.subjects?.join(' ').toLowerCase().includes(resourceSearch.toLowerCase()))
                 .map(r => (
-                  <div key={r.id} className="bg-white rounded-2xl p-4 border border-[#e2ddd5]" style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.05)' }}>
+                  <div key={r.id} style={{ backgroundColor: '#24282b', borderRadius: '0.875rem', padding: '0.875rem 1.1rem', border: '1px solid #3d4248' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
-                          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c' }}>{r.name}</span>
-                          <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px', borderRadius: 999, backgroundColor: r.religious_pref === 'christian' ? '#fde8e8' : r.religious_pref === 'christian_lite' ? '#fff8e1' : r.religious_pref === 'neutral' ? '#f3f4f6' : '#e8f5ef', color: r.religious_pref === 'christian' ? '#991b1b' : r.religious_pref === 'christian_lite' ? '#b45309' : r.religious_pref === 'neutral' ? '#6b7280' : '#1a7a52' }}>{r.religious_pref}</span>
-                          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', padding: '2px 8px', borderRadius: 999, backgroundColor: '#f5f1e9' }}>{r.price_range}</span>
-                          <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', padding: '2px 8px', borderRadius: 999, backgroundColor: '#f5f1e9' }}>{r.requires_screen === 'yes' ? '🖥 screen' : r.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
+                          <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#e8e0d5' }}>{r.name}</span>
+                          <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '1px 8px', borderRadius: 999, backgroundColor: r.religious_pref === 'christian' ? '#3a1a1a' : r.religious_pref === 'christian_lite' ? '#3a2a10' : r.religious_pref === 'neutral' ? '#2a2e32' : '#1a3a2a', color: r.religious_pref === 'christian' ? '#f87171' : r.religious_pref === 'christian_lite' ? '#f0c040' : r.religious_pref === 'neutral' ? '#a09890' : '#5bb87a' }}>{r.religious_pref}</span>
+                          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', padding: '1px 8px', borderRadius: 999, backgroundColor: '#2e3338' }}>{r.price_range}</span>
+                          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#a09890', padding: '1px 8px', borderRadius: 999, backgroundColor: '#2e3338' }}>{r.requires_screen === 'yes' ? '🖥 screen' : r.requires_screen === 'optional' ? '🖥 optional' : '📚 no screen'}</span>
                         </div>
-                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
-                          {r.subjects?.map(s => <span key={s} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#e8f5ef', color: '#1a7a52', padding: '1px 7px', borderRadius: 999 }}>{s}</span>)}
-                          {r.grade_levels?.map(g => <span key={g} style={{ fontSize: '0.7rem', color: '#5c5c5c', padding: '1px 7px', borderRadius: 999, backgroundColor: '#f5f1e9' }}>{g}</span>)}
+                        <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
+                          {r.subjects?.map(s => <span key={s} style={{ fontSize: '0.68rem', fontWeight: 700, backgroundColor: '#1a3a2a', color: '#5bb87a', padding: '1px 7px', borderRadius: 999 }}>{s}</span>)}
+                          {r.grade_levels?.map(g => <span key={g} style={{ fontSize: '0.68rem', color: '#a09890', padding: '1px 7px', borderRadius: 999, backgroundColor: '#2e3338' }}>{g}</span>)}
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
-                        <button onClick={() => setEditingResource(r)} style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: 999, border: '1px solid #e2ddd5', backgroundColor: 'transparent', cursor: 'pointer', color: '#5c5c5c' }}>Edit</button>
-                        <button onClick={() => deleteResource(r.id, r.name)} style={{ fontSize: '0.8rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: 999, border: '1px solid #fca5a5', backgroundColor: 'transparent', cursor: 'pointer', color: '#991b1b' }}>Delete</button>
+                        <button onClick={() => setEditingResource(r)} style={{ fontSize: '0.78rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: 999, border: '1px solid #3d4248', backgroundColor: 'transparent', cursor: 'pointer', color: '#a09890' }}>Edit</button>
+                        <button onClick={() => deleteResource(r.id, r.name)} style={{ fontSize: '0.78rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: 999, border: '1px solid #7f1d1d', backgroundColor: 'transparent', cursor: 'pointer', color: '#f87171' }}>Delete</button>
                       </div>
                     </div>
                   </div>
@@ -1490,32 +1490,34 @@ function ResourceForm({
   saving: boolean
   title: string
 }) {
+  const inputStyle = { width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #3d4248', borderRadius: 8, fontSize: '0.85rem', boxSizing: 'border-box' as const, backgroundColor: '#1a1d20', color: '#e8e0d5' }
+  const labelStyle = { fontSize: '0.68rem', fontWeight: 700, color: '#a09890', textTransform: 'uppercase' as const, letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }
   const field = (label: string, key: string, placeholder?: string) => (
     <div>
-      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }}>{label}</label>
+      <label style={labelStyle}>{label}</label>
       <input
         value={Array.isArray(data[key]) ? (data[key] as string[]).join(', ') : (data[key] as string) ?? ''}
         onChange={e => onChange({ [key]: e.target.value })}
         placeholder={placeholder}
-        style={{ width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #e2ddd5', borderRadius: 8, fontSize: '0.9rem', boxSizing: 'border-box' as const }}
+        style={inputStyle}
       />
     </div>
   )
   const select = (label: string, key: string, options: string[]) => (
     <div>
-      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }}>{label}</label>
+      <label style={labelStyle}>{label}</label>
       <select
         value={(data[key] as string) ?? ''}
         onChange={e => onChange({ [key]: e.target.value })}
-        style={{ width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #e2ddd5', borderRadius: 8, fontSize: '0.9rem' }}
+        style={{ ...inputStyle, width: '100%' }}
       >
         {options.map(o => <option key={o} value={o}>{o}</option>)}
       </select>
     </div>
   )
   return (
-    <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5] mb-6" style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
-      <h3 style={{ fontWeight: 800, fontSize: '1rem', marginBottom: '1.25rem', color: '#1c1c1c' }}>{title}</h3>
+    <div style={{ backgroundColor: '#24282b', borderRadius: '1rem', padding: '1.5rem', border: '1px solid #3d4248', marginBottom: '1.25rem' }}>
+      <h3 style={{ fontWeight: 800, fontSize: '0.95rem', marginBottom: '1.25rem', color: '#e8e0d5' }}>{title}</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.85rem', marginBottom: '1.25rem' }}>
         {field('Name *', 'name', 'e.g. Khan Academy')}
         {field('Subjects (comma-separated)', 'subjects', 'math, science')}
@@ -1529,19 +1531,19 @@ function ResourceForm({
         {field('URL', 'url', 'https://...')}
       </div>
       <div style={{ marginBottom: '1.25rem' }}>
-        <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#5c5c5c', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '0.25rem' }}>Description</label>
+        <label style={labelStyle}>Description</label>
         <textarea
           value={(data['description'] as string) ?? ''}
           onChange={e => onChange({ description: e.target.value })}
           rows={2}
-          style={{ width: '100%', padding: '0.45rem 0.75rem', border: '1px solid #e2ddd5', borderRadius: 8, fontSize: '0.9rem', resize: 'vertical', boxSizing: 'border-box' as const }}
+          style={{ ...inputStyle, resize: 'vertical' }}
         />
       </div>
       <div style={{ display: 'flex', gap: '0.75rem' }}>
-        <button onClick={onSave} disabled={saving} style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.5rem', borderRadius: 999, border: 'none', backgroundColor: saving ? '#ccc' : '#ed7c5a', color: '#fff', cursor: saving ? 'default' : 'pointer' }}>
+        <button onClick={onSave} disabled={saving} style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.5rem', borderRadius: 999, border: 'none', backgroundColor: saving ? '#3d4248' : '#ed7c5a', color: saving ? '#a09890' : '#fff', cursor: saving ? 'default' : 'pointer' }}>
           {saving ? 'Saving...' : 'Save Resource'}
         </button>
-        <button onClick={onCancel} style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.25rem', borderRadius: 999, border: '1px solid #e2ddd5', backgroundColor: 'transparent', cursor: 'pointer', color: '#5c5c5c' }}>
+        <button onClick={onCancel} style={{ fontSize: '0.85rem', fontWeight: 700, padding: '0.5rem 1.25rem', borderRadius: 999, border: '1px solid #3d4248', backgroundColor: 'transparent', cursor: 'pointer', color: '#a09890' }}>
           Cancel
         </button>
       </div>
