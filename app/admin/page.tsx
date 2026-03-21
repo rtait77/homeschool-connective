@@ -1223,30 +1223,49 @@ export default function AdminPage() {
                                                     <button onClick={() => setTagPopup({ name: rec.name, tags: rec.matched_tags ?? [] })} style={{ fontSize: '0.72rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#55b6ca', padding: '0.15rem 0.6rem', borderRadius: '999px', border: 'none', cursor: 'pointer', textDecoration: 'underline dotted' }}>{rec.matched_tag_count} tags matched ⓘ</button>
                                                   </div>
                                                 </div>
-                                                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                                                  {rec.subjects?.map(sub => (
-                                                    <span key={sub} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2a3a2e', color: '#5bb87a', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{sub}</span>
-                                                  ))}
-                                                  {rec.grade_levels?.map(g => (
-                                                    <span key={g} style={{ fontSize: '0.7rem', fontWeight: 700, backgroundColor: '#2e3338', color: '#a09890', padding: '0.1rem 0.5rem', borderRadius: '999px' }}>{g}</span>
-                                                  ))}
-                                                </div>
                                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginTop: '0.25rem' }}>
                                                   <p style={{ fontSize: '0.85rem', color: '#c8bfb5', lineHeight: '1.6', flex: 1 }}>{rec.reason}</p>
                                                   {(() => {
                                                     const inReport = (reportItems[c.id] ?? []).find(i => i.resource_id === rec.resource_id)
                                                     const loading = reportLoading[rec.resource_id]
-                                                    return inReport ? (
-                                                      <button
-                                                        onClick={() => removeFromReport(c.id, inReport.id)}
-                                                        style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #5bb87a', color: '#5bb87a', backgroundColor: '#1a3a2a', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                                                      >✓ Added</button>
-                                                    ) : (
-                                                      <button
-                                                        onClick={() => addToReport(c.id, rec)}
-                                                        disabled={loading}
-                                                        style={{ flexShrink: 0, fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #55b6ca', color: loading ? '#a09890' : '#55b6ca', backgroundColor: 'transparent', cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap' }}
-                                                      >{loading ? '...' : '+ Add'}</button>
+                                                    return (
+                                                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.4rem', flexShrink: 0 }}>
+                                                        {inReport ? (
+                                                          <button
+                                                            onClick={() => removeFromReport(c.id, inReport.id)}
+                                                            style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #5bb87a', color: '#5bb87a', backgroundColor: '#1a3a2a', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                                          >✓ Added</button>
+                                                        ) : (
+                                                          <button
+                                                            onClick={() => addToReport(c.id, rec)}
+                                                            disabled={loading}
+                                                            style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.3rem 0.85rem', borderRadius: '999px', border: '2px solid #55b6ca', color: loading ? '#a09890' : '#55b6ca', backgroundColor: 'transparent', cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap' }}
+                                                          >{loading ? '...' : '+ Add'}</button>
+                                                        )}
+                                                        {inReport && (
+                                                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                            <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#a09890', textTransform: 'uppercase', letterSpacing: '0.05em' }}>For:</span>
+                                                            {['Parent', ...children.map((ch: Record<string, unknown>, ci: number) => {
+                                                              const n = typeof ch.name === 'string' && ch.name ? ch.name : `Child ${ci + 1}`
+                                                              return n
+                                                            })].map(person => {
+                                                              const sel = (inReport.for_people ?? []).includes(person)
+                                                              return (
+                                                                <button key={person} type="button"
+                                                                  onClick={() => {
+                                                                    const current = inReport.for_people ?? []
+                                                                    const next = sel ? current.filter((p: string) => p !== person) : [...current, person]
+                                                                    updateItemForPeople(c.id, inReport.id, next)
+                                                                  }}
+                                                                  style={{ fontSize: '0.62rem', fontWeight: 700, padding: '1px 7px', borderRadius: 999, border: 'none', cursor: 'pointer', backgroundColor: sel ? (person === 'Parent' ? '#fde8e0' : '#e0f4f8') : '#2e3338', color: sel ? (person === 'Parent' ? '#c0522a' : '#1a7a8e') : '#a09890' }}
+                                                                >
+                                                                  {person}
+                                                                </button>
+                                                              )
+                                                            })}
+                                                          </div>
+                                                        )}
+                                                      </div>
                                                     )
                                                   })()}
                                                 </div>
