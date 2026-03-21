@@ -86,17 +86,13 @@ export async function POST(req: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const r = item.resources as any
     const isChristianLite = r?.religious_pref === 'christian_lite'
-    const subtext = [
-      r?.price_range,
-      isChristianLite ? 'Note: contains light faith references' : null,
-    ].filter(Boolean).join(' · ')
     return `
       <div style="margin-bottom:20px;padding:20px;background:#fff;border-radius:12px;border:1px solid #e8e0d5;box-shadow:0 1px 4px rgba(0,0,0,0.05);">
         <div style="display:flex;align-items:flex-start;gap:12px;">
           <span style="font-size:13px;font-weight:800;color:#55b6ca;min-width:24px;">#${idx + 1}</span>
           <div style="flex:1;">
-            <p style="font-size:17px;font-weight:800;color:#1c1c1c;margin:0 0 4px;">${r?.name ?? 'Resource'}</p>
-            ${subtext ? `<p style="font-size:12px;color:#a09890;margin:0 0 10px;">${subtext}</p>` : '<p style="margin:0 0 10px;"></p>'}
+            <p style="font-size:17px;font-weight:800;color:#1c1c1c;margin:0 0 8px;">${r?.name ?? 'Resource'}</p>
+            ${isChristianLite ? '<p style="font-size:12px;color:#a09890;margin:0 0 8px;">Note: contains light faith references</p>' : ''}
             <p style="font-size:15px;line-height:1.6;color:#444;margin:0;">${item.reason}</p>
             ${r?.url ? `<a href="${r.url}" style="display:inline-block;margin-top:10px;font-size:13px;font-weight:700;color:#ed7c5a;text-decoration:none;">Learn more →</a>` : ''}
           </div>
@@ -111,7 +107,7 @@ export async function POST(req: NextRequest) {
         <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height:52px;" />
       </div>
       <div style="background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 16px rgba(0,0,0,0.08);">
-        <h2 style="font-size:24px;font-weight:800;color:#1c1c1c;margin-bottom:8px;">Your Personalized Curriculum Report</h2>
+        <h2 style="font-size:24px;font-weight:800;color:#1c1c1c;margin-bottom:8px;">Your Personalized Recommendations</h2>
         <p style="font-size:14px;color:#888;margin-bottom:24px;">From Mel at Homeschool Connective</p>
         ${intro}
         <h3 style="font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#ed7c5a;margin-bottom:16px;">My Top Picks for Your Family</h3>
@@ -132,7 +128,7 @@ export async function POST(req: NextRequest) {
       from: '"Mel at Homeschool Connective" <consulting@homeschoolconnective.com>',
       to: clientEmail,
       bcc: 'consulting@homeschoolconnective.com',
-      subject: 'Your Personalized Curriculum Recommendations from Mel',
+      subject: 'Your Personalized Recommendations from Mel',
       html,
     })
   } catch (err) {
