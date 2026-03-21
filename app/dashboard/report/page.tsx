@@ -59,12 +59,6 @@ export default function ClientReportPage() {
     })
   }, [])
 
-  const screenLabel = (val: string) => {
-    if (val === 'yes') return '🖥 Screen-based'
-    if (val === 'optional') return '🖥 Screen optional'
-    return '📚 No screen'
-  }
-
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#f5f1e9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -126,21 +120,10 @@ export default function ClientReportPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
                   <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', minWidth: '1.5rem', paddingTop: 3 }}>#{idx + 1}</span>
                   <div style={{ flex: 1 }}>
-                    <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1c1c1c', margin: '0 0 8px' }}>{r?.name ?? 'Resource'}</h2>
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                      {r?.price_range && (
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#f5f1e9', color: '#5c5c5c', padding: '3px 10px', borderRadius: 999 }}>{r.price_range}</span>
-                      )}
-                      {r?.requires_screen && (
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#f5f1e9', color: '#5c5c5c', padding: '3px 10px', borderRadius: 999 }}>{screenLabel(r.requires_screen)}</span>
-                      )}
-                      {r?.subjects?.map(s => (
-                        <span key={s} style={{ fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#e8f5ef', color: '#1a7a52', padding: '3px 10px', borderRadius: 999 }}>{s}</span>
-                      ))}
-                      {r?.grade_levels?.map(g => (
-                        <span key={g} style={{ fontSize: '0.75rem', fontWeight: 700, backgroundColor: '#e8f0f5', color: '#1a4a7a', padding: '3px 10px', borderRadius: 999 }}>{g}</span>
-                      ))}
-                    </div>
+                    <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1c1c1c', margin: '0 0 4px' }}>{r?.name ?? 'Resource'}</h2>
+                    {r?.price_range && (
+                      <p style={{ fontSize: '0.78rem', color: '#a09890', margin: '0 0 10px' }}>{r.price_range}</p>
+                    )}
                     <p style={{ fontSize: '0.95rem', lineHeight: 1.7, color: '#444', margin: '0 0 12px' }}>{item.reason}</p>
                     {r?.url && (
                       <a href={r.url} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ed7c5a', textDecoration: 'none' }}>
