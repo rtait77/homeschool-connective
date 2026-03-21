@@ -702,7 +702,40 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No resources in database' }, { status: 500 })
   }
 
-  const profile = extractTagProfile(intake.responses as Record<string, unknown>)
+  const responses = intake.responses as Record<string, unknown>
+  const intakeChildren = Array.isArray(responses.children) ? responses.children as Record<string, unknown>[] : []
+  const childNames = intakeChildren.map((c, i) => (typeof c.name === 'string' && c.name) ? c.name : `Child ${i + 1}`)
+  const hasMultipleChildren = childNames.length > 1
+
+  const CHILD_QUESTION_PREFIXES = [
+    'Regulation', 'How child handles', 'How parent handles', 'Approach to new tasks',
+    'Approach to hard tasks', 'Read-aloud', 'Video engagement', 'Screen use', 'Games',
+    'Reading level', 'Reading —', 'Writing stage', 'Writing —', 'Physical writing',
+    'Writing types', 'Spelling level', 'Spelling —', 'Focus span', 'Intense interests',
+    'How they demonstrate', 'Loves subjects', 'Diagnosis', 'Extra info',
+  ]
+
+  function getSuggestedFor(matchedTags: { tag: string; sources: { question: string }[] }[]): string[] {
+    const people = new Set<string>()
+    for (const { sources } of matchedTags) {
+      for (const { question } of sources) {
+        if (hasMultipleChildren) {
+          let foundChild = false
+          for (const name of childNames) {
+            if (question.includes(`(${name})`)) { people.add(name); foundChild = true }
+          }
+          if (!foundChild) people.add('Parent')
+        } else {
+          const isChildQ = CHILD_QUESTION_PREFIXES.some(p => question.startsWith(p))
+          if (isChildQ && childNames.length > 0) people.add(childNames[0])
+          else people.add('Parent')
+        }
+      }
+    }
+    return Array.from(people)
+  }
+
+  const profile = extractTagProfile(responses)
 
   const recommendations = (resources as Resource[])
     .map(resource => {
@@ -727,6 +760,7 @@ export async function POST(req: NextRequest) {
       matched_tags: matchedTags,
       christian_lite_warning: warning,
       reason: generateReason(resource, matchedTags, warning),
+      suggested_for: getSuggestedFor(matchedTags),
     }))
 
   return NextResponse.json({
