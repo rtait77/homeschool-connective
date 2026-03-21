@@ -82,6 +82,7 @@ export default function DashboardPage() {
     intake_completed: boolean
     intake_status: string
   } | null>(null)
+  const [reportReady, setReportReady] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -124,6 +125,12 @@ export default function DashboardPage() {
           intake_completed: consultingRecord.intake_completed,
           intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft',
         })
+        if (consultingRecord.intake_completed) {
+          fetch('/api/consulting/client-report')
+            .then(r => r.json())
+            .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
+            .catch(() => {})
+        }
       }
 
       setLoading(false)
@@ -310,11 +317,13 @@ export default function DashboardPage() {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3 flex-wrap">
                   <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                    consulting.intake_completed
+                    reportReady
+                      ? 'bg-[#5bb87a] text-white'
+                      : consulting.intake_completed
                       ? 'bg-[#d1f5ea] text-[#1a7a52]'
                       : 'bg-[#ed7c5a] text-white'
                   }`}>
-                    {consulting.intake_completed ? 'Intake submitted' : 'Action needed — complete your intake form'}
+                    {reportReady ? 'Your report is ready!' : consulting.intake_completed ? 'Intake submitted — Mel is reviewing' : 'Action needed — complete your intake form'}
                   </span>
                   {(() => {
                     const daysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
@@ -327,6 +336,16 @@ export default function DashboardPage() {
                 </div>
                 {!consulting.intake_completed ? (
                   <p className="text-sm text-[#5c5c5c]">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
+                ) : reportReady ? (
+                  <div>
+                    <p className="text-sm text-[#5c5c5c] mb-3">Your personalized curriculum report from Mel is ready!</p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
+                        View My Report →
+                      </Link>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review my intake answers →</Link>
+                    </div>
+                  </div>
                 ) : (
                   <div>
                     <p className="text-sm text-[#5c5c5c] mb-2">Mel has your answers and will be in touch within 3–5 business days. Questions? Email <a href="mailto:consulting@homeschoolconnective.com" className="text-[#55b6ca] font-bold hover:underline">consulting@homeschoolconnective.com</a></p>
