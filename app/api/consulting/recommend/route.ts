@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import { scoreStyleProfile } from '@/app/lib/scoreStyleProfile'
 
 const ADMIN_EMAIL = 'support@homeschoolconnective.com'
 
@@ -736,6 +737,13 @@ export async function POST(req: NextRequest) {
   }
 
   const profile = extractTagProfile(responses)
+  const styleProfile = scoreStyleProfile(responses)
+
+  // Persist style profile to consulting_customers
+  await admin
+    .from('consulting_customers')
+    .update({ style_profile: styleProfile })
+    .eq('id', customer_id)
 
   const recommendations = (resources as Resource[])
     .map(resource => {
@@ -768,5 +776,6 @@ export async function POST(req: NextRequest) {
     total_resources: resources.length,
     excluded_count: resources.length - recommendations.length,
     tag_profile: Array.from(profile.tags),
+    style_profile: styleProfile,
   })
 }
