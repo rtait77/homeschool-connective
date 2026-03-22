@@ -739,6 +739,41 @@ export async function POST(req: NextRequest) {
   const profile = extractTagProfile(responses)
   const styleProfile = scoreStyleProfile(responses)
 
+  // Inject style profile signals into the tag engine so resource recommendations reflect
+  // the child's learning style, parent teaching style, and best-fit method.
+  const { learningStyles, methods, teachingStyle: tStyle } = styleProfile
+  // Learning styles → tags (top style gets full boost, others partial)
+  if (learningStyles.includes('Visual')) profile.tags.add('visual_learner')
+  if (learningStyles.includes('Auditory')) {
+    profile.tags.add('auditory_learner')
+    profile.tags.add('read_aloud')
+    profile.tags.add('discussion_based')
+  }
+  if (learningStyles.includes('Kinesthetic')) {
+    profile.tags.add('kinesthetic')
+    profile.tags.add('hands_on')
+    profile.tags.add('movement_friendly')
+  }
+  if (learningStyles.includes('Tactile')) {
+    profile.tags.add('hands_on')
+    profile.tags.add('kinesthetic')
+  }
+  // Teaching style → tags
+  if (tStyle === 'Direct Teacher') { profile.tags.add('teacher_led'); profile.tags.add('discussion_based') }
+  if (tStyle === 'Facilitator') { profile.tags.add('child_led'); profile.tags.add('hands_on') }
+  if (tStyle === 'Read-aloud & Discussion') { profile.tags.add('read_aloud'); profile.tags.add('literature_based'); profile.tags.add('discussion_based') }
+  if (tStyle === 'Experience-based') { profile.tags.add('project_based'); profile.tags.add('hands_on') }
+  if (tStyle === 'Resource-dependent') { profile.tags.add('low_prep'); profile.tags.add('self_paced'); profile.tags.add('independent_learner') }
+  // Method → tags
+  if (methods.includes('Charlotte Mason')) { profile.tags.add('read_aloud'); profile.tags.add('literature_based'); profile.tags.add('hands_on') }
+  if (methods.includes('Classical')) { profile.tags.add('discussion_based'); profile.tags.add('literature_based'); profile.tags.add('structured') }
+  if (methods.includes('Montessori')) { profile.tags.add('hands_on'); profile.tags.add('child_led'); profile.tags.add('self_paced') }
+  if (methods.includes('Traditional')) { profile.tags.add('structured'); profile.tags.add('teacher_led') }
+  if (methods.includes('Unschooling')) { profile.tags.add('child_led'); profile.tags.add('interest_led'); profile.tags.add('low_structure') }
+  if (methods.includes('Eclectic')) { profile.tags.add('flexible_schedule') }
+  if (methods.includes('Lifestyle Learning')) { profile.tags.add('project_based'); profile.tags.add('hands_on'); profile.tags.add('flexible_schedule') }
+  if (methods.includes('Waldorf')) { profile.tags.add('hands_on'); profile.tags.add('project_based') }
+
   // Persist style profile to consulting_customers
   await admin
     .from('consulting_customers')
