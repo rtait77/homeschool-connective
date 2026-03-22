@@ -161,9 +161,10 @@ const RESOURCE_TYPE_COLORS: Record<string, string> = {
   online_game: '#3db88a',
   subscription_box: '#c47fd4',
   activity_book: '#7fb8d4',
+  board_game: '#e8c45a',
   other: '#a09890',
 }
-const RESOURCE_TYPES = ['', 'curriculum', 'book', 'activity_book', 'workbook', 'website', 'video', 'toy', 'online_game', 'app', 'subscription_box', 'other']
+const RESOURCE_TYPES = ['', 'curriculum', 'book', 'activity_book', 'workbook', 'website', 'video', 'toy', 'online_game', 'app', 'subscription_box', 'board_game', 'other']
 
 export default function AdminPage() {
   const router = useRouter()
