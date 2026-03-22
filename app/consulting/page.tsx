@@ -54,11 +54,10 @@ export default function ConsultingPage() {
           </p>
           <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.1rem)', fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: 16 }}>
             <span style={{ display: 'block' }}>Stop Guessing.</span>
-            <span style={{ display: 'block' }}>Get Personalized Curriculum Recommendations</span>
-            <span style={{ display: 'block' }}>and Homeschooling Support.</span>
+            Get Personalized Curriculum Recommendations and Homeschooling Support.
           </h1>
           <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 560, margin: '0 auto 0' }}>
-            Mel provides personalized support for your family, including curriculum recommendations,<br />resource matching, and ongoing mentorship all in one place.
+            Mel provides personalized support for your family, including curriculum recommendations, resource matching, and ongoing mentorship all in one place.
           </p>
         </div>
       </div>
