@@ -167,7 +167,7 @@ export default function ConsultingPage() {
               },
             ].map(card => (
               <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 14, overflow: 'hidden', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-                <div style={{ backgroundColor: '#ed7c5a', padding: '18px 24px' }}>
+                <div style={{ backgroundColor: '#ed7c5a', padding: '18px 24px', minHeight: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', margin: 0, textAlign: 'center' }}>{card.title}</p>
                 </div>
                 <div style={{ padding: '24px' }}>
@@ -203,64 +203,6 @@ export default function ConsultingPage() {
                 Mel is passionate about coming alongside homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children&apos;s needs.
               </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── FAQ ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 720, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>FAQ</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {[
-              {
-                q: 'What is covered in the intake form, and what\'s included in the report?',
-                a: 'The intake form covers both the child and the parent/guardian. On the child\'s side: sensory and regulation needs, how they handle frustration, focus span, reading and writing levels, what subjects they love or avoid, screen habits, and more. On your side: your teaching style, schedule, prep willingness, goals, and what you\'ve already tried. Your report includes personalized curriculum and resource recommendations with specific reasons why each one was chosen for your family — matched to your child\'s learning style, your preferred homeschooling method, and your teaching style — plus 3 months of email support with Mel.',
-              },
-              {
-                q: 'How long does it take to get my report?',
-                a: 'Mel typically delivers your report within 3–5 business days of receiving your completed intake form.',
-              },
-              {
-                q: 'What subjects does this cover?',
-                a: 'All of them. We recommend resources across a wide range of subjects because learners have a wide range of interests. Core subjects like math, reading, writing, and science are covered — but so is anything else your family is exploring.',
-              },
-              {
-                q: 'What ages and grades do you work with?',
-                a: 'Pre-K through high school.',
-              },
-              {
-                q: 'What if I have more than one child?',
-                a: 'The intake form includes a section for each child, so Mel can tailor recommendations for multiple children at once — all for the same price.',
-              },
-              {
-                q: 'Is this for new homeschoolers or experienced ones?',
-                a: 'Both. Whether you\'re just starting out or you\'ve been at it for years and something isn\'t working, Mel can help.',
-              },
-              {
-                q: 'Do you recommend secular or religious curriculum?',
-                a: 'Both. The intake form asks about your preference and Mel matches resources accordingly. No assumptions are made.',
-              },
-              {
-                q: 'How is this different from googling curriculum reviews?',
-                a: 'Reviews tell you what a curriculum is like. Mel tells you whether it\'s right for your child and your family. She looks at how your child learns, how you teach, what you\'ve already tried, what your schedule looks like, and what your goals are — then matches from there. It\'s the difference between reading a menu and having someone who knows you well order for you.',
-              },
-              {
-                q: 'What does the 3 months of email support actually look like?',
-                a: 'After you receive your report, you can email Mel with follow-up questions — whether something isn\'t clicking, you want her opinion before buying something, or you just need a second opinion. She responds within 3–5 business days.',
-              },
-              {
-                q: 'Do I get access to the games when I sign up for consulting?',
-                a: 'Yes — when you sign up for consulting, you\'ll receive a 7-day free trial of our educational games. After that, you can choose to add a games subscription separately. There is no free trial for the consulting service itself.',
-              },
-              {
-                q: 'Can I get a refund if I change my mind?',
-                a: 'Refunds are not available once the intake form has been sent to you. If you have questions before purchasing, reach out at consulting@homeschoolconnective.com.',
-              },
-            ].map((item, i) => (
-              <FaqItem key={i} q={item.q} a={item.a} />
-            ))}
           </div>
         </div>
       </div>
@@ -379,6 +321,64 @@ export default function ConsultingPage() {
           </button>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', color: '#a09890', marginTop: 10 }}>Secure payment via Stripe. You&apos;ll receive a confirmation email right after payment.</p>
 
+        </div>
+      </div>
+
+      {/* ── FAQ ── */}
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto' }}>
+          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>FAQ</p>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {[
+              {
+                q: 'What is covered in the intake form, and what\'s included in the report?',
+                a: 'The intake form covers both the child and the parent/guardian. On the child\'s side: sensory and regulation needs, how they handle frustration, focus span, reading and writing levels, what subjects they love or avoid, screen habits, and more. On your side: your teaching style, schedule, prep willingness, goals, and what you\'ve already tried. Your report includes personalized curriculum and resource recommendations with specific reasons why each one was chosen for your family — matched to your child\'s learning style, your preferred homeschooling method, and your teaching style — plus 3 months of email support with Mel.',
+              },
+              {
+                q: 'How long does it take to get my report?',
+                a: 'Mel typically delivers your report within 3–5 business days of receiving your completed intake form.',
+              },
+              {
+                q: 'What subjects does this cover?',
+                a: 'All of them. We recommend resources across a wide range of subjects because learners have a wide range of interests. Core subjects like math, reading, writing, and science are covered — but so is anything else your family is exploring.',
+              },
+              {
+                q: 'What ages and grades do you work with?',
+                a: 'Pre-K through high school.',
+              },
+              {
+                q: 'What if I have more than one child?',
+                a: 'The intake form includes a section for each child, so Mel can tailor recommendations for multiple children at once — all for the same price.',
+              },
+              {
+                q: 'Is this for new homeschoolers or experienced ones?',
+                a: 'Both. Whether you\'re just starting out or you\'ve been at it for years and something isn\'t working, Mel can help.',
+              },
+              {
+                q: 'Do you recommend secular or religious curriculum?',
+                a: 'Both. The intake form asks about your preference and Mel matches resources accordingly. No assumptions are made.',
+              },
+              {
+                q: 'How is this different from googling curriculum reviews?',
+                a: 'Reviews tell you what a curriculum is like. Mel tells you whether it\'s right for your child and your family. She looks at how your child learns, how you teach, what you\'ve already tried, what your schedule looks like, and what your goals are — then matches from there. It\'s the difference between reading a menu and having someone who knows you well order for you.',
+              },
+              {
+                q: 'What does the 3 months of email support actually look like?',
+                a: 'After you receive your report, you can email Mel with follow-up questions — whether something isn\'t clicking, you want her opinion before buying something, or you just need a second opinion. She responds within 3–5 business days.',
+              },
+              {
+                q: 'Do I get access to the games when I sign up for consulting?',
+                a: 'Yes — when you sign up for consulting, you\'ll receive a 7-day free trial of our educational games. After that, you can choose to add a games subscription separately. There is no free trial for the consulting service itself.',
+              },
+              {
+                q: 'Can I get a refund if I change my mind?',
+                a: 'Refunds are not available once the intake form has been sent to you. If you have questions before purchasing, reach out at consulting@homeschoolconnective.com.',
+              },
+            ].map((item, i) => (
+              <FaqItem key={i} q={item.q} a={item.a} />
+            ))}
+          </div>
         </div>
       </div>
 
