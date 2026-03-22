@@ -132,24 +132,29 @@ export default function ConsultingPage() {
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>How We Help</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
-            <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
-              <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>The Intake Form</p>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
-                This isn&apos;t your basic questionnaire. Mel and our team built an intake form that goes deep into what actually matters. On the child side: sensory and regulation needs, how they handle frustration, how they approach new and hard tasks, focus span, reading and writing levels, screen habits, what subjects they love and avoid, and more. On your side: your teaching style, schedule, prep time, goals, what you&apos;ve already tried, and what success looks like for your family. Every answer feeds directly into our matching system so Mel can build a report that actually fits you — not a generic list.
-              </p>
-            </div>
-            <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
-              <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>Personalized Recommendations</p>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
-                Based on your intake form responses, our matching system identifies the curriculum and resources most likely to work for your child and your teaching style. Mel reviews everything and puts together a custom report with specific suggestions that fit your family&apos;s needs and budget. No generic lists and no guesswork. Every recommendation is chosen with your family in mind.
-              </p>
-            </div>
-            <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
-              <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>Homeschool Mentorship</p>
-              <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
-                After you receive your report from Mel, you&apos;ll be able to ask questions and get help for 3 months through email correspondence. Whether something isn&apos;t clicking the way you hoped, you want her opinion before purchasing a resource, or you just need someone to think through a challenge with you, she is there to help. You won&apos;t be left figuring it out on your own.
-              </p>
-            </div>
+            {[
+              {
+                title: 'The Intake Form',
+                body: "This isn't your basic questionnaire. Mel and our team built an intake form that goes deep into what actually matters. On the child side: sensory and regulation needs, how they handle frustration, how they approach new and hard tasks, focus span, reading and writing levels, screen habits, what subjects they love and avoid, and more. On your side: your teaching style, schedule, prep time, goals, what you've already tried, and what success looks like for your family. Every answer feeds directly into our matching system so Mel can build a report that actually fits you — not a generic list.",
+              },
+              {
+                title: 'Personalized Recommendations',
+                body: "Based on your intake form responses, our matching system identifies the curriculum and resources most likely to work for your child and your teaching style. Mel reviews everything and puts together a custom report with specific suggestions that fit your family's needs and budget. No generic lists and no guesswork. Every recommendation is chosen with your family in mind.",
+              },
+              {
+                title: 'Homeschool Mentorship',
+                body: "After you receive your report from Mel, you'll be able to ask questions and get help for 3 months through email correspondence. Whether something isn't clicking the way you hoped, you want her opinion before purchasing a resource, or you just need someone to think through a challenge with you, she is there to help. You won't be left figuring it out on your own.",
+              },
+            ].map(card => (
+              <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 14, overflow: 'hidden', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                <div style={{ backgroundColor: '#ed7c5a', padding: '18px 24px' }}>
+                  <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', margin: 0, textAlign: 'center' }}>{card.title}</p>
+                </div>
+                <div style={{ padding: '24px' }}>
+                  <p style={{ fontSize: '0.88rem', color: '#3a3a3a', lineHeight: 1.7, margin: 0 }}>{card.body}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
