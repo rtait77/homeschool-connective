@@ -47,18 +47,16 @@ export default function ConsultingPage() {
     <div style={{ fontFamily: 'Nunito, sans-serif' }}>
 
       {/* ── HERO ── */}
-      <div style={{ backgroundColor: '#ed7c5a', padding: '72px 24px 80px' }}>
-        <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 16 }}>
+      <div style={{ backgroundColor: '#ed7c5a', padding: '52px 24px 60px' }}>
+        <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 14 }}>
             One-on-One Homeschool Consulting
           </p>
-          <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: 20 }}>
-            Stop guessing.<br />Get personalized curriculum recommendations and{' '}
-            <span style={{ backgroundColor: 'rgba(255,255,255,0.22)', borderRadius: 6, padding: '2px 8px' }}>homeschool mentorship</span>{' '}
-            for your unique family.
+          <h1 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 16 }}>
+            Stop Guessing. Get personalized curriculum recommendations and homeschooling support.
           </h1>
-          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 36px' }}>
-            Mel provides personalized support for your family&apos;s homeschool journey — curriculum recommendations, resource matching, and ongoing mentorship all in one place.
+          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 500, margin: '0 auto 28px' }}>
+            Mel provides personalized support for your family, including curriculum recommendations, resource matching, and ongoing mentorship all in one place.
           </p>
           <a
             href="#pricing"
