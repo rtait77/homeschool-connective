@@ -688,6 +688,7 @@ function SectionParent({
             'Reading aloud together and discussing',
             'Finding experiences — field trips, documentaries, real-world projects',
             'I prefer to let the curriculum or a video do the teaching and I support',
+            'I love incorporating creativity, art, music, or storytelling into how we learn',
             "I'm still figuring out what kind of teacher I am",
           ]}
           values={form.teachingStyle}
@@ -749,6 +750,7 @@ function SectionParent({
             'We travel and school on the road',
             "It's noisy and busy — younger siblings, pets, distractions",
             "It's generally quiet and calm",
+            'We have a specific lifestyle — homesteading, travel, family business, ministry — that learning naturally happens inside',
           ]}
           values={form.learningEnvironment}
           onChange={v => toggleCheck('learningEnvironment', v)}
@@ -837,6 +839,8 @@ function SectionChild({
             'They need to be left alone',
             'They need something to squeeze, chew, or fidget with',
             'They need a complete change of activity — something totally different',
+            'They need to touch or handle materials while learning — manipulatives, blocks, or textures help',
+            'They get deeply absorbed in things they choose and really dislike being interrupted',
             "They don't get overwhelmed often — they regulate pretty easily",
           ]}
           values={child.regulation}
@@ -930,6 +934,8 @@ function SectionChild({
             'They retain it better if their hands are busy at the same time',
             'They want to stop and discuss as you go',
             "They drift and can't recall much afterwards",
+            'They draw or doodle while listening — it actually helps them focus and retain',
+            'Reading aloud together is one of our favorite things — they really come alive',
           ]}
           values={child.readAloud}
           onChange={v => toggleChildCheck('readAloud', v)}
@@ -979,6 +985,7 @@ function SectionChild({
             'Yes — adventure or narrative video games',
             'Yes — creative or building games (e.g. Minecraft, Roblox)',
             'Yes — escape room or mystery-style games',
+            'They love memorizing facts, chants, songs, or repetitive patterns — it energizes them',
             "They enjoy games for fun but learning doesn't really stick through games for this child",
             "They don't enjoy board games or card games",
             "They don't enjoy video games",
@@ -1153,6 +1160,9 @@ function SectionChild({
             'Acting it out or turning it into a game',
             'Going off and finding more information on their own',
             'Teaching it to someone else (or a pet!)',
+            'Humming, singing, or putting things to a beat or rhythm',
+            'Talking out loud to themselves while they work through it',
+            'Debating or defending their ideas — they love being challenged to explain their thinking',
           ]}
           values={child.demonstratesUnderstanding}
           onChange={v => toggleChildCheck('demonstratesUnderstanding', v)}
