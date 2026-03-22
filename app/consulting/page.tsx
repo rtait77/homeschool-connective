@@ -135,7 +135,7 @@ export default function ConsultingPage() {
             <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
               <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>The Intake Form</p>
               <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
-                After you sign up, you&apos;ll receive a detailed intake form that Mel and our team designed specifically to capture what matters most for your family. It covers your child&apos;s age, learning strengths and challenges, your teaching style, what you&apos;ve tried before, and what your goals are. Your answers feed directly into our recommendation matching system, which helps Mel identify the resources most likely to work for your family.
+                This isn&apos;t your basic questionnaire. Mel and our team built an intake form that goes deep into what actually matters. On the child side: sensory and regulation needs, how they handle frustration, how they approach new and hard tasks, focus span, reading and writing levels, screen habits, what subjects they love and avoid, and more. On your side: your teaching style, schedule, prep time, goals, what you&apos;ve already tried, and what success looks like for your family. Every answer feeds directly into our matching system so Mel can build a report that actually fits you — not a generic list.
               </p>
             </div>
             <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
