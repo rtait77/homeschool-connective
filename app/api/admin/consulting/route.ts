@@ -24,7 +24,7 @@ export async function GET() {
 
   const { data: customers } = await admin
     .from('consulting_customers')
-    .select('id, user_id, paid_at, ends_at, intake_completed, intake_submitted_at, created_at')
+    .select('id, user_id, paid_at, ends_at, intake_completed, intake_submitted_at, created_at, style_profile')
     .order('created_at', { ascending: false })
 
   if (!customers || customers.length === 0) return NextResponse.json({ customers: [] })
@@ -51,6 +51,7 @@ export async function GET() {
     intake_submitted_at: c.intake_submitted_at,
     responses: responseMap.get(c.id)?.responses ?? null,
     intake_status: responseMap.get(c.id)?.status ?? 'not-started',
+    style_profile: c.style_profile ?? null,
   }))
 
   return NextResponse.json({ customers: result })
