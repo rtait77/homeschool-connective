@@ -14,17 +14,17 @@ const PLAN_LABELS: Record<Plan, string> = {
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
-    <div style={{ backgroundColor: '#fff', borderRadius: 14, border: '1px solid #e2ddd5', overflow: 'hidden' }}>
+    <div style={{ borderTop: '1px solid #e2ddd5' }}>
       <button
         onClick={() => setOpen(o => !o)}
-        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, padding: '20px 24px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+        style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, padding: '20px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
       >
-        <span style={{ fontWeight: 800, fontSize: '0.92rem', color: '#1c1c1c', lineHeight: 1.5 }}>{q}</span>
-        <span style={{ fontSize: '1.1rem', color: '#ed7c5a', flexShrink: 0, fontWeight: 800, lineHeight: 1 }}>{open ? '−' : '+'}</span>
+        <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#1c1c1c', lineHeight: 1.5 }}>{q}</span>
+        <span style={{ fontSize: '1.2rem', color: '#ed7c5a', flexShrink: 0, lineHeight: 1 }}>{open ? '−' : '+'}</span>
       </button>
       {open && (
-        <div style={{ padding: '0 24px 20px' }}>
-          <p style={{ fontSize: '0.88rem', color: '#5c5c5c', lineHeight: 1.75, margin: 0 }}>{a}</p>
+        <div style={{ paddingBottom: 20 }}>
+          <p style={{ fontSize: '0.88rem', color: '#6b6b6b', lineHeight: 1.8, margin: 0 }}>{a}</p>
         </div>
       )}
     </div>
@@ -158,7 +158,7 @@ export default function ConsultingPage() {
                 body: "This isn't your basic questionnaire. Mel and our team built an intake form that goes deep into what actually matters. On the child side: sensory and regulation needs, how they handle frustration, how they approach new and hard tasks, focus span, reading and writing levels, screen habits, what subjects they love and avoid, and more. On your side: your teaching style, schedule, prep time, goals, what you've already tried, and what success looks like for your family. Every answer feeds directly into our matching system so Mel can build a report that actually fits you — not a generic list.",
               },
               {
-                title: 'Personalized Recommendations',
+                title: 'Recommendations & Help',
                 body: "Based on your intake form responses, our matching system identifies the curriculum and resources most likely to work for your child and your teaching style. Mel reviews everything and puts together a custom report with specific suggestions that fit your family's needs and budget. No generic lists and no guesswork. Every recommendation is chosen with your family in mind.",
               },
               {
@@ -167,7 +167,7 @@ export default function ConsultingPage() {
               },
             ].map(card => (
               <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 14, overflow: 'hidden', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-                <div style={{ backgroundColor: '#ed7c5a', padding: '18px 24px', minHeight: 72, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ backgroundColor: '#ed7c5a', height: 80, padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', margin: 0, textAlign: 'center' }}>{card.title}</p>
                 </div>
                 <div style={{ padding: '24px' }}>
@@ -329,7 +329,7 @@ export default function ConsultingPage() {
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>FAQ</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ borderBottom: '1px solid #e2ddd5' }}>
             {[
               {
                 q: 'What is covered in the intake form, and what\'s included in the report?',
