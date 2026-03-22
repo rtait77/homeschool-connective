@@ -5,6 +5,38 @@ import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
 
+type StyleProfile = {
+  learningStyles: string[]
+  methods: string[]
+  teachingStyle: string
+}
+
+const LEARNING_STYLE_DESCRIPTIONS: Record<string, string> = {
+  Visual: 'Learns best through images, diagrams, maps, drawings, and videos. Tends to take notes, highlight key ideas, and sketch things out. Usually needs a quiet space to focus.',
+  Auditory: 'Learns best through sound. Thrives with read-alouds, lectures, and discussion. May hum or put facts to music. Often reads aloud to themselves when working through something hard.',
+  Kinesthetic: 'Learns best through movement and activity. Has a hard time sitting still. Tends to fidget, and actually retains information better when their body is engaged — bouncing, acting things out, or doing while learning.',
+  Tactile: 'Learns best through touch and hands-on exploration. Loves manipulatives, models, puzzles, and anything they can handle and move. Sensory tools like sandpaper letters or counting with objects work well.',
+}
+
+const METHOD_DESCRIPTIONS: Record<string, string> = {
+  Traditional: 'Follows a structured approach with clear lesson plans, grade-level progression, and predictable daily routines. Great for families who want an organized, consistent homeschool with clear scope and sequence.',
+  Classical: 'Built around the three stages of learning: absorbing facts in the early years, analyzing and debating in the middle years, and communicating with confidence in the teen years. Rewards kids who love memorization, debate, and big ideas.',
+  'Charlotte Mason': 'Built around living books (real literature, not textbooks), narration, nature study, and short focused lessons. A great fit for families who love reading aloud and want learning to feel connected to real life.',
+  Montessori: 'Child-led and hands-on. The child explores their interests at their own pace with carefully prepared materials. Ideal for families who want to step back and let curiosity drive learning.',
+  Waldorf: 'Emphasizes creativity, art, music, storytelling, and movement. A good fit for families who value imagination and artistic expression as central to education and prefer a screen-free, rhythm-based home.',
+  Unschooling: 'Child directs their own learning based on interests and passions. No formal curriculum. Best for families who deeply trust child-led learning and want to remove traditional school structure entirely.',
+  Eclectic: 'Combines the best of multiple methods to create a customized approach. Great for families who want to pull what works from different philosophies rather than committing to one.',
+  'Lifestyle Learning': 'Learning woven into everyday life through field trips, nature walks, hands-on projects, and real conversations. Flexible and creativity-driven.',
+}
+
+const TEACHING_STYLE_DESCRIPTIONS: Record<string, string> = {
+  'Direct Teacher': 'You like to sit down and teach. You explain, ask questions, and stay actively involved in your child\'s learning.',
+  'Facilitator': 'You prefer to set up the environment and materials, then step back and let your child explore and discover.',
+  'Read-aloud & Discussion': 'You love reading aloud together and talking about what you\'ve read. Learning happens through conversation and narration.',
+  'Experience-based': 'You teach through doing — field trips, documentaries, real-world projects, and getting out into the world.',
+  'Resource-dependent': 'You prefer to let a curriculum, app, or video do the primary teaching while you support and guide from the side.',
+}
+
 type Resource = {
   name: string
   price_range: string
@@ -34,6 +66,7 @@ export default function ClientReportPage() {
   const router = useRouter()
   const [report, setReport] = useState<Report | null>(null)
   const [items, setItems] = useState<ReportItem[]>([])
+  const [styleProfile, setStyleProfile] = useState<StyleProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [notReady, setNotReady] = useState(false)
 
@@ -51,6 +84,7 @@ export default function ClientReportPage() {
           if (data.report) {
             setReport(data.report)
             setItems(data.items ?? [])
+            setStyleProfile(data.style_profile ?? null)
           } else {
             setNotReady(true)
           }
@@ -113,6 +147,87 @@ export default function ClientReportPage() {
             ⬇ Download PDF
           </button>
         </div>
+
+        {/* Results at a Glance */}
+        {styleProfile && (
+          <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px', marginBottom: 28, border: '1px solid #e8e0d5', boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
+            <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ed7c5a', marginBottom: 20, margin: '0 0 20px' }}>
+              Your Results at a Glance
+            </p>
+
+            {/* Learning Styles */}
+            {styleProfile.learningStyles.length > 0 && (
+              <div style={{ marginBottom: 24 }}>
+                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>
+                  How Your Child Learns Best
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {styleProfile.learningStyles.map((style, i) => (
+                    <div key={style} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', backgroundColor: i === 0 ? '#ed7c5a' : '#55b6ca', padding: '2px 10px', borderRadius: 999, whiteSpace: 'nowrap', marginTop: 2 }}>
+                        {i === 0 ? 'Primary' : i === 1 ? '2nd' : '3rd'}
+                      </span>
+                      <div>
+                        <p style={{ fontWeight: 800, color: '#1c1c1c', margin: '0 0 2px', fontSize: '0.95rem' }}>{style}</p>
+                        <p style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.6, margin: 0 }}>{LEARNING_STYLE_DESCRIPTIONS[style]}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Divider */}
+            {styleProfile.learningStyles.length > 0 && styleProfile.methods.length > 0 && (
+              <div style={{ borderTop: '1px solid #f0ece4', margin: '0 0 24px' }} />
+            )}
+
+            {/* Homeschooling Methods */}
+            {styleProfile.methods.length > 0 && (
+              <div style={{ marginBottom: 24 }}>
+                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>
+                  Best-Fit Homeschooling Approaches
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {styleProfile.methods.map((method, i) => (
+                    <div key={method} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', backgroundColor: i === 0 ? '#ed7c5a' : '#55b6ca', padding: '2px 10px', borderRadius: 999, whiteSpace: 'nowrap', marginTop: 2 }}>
+                        {i === 0 ? 'Best fit' : i === 1 ? '2nd' : '3rd'}
+                      </span>
+                      <div>
+                        <p style={{ fontWeight: 800, color: '#1c1c1c', margin: '0 0 2px', fontSize: '0.95rem' }}>{method}</p>
+                        <p style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.6, margin: 0 }}>{METHOD_DESCRIPTIONS[method]}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Divider */}
+            {styleProfile.methods.length > 0 && styleProfile.teachingStyle && (
+              <div style={{ borderTop: '1px solid #f0ece4', margin: '0 0 24px' }} />
+            )}
+
+            {/* Teaching Style */}
+            {styleProfile.teachingStyle && (
+              <div>
+                <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>
+                  Your Teaching Style
+                </p>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#fff', backgroundColor: '#ed7c5a', padding: '2px 10px', borderRadius: 999, whiteSpace: 'nowrap', marginTop: 2 }}>
+                    Your style
+                  </span>
+                  <div>
+                    <p style={{ fontWeight: 800, color: '#1c1c1c', margin: '0 0 2px', fontSize: '0.95rem' }}>{styleProfile.teachingStyle}</p>
+                    <p style={{ fontSize: '0.85rem', color: '#666', lineHeight: 1.6, margin: 0 }}>{TEACHING_STYLE_DESCRIPTIONS[styleProfile.teachingStyle]}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Custom intro */}
         {report?.custom_intro && (
