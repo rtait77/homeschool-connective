@@ -183,6 +183,11 @@ export default function AdminPage() {
   const [gameplayLoading, setGameplayLoading] = useState(false)
   const [gameplayError, setGameplayError] = useState('')
 
+  type StyleProfile = {
+    learningStyles: string[]
+    methods: string[]
+    teachingStyle: string
+  }
   type ConsultingCustomer = {
     id: string
     email: string
@@ -192,6 +197,7 @@ export default function AdminPage() {
     intake_submitted_at: string | null
     intake_status: string
     responses: Record<string, unknown> | null
+    style_profile: StyleProfile | null
   }
   type Recommendation = {
     resource_id: string
@@ -1185,6 +1191,35 @@ export default function AdminPage() {
                                         )}
                                       </div>
                                     </div>
+
+                                    {/* STYLE PROFILE */}
+                                    {c.style_profile && (
+                                      <div style={{ backgroundColor: '#1a1c1e', borderRadius: 12, padding: '1.25rem 1.5rem', marginBottom: '1.5rem', border: '1px solid #3d4248' }}>
+                                        <p style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a', margin: '0 0 1rem' }}>Results at a Glance</p>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                                          <div>
+                                            <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.4rem' }}>Learning Styles</p>
+                                            {c.style_profile.learningStyles.map((s, i) => (
+                                              <p key={s} style={{ color: i === 0 ? '#e8e0d5' : '#a09890', fontSize: '0.85rem', fontWeight: i === 0 ? 700 : 400, margin: '0 0 2px' }}>
+                                                {i === 0 ? '① ' : i === 1 ? '② ' : '③ '}{s}
+                                              </p>
+                                            ))}
+                                          </div>
+                                          <div>
+                                            <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.4rem' }}>Methods</p>
+                                            {c.style_profile.methods.map((m, i) => (
+                                              <p key={m} style={{ color: i === 0 ? '#e8e0d5' : '#a09890', fontSize: '0.85rem', fontWeight: i === 0 ? 700 : 400, margin: '0 0 2px' }}>
+                                                {i === 0 ? '① ' : i === 1 ? '② ' : '③ '}{m}
+                                              </p>
+                                            ))}
+                                          </div>
+                                          <div>
+                                            <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.4rem' }}>Teaching Style</p>
+                                            <p style={{ color: '#e8e0d5', fontSize: '0.85rem', fontWeight: 700, margin: 0 }}>{c.style_profile.teachingStyle}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
 
                                     {/* RECOMMENDATIONS + LIVE PREVIEW side by side */}
                                     <div style={{ display: 'grid', gridTemplateColumns: recs[c.id] ? '1fr 320px' : '1fr', gap: '1.5rem', alignItems: 'start' }}>
