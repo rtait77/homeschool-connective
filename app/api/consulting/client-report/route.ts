@@ -21,7 +21,7 @@ export async function GET() {
   // Get consulting customer
   const { data: customer } = await admin
     .from('consulting_customers')
-    .select('id')
+    .select('id, style_profile')
     .eq('user_id', user.id)
     .maybeSingle()
 
@@ -45,5 +45,5 @@ export async function GET() {
     .eq('report_id', report.id)
     .order('sort_order', { ascending: true })
 
-  return NextResponse.json({ report, items: items ?? [] })
+  return NextResponse.json({ report, items: items ?? [], style_profile: customer.style_profile ?? null })
 }
