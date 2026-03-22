@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         userId = found?.id ?? null
       }
 
-      // Create consulting_customers record
+      // Create consulting_customers record + grant 7-day games trial
       if (userId) {
         const paidAt = new Date()
         const endsAt = new Date(paidAt)
@@ -56,6 +56,12 @@ export async function POST(req: NextRequest) {
           paid_at: paidAt.toISOString(),
           ends_at: endsAt.toISOString(),
         })
+        // Give consulting buyers a 7-day free trial of games
+        const trialEnd = new Date(paidAt)
+        trialEnd.setDate(trialEnd.getDate() + 7)
+        await supabase.from('profiles')
+          .update({ trial_end: trialEnd.toISOString() })
+          .eq('id', userId)
       }
 
       // Email to Mel (via Titan SMTP)
