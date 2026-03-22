@@ -52,11 +52,13 @@ export default function ConsultingPage() {
           <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 16 }}>
             One-on-One Homeschool Consulting
           </p>
-          <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 20 }}>
-            Stop guessing.<br />Get personalized curriculum recommendations for your unique family.
+          <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: 20 }}>
+            Stop guessing.<br />Get personalized curriculum recommendations and{' '}
+            <span style={{ backgroundColor: 'rgba(255,255,255,0.22)', borderRadius: 6, padding: '2px 8px' }}>homeschool mentorship</span>{' '}
+            for your unique family.
           </h1>
           <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 36px' }}>
-            Mel provides personalized curriculum recommendations and homeschool mentorship to help your family find what works and move forward with confidence.
+            Mel provides personalized support for your family&apos;s homeschool journey — curriculum recommendations, resource matching, and ongoing mentorship all in one place.
           </p>
           <a
             href="#pricing"
@@ -90,25 +92,6 @@ export default function ConsultingPage() {
         </div>
       </div>
 
-      {/* ── RESOURCE COUNT STAT ── */}
-      <div style={{ backgroundColor: '#fff', padding: '48px 24px' }}>
-        <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
-          {resourceCount !== null && (
-            <>
-              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
-                {resourceCount}
-              </p>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 6 }}>
-                curated resources in our database
-              </p>
-              <p style={{ fontSize: '0.85rem', color: '#a09890', margin: 0 }}>
-                and growing — Mel matches from this list to build your personalized report.
-              </p>
-            </>
-          )}
-        </div>
-      </div>
-
       {/* ── HOW IT WORKS ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
@@ -128,6 +111,25 @@ export default function ConsultingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* ── RESOURCE COUNT STAT ── */}
+      <div style={{ backgroundColor: '#fff', padding: '48px 24px' }}>
+        <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
+          {resourceCount !== null && (
+            <>
+              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
+                {resourceCount}
+              </p>
+              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 6 }}>
+                curated resources in our database
+              </p>
+              <p style={{ fontSize: '0.85rem', color: '#a09890', margin: 0 }}>
+                and growing — Mel matches from this list to build your personalized report.
+              </p>
+            </>
+          )}
         </div>
       </div>
 
