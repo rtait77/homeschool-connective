@@ -74,7 +74,7 @@ export default function ConsultingPage() {
               "You know your child is smart and capable, but something about the way things are going just isn't working.",
               "You wish you could sit down with someone experienced and get a straight answer about what to try.",
             ].map((text, i) => (
-              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', borderLeft: '4px solid #55b6ca', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#3a3a3a', margin: 0 }}>{text}</p>
               </div>
             ))}
@@ -130,7 +130,7 @@ export default function ConsultingPage() {
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>Everything included</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>What&apos;s Included</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
             <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
               <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>The Intake Form</p>
@@ -185,7 +185,6 @@ export default function ConsultingPage() {
       {/* ── PRICING ── */}
       <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Pricing</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 8 }}>Choose your plan</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', maxWidth: 560, margin: '0 auto 40px' }}>
             Consulting includes everything above. You can also add a games subscription for full access to our educational games and lessons.
