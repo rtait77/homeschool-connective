@@ -110,22 +110,22 @@ export default function ConsultingPage() {
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>Everything included</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
-            <div style={{ backgroundColor: '#55b6ca', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+            <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
               <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>The Intake Form</p>
               <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
                 After you sign up, you&apos;ll receive a detailed intake form that Mel and our team designed specifically to capture what matters most for your family. It covers your child&apos;s age, learning strengths and challenges, your teaching style, what you&apos;ve tried before, and what your goals are. Your answers feed directly into our recommendation matching system, which helps Mel identify the resources most likely to work for your family.
               </p>
             </div>
-            <div style={{ backgroundColor: '#55b6ca', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+            <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
               <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>Personalized Recommendations</p>
               <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
                 Based on your intake form responses, our matching system identifies the curriculum and resources most likely to work for your child and your teaching style. Mel reviews everything and puts together a custom report with specific suggestions that fit your family&apos;s needs and budget. No generic lists and no guesswork. Every recommendation is chosen with your family in mind.
               </p>
             </div>
-            <div style={{ backgroundColor: '#55b6ca', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
+            <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}>
               <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>3 Months of Email Support</p>
               <p style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, margin: 0 }}>
-                Mel is available by email for three months after your report is delivered. Whether something isn&apos;t clicking the way you hoped, you want her opinion before purchasing a resource, or you just need someone to think through a challenge with you, she is there. You won&apos;t be left figuring it out on your own.
+                After you receive your report from Mel, you&apos;ll be able to ask questions and get help for 3 months through email correspondence. Whether something isn&apos;t clicking the way you hoped, you want her opinion before purchasing a resource, or you just need someone to think through a challenge with you, she is there to help. You won&apos;t be left figuring it out on your own.
               </p>
             </div>
           </div>
