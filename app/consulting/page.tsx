@@ -130,7 +130,7 @@ export default function ConsultingPage() {
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>What&apos;s Included</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>How We Help</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
             <div style={{ backgroundColor: '#ed7c5a', borderRadius: 14, padding: '28px 24px', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.08)', textAlign: 'center' }}>
               <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', marginBottom: 8 }}>The Intake Form</p>
