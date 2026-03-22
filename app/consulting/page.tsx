@@ -205,6 +205,7 @@ export default function ConsultingPage() {
               <li>✓ 3 months of email support with Mel</li>
               <li style={{ color: '#55b6ca', fontWeight: 700 }}>✓ 7-day free trial of our educational games included</li>
             </ul>
+            <p style={{ fontSize: '0.8rem', color: '#a09890', marginTop: 12, marginBottom: 0 }}>Option to subscribe to games after your trial if you choose.</p>
           </div>
 
           {/* Terms */}
