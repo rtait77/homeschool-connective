@@ -86,7 +86,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── HOW IT WORKS ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
+      <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The Process</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
@@ -108,7 +108,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── RESOURCE COUNT STAT ── */}
-      <div style={{ backgroundColor: '#fff', padding: '48px 24px' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '48px 24px' }}>
         <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
           {resourceCount !== null && (
             <>
