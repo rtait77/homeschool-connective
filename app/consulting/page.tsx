@@ -53,7 +53,7 @@ export default function ConsultingPage() {
             One-on-One Homeschool Consulting
           </p>
           <h1 style={{ fontSize: 'clamp(1.6rem, 3.5vw, 2.2rem)', fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 16 }}>
-            Stop Guessing. Get personalized curriculum recommendations and homeschooling support.
+            Stop Guessing.<br />Get Personalized Curriculum Recommendations and Homeschooling Support.
           </h1>
           <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 500, margin: '0 auto 28px' }}>
             Mel provides personalized support for your family, including curriculum recommendations, resource matching, and ongoing mentorship all in one place.
