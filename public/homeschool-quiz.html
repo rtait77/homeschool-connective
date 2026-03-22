@@ -952,7 +952,7 @@ function buildChild(cid, num) {
       <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Takes a break on their own and comes back to it</label>
       <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Digs in harder — frustration actually motivates them</label>
     </div>
-    <div class="part-label">Part B: What do you as the parent try to do?</div>
+    <div class="part-label">Part B: What do you as the parent/guardian try to do?</div>
     <div class="q-note">Pick all that apply</div>
     <div class="options">
       <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Stay close and coach them through it</label>
@@ -1297,11 +1297,11 @@ function buildEmail() {
   const email = txt('parentEmail');
   let body = `NEW CONSULTATION QUIZ SUBMISSION
 ════════════════════════════════════
-Parent: ${name}
+Parent/Guardian: ${name}
 Email: ${email}
 
 ════════════════════════════════════
-ABOUT THE PARENT
+ABOUT THE PARENT/GUARDIAN
 ════════════════════════════════════
 
 Q1. Why homeschooling:
@@ -1374,7 +1374,7 @@ Q1. How they calm down when overwhelmed:
 Q2a. When frustrated — child does:
   • ${checked(cid + '_q2a')}
 
-Q2b. When frustrated — parent does:
+Q2b. When frustrated — parent/guardian does:
   • ${checked(cid + '_q2b')}
 
 Q2c. Does it work? ${radio(cid + '_q2c')}
