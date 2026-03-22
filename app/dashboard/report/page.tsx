@@ -147,7 +147,7 @@ export default function ClientReportPage() {
                 <div key={person} style={{ marginBottom: 32 }}>
                   {hasAssignments && (
                     <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: person === 'Parent' ? '#ed7c5a' : '#55b6ca', marginBottom: 14 }}>
-                      {person === 'Parent' ? 'Parent Resources' : person === 'General' ? 'General Recommendations' : `For ${person}`}
+                      {person === 'Parent' ? 'Parent/Guardian Resources' : person === 'General' ? 'General Recommendations' : `For ${person}`}
                     </p>
                   )}
                   {!hasAssignments && (
@@ -169,7 +169,7 @@ export default function ClientReportPage() {
                               {allPeople.length > 1 && (
                                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
                                   {allPeople.map(p => (
-                                    <span key={p} style={{ fontSize: '0.72rem', fontWeight: 800, padding: '2px 10px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#f9d0e8' : '#e8d9ff', color: p === 'Parent' ? '#9d174d' : '#6d28d9' }}>{p}</span>
+                                    <span key={p} style={{ fontSize: '0.72rem', fontWeight: 800, padding: '2px 10px', borderRadius: 999, backgroundColor: p === 'Parent' ? '#f9d0e8' : '#e8d9ff', color: p === 'Parent' ? '#9d174d' : '#6d28d9' }}>{p === 'Parent' ? 'Parent/Guardian' : p}</span>
                                   ))}
                                 </div>
                               )}
