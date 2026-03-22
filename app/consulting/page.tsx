@@ -120,7 +120,7 @@ export default function ConsultingPage() {
               <p style={{ fontSize: '0.85rem', color: '#5c5c5c', marginBottom: 8 }}>
                 Curricula, books, games, toys, activity books, websites, online games, apps, subscription boxes, and more.
               </p>
-              <p style={{ fontSize: '0.85rem', color: '#a09890', margin: 0 }}>
+              <p style={{ fontSize: '0.85rem', color: '#55b6ca', fontWeight: 700, margin: 0 }}>
                 And growing — Mel matches from this list to build your personalized report.
               </p>
             </>
