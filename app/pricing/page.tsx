@@ -46,9 +46,38 @@ export default function SubscribePage() {
 
   return (
     <div className="max-w-[900px] mx-auto px-6 py-16">
-      <h1 className="text-3xl font-extrabold text-center mb-2">Get Full Access</h1>
-      <p className="text-center text-[#5c5c5c] mb-1">All games, all topics, new content added regularly.</p>
-      <p className="text-center text-sm text-[#5c5c5c] mb-4">Grades K–3 · Secular · Game-Based Learning</p>
+      <h1 className="text-3xl font-extrabold text-center mb-2">Plans & Pricing</h1>
+      <p className="text-center text-[#5c5c5c] mb-8">Two ways to get support for your homeschool.</p>
+
+      {/* ── CONSULTING TIER ── */}
+      <div className="mb-12">
+        <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] text-center mb-2">One-on-One Consulting</p>
+        <h2 className="text-2xl font-extrabold text-center mb-8">Personalized Curriculum Consulting</h2>
+        <div className="bg-white rounded-2xl p-8 border-2 border-[#ed7c5a] max-w-md mx-auto" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
+          <p className="text-4xl font-extrabold text-[#ed7c5a] mb-1">$47</p>
+          <p className="text-sm text-[#5c5c5c] mb-6">one-time payment</p>
+          <ul className="text-sm text-[#5c5c5c] space-y-2 mb-8">
+            <li>✓ Deep-dive intake form</li>
+            <li>✓ Personalized curriculum recommendations</li>
+            <li>✓ Learning style, method & teaching style match</li>
+            <li>✓ 3 months of email support with Mel</li>
+            <li className="text-[#55b6ca] font-bold">✓ 7-day free trial of educational games included</li>
+          </ul>
+          <Link
+            href="/consulting#pricing"
+            className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
+          >
+            Learn More & Get Started →
+          </Link>
+        </div>
+      </div>
+
+      <div className="border-t border-[#e8e0d5] mb-12" />
+
+      {/* ── GAMES TIER ── */}
+      <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] text-center mb-2">Games Subscription</p>
+      <h2 className="text-2xl font-extrabold text-center mb-4">Educational Games & Lessons</h2>
+      <p className="text-center text-sm text-[#5c5c5c] mb-4">All games, all topics, new content added regularly. Grades K–3 · Secular · Game-Based Learning</p>
 
       {/* Free trial CTA — hidden for users already trialing or subscribed */}
       {showTrial && (
@@ -87,7 +116,7 @@ export default function SubscribePage() {
             className="mt-0.5 w-4 h-4 accent-[#ed7c5a] flex-shrink-0"
           />
           <span className="text-xs text-[#5c5c5c]">
-            I'd like to receive updates about new games, lessons, and homeschool tips from Homeschool Connective. You can unsubscribe anytime.
+            I&apos;d like to receive updates about new games, lessons, and homeschool tips from Homeschool Connective. You can unsubscribe anytime.
           </span>
         </label>
       </div>
@@ -100,7 +129,7 @@ export default function SubscribePage() {
           <p className="text-sm text-[#5c5c5c] mb-6">per month</p>
           <ul className="text-sm text-[#5c5c5c] space-y-2 mb-8 text-left w-full">
             <li>✓ Full access to all games and lessons</li>
-            <li>✓ New content as it's added</li>
+            <li>✓ New content as it&apos;s added</li>
             <li>✓ Cancel anytime</li>
           </ul>
           <button
@@ -121,7 +150,7 @@ export default function SubscribePage() {
           <p className="text-sm font-bold mb-6">Save $10 vs monthly!</p>
           <ul className="text-sm opacity-90 space-y-2 mb-8 text-left w-full">
             <li>✓ Full access to all games and lessons</li>
-            <li>✓ New content as it's added</li>
+            <li>✓ New content as it&apos;s added</li>
             <li>✓ Best value</li>
           </ul>
           <button
