@@ -52,11 +52,11 @@ export default function ConsultingPage() {
           <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 14 }}>
             One-on-One Homeschool Consulting
           </p>
-          <h1 style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.75rem)', fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: 16 }}>
+          <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.1rem)', fontWeight: 800, color: '#fff', lineHeight: 1.3, marginBottom: 16 }}>
             Stop Guessing.<br />Get Personalized Curriculum Recommendations<br />and Homeschooling Support.
           </h1>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 500, margin: '0 auto 28px' }}>
-            Mel provides personalized support for your family, including curriculum recommendations, resource matching, and ongoing mentorship all in one place.
+          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 460, margin: '0 auto 28px' }}>
+            Mel provides personalized support for your family, including curriculum recommendations, resource matching,<br />and ongoing mentorship all in one place.
           </p>
           <a
             href="#pricing"
