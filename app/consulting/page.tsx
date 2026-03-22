@@ -6,7 +6,7 @@ import { useState } from 'react'
 type Plan = 'consulting' | 'bundle-monthly' | 'bundle-yearly'
 
 const PLAN_LABELS: Record<Plan, string> = {
-  'consulting': 'Get My Curriculum Plan — $47',
+  'consulting': 'Get Personalized Recommendations — $47',
   'bundle-monthly': 'Get Started — $52',
   'bundle-yearly': 'Get Started — $97',
 }
@@ -45,16 +45,16 @@ export default function ConsultingPage() {
             One-on-One Homeschool Consulting
           </p>
           <h1 style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.2, marginBottom: 20 }}>
-            Stop guessing.<br />Get a curriculum plan that actually fits your family.
+            Stop guessing.<br />Get personalized curriculum recommendations for your family.
           </h1>
-          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, marginBottom: 36, maxWidth: 520, margin: '0 auto 36px' }}>
-            Mel reviews your family&apos;s needs and sends you a personalized curriculum plan — plus 3 months of email support.
+          <p style={{ fontSize: '1.1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 36px' }}>
+            Mel sends personalized curriculum and supplement suggestions that match your family&apos;s needs.
           </p>
           <a
             href="#pricing"
             style={{ display: 'inline-block', backgroundColor: '#fff', color: '#ed7c5a', fontWeight: 800, fontSize: '1rem', padding: '0.85rem 2rem', borderRadius: 999, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
           >
-            Get My Curriculum Plan — $47
+            Get Personalized Recommendations — $47
           </a>
         </div>
       </div>
@@ -62,18 +62,17 @@ export default function ConsultingPage() {
       {/* ── IS THIS YOU? ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Sound familiar?</p>
+          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The Struggle</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>Is this you?</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             {[
-              { icon: '📚', text: "You've tried two or three curricula and nothing has quite clicked — and you're not sure why." },
-              { icon: '😤', text: "You feel overwhelmed by the sheer number of options and don't know where to even start." },
-              { icon: '🤔', text: "You know your child is capable, but something about the way you're teaching isn't landing." },
-              { icon: '🙋', text: "You wish you had an experienced homeschooler to just tell you what to try next." },
-            ].map((item, i) => (
-              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', display: 'flex', gap: 16, alignItems: 'flex-start', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{item.icon}</span>
-                <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#3a3a3a', margin: 0 }}>{item.text}</p>
+              "You've tried two or three curricula and nothing has quite clicked, and you're not sure why.",
+              "You feel overwhelmed by the sheer number of options and don't know where to even start.",
+              "You know your child is capable, but something about the way you're teaching isn't landing.",
+              "You wish you had an experienced homeschooler to just tell you what to try next.",
+            ].map((text, i) => (
+              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+                <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#3a3a3a', margin: 0 }}>{text}</p>
               </div>
             ))}
           </div>
@@ -85,20 +84,20 @@ export default function ConsultingPage() {
 
       {/* ── HOW IT WORKS ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The process</p>
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The Process</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
             {[
               { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
-              { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t. Mel reads every word.' },
-              { num: '3', title: 'Get Your Plan', desc: 'Mel puts together a personalized curriculum recommendation report tailored to your family.' },
+              { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
+              { num: '3', title: 'Get Your Report', desc: 'Mel puts together a report of personalized recommendations tailored to your family.' },
               { num: '4', title: '3 Months of Support', desc: 'Email Mel anytime with follow-up questions. She\'s here to help you adjust as you go.' },
             ].map(step => (
-              <div key={step.num} style={{ backgroundColor: '#f5f1e9', borderRadius: 14, padding: '28px 22px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
+              <div key={step.num} style={{ backgroundColor: '#f5f1e9', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
                 <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>{step.num}</div>
-                <p style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c', marginBottom: 8 }}>{step.title}</p>
-                <p style={{ fontSize: '0.85rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
+                <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#1c1c1c', marginBottom: 8 }}>{step.title}</p>
+                <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
               </div>
             ))}
           </div>
@@ -107,21 +106,31 @@ export default function ConsultingPage() {
 
       {/* ── WHAT'S INCLUDED ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What you get</p>
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>Everything included</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20 }}>
-            {[
-              { icon: '📋', title: 'The Intake Form', desc: 'A detailed form covering your child\'s age, learning style, what\'s working, what isn\'t, and your goals. This gives Mel the full picture she needs.' },
-              { icon: '📚', title: 'Personalized Recommendations', desc: 'A custom report with curriculum suggestions that fit your child, your teaching style, and your budget. No generic lists — this is built for your family.' },
-              { icon: '✉️', title: '3 Months of Email Support', desc: 'After you receive your recommendations, email Mel anytime with questions. She\'s here to help you adjust and troubleshoot as you go.' },
-            ].map((item, i) => (
-              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                <p style={{ fontSize: '2rem', marginBottom: 12 }}>{item.icon}</p>
-                <p style={{ fontWeight: 800, fontSize: '1rem', color: '#1c1c1c', marginBottom: 8 }}>{item.title}</p>
-                <p style={{ fontSize: '0.88rem', color: '#5c5c5c', lineHeight: 1.65, margin: 0 }}>{item.desc}</p>
-              </div>
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
+            <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+              <p style={{ fontSize: '2rem', marginBottom: 12 }}>📋</p>
+              <p style={{ fontWeight: 800, fontSize: '1rem', color: '#1c1c1c', marginBottom: 8 }}>The Intake Form</p>
+              <p style={{ fontSize: '0.88rem', color: '#5c5c5c', lineHeight: 1.65, margin: 0 }}>
+                After you sign up, you&apos;ll receive a detailed intake form that Mel and our team designed specifically to capture what matters most for your family. It covers your child&apos;s age, learning strengths and challenges, your teaching style, what you&apos;ve tried before, and what your goals are. Your answers feed directly into our recommendation matching system, which helps Mel identify the resources most likely to work for your family.
+              </p>
+            </div>
+            <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+              <p style={{ fontSize: '2rem', marginBottom: 12 }}>📚</p>
+              <p style={{ fontWeight: 800, fontSize: '1rem', color: '#1c1c1c', marginBottom: 8 }}>Personalized Recommendations</p>
+              <p style={{ fontSize: '0.88rem', color: '#5c5c5c', lineHeight: 1.65, margin: 0 }}>
+                A custom report with curriculum and supplement suggestions that fit your child, your teaching style, and your budget. No generic lists. Every recommendation is built specifically for your family.
+              </p>
+            </div>
+            <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+              <p style={{ fontSize: '2rem', marginBottom: 12 }}>✉️</p>
+              <p style={{ fontWeight: 800, fontSize: '1rem', color: '#1c1c1c', marginBottom: 8 }}>3 Months of Email Support</p>
+              <p style={{ fontSize: '0.88rem', color: '#5c5c5c', lineHeight: 1.65, margin: 0 }}>
+                After you receive your recommendations, email Mel anytime with questions. She&apos;s here to help you adjust and troubleshoot as you go.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -129,7 +138,7 @@ export default function ConsultingPage() {
       {/* ── MEET MEL ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Your consultant</p>
+          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Your Consultant</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 36 }}>Meet Mel</h2>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
             <Image
@@ -144,7 +153,7 @@ export default function ConsultingPage() {
                 With over 25 years of homeschooling experience, Mel has dedicated her life to nurturing young learners and supporting families on their educational journeys. She began homeschooling her own children in 2000, and today has the joy of homeschooling her grandchildren.
               </p>
               <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#3a3a3a', marginBottom: 16 }}>
-                Along the way, she has worked as assistant director of a homeschool co-op, coordinator at a church nursery, and lead teacher at a pre-K center — giving her a well-rounded perspective on how children learn best in a variety of settings.
+                Along the way, she has worked as assistant director of a homeschool co-op, coordinator at a church nursery, and lead teacher at a pre-K center, giving her a well-rounded perspective on how children learn best in a variety of settings.
               </p>
               <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#3a3a3a' }}>
                 Mel is passionate about coming alongside homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children&apos;s needs.
@@ -159,7 +168,9 @@ export default function ConsultingPage() {
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Pricing</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 8 }}>Choose your plan</h2>
-          <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', marginBottom: 40 }}>Consulting includes everything above. Add a games subscription to get full access to all our educational games and lessons too.</p>
+          <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', marginBottom: 40, maxWidth: 560, margin: '0 auto 40px' }}>
+            Consulting includes everything above. You can also add a games subscription for full access to our educational games and lessons.
+          </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 36 }}>
 
@@ -179,7 +190,7 @@ export default function ConsultingPage() {
               <p style={{ fontSize: '0.75rem', color: '#5c5c5c', marginBottom: 20 }}>one-time payment</p>
               <ul style={{ fontSize: '0.85rem', color: '#5c5c5c', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <li>✓ Intake form</li>
-                <li>✓ Personalized curriculum report</li>
+                <li>✓ Personalized recommendations</li>
                 <li>✓ 3 months of email support</li>
               </ul>
             </button>
@@ -221,7 +232,7 @@ export default function ConsultingPage() {
                   </div>
                 </div>
                 <p style={{ fontSize: '2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$97</p>
-                <p style={{ fontSize: '0.75rem', color: '#5c5c5c', marginBottom: 20 }}>today, then $50/year — save $10!</p>
+                <p style={{ fontSize: '0.75rem', color: '#5c5c5c', marginBottom: 20 }}>today, then $50/year (save $10!)</p>
                 <ul style={{ fontSize: '0.85rem', color: '#5c5c5c', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <li>✓ Everything in Consulting Only</li>
                   <li>✓ Full access to all games & lessons</li>
@@ -240,7 +251,7 @@ export default function ConsultingPage() {
               <p style={{ marginBottom: 10 }}>By signing up for this consulting service, you agree to the following:</p>
               <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <li>No refunds once the intake form has been sent to you.</li>
-                <li>Email support is provided for 3 months from the date of purchase. Mel will respond within 3–5 business days.</li>
+                <li>Email support is provided for 3 months from the date of purchase. Mel will respond within 3 to 5 business days.</li>
                 <li>Curriculum recommendations are suggestions based on your intake form. They are not guarantees of outcome. The final curriculum decision remains with the parent.</li>
                 <li>Your family&apos;s information will not be shared with any third party.</li>
                 <li>This is an educational consulting service, not a licensed tutoring or therapy service.</li>
