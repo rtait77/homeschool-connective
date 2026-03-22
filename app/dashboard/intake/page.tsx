@@ -861,7 +861,7 @@ function SectionChild({
           values={child.frustrationChild}
           onChange={v => toggleChildCheck('frustrationChild', v)}
         />
-        <SubLabel>Part B: What do you as the parent try to do?</SubLabel>
+        <SubLabel>Part B: What do you as the parent/guardian try to do?</SubLabel>
         <p className="text-xs text-[#5c5c5c] mb-1">Pick all that apply</p>
         <CheckList
           options={[
