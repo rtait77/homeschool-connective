@@ -3,14 +3,6 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
-type Plan = 'consulting' | 'bundle-monthly' | 'bundle-yearly'
-
-const PLAN_LABELS: Record<Plan, string> = {
-  'consulting': 'Get Personalized Recommendations — $47',
-  'bundle-monthly': 'Get Started — $52',
-  'bundle-yearly': 'Get Started — $97',
-}
-
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
   return (
@@ -34,7 +26,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 export default function ConsultingPage() {
   const [agreed, setAgreed] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [plan, setPlan] = useState<Plan>('consulting')
   const [resourceCount, setResourceCount] = useState<number | null>(null)
 
   useEffect(() => {
@@ -46,19 +37,7 @@ export default function ConsultingPage() {
 
   async function handleCheckout() {
     setLoading(true)
-    let endpoint = '/api/checkout-consulting'
-    let body: string | undefined
-
-    if (plan === 'bundle-monthly' || plan === 'bundle-yearly') {
-      endpoint = '/api/checkout-bundle'
-      body = JSON.stringify({ plan: plan === 'bundle-monthly' ? 'monthly' : 'yearly' })
-    }
-
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body,
-    })
+    const res = await fetch('/api/checkout-consulting', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
     const { url } = await res.json()
     window.location.href = url
   }
@@ -209,82 +188,23 @@ export default function ConsultingPage() {
 
       {/* ── PRICING ── */}
       <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 820, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 8 }}>Choose your plan</h2>
-          <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', maxWidth: 560, margin: '0 auto 40px' }}>
-            Consulting includes everything above. You can also add a games subscription for full access to our educational games and lessons.
+        <div style={{ maxWidth: 520, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
+          <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', margin: '0 auto 40px' }}>
+            One-time payment. No subscription required.
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 36 }}>
-
-            {/* Consulting only */}
-            <button
-              type="button"
-              onClick={() => setPlan('consulting')}
-              style={{ borderRadius: 18, padding: '24px 20px', textAlign: 'left', border: `2px solid ${plan === 'consulting' ? '#ed7c5a' : '#e2ddd5'}`, backgroundColor: '#fff', cursor: 'pointer', boxShadow: plan === 'consulting' ? '0 4px 20px rgba(237,124,90,0.18)' : '0 2px 12px rgba(0,0,0,0.06)', transition: 'all 0.15s' }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c' }}>Consulting Only</span>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', border: `2px solid ${plan === 'consulting' ? '#ed7c5a' : '#ddd8cc'}`, backgroundColor: plan === 'consulting' ? '#ed7c5a' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {plan === 'consulting' && <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#fff' }} />}
-                </div>
-              </div>
-              <p style={{ fontSize: '2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$47</p>
-              <p style={{ fontSize: '0.75rem', color: '#5c5c5c', marginBottom: 20 }}>one-time payment</p>
-              <ul style={{ fontSize: '0.85rem', color: '#5c5c5c', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <li>✓ Intake form</li>
-                <li>✓ Personalized recommendations</li>
-                <li>✓ 3 months of homeschool mentorship</li>
-              </ul>
-            </button>
-
-            {/* Bundle monthly */}
-            <button
-              type="button"
-              onClick={() => setPlan('bundle-monthly')}
-              style={{ borderRadius: 18, padding: '24px 20px', textAlign: 'left', border: `2px solid ${plan === 'bundle-monthly' ? '#ed7c5a' : '#e2ddd5'}`, backgroundColor: '#fff', cursor: 'pointer', boxShadow: plan === 'bundle-monthly' ? '0 4px 20px rgba(237,124,90,0.18)' : '0 2px 12px rgba(0,0,0,0.06)', transition: 'all 0.15s' }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c' }}>Consulting + Monthly Games</span>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', border: `2px solid ${plan === 'bundle-monthly' ? '#ed7c5a' : '#ddd8cc'}`, backgroundColor: plan === 'bundle-monthly' ? '#ed7c5a' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  {plan === 'bundle-monthly' && <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#fff' }} />}
-                </div>
-              </div>
-              <p style={{ fontSize: '2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$52</p>
-              <p style={{ fontSize: '0.75rem', color: '#5c5c5c', marginBottom: 20 }}>today, then $5/month</p>
-              <ul style={{ fontSize: '0.85rem', color: '#5c5c5c', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <li>✓ Everything in Consulting Only</li>
-                <li>✓ Full access to all games & lessons</li>
-                <li>✓ New content as it&apos;s added</li>
-                <li>✓ Cancel games anytime</li>
-              </ul>
-            </button>
-
-            {/* Bundle yearly */}
-            <div style={{ position: 'relative' }}>
-              <span style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', backgroundColor: '#55b6ca', color: '#fff', fontSize: '0.72rem', fontWeight: 800, padding: '3px 14px', borderRadius: 999, whiteSpace: 'nowrap', zIndex: 10 }}>BEST VALUE</span>
-              <button
-                type="button"
-                onClick={() => setPlan('bundle-yearly')}
-                style={{ width: '100%', borderRadius: 18, padding: '24px 20px', textAlign: 'left', border: `2px solid ${plan === 'bundle-yearly' ? '#ed7c5a' : '#e2ddd5'}`, backgroundColor: '#fff', cursor: 'pointer', boxShadow: plan === 'bundle-yearly' ? '0 4px 20px rgba(237,124,90,0.18)' : '0 2px 12px rgba(0,0,0,0.06)', transition: 'all 0.15s' }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                  <span style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c' }}>Consulting + Yearly Games</span>
-                  <div style={{ width: 20, height: 20, borderRadius: '50%', border: `2px solid ${plan === 'bundle-yearly' ? '#ed7c5a' : '#ddd8cc'}`, backgroundColor: plan === 'bundle-yearly' ? '#ed7c5a' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {plan === 'bundle-yearly' && <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#fff' }} />}
-                  </div>
-                </div>
-                <p style={{ fontSize: '2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$97</p>
-                <p style={{ fontSize: '0.75rem', color: '#5c5c5c', marginBottom: 20 }}>today, then $50/year (save $10!)</p>
-                <ul style={{ fontSize: '0.85rem', color: '#5c5c5c', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <li>✓ Everything in Consulting Only</li>
-                  <li>✓ Full access to all games & lessons</li>
-                  <li>✓ New content as it&apos;s added</li>
-                  <li>✓ Best value on games</li>
-                </ul>
-              </button>
-            </div>
-
+          {/* Single plan card */}
+          <div style={{ borderRadius: 18, padding: '32px', border: '2px solid #ed7c5a', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(237,124,90,0.12)', marginBottom: 28 }}>
+            <p style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$47</p>
+            <p style={{ fontSize: '0.8rem', color: '#a09890', marginBottom: 24 }}>one-time payment</p>
+            <ul style={{ fontSize: '0.9rem', color: '#3a3a3a', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <li>✓ Deep-dive intake form</li>
+              <li>✓ Personalized curriculum recommendations</li>
+              <li>✓ Learning style, method & teaching style match</li>
+              <li>✓ 3 months of email support with Mel</li>
+              <li style={{ color: '#55b6ca', fontWeight: 700 }}>✓ 7-day free trial of our educational games included</li>
+            </ul>
           </div>
 
           {/* Terms */}
@@ -317,9 +237,12 @@ export default function ConsultingPage() {
             disabled={!agreed || loading}
             style={{ width: '100%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.05rem', padding: '1rem', borderRadius: 12, border: 'none', cursor: agreed && !loading ? 'pointer' : 'not-allowed', opacity: agreed && !loading ? 1 : 0.4, transition: 'opacity 0.15s' }}
           >
-            {loading ? 'Redirecting to payment...' : PLAN_LABELS[plan]}
+            {loading ? 'Redirecting to payment...' : 'Get Started — $47'}
           </button>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', color: '#a09890', marginTop: 10 }}>Secure payment via Stripe. You&apos;ll receive a confirmation email right after payment.</p>
+          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#5c5c5c', marginTop: 16 }}>
+            Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
+          </p>
 
         </div>
       </div>
