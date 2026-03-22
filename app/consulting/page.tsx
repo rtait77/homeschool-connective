@@ -74,12 +74,12 @@ export default function ConsultingPage() {
               "You know your child is smart and capable, but something about the way things are going just isn't working.",
               "You wish you could sit down with someone experienced and get a straight answer about what to try.",
             ].map((text, i) => (
-              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', borderLeft: '4px solid #55b6ca', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
+              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', borderLeft: '4px solid #ed7c5a', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#3a3a3a', margin: 0 }}>{text}</p>
               </div>
             ))}
           </div>
-          <p style={{ textAlign: 'center', fontSize: '1.05rem', fontWeight: 800, color: '#ed7c5a', marginTop: 36 }}>
+          <p style={{ textAlign: 'center', fontSize: '1.05rem', fontWeight: 800, color: '#1c1c1c', marginTop: 36 }}>
             That&apos;s exactly what Mel is here for.
           </p>
         </div>
