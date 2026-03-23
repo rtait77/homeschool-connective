@@ -255,7 +255,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── HOMESCHOOL LIFE PHOTOS ── */}
-      <div style={{ backgroundColor: '#fff', padding: '64px 24px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Learning happens everywhere.</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
@@ -279,10 +279,15 @@ export default function ConsultingPage() {
             ))}
           </div>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,48 C360,0 1080,48 1440,16 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
       </div>
 
       {/* ── MEET MEL — large photo left, bio right ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px 112px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Meet Mel</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }} className="mel-layout">
@@ -304,6 +309,11 @@ export default function ConsultingPage() {
               </p>
             </div>
           </div>
+        </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,48 C360,0 1080,48 1440,16 L1440,48 Z" fill="#fff" />
+          </svg>
         </div>
       </div>
 
