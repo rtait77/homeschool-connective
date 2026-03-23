@@ -266,6 +266,33 @@ export default function ConsultingPage() {
         </div>
       </div>
 
+      {/* ── HOMESCHOOL LIFE PHOTOS ── */}
+      <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Homeschool Life</p>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Learning happens everywhere.</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {[
+              { src: null as string | null, label: 'Coming Soon', desc: '' },
+              { src: null as string | null, label: 'Coming Soon', desc: '' },
+              { src: null as string | null, label: 'Coming Soon', desc: '' },
+            ].map((tile, i) => (
+              <div key={i} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5' }}>
+                <div style={{ width: '100%', paddingBottom: '125%', position: 'relative', backgroundColor: '#ede8e0' }} />
+                <div style={{ padding: '18px 20px' }}>
+                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 4 }}>{tile.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,48 C360,0 1080,48 1440,16 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
+      </div>
+
       {/* ── MEET MEL — large photo left, bio right ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px 112px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
