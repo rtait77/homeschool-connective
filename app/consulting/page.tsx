@@ -289,7 +289,7 @@ export default function ConsultingPage() {
               { src: '/learn-anywhere-2.jpg', label: '' },
               { src: '/learn-anywhere-3.jpg', label: '' },
               { src: '/learn-anywhere-4.jpg', label: '' },
-              { src: null as string | null, label: '' },
+              { src: '/learn-anywhere-5.jpg', label: '' },
               { src: '/learn-anywhere-6.jpg', label: '' },
             ] as { src: string | null; label: string }[]).map((tile, i) => (
               <div key={i} style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #e2ddd5', backgroundColor: '#ede8e0' }}>
