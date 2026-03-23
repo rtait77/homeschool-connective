@@ -171,38 +171,57 @@ export default function ConsultingPage() {
 
       {/* ── WHAT'S INCLUDED ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How We Help</h2>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
             {[
               {
+                icon: (
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                  </svg>
+                ),
                 title: 'The Intake Form',
-                body: "This isn't your basic questionnaire. Mel built a deep intake form that covers both your child — learning style, focus, subjects they love or avoid — and you as the teacher: your schedule, teaching style, goals, and what you've already tried. Every answer feeds directly into the matching process.",
+                body: "This isn't your basic questionnaire. Mel built a deep intake form covering your child's learning style, focus, and interests — and you as the teacher: your schedule, teaching style, goals, and what you've already tried.",
               },
               {
+                icon: (
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="2" x2="12" y2="6"/>
+                    <line x1="12" y1="18" x2="12" y2="22"/>
+                    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+                    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                    <line x1="2" y1="12" x2="6" y2="12"/>
+                    <line x1="18" y1="12" x2="22" y2="12"/>
+                    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+                    <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                    <circle cx="12" cy="12" r="4"/>
+                  </svg>
+                ),
                 title: 'Recommendations & Help',
-                body: "Based on your intake form responses, our matching system identifies the curriculum and resources most likely to work for your child and your teaching style. Mel reviews everything and puts together a custom report with specific suggestions that fit your family's needs and budget. No generic lists and no guesswork. Every recommendation is chosen with your family in mind.",
+                body: "Mel reviews your intake form and puts together a custom report with specific curriculum and resource suggestions chosen for your child and your teaching style. No generic lists, no guesswork.",
               },
               {
+                icon: (
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                ),
                 title: 'Homeschool Mentorship',
-                body: "After you receive your report from Mel, you'll be able to ask questions and get help for 3 months through email correspondence. Whether something isn't clicking the way you hoped, you want her opinion before purchasing a resource, or you just need someone to think through a challenge with you, she is there to help. You won't be left figuring it out on your own.",
+                body: "After your report, email Mel anytime for 3 months. Whether something isn't clicking, you want a second opinion before buying something, or you just need someone to think it through with you — she's there.",
               },
-            ].map((item, i, arr) => (
-              <div key={item.title} style={{
-                display: 'flex',
-                gap: 40,
-                padding: '36px 0',
-                borderTop: '1px solid #e2ddd5',
-                borderBottom: i === arr.length - 1 ? '1px solid #e2ddd5' : 'none',
-                alignItems: 'flex-start',
-              }} className="help-row">
-                <div style={{ width: '30%', flexShrink: 0 }} className="help-title-col">
-                  <p style={{ fontWeight: 800, fontSize: '1rem', color: '#ed7c5a', margin: 0, lineHeight: 1.4 }}>{item.title}</p>
+            ].map((card) => (
+              <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 16, padding: '32px 28px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: '#fff5f1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {card.icon}
                 </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: '0.92rem', color: '#383838', lineHeight: 1.75, margin: 0 }}>{item.body}</p>
-                </div>
+                <p style={{ fontWeight: 800, fontSize: '1rem', color: '#383838', margin: 0 }}>{card.title}</p>
+                <p style={{ fontSize: '0.88rem', color: '#5c5c5c', lineHeight: 1.75, margin: 0 }}>{card.body}</p>
               </div>
             ))}
           </div>
