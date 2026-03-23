@@ -241,9 +241,9 @@ export default function ConsultingPage() {
               { src: '/activity-building.JPG', label: 'Building & Making', desc: 'Engineering, STEM kits, and hands-on construction projects.' },
               { src: '/activity-board-game.jpg', label: 'Games & Play-Based Learning', desc: 'Board games, puzzles, and play that builds real skills.' },
               { src: '/activity-bookwork.jpg', label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
-              { src: null as string | null, label: 'Coming Soon', desc: '' },
-              { src: null as string | null, label: 'Coming Soon', desc: '' },
-              { src: null as string | null, label: 'Coming Soon', desc: '' },
+              { src: '/activity-activitybook.jpg', label: 'Activity Books', desc: 'Workbooks and hands-on activity books for every subject and age.' },
+              { src: null as string | null, label: 'Subscription Boxes', desc: 'Curated monthly boxes that bring learning to your doorstep.' },
+              { src: '/activity-toy.jpg', label: 'Educational Toys', desc: 'Toys that build skills while kids play and explore.' },
             ] as { src: string | null; label: string; desc: string }[]).map((tile, i) => (
               <div key={i} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#fff', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 {tile.src ? (
@@ -268,16 +268,22 @@ export default function ConsultingPage() {
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Learning happens everywhere.</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-            {[
-              { src: null as string | null, label: 'Coming Soon', desc: '' },
-              { src: null as string | null, label: 'Coming Soon', desc: '' },
-              { src: null as string | null, label: 'Coming Soon', desc: '' },
-            ].map((tile, i) => (
-              <div key={i} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5' }}>
-                <div style={{ width: '100%', paddingBottom: '125%', position: 'relative', backgroundColor: '#ede8e0' }} />
-                <div style={{ padding: '18px 20px' }}>
-                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 4 }}>{tile.label}</p>
-                </div>
+            {([
+              { src: '/learn-anywhere-1.jpg', label: '' },
+              { src: '/learn-anywhere-2.jpg', label: '' },
+              { src: '/learn-anywhere-3.jpg', label: '' },
+              { src: '/learn-anywhere-4.jpg', label: '' },
+              { src: null as string | null, label: '' },
+              { src: '/learn-anywhere-6.jpg', label: '' },
+            ] as { src: string | null; label: string }[]).map((tile, i) => (
+              <div key={i} style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #e2ddd5', backgroundColor: '#ede8e0' }}>
+                {tile.src ? (
+                  <div style={{ position: 'relative', width: '100%', paddingBottom: '125%', overflow: 'hidden' }}>
+                    <img src={tile.src} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+                  </div>
+                ) : (
+                  <div style={{ width: '100%', paddingBottom: '125%', backgroundColor: '#ede8e0' }} />
+                )}
               </div>
             ))}
           </div>
