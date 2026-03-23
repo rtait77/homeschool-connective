@@ -80,8 +80,6 @@ export default function ConsultingPage() {
           </div>
         </div>
 
-        {/* Soft blend at seam — very subtle, barely visible */}
-        <div style={{ position: 'absolute', top: 0, bottom: '48px', left: '50%', width: '40px', background: 'linear-gradient(to right, #e86d47, transparent)', pointerEvents: 'none', zIndex: 1 }} className="hero-seam" />
 
         {/* Wave bottom edge */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
