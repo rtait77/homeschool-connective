@@ -45,40 +45,46 @@ export default function ConsultingPage() {
   return (
     <div style={{ fontFamily: 'Nunito, sans-serif' }}>
 
-      {/* ── HERO — full bleed with overlay ── */}
-      <div style={{ position: 'relative', minHeight: 560, overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
-        {/* Full-bleed background image */}
-        <Image
-          src="/consulting-hero.jpg"
-          alt="Homeschooling family"
-          fill
-          style={{ objectFit: 'cover', objectPosition: 'center center' }}
-          priority
-        />
-        {/* Gradient overlay — strong on left, fades to transparent right */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(232,100,60,0.92) 0%, rgba(232,100,60,0.82) 35%, rgba(232,100,60,0.4) 60%, rgba(232,100,60,0.05) 100%)' }} />
+      {/* ── HERO — split: solid coral left, photo right, soft blend at seam ── */}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: 560, gap: 0 }} className="consulting-hero">
 
-        {/* Text content */}
-        <div style={{ position: 'relative', zIndex: 1, padding: '80px 52px 100px', maxWidth: 560 }} className="hero-text">
-          <p style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 20 }}>
-            One-on-One Homeschool Consulting
-          </p>
-          <h1 style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 20 }}>
-            Stop Guessing.<br />Start Homeschooling with Confidence.
-          </h1>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
-            Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship.
-          </p>
-          <a
-            href="#pricing"
-            style={{ display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: '2px solid rgba(255,255,255,0.6)', letterSpacing: '0.02em' }}
-          >
-            Talk to Mel →
-          </a>
+          {/* Left: solid coral panel */}
+          <div style={{ background: '#e86d47', padding: '80px 52px 100px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <p style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 20 }}>
+              One-on-One Homeschool Consulting
+            </p>
+            <h1 style={{ fontSize: 'clamp(1.8rem, 3.2vw, 2.8rem)', fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 20 }}>
+              Stop Guessing.<br />Get Personalized Support.
+            </h1>
+            <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
+              Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship.
+            </p>
+            <a
+              href="#pricing"
+              style={{ display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: '2px solid rgba(255,255,255,0.6)', letterSpacing: '0.02em' }}
+            >
+              Book a Consult →
+            </a>
+          </div>
+
+          {/* Right: photo only, no overlay */}
+          <div style={{ position: 'relative', minHeight: 400, overflow: 'hidden' }}>
+            <Image
+              src="/consulting-hero.jpg"
+              alt="Homeschooling family"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
+              priority
+            />
+          </div>
         </div>
 
+        {/* Soft blend at seam — fades coral into the photo edge only */}
+        <div style={{ position: 'absolute', top: 0, bottom: '48px', left: 'calc(50% - 100px)', width: '140px', background: 'linear-gradient(to right, #e86d47, transparent)', pointerEvents: 'none', zIndex: 1 }} className="hero-seam" />
+
         {/* Wave bottom edge */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
           <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,48 C360,0 1080,48 1440,16 L1440,48 Z" fill="#f5f1e9" />
           </svg>
@@ -386,8 +392,14 @@ export default function ConsultingPage() {
 
       <style dangerouslySetInnerHTML={{ __html: `
         @media (max-width: 640px) {
-          .hero-text {
-            padding: 60px 28px 80px !important;
+          .consulting-hero {
+            grid-template-columns: 1fr !important;
+          }
+          .consulting-hero > div:last-child {
+            min-height: 260px !important;
+          }
+          .hero-seam {
+            display: none !important;
           }
           .step-connector {
             display: none !important;
