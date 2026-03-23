@@ -11,7 +11,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
         onClick={() => setOpen(o => !o)}
         style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 20, padding: '20px 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
       >
-        <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#1c1c1c', lineHeight: 1.5 }}>{q}</span>
+        <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#383838', lineHeight: 1.5 }}>{q}</span>
         <span style={{ fontSize: '1.2rem', color: '#ed7c5a', flexShrink: 0, lineHeight: 1 }}>{open ? '−' : '+'}</span>
       </button>
       {open && (
@@ -45,27 +45,69 @@ export default function ConsultingPage() {
   return (
     <div style={{ fontFamily: 'Nunito, sans-serif' }}>
 
-      {/* ── HERO ── */}
-      <div style={{ backgroundColor: '#ed7c5a', padding: '52px 24px 60px' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.75)', marginBottom: 14 }}>
-            One-on-One Homeschool Consulting
-          </p>
-          <h1 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.1rem)', fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: 16 }}>
-            <span style={{ display: 'block' }}>Stop Guessing.</span>
-            Get Personalized Curriculum Recommendations and Homeschooling Support.
-          </h1>
-          <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, maxWidth: 560, margin: '0 auto 0' }}>
-            Mel provides personalized support for your family, including curriculum recommendations, resource matching, and ongoing mentorship all in one place.
-          </p>
+      {/* ── HERO — split layout ── */}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          minHeight: 480,
+        }}
+          className="consulting-hero"
+        >
+          {/* Left: text */}
+          <div style={{
+            background: 'linear-gradient(160deg, #f07f5f 0%, #e96f4a 100%)',
+            padding: '64px 48px 80px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 16 }}>
+              One-on-One Homeschool Consulting
+            </p>
+            <h1 style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.2rem)', fontWeight: 800, color: '#fff', lineHeight: 1.3, marginBottom: 18 }}>
+              Stop Guessing. Get Personalized Curriculum Help.
+            </h1>
+            <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, marginBottom: 32, maxWidth: 440 }}>
+              Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship, all in one place.
+            </p>
+            <div>
+              <a
+                href="#pricing"
+                style={{ display: 'inline-block', backgroundColor: '#fff', color: '#ed7c5a', fontWeight: 800, fontSize: '1rem', padding: '14px 28px', borderRadius: 12, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
+              >
+                Get Started — $47
+              </a>
+            </div>
+          </div>
+
+          {/* Right: Mel's photo */}
+          <div style={{ position: 'relative', minHeight: 360, overflow: 'hidden' }}>
+            <Image
+              src="/melanie.avif"
+              alt="Mel, your homeschool consultant"
+              fill
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
+              priority
+            />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(233,111,74,0.18) 0%, transparent 30%)' }} />
+          </div>
+        </div>
+
+        {/* Wave bottom edge */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,48 C360,0 1080,48 1440,16 L1440,48 Z" fill="#f5f1e9" />
+          </svg>
         </div>
       </div>
 
       {/* ── IS THIS YOU? ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The Struggle</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>Is this you?</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>
+            We hear this all the time...and we can help.
+          </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             {[
               "You've tried two or three curricula and nothing has quite clicked. You're not sure what to change or where to even begin.",
@@ -73,12 +115,12 @@ export default function ConsultingPage() {
               "You know your child is smart and capable, but something about the way things are going just isn't working.",
               "You wish you could sit down with someone experienced and get a straight answer about what to try.",
             ].map((text, i) => (
-              <div key={i} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '22px 24px', border: '1px solid #e2ddd5', borderLeft: '4px solid #ed7c5a', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
-                <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#3a3a3a', margin: 0 }}>{text}</p>
+              <div key={i} style={{ backgroundColor: '#fdf8f4', borderRadius: 14, padding: '22px 24px', border: '1px solid #ebe5dc', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+                <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#383838', margin: 0 }}>{text}</p>
               </div>
             ))}
           </div>
-          <p style={{ textAlign: 'center', fontSize: '1.05rem', fontWeight: 800, color: '#1c1c1c', marginTop: 36 }}>
+          <p style={{ textAlign: 'center', fontSize: '1.05rem', fontWeight: 800, color: '#383838', marginTop: 36 }}>
             That&apos;s exactly what Mel is here for.
           </p>
         </div>
@@ -88,20 +130,32 @@ export default function ConsultingPage() {
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The Process</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
-            {[
-              { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
-              { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
-              { num: '3', title: 'Get Your Report', desc: 'Mel puts together a report of personalized recommendations tailored to your family.' },
-              { num: '4', title: 'Mentorship & Support', desc: 'Email Mel anytime for 3 months. She\'s here for follow-up questions, guidance, and ongoing homeschool support.' },
-            ].map(step => (
-              <div key={step.num} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
-                <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>{step.num}</div>
-                <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#1c1c1c', marginBottom: 8 }}>{step.title}</p>
-                <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
-              </div>
-            ))}
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
+          <div style={{ position: 'relative' }}>
+            {/* Dotted connecting line */}
+            <div style={{
+              position: 'absolute',
+              top: 22,
+              left: 'calc(12.5% + 22px)',
+              right: 'calc(12.5% + 22px)',
+              height: 0,
+              borderTop: '2px dashed #e2ddd5',
+              pointerEvents: 'none',
+            }} className="step-connector" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
+              {[
+                { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
+                { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
+                { num: '3', title: 'Get Your Report', desc: 'Mel puts together a report of personalized recommendations tailored to your family.' },
+                { num: '4', title: 'Mentorship & Support', desc: 'Email Mel anytime for 3 months. She\'s here for follow-up questions, guidance, and ongoing homeschool support.' },
+              ].map(step => (
+                <div key={step.num} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
+                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 8 }}>{step.title}</p>
+                  <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -114,7 +168,7 @@ export default function ConsultingPage() {
               <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
                 {resourceCount}
               </p>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 6 }}>
+              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#383838', marginBottom: 6 }}>
                 curated resources in our database
               </p>
               <p style={{ fontSize: '0.85rem', color: '#5c5c5c', marginBottom: 8 }}>
@@ -132,12 +186,12 @@ export default function ConsultingPage() {
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 40 }}>How We Help</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>How We Help</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
             {[
               {
                 title: 'The Intake Form',
-                body: "This isn't your basic questionnaire. Mel and our team built an intake form that goes deep into what actually matters. On the child side: sensory and regulation needs, how they handle frustration, how they approach new and hard tasks, focus span, reading and writing levels, screen habits, what subjects they love and avoid, and more. On your side: your teaching style, schedule, prep time, goals, what you've already tried, and what success looks like for your family. Every answer feeds directly into our matching system so Mel can build a report that actually fits you — not a generic list.",
+                body: "This isn't your basic questionnaire. Mel built a deep intake form that covers both your child — learning style, focus, subjects they love or avoid — and you as the teacher: your schedule, teaching style, goals, and what you've already tried. Every answer feeds directly into the matching process.",
               },
               {
                 title: 'Recommendations & Help',
@@ -153,7 +207,7 @@ export default function ConsultingPage() {
                   <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', margin: 0, textAlign: 'center' }}>{card.title}</p>
                 </div>
                 <div style={{ padding: '24px' }}>
-                  <p style={{ fontSize: '0.88rem', color: '#3a3a3a', lineHeight: 1.7, margin: 0 }}>{card.body}</p>
+                  <p style={{ fontSize: '0.88rem', color: '#383838', lineHeight: 1.7, margin: 0 }}>{card.body}</p>
                 </div>
               </div>
             ))}
@@ -161,27 +215,29 @@ export default function ConsultingPage() {
         </div>
       </div>
 
-      {/* ── MEET MEL ── */}
+      {/* ── MEET MEL — side-by-side ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 680, margin: '0 auto' }}>
+        <div style={{ maxWidth: 760, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Your Consultant</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 36 }}>Meet Mel</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 28 }}>
-            <Image
-              src="/melanie.avif"
-              alt="Mel"
-              width={140}
-              height={140}
-              style={{ borderRadius: '50%', objectFit: 'cover', width: 140, height: 140, border: '4px solid #fff' }}
-            />
-            <div style={{ textAlign: 'center', maxWidth: 580 }}>
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#3a3a3a', marginBottom: 16 }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>Meet Mel</h2>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 40 }} className="mel-layout">
+            <div style={{ flexShrink: 0 }}>
+              <Image
+                src="/melanie.avif"
+                alt="Mel"
+                width={140}
+                height={140}
+                style={{ borderRadius: '50%', objectFit: 'cover', width: 140, height: 140, border: '4px solid #fff', boxShadow: '0 4px 16px rgba(0,0,0,0.10)' }}
+              />
+            </div>
+            <div>
+              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#383838', marginBottom: 16 }}>
                 With over 25 years of homeschooling experience, Mel has dedicated her life to nurturing young learners and supporting families on their educational journeys. She began homeschooling her own children in 2000, and today has the joy of homeschooling her grandchildren.
               </p>
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#3a3a3a', marginBottom: 16 }}>
+              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#383838', marginBottom: 16 }}>
                 Along the way, she has worked as assistant director of a homeschool co-op, coordinator at a church nursery, and lead teacher at a pre-K center, giving her a well-rounded perspective on how children learn best in a variety of settings.
               </p>
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#3a3a3a' }}>
+              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#383838', margin: 0 }}>
                 Mel is passionate about coming alongside homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children&apos;s needs.
               </p>
             </div>
@@ -192,16 +248,15 @@ export default function ConsultingPage() {
       {/* ── PRICING ── */}
       <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', margin: '0 auto 40px' }}>
             One-time payment. No subscription required.
           </p>
 
-          {/* Single plan card */}
           <div style={{ borderRadius: 18, padding: '32px', border: '2px solid #ed7c5a', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(237,124,90,0.12)', marginBottom: 28 }}>
             <p style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$47</p>
             <p style={{ fontSize: '0.8rem', color: '#a09890', marginBottom: 24 }}>one-time payment</p>
-            <ul style={{ fontSize: '0.9rem', color: '#3a3a3a', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <ul style={{ fontSize: '0.9rem', color: '#383838', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <li>✓ Deep-dive intake form</li>
               <li>✓ Personalized curriculum recommendations</li>
               <li>✓ Learning style, method & teaching style match</li>
@@ -211,9 +266,8 @@ export default function ConsultingPage() {
             <p style={{ fontSize: '0.8rem', color: '#a09890', marginTop: 12, marginBottom: 0 }}>Option to subscribe to games after your trial if you choose.</p>
           </div>
 
-          {/* Terms */}
           <div style={{ backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5', borderRadius: 14, padding: '28px', marginBottom: 20 }}>
-            <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#1c1c1c', marginBottom: 16 }}>Terms & Agreement</h3>
+            <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#383838', marginBottom: 16 }}>Terms & Agreement</h3>
             <div style={{ fontSize: '0.85rem', color: '#5c5c5c', lineHeight: 1.7, marginBottom: 20 }}>
               <p style={{ marginBottom: 10 }}>By signing up for this consulting service, you agree to the following:</p>
               <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -231,11 +285,10 @@ export default function ConsultingPage() {
                 onChange={e => setAgreed(e.target.checked)}
                 style={{ marginTop: 2, width: 16, height: 16, accentColor: '#ed7c5a', cursor: 'pointer', flexShrink: 0 }}
               />
-              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#1c1c1c' }}>I have read and agree to the terms above.</span>
+              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#383838' }}>I have read and agree to the terms above.</span>
             </label>
           </div>
 
-          {/* Pay button */}
           <button
             onClick={handleCheckout}
             disabled={!agreed || loading}
@@ -247,7 +300,6 @@ export default function ConsultingPage() {
           <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#5c5c5c', marginTop: 16 }}>
             Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
           </p>
-
         </div>
       </div>
 
@@ -255,7 +307,7 @@ export default function ConsultingPage() {
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>FAQ</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
           <div style={{ borderBottom: '1px solid #e2ddd5' }}>
             {[
               {
@@ -308,6 +360,32 @@ export default function ConsultingPage() {
           </div>
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (max-width: 640px) {
+          .consulting-hero {
+            grid-template-columns: 1fr !important;
+          }
+          .consulting-hero > div:last-child {
+            min-height: 280px !important;
+          }
+          .step-connector {
+            display: none !important;
+          }
+          .mel-layout {
+            flex-direction: column !important;
+            align-items: center !important;
+          }
+          .mel-layout > div:last-child {
+            text-align: left;
+          }
+        }
+        @media (max-width: 700px) {
+          .step-connector {
+            display: none !important;
+          }
+        }
+      `}} />
 
     </div>
   )
