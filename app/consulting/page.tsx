@@ -51,6 +51,7 @@ export default function ConsultingPage() {
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           minHeight: 480,
+          gap: 0,
         }}
           className="consulting-hero"
         >
@@ -84,8 +85,8 @@ export default function ConsultingPage() {
           {/* Right: Mel's photo */}
           <div style={{ position: 'relative', minHeight: 360, overflow: 'hidden' }}>
             <Image
-              src="/melanie.avif"
-              alt="Mel, your homeschool consultant"
+              src="/consulting-hero.jpg"
+              alt="Homeschooling family"
               fill
               style={{ objectFit: 'cover', objectPosition: 'center top' }}
               priority
