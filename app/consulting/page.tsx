@@ -183,8 +183,8 @@ export default function ConsultingPage() {
       <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>How We Help</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20 }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How We Help</h2>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
               {
                 title: 'The Intake Form',
@@ -198,13 +198,20 @@ export default function ConsultingPage() {
                 title: 'Homeschool Mentorship',
                 body: "After you receive your report from Mel, you'll be able to ask questions and get help for 3 months through email correspondence. Whether something isn't clicking the way you hoped, you want her opinion before purchasing a resource, or you just need someone to think through a challenge with you, she is there to help. You won't be left figuring it out on your own.",
               },
-            ].map(card => (
-              <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 14, overflow: 'hidden', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-                <div style={{ backgroundColor: '#ed7c5a', height: 80, padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <p style={{ fontWeight: 800, fontSize: '1rem', color: '#fff', margin: 0, textAlign: 'center' }}>{card.title}</p>
+            ].map((item, i, arr) => (
+              <div key={item.title} style={{
+                display: 'flex',
+                gap: 40,
+                padding: '36px 0',
+                borderTop: '1px solid #e2ddd5',
+                borderBottom: i === arr.length - 1 ? '1px solid #e2ddd5' : 'none',
+                alignItems: 'flex-start',
+              }} className="help-row">
+                <div style={{ width: '30%', flexShrink: 0 }} className="help-title-col">
+                  <p style={{ fontWeight: 800, fontSize: '1rem', color: '#ed7c5a', margin: 0, lineHeight: 1.4 }}>{item.title}</p>
                 </div>
-                <div style={{ padding: '24px' }}>
-                  <p style={{ fontSize: '0.88rem', color: '#383838', lineHeight: 1.7, margin: 0 }}>{card.body}</p>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: '0.92rem', color: '#383838', lineHeight: 1.75, margin: 0 }}>{item.body}</p>
                 </div>
               </div>
             ))}
@@ -375,6 +382,13 @@ export default function ConsultingPage() {
           }
           .mel-layout > div:last-child {
             text-align: left;
+          }
+          .help-row {
+            flex-direction: column !important;
+            gap: 12px !important;
+          }
+          .help-title-col {
+            width: 100% !important;
           }
         }
         @media (max-width: 700px) {
