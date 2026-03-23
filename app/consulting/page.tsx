@@ -258,30 +258,27 @@ export default function ConsultingPage() {
         </div>
       </div>
 
-      {/* ── MEET MEL — side-by-side ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+      {/* ── MEET MEL — large photo left, bio right ── */}
+      <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Your Consultant</p>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>Meet Mel</h2>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 40 }} className="mel-layout">
-            <div style={{ flexShrink: 0 }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Meet Mel</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }} className="mel-layout">
+            <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
               <Image
                 src="/melanie.avif"
                 alt="Mel"
-                width={140}
-                height={140}
-                style={{ borderRadius: '50%', objectFit: 'cover', width: 140, height: 140, border: '4px solid #fff', boxShadow: '0 4px 16px rgba(0,0,0,0.10)' }}
+                width={480}
+                height={560}
+                style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }}
               />
             </div>
             <div>
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#383838', marginBottom: 16 }}>
+              <p style={{ fontSize: '1rem', lineHeight: 1.85, color: '#383838', marginBottom: 20 }}>
                 With over 25 years of homeschooling experience, Mel has dedicated her life to nurturing young learners and supporting families on their educational journeys. She began homeschooling her own children in 2000, and today has the joy of homeschooling her grandchildren.
               </p>
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#383838', marginBottom: 16 }}>
+              <p style={{ fontSize: '1rem', lineHeight: 1.85, color: '#383838', margin: 0 }}>
                 Along the way, she has worked as assistant director of a homeschool co-op, coordinator at a church nursery, and lead teacher at a pre-K center, giving her a well-rounded perspective on how children learn best in a variety of settings.
-              </p>
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.8, color: '#383838', margin: 0 }}>
-                Mel is passionate about coming alongside homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children&apos;s needs.
               </p>
             </div>
           </div>
@@ -419,11 +416,7 @@ export default function ConsultingPage() {
             display: none !important;
           }
           .mel-layout {
-            flex-direction: column !important;
-            align-items: center !important;
-          }
-          .mel-layout > div:last-child {
-            text-align: left;
+            grid-template-columns: 1fr !important;
           }
           .help-row {
             flex-direction: column !important;
