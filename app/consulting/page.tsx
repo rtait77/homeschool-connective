@@ -111,67 +111,6 @@ export default function ConsultingPage() {
         </div>
       </div>
 
-      {/* ── HOW IT WORKS ── */}
-      <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto' }}>
-
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
-          <div style={{ position: 'relative' }}>
-            {/* Dotted connecting line */}
-            <div style={{
-              position: 'absolute',
-              top: 50,
-              left: 'calc(12.5% + 22px)',
-              right: 'calc(12.5% + 22px)',
-              height: 0,
-              borderTop: '2px dashed #e2ddd5',
-              pointerEvents: 'none',
-            }} className="step-connector" />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
-              {[
-                { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
-                { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
-                { num: '3', title: 'Get Your Report', desc: 'Mel puts together a report of personalized recommendations tailored to your family.' },
-                { num: '4', title: 'Mentorship & Support', desc: 'Email Mel anytime for 3 months. She\'s here for follow-up questions, guidance, and ongoing homeschool support.' },
-              ].map(step => (
-                <div key={step.num} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
-                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 8 }}>{step.title}</p>
-                  <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
-          <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
-            <path d="M0,48 C360,0 1080,48 1440,16 L1440,48 Z" fill="#f5f1e9" />
-          </svg>
-        </div>
-      </div>
-
-      {/* ── RESOURCE COUNT STAT ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '48px 24px' }}>
-        <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
-          {resourceCount !== null && (
-            <>
-              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
-                {resourceCount}
-              </p>
-              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#383838', marginBottom: 6 }}>
-                curated resources in our database
-              </p>
-              <p style={{ fontSize: '0.85rem', color: '#5c5c5c', marginBottom: 8 }}>
-                Curricula, books, games, toys, activity books, websites, online games, apps, subscription boxes, and more.
-              </p>
-              <p style={{ fontSize: '0.85rem', color: '#55b6ca', fontWeight: 700, margin: 0 }}>
-                And growing — Mel matches from this list to build your personalized report.
-              </p>
-            </>
-          )}
-        </div>
-      </div>
-
       {/* ── WHAT'S INCLUDED ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
@@ -226,6 +165,66 @@ export default function ConsultingPage() {
           <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,48 C360,0 1080,48 1440,16 L1440,48 Z" fill="#f5f1e9" />
           </svg>
+        </div>
+      </div>
+
+      {/* ── HOW IT WORKS ── */}
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
+          <div style={{ position: 'relative' }}>
+            {/* Dotted connecting line */}
+            <div style={{
+              position: 'absolute',
+              top: 50,
+              left: 'calc(12.5% + 22px)',
+              right: 'calc(12.5% + 22px)',
+              height: 0,
+              borderTop: '2px dashed #d5cfc6',
+              pointerEvents: 'none',
+            }} className="step-connector" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
+              {[
+                { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
+                { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
+                { num: '3', title: 'Get Your Report', desc: 'Mel puts together a report of personalized recommendations tailored to your family.' },
+                { num: '4', title: 'Mentorship & Support', desc: 'Email Mel anytime for 3 months. She\'s here for follow-up questions, guidance, and ongoing homeschool support.' },
+              ].map(step => (
+                <div key={step.num} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
+                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 8 }}>{step.title}</p>
+                  <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 48" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,48 C360,0 1080,48 1440,16 L1440,48 Z" fill="#fff" />
+          </svg>
+        </div>
+      </div>
+
+      {/* ── RESOURCE COUNT STAT ── */}
+      <div style={{ backgroundColor: '#fff', padding: '48px 24px' }}>
+        <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
+          {resourceCount !== null && (
+            <>
+              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
+                {resourceCount}
+              </p>
+              <p style={{ fontSize: '1rem', fontWeight: 800, color: '#383838', marginBottom: 6 }}>
+                curated resources in our database
+              </p>
+              <p style={{ fontSize: '0.85rem', color: '#5c5c5c', marginBottom: 8 }}>
+                Curricula, books, games, toys, activity books, websites, online games, apps, subscription boxes, and more.
+              </p>
+              <p style={{ fontSize: '0.85rem', color: '#55b6ca', fontWeight: 700, margin: 0 }}>
+                And growing — Mel matches from this list to build your personalized report.
+              </p>
+            </>
+          )}
         </div>
       </div>
 
