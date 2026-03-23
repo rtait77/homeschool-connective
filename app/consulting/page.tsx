@@ -132,7 +132,7 @@ export default function ConsultingPage() {
             {/* Dotted connecting line */}
             <div style={{
               position: 'absolute',
-              top: 22,
+              top: 50,
               left: 'calc(12.5% + 22px)',
               right: 'calc(12.5% + 22px)',
               height: 0,
