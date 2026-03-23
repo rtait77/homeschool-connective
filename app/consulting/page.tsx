@@ -234,6 +234,9 @@ export default function ConsultingPage() {
               { src: '/activity-building.JPG', label: 'Building & Making', desc: 'Engineering, STEM kits, and hands-on construction projects.' },
               { src: '/activity-board-game.jpg', label: 'Games & Play-Based Learning', desc: 'Board games, puzzles, and play that builds real skills.' },
               { src: null, label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
+              { src: null, label: 'Coming Soon', desc: '' },
+              { src: null, label: 'Coming Soon', desc: '' },
+              { src: null, label: 'Coming Soon', desc: '' },
             ].map((tile) => (
               <div key={tile.label} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#fff', border: tile.placeholder ? '2px dashed #d5cfc6' : '1px solid #e2ddd5', boxShadow: tile.placeholder ? 'none' : '0 2px 10px rgba(0,0,0,0.05)' }}>
                 {tile.src ? (
