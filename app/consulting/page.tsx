@@ -233,8 +233,8 @@ export default function ConsultingPage() {
               { src: '/activity-board-game.jpg', label: 'Games & Play-Based Learning', desc: 'Board games, puzzles, and play that builds real skills.' },
               { src: '/activity-bookwork.jpg', label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
               { src: '/activity-activitybook.jpg', label: 'Activity Books', desc: 'Workbooks and hands-on activity books for every subject and age.' },
-              { src: null as string | null, label: 'Subscription Boxes', desc: 'Curated monthly boxes that bring learning to your doorstep.' },
-              { src: '/activity-toy.jpg', label: 'Educational Toys', desc: 'Toys that build skills while kids play and explore.' },
+              { src: '/activity-subscriptionbox.jpg', label: 'Subscription Boxes', desc: 'Curated monthly boxes that bring learning to your doorstep.' },
+              { src: '/activity-online-lesson.jpg', label: 'Online Lessons', desc: 'Online classes, video courses, and digital resources for every subject.' },
             ] as { src: string | null; label: string; desc: string }[]).map((tile, i) => (
               <div key={i} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#fff', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 {tile.src ? (
