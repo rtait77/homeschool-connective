@@ -80,8 +80,8 @@ export default function ConsultingPage() {
           </div>
         </div>
 
-        {/* Soft blend at seam — fades coral into the photo edge only */}
-        <div style={{ position: 'absolute', top: 0, bottom: '48px', left: 'calc(50% - 100px)', width: '140px', background: 'linear-gradient(to right, #e86d47, transparent)', pointerEvents: 'none', zIndex: 1 }} className="hero-seam" />
+        {/* Soft blend at seam — starts exactly at the photo edge, fades into photo only */}
+        <div style={{ position: 'absolute', top: 0, bottom: '48px', left: '50%', width: '120px', background: 'linear-gradient(to right, #e86d47, transparent)', pointerEvents: 'none', zIndex: 1 }} className="hero-seam" />
 
         {/* Wave bottom edge */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
