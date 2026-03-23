@@ -99,10 +99,10 @@ export default function ConsultingPage() {
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             {[
-              "You've tried two or three curricula and nothing has quite clicked. You're not sure what to change or where to even begin.",
-              "You're brand new to homeschooling and don't know where to start. Everything feels overwhelming and you're not even sure what questions to ask yet.",
-              "You know your child is smart and capable, but something about the way things are going just isn't working.",
-              "You wish you could sit down with someone experienced and get a straight answer about what to try.",
+              "I've tried two or three curricula and nothing has quite clicked. I'm not sure what to change or where to even begin.",
+              "I'm brand new to homeschooling and don't know where to start. Everything feels overwhelming and I'm not even sure what questions to ask yet.",
+              "I know my child is smart and capable, but something about the way things are going just isn't working.",
+              "I wish I could sit down with someone experienced and get a straight answer about what to try.",
             ].map((text, i) => (
               <div key={i} style={{ backgroundColor: '#fdf8f4', borderRadius: 14, padding: '22px 24px', border: '1px solid #ebe5dc', borderLeft: '4px solid #55b6ca', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                 <span style={{ fontSize: '1.4rem', lineHeight: 1, color: '#55b6ca', flexShrink: 0, fontWeight: 800, marginTop: -2 }}>&ldquo;</span>
