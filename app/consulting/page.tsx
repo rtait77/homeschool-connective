@@ -50,48 +50,49 @@ export default function ConsultingPage() {
         <div style={{
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
-          minHeight: 480,
+          minHeight: 560,
           gap: 0,
         }}
           className="consulting-hero"
         >
           {/* Left: text */}
           <div style={{
-            background: 'linear-gradient(160deg, #f07f5f 0%, #e96f4a 100%)',
-            padding: '64px 48px 80px',
+            background: 'linear-gradient(160deg, #f07f5f 0%, #e86d47 100%)',
+            padding: '80px 52px 100px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
           }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 16 }}>
+            <p style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.65)', marginBottom: 20 }}>
               One-on-One Homeschool Consulting
             </p>
-            <h1 style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.2rem)', fontWeight: 800, color: '#fff', lineHeight: 1.3, marginBottom: 18 }}>
+            <h1 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 800, color: '#fff', lineHeight: 1.25, marginBottom: 20 }}>
               Stop Guessing.<br />Get Personalized Support.
             </h1>
-            <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, marginBottom: 32, maxWidth: 440 }}>
+            <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.75, marginBottom: 36, maxWidth: 400 }}>
               Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship, all in one place.
             </p>
             <div>
               <a
                 href="#pricing"
-                style={{ display: 'inline-block', backgroundColor: '#fff', color: '#ed7c5a', fontWeight: 800, fontSize: '1rem', padding: '14px 28px', borderRadius: 12, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
+                style={{ display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: '2px solid rgba(255,255,255,0.6)', letterSpacing: '0.02em' }}
               >
-                Get Started
+                Get Started →
               </a>
             </div>
           </div>
 
-          {/* Right: Mel's photo */}
-          <div style={{ position: 'relative', minHeight: 360, overflow: 'hidden' }}>
+          {/* Right: hero photo */}
+          <div style={{ position: 'relative', minHeight: 400, overflow: 'hidden' }}>
             <Image
               src="/consulting-hero.jpg"
               alt="Homeschooling family"
               fill
-              style={{ objectFit: 'cover', objectPosition: 'center top' }}
+              style={{ objectFit: 'cover', objectPosition: 'center center' }}
               priority
             />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(233,111,74,0.18) 0%, transparent 30%)' }} />
+            {/* Gradient blending left edge into coral */}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(232,109,71,0.55) 0%, rgba(232,109,71,0.1) 35%, transparent 60%)' }} />
           </div>
         </div>
 
