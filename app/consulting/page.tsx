@@ -237,11 +237,11 @@ export default function ConsultingPage() {
             ].map((tile) => (
               <div key={tile.label} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#fff', border: tile.placeholder ? '2px dashed #d5cfc6' : '1px solid #e2ddd5', boxShadow: tile.placeholder ? 'none' : '0 2px 10px rgba(0,0,0,0.05)' }}>
                 {tile.src ? (
-                  <div style={{ position: 'relative', width: '100%', paddingBottom: '75%', overflow: 'hidden' }}>
-                    <img src={tile.src} alt={tile.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+                  <div style={{ position: 'relative', width: '100%', paddingBottom: '125%', overflow: 'hidden' }}>
+                    <img src={tile.src!} alt={tile.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
                   </div>
                 ) : (
-                  <div style={{ width: '100%', paddingBottom: '75%', position: 'relative', backgroundColor: tile.placeholder ? '#f0ece4' : '#ede8e0' }}>
+                  <div style={{ width: '100%', paddingBottom: '125%', position: 'relative', backgroundColor: '#ede8e0' }}>
                     {tile.placeholder && (
                       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <span style={{ fontSize: '0.78rem', color: '#b0a89e', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Photo coming soon</span>
