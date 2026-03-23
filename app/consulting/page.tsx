@@ -120,9 +120,6 @@ export default function ConsultingPage() {
               </div>
             ))}
           </div>
-          <p style={{ textAlign: 'center', fontSize: '1.05rem', fontWeight: 800, color: '#383838', marginTop: 36 }}>
-            That&apos;s exactly what Mel is here for.
-          </p>
         </div>
       </div>
 
