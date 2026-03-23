@@ -227,34 +227,28 @@ export default function ConsultingPage() {
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Whatever your family&apos;s learning looks like, Mel can help.</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', marginBottom: 48, maxWidth: 560, margin: '0 auto 48px' }}>From structured bookwork to hands-on projects — she&apos;s helped families find what works across every style of learning.</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
-            {[
+            {([
               { src: '/activity-science.JPG', label: 'Science Experiments', desc: 'Hands-on labs and experiments that make concepts click.' },
               { src: '/activity-reading-2.jpg', label: 'Reading', desc: 'Finding the right books and reading programs for every level.' },
               { src: '/activity-arts-and-crafts.jpg', label: 'Art & Crafts', desc: 'Creative projects that make learning memorable.' },
               { src: '/activity-building.JPG', label: 'Building & Making', desc: 'Engineering, STEM kits, and hands-on construction projects.' },
               { src: '/activity-board-game.jpg', label: 'Games & Play-Based Learning', desc: 'Board games, puzzles, and play that builds real skills.' },
-              { src: null, label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
-              { src: null, label: 'Coming Soon', desc: '' },
-              { src: null, label: 'Coming Soon', desc: '' },
-              { src: null, label: 'Coming Soon', desc: '' },
-            ].map((tile) => (
-              <div key={tile.label} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#fff', border: tile.placeholder ? '2px dashed #d5cfc6' : '1px solid #e2ddd5', boxShadow: tile.placeholder ? 'none' : '0 2px 10px rgba(0,0,0,0.05)' }}>
+              { src: null as string | null, label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
+              { src: null as string | null, label: 'Coming Soon', desc: '' },
+              { src: null as string | null, label: 'Coming Soon', desc: '' },
+              { src: null as string | null, label: 'Coming Soon', desc: '' },
+            ] as { src: string | null; label: string; desc: string }[]).map((tile, i) => (
+              <div key={i} style={{ borderRadius: 14, overflow: 'hidden', backgroundColor: '#fff', border: '1px solid #e2ddd5', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
                 {tile.src ? (
                   <div style={{ position: 'relative', width: '100%', paddingBottom: '125%', overflow: 'hidden' }}>
-                    <img src={tile.src!} alt={tile.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
+                    <img src={tile.src} alt={tile.label} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }} />
                   </div>
                 ) : (
-                  <div style={{ width: '100%', paddingBottom: '125%', position: 'relative', backgroundColor: '#ede8e0' }}>
-                    {tile.placeholder && (
-                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span style={{ fontSize: '0.78rem', color: '#b0a89e', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Photo coming soon</span>
-                      </div>
-                    )}
-                  </div>
+                  <div style={{ width: '100%', paddingBottom: '125%', position: 'relative', backgroundColor: '#ede8e0' }} />
                 )}
                 <div style={{ padding: '18px 20px' }}>
-                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: tile.placeholder ? '#b0a89e' : '#383838', marginBottom: 4 }}>{tile.label}</p>
-                  <p style={{ fontSize: '0.82rem', color: tile.placeholder ? '#c0b8b0' : '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{tile.desc}</p>
+                  <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 4 }}>{tile.label}</p>
+                  {tile.desc ? <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{tile.desc}</p> : null}
                 </div>
               </div>
             ))}
