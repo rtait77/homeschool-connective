@@ -90,7 +90,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── SOUND FAMILIAR? ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px', marginTop: -2 }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>
             Sound familiar?
@@ -287,7 +287,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── MEET MEL — large photo left, bio right ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px 112px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px 112px', position: 'relative', overflow: 'hidden', marginTop: -2 }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Meet Mel</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }} className="mel-layout">
@@ -318,7 +318,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── PRICING ── */}
-      <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
+      <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px', marginTop: -2 }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', margin: '0 auto 40px' }}>
