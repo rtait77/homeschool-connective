@@ -233,7 +233,7 @@ export default function ConsultingPage() {
               { src: '/activity-arts-and-crafts.jpg', label: 'Art & Crafts', desc: 'Creative projects that make learning memorable.' },
               { src: '/activity-building.JPG', label: 'Building & Making', desc: 'Engineering, STEM kits, and hands-on construction projects.' },
               { src: '/activity-board-game.jpg', label: 'Games & Play-Based Learning', desc: 'Board games, puzzles, and play that builds real skills.' },
-              { src: null as string | null, label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
+              { src: '/activity-bookwork.jpg', label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
               { src: null as string | null, label: 'Coming Soon', desc: '' },
               { src: null as string | null, label: 'Coming Soon', desc: '' },
               { src: null as string | null, label: 'Coming Soon', desc: '' },
