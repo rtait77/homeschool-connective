@@ -66,7 +66,7 @@ export default function ConsultingPage() {
               One-on-One Homeschool Consulting
             </p>
             <h1 style={{ fontSize: 'clamp(1.6rem, 2.8vw, 2.2rem)', fontWeight: 800, color: '#fff', lineHeight: 1.3, marginBottom: 18 }}>
-              Stop Guessing. Get Personalized Curriculum Help.
+              Stop Guessing.<br />Get Personalized Support.
             </h1>
             <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.7, marginBottom: 32, maxWidth: 440 }}>
               Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship, all in one place.
@@ -76,7 +76,7 @@ export default function ConsultingPage() {
                 href="#pricing"
                 style={{ display: 'inline-block', backgroundColor: '#fff', color: '#ed7c5a', fontWeight: 800, fontSize: '1rem', padding: '14px 28px', borderRadius: 12, textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
               >
-                Get Started — $47
+                Get Started
               </a>
             </div>
           </div>
