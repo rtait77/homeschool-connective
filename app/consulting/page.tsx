@@ -90,7 +90,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── SOUND FAMILIAR? ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px', marginTop: -2 }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>
             Sound familiar?
@@ -109,10 +109,15 @@ export default function ConsultingPage() {
             ))}
           </div>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
+          </svg>
+        </div>
       </div>
 
       {/* ── WHAT'S INCLUDED ── */}
-      <div style={{ backgroundColor: '#fff', padding: '64px 24px' }}>
+      <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How We Help</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
@@ -161,10 +166,15 @@ export default function ConsultingPage() {
             ))}
           </div>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
       </div>
 
       {/* ── HOW IT WORKS ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
           <div style={{ position: 'relative' }}>
@@ -195,10 +205,15 @@ export default function ConsultingPage() {
             </div>
           </div>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,48 C360,0 1080,48 1440,16 L1440,56 Z" fill="#fff" />
+          </svg>
+        </div>
       </div>
 
       {/* ── RESOURCE COUNT STAT ── */}
-      <div style={{ backgroundColor: '#fff', padding: '48px 24px' }}>
+      <div style={{ backgroundColor: '#fff', padding: '48px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
           {resourceCount !== null && (
             <>
@@ -217,10 +232,15 @@ export default function ConsultingPage() {
             </>
           )}
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
       </div>
 
       {/* ── ACTIVITY TILES ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Whatever your family&apos;s learning looks like, Mel can help.</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', marginBottom: 48, maxWidth: 560, margin: '0 auto 48px' }}>From structured bookwork to hands-on projects — she&apos;s helped families find what works across every style of learning.</p>
@@ -252,10 +272,15 @@ export default function ConsultingPage() {
             ))}
           </div>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,48 C360,0 1080,48 1440,16 L1440,56 Z" fill="#fff" />
+          </svg>
+        </div>
       </div>
 
       {/* ── HOMESCHOOL LIFE PHOTOS ── */}
-      <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Learning happens everywhere.</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
@@ -318,7 +343,7 @@ export default function ConsultingPage() {
       </div>
 
       {/* ── PRICING ── */}
-      <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px', marginTop: -2 }}>
+      <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', margin: '0 auto 40px' }}>
@@ -373,10 +398,15 @@ export default function ConsultingPage() {
             Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
           </p>
         </div>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
       </div>
 
       {/* ── FAQ ── */}
-      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
+      <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px', marginTop: -2 }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
           <div style={{ borderBottom: '1px solid #e2ddd5' }}>
