@@ -114,7 +114,7 @@ export default function ConsultingPage() {
       {/* ── HOW IT WORKS ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>The Process</p>
+
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How it works</h2>
           <div style={{ position: 'relative' }}>
             {/* Dotted connecting line */}
@@ -175,7 +175,6 @@ export default function ConsultingPage() {
       {/* ── WHAT'S INCLUDED ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>What&apos;s Included</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>How We Help</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
             {[
@@ -233,7 +232,6 @@ export default function ConsultingPage() {
       {/* ── ACTIVITY TILES ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>All Kinds of Learning</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Whatever your family&apos;s learning looks like, Mel can help.</h2>
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', marginBottom: 48, maxWidth: 560, margin: '0 auto 48px' }}>From structured bookwork to hands-on projects — she&apos;s helped families find what works across every style of learning.</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
@@ -269,7 +267,6 @@ export default function ConsultingPage() {
       {/* ── HOMESCHOOL LIFE PHOTOS ── */}
       <div style={{ backgroundColor: '#fff', padding: '64px 24px 96px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Homeschool Life</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Learning happens everywhere.</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
             {[
@@ -296,7 +293,6 @@ export default function ConsultingPage() {
       {/* ── MEET MEL — large photo left, bio right ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '80px 24px 112px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>Your Consultant</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Meet Mel</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }} className="mel-layout">
             <div style={{ position: 'relative', borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
@@ -386,7 +382,6 @@ export default function ConsultingPage() {
       {/* ── FAQ ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 720, margin: '0 auto' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#55b6ca', textAlign: 'center', marginBottom: 12 }}>FAQ</p>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 48 }}>Common Questions</h2>
           <div style={{ borderBottom: '1px solid #e2ddd5' }}>
             {[
