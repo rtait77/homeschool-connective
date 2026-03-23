@@ -91,11 +91,11 @@ export default function ConsultingPage() {
         </div>
       </div>
 
-      {/* ── IS THIS YOU? ── */}
+      {/* ── SOUND FAMILIAR? ── */}
       <div style={{ backgroundColor: '#f5f1e9', padding: '64px 24px' }}>
         <div style={{ maxWidth: 700, margin: '0 auto' }}>
           <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>
-            We hear this all the time...and we can help.
+            Sound familiar?
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
             {[
@@ -104,7 +104,8 @@ export default function ConsultingPage() {
               "You know your child is smart and capable, but something about the way things are going just isn't working.",
               "You wish you could sit down with someone experienced and get a straight answer about what to try.",
             ].map((text, i) => (
-              <div key={i} style={{ backgroundColor: '#fdf8f4', borderRadius: 14, padding: '22px 24px', border: '1px solid #ebe5dc', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
+              <div key={i} style={{ backgroundColor: '#fdf8f4', borderRadius: 14, padding: '22px 24px', border: '1px solid #ebe5dc', borderLeft: '4px solid #55b6ca', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.4rem', lineHeight: 1, color: '#55b6ca', flexShrink: 0, fontWeight: 800, marginTop: -2 }}>&ldquo;</span>
                 <p style={{ fontSize: '0.92rem', lineHeight: 1.65, color: '#383838', margin: 0 }}>{text}</p>
               </div>
             ))}
