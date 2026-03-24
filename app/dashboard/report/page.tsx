@@ -139,13 +139,15 @@ export default function ClientReportPage() {
             From Mel at Homeschool Connective
             {report?.sent_at && ` · ${new Date(report.sent_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}
           </p>
-          <button
-            onClick={() => window.print()}
-            className="no-print"
-            style={{ backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, border: 'none', cursor: 'pointer' }}
-          >
-            ⬇ Download PDF
-          </button>
+          <div className="no-print" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <button
+              onClick={() => window.print()}
+              style={{ backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, border: 'none', cursor: 'pointer' }}
+            >
+              ⬇ Save as PDF
+            </button>
+            <p style={{ fontSize: '0.75rem', color: '#aaa', margin: 0 }}>In the print dialog, choose &ldquo;Save as PDF&rdquo;</p>
+          </div>
         </div>
 
         {/* Results at a Glance */}
