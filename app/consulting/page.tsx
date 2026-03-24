@@ -133,7 +133,7 @@ export default function ConsultingPage() {
                   </svg>
                 ),
                 title: 'The Intake Form',
-                body: "This isn't your basic questionnaire. Mel built a deep intake form covering your child's learning style, focus, and interests — and you as the teacher: your schedule, teaching style, goals, and what you've already tried.",
+                body: "This isn't your basic questionnaire. Mel and her team built a deep intake form that is the foundation of everything. You'll answer carefully selected questions so Mel can uncover your child's preferred learning style, your preferred teaching style, and which homeschooling methods may best suit your family. Every answer feeds directly into the matching system Mel and her team built.",
               },
               {
                 icon: (
@@ -144,7 +144,7 @@ export default function ConsultingPage() {
                   </svg>
                 ),
                 title: 'Recommendations & Help',
-                body: "Mel reviews your intake form and puts together a custom report with specific curriculum and resource suggestions chosen for your child and your teaching style. No generic lists, no guesswork.",
+                body: "Mel reviews your intake form and carefully reviews each resource you were matched with. She compiles a report with her personal suggestions for curriculum and supplements. The report will include your child's learning style, your teaching style, and the homeschooling method that fits you best based on the answers to your questions. No guessing, no generic lists.",
               },
               {
                 icon: (
@@ -153,7 +153,7 @@ export default function ConsultingPage() {
                   </svg>
                 ),
                 title: 'Homeschool Mentorship',
-                body: "After your report, email Mel anytime for 3 months. Whether something isn't clicking, you want a second opinion before buying something, or you just need someone to think it through with you — she's there.",
+                body: "After you receive your report, Mel is available to you via email for 3 months. Whether something isn't clicking, you want a second opinion before buying something, or you just need someone to think through something with you, Mel is just an email away. She will respond to emails within 3–5 business days.",
               },
             ].map((card) => (
               <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 16, padding: '32px 28px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -246,12 +246,12 @@ export default function ConsultingPage() {
           <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', marginBottom: 48, maxWidth: 560, margin: '0 auto 48px' }}>From structured bookwork to hands-on projects — she&apos;s helped families find what works across every style of learning.</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20 }}>
             {([
-              { src: '/activity-science.JPG', label: 'Science Experiments', desc: 'Hands-on labs and experiments that make concepts click.' },
+              { src: '/activity-bookwork.jpg', label: 'Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
               { src: '/activity-reading-2.jpg', label: 'Reading', desc: 'Finding the right books and reading programs for every level.' },
               { src: '/activity-arts-and-crafts.jpg', label: 'Art & Crafts', desc: 'Creative projects that make learning memorable.' },
               { src: '/activity-building.JPG', label: 'Building & Making', desc: 'Engineering, STEM kits, and hands-on construction projects.' },
               { src: '/activity-board-game.jpg', label: 'Games & Play-Based Learning', desc: 'Board games, puzzles, and play that builds real skills.' },
-              { src: '/activity-bookwork.jpg', label: 'Bookwork & Curriculum', desc: 'Core subjects matched to your child\'s pace and learning style.' },
+              { src: '/activity-science.JPG', label: 'Science Experiments', desc: 'Hands-on labs and experiments that make concepts click.' },
               { src: '/activity-activitybook.jpg', label: 'Activity Books', desc: 'Workbooks and hands-on activity books for every subject and age.' },
               { src: '/activity-subscriptionbox.jpg', label: 'Subscription Boxes', desc: 'Curated monthly boxes that bring learning to your doorstep.' },
               { src: '/activity-online-class.jpg', label: 'Online Lessons', desc: 'Online classes, video courses, and digital resources for every subject.' },
@@ -356,12 +356,16 @@ export default function ConsultingPage() {
             <ul style={{ fontSize: '0.9rem', color: '#383838', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <li>✓ Deep-dive intake form</li>
               <li>✓ Personalized curriculum recommendations</li>
-              <li>✓ Learning style, method & teaching style match</li>
+              <li>✓ Learning styles, teaching styles, and homeschool methods match</li>
               <li>✓ 3 months of email support with Mel</li>
               <li style={{ color: '#55b6ca', fontWeight: 700 }}>✓ 7-day free trial of our educational games included</li>
             </ul>
             <p style={{ fontSize: '0.8rem', color: '#a09890', marginTop: 12, marginBottom: 0 }}>Option to subscribe to games after your trial if you choose.</p>
           </div>
+
+          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#5c5c5c', marginBottom: 20 }}>
+            Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
+          </p>
 
           <div style={{ backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5', borderRadius: 14, padding: '28px', marginBottom: 20 }}>
             <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#383838', marginBottom: 16 }}>Terms & Agreement</h3>
@@ -394,9 +398,6 @@ export default function ConsultingPage() {
             {loading ? 'Redirecting to payment...' : 'Get Started — $47'}
           </button>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', color: '#a09890', marginTop: 10 }}>Secure payment via Stripe. You&apos;ll receive a confirmation email right after payment.</p>
-          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#5c5c5c', marginTop: 16 }}>
-            Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
-          </p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
