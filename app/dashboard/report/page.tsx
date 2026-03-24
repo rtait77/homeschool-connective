@@ -121,14 +121,7 @@ export default function ClientReportPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f1e9', fontFamily: 'Nunito, sans-serif' }}>
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: #fff !important; }
-          @page { margin: 1.5cm; }
-        }
-      `}</style>
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '48px 20px' }}>
+<div style={{ maxWidth: 680, margin: '0 auto', padding: '48px 20px' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -139,15 +132,14 @@ export default function ClientReportPage() {
             From Mel at Homeschool Connective
             {report?.sent_at && ` · ${new Date(report.sent_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}
           </p>
-          <div className="no-print" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <button
-              onClick={() => window.print()}
-              style={{ backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, border: 'none', cursor: 'pointer' }}
-            >
-              ⬇ Save as PDF
-            </button>
-            <p style={{ fontSize: '0.75rem', color: '#aaa', margin: 0 }}>In the print dialog, choose &ldquo;Save as PDF&rdquo;</p>
-          </div>
+          <a
+            href="/api/consulting/download-report"
+            download="homeschool-recommendations.pdf"
+            className="no-print"
+            style={{ display: 'inline-block', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, textDecoration: 'none' }}
+          >
+            ⬇ Download PDF
+          </a>
         </div>
 
         {/* Results at a Glance */}
