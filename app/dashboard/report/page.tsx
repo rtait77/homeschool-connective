@@ -144,8 +144,9 @@ export default function ClientReportPage() {
             className="no-print"
             style={{ display: 'inline-block', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, border: 'none', cursor: 'pointer' }}
           >
-            ⬇ Save as PDF
+            🖨 Print / Save as PDF
           </button>
+          <p className="no-print" style={{ fontSize: '0.75rem', color: '#999', marginTop: 8 }}>In the print dialog, set the destination to &ldquo;Save as PDF&rdquo;</p>
         </div>
 
         {/* Results at a Glance */}
