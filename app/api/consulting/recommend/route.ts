@@ -231,6 +231,14 @@ function extractTagProfile(responses: Record<string, unknown>): TagProfile {
       addTags(['child_led', 'low_structure', 'interest_led'], q, ans)
   }
 
+  // Level flexibility
+  const levelFlexibility = s(responses.levelFlexibility)
+  const q_level = 'Level flexibility'
+  if (levelFlexibility === 'Yes — we need the ability to move up or down levels freely')
+    addTag('level_flexible', q_level, levelFlexibility)
+  if (levelFlexibility === 'It would be helpful, but is not essential')
+    addTag('level_flexible', q_level, levelFlexibility)
+
   // Prep willingness
   const q_prep = 'Prep willingness'
   if (prepWillingness === 'I need something I can open and use with minimal prep — done for me') {
@@ -543,6 +551,38 @@ function extractTagProfile(responses: Record<string, unknown>): TagProfile {
       if (ans === 'Is currently in speech, OT, or another therapy')
         addTag('gentle_pacing', cn('Extra info'), ans)
     }
+
+    // Reading preference (fiction vs nonfiction)
+    const cReadingPref = s(child.readingPreference)
+    const q_readpref = cn('Reading preference')
+    if (cReadingPref === 'Fiction and stories — characters, adventure, and imagination')
+      addTag('fiction_rich', q_readpref, cReadingPref)
+    if (cReadingPref === 'Nonfiction — real facts about animals, science, history, or how things work')
+      addTag('nonfiction_rich', q_readpref, cReadingPref)
+    if (cReadingPref === 'Graphic novels or comics — pictures are as important as the words')
+      addTags(['visual_heavy', 'fiction_rich'], q_readpref, cReadingPref)
+    if (cReadingPref === 'A mix — they enjoy different things depending on the topic') {
+      // No strong signal — do not add either tag
+    }
+
+    // Book format (visual vs text)
+    const cBookFormat = s(child.bookFormat)
+    const q_bookfmt = cn('Book format')
+    if (cBookFormat === 'Highly illustrated — lots of pictures, and visual layout matters a lot')
+      addTag('visual_heavy', q_bookfmt, cBookFormat)
+    if (cBookFormat === 'Mostly text — they do not need many pictures')
+      addTag('text_heavy', q_bookfmt, cBookFormat)
+
+    // Independence level
+    const cIndependence = s(child.independenceLevel)
+    const q_indep = cn('Independence level')
+    if (cIndependence === 'Very independently — they can work through most things on their own')
+      addTag('independent_learner', q_indep, cIndependence)
+    if (cIndependence === 'I need to sit with them for most of the session')
+      addTags(['teacher_led', 'needs_parent_support'], q_indep, cIndependence)
+    if (cIndependence === 'With occasional check-ins — I need to be nearby but not always actively involved') {
+      // Mild signal — no strong push either way, skip
+    }
   }
 
   const triedCurricula = s(responses.curriculumTried)
@@ -636,6 +676,12 @@ const TAG_LABELS: Record<string, string> = {
   stem: 'covers STEM through hands-on activities',
   video_friendly: 'includes video instruction',
   teacher_intensive: 'rewards significant parent involvement',
+  level_flexible: 'can be used above or below grade level — great for families who need flexibility',
+  fiction_rich: 'is story- and fiction-driven — great for kids who love characters and narrative',
+  nonfiction_rich: 'is information-rich — great for kids drawn to real facts, science, and history',
+  visual_heavy: 'is highly visual and illustrated — perfect for visual learners and graphic novel fans',
+  text_heavy: 'is text-based and reading-forward — suits strong, confident readers',
+  needs_parent_support: 'works best with a parent actively involved in each session',
 }
 
 function generateReason(resource: Resource, matchedTags: { tag: string }[], warning: boolean): string {
