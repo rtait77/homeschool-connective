@@ -129,12 +129,11 @@ export default function DashboardPage() {
           intake_completed: consultingRecord.intake_completed,
           intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft',
         })
-        if (consultingRecord.intake_completed) {
-          fetch('/api/consulting/client-report')
-            .then(r => r.json())
-            .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
-            .catch(() => {})
-        }
+        // Always check for a sent report, regardless of intake_completed status
+        fetch('/api/consulting/client-report')
+          .then(r => r.json())
+          .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
+          .catch(() => {})
       }
 
       setLoading(false)
@@ -372,7 +371,7 @@ export default function DashboardPage() {
                       <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
                         View My Report →
                       </Link>
-                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl border-2 border-[#55b6ca] text-[#55b6ca] hover:bg-[#55b6ca] hover:text-white transition">
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
                         Email Mel
                       </button>
                       <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review my intake answers →</Link>
@@ -382,7 +381,7 @@ export default function DashboardPage() {
                   <div>
                     <p className="text-sm text-[#5c5c5c] mb-3">Mel has your answers and will be in touch within 3–5 business days.</p>
                     <div className="flex items-center gap-4 flex-wrap">
-                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl border-2 border-[#55b6ca] text-[#55b6ca] hover:bg-[#55b6ca] hover:text-white transition">
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
                         Email Mel
                       </button>
                       <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
