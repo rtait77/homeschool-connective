@@ -373,7 +373,7 @@ export default function ConsultingPage() {
               <p style={{ marginBottom: 10 }}>By signing up for this consulting service, you agree to the following:</p>
               <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <li>No refunds once the intake form has been sent to you.</li>
-                <li>Email support is provided for 3 months from the date of purchase. Mel will respond within 3 to 5 business days.</li>
+                <li>Email support is provided for 3 months from the date your report is delivered. Mel will respond within 3 to 5 business days.</li>
                 <li>Curriculum recommendations are suggestions based on your intake form. They are not guarantees of outcome. The final curriculum decision remains with the parent/guardian.</li>
                 <li>Your family&apos;s information will not be shared with any third party.</li>
                 <li>This is an educational consulting service, not a licensed tutoring or therapy service.</li>
@@ -446,7 +446,7 @@ export default function ConsultingPage() {
               },
               {
                 q: 'What does the 3 months of email support actually look like?',
-                a: 'After you receive your report, you can email Mel with follow-up questions — whether something isn\'t clicking, you want her opinion before buying something, or you just need a second opinion. She responds within 3–5 business days.',
+                a: 'After your report is delivered, you can email Mel with follow-up questions for 3 months — whether something isn\'t clicking, you want her opinion before buying something, or you just need a second opinion. She responds within 3–5 business days. Your 3-month window starts from the date your report is delivered, not the date of purchase.',
               },
               {
                 q: 'Do I get access to the games when I sign up for consulting?',
