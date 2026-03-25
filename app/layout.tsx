@@ -19,6 +19,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Homeschool Connective',
   description: 'Interactive, game-based learning for homeschoolers and educators.',
+  other: {
+    'p:domain_verify': 'a1b25de4b984e1ae8e57d694224fadac',
+  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
