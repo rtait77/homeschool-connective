@@ -162,7 +162,7 @@ export default function SubscribePage() {
             <li>✓ 3 months of email support with Mel</li>
             <li className="text-[#55b6ca] font-bold">✓ 7-day games trial included</li>
           </ul>
-          <p className="text-xs text-[#a09890] mb-5">Option to subscribe to games after your trial if you choose.</p>
+
           <button
             onClick={() => setModalTarget('consulting')}
             className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
