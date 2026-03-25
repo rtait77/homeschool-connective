@@ -155,7 +155,7 @@ export default function SubscribePage() {
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">One-on-One Consulting</p>
           <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0">$47</p>
           <p className="text-xs text-[#a09890] mb-5">one-time payment</p>
-          <ul className="text-sm text-[#3a3a3a] space-y-2 mb-4 flex-1">
+          <ul className="text-sm text-[#3a3a3a] space-y-2 mb-6">
             <li>✓ Deep-dive intake form</li>
             <li>✓ Personalized recommendations</li>
             <li>✓ Learning style &amp; method match</li>
@@ -165,9 +165,9 @@ export default function SubscribePage() {
 
           <button
             onClick={() => setModalTarget('consulting')}
-            className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
+            className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition mt-auto"
           >
-            Get Started →
+            Book a Consult →
           </button>
         </div>
 
