@@ -231,14 +231,6 @@ function extractTagProfile(responses: Record<string, unknown>): TagProfile {
       addTags(['child_led', 'low_structure', 'interest_led'], q, ans)
   }
 
-  // Level flexibility
-  const levelFlexibility = s(responses.levelFlexibility)
-  const q_level = 'Level flexibility'
-  if (levelFlexibility === 'Yes — we need the ability to move up or down levels freely')
-    addTag('level_flexible', q_level, levelFlexibility)
-  if (levelFlexibility === 'It would be helpful, but is not essential')
-    addTag('level_flexible', q_level, levelFlexibility)
-
   // Prep willingness
   const q_prep = 'Prep willingness'
   if (prepWillingness === 'I need something I can open and use with minimal prep — done for me') {
@@ -552,26 +544,31 @@ function extractTagProfile(responses: Record<string, unknown>): TagProfile {
         addTag('gentle_pacing', cn('Extra info'), ans)
     }
 
-    // Reading preference (fiction vs nonfiction)
-    const cReadingPref = s(child.readingPreference)
-    const q_readpref = cn('Reading preference')
-    if (cReadingPref === 'Fiction and stories — characters, adventure, and imagination')
-      addTag('fiction_rich', q_readpref, cReadingPref)
-    if (cReadingPref === 'Nonfiction — real facts about animals, science, history, or how things work')
-      addTag('nonfiction_rich', q_readpref, cReadingPref)
-    if (cReadingPref === 'Graphic novels or comics — pictures are as important as the words')
-      addTags(['visual_heavy', 'fiction_rich'], q_readpref, cReadingPref)
-    if (cReadingPref === 'A mix — they enjoy different things depending on the topic') {
-      // No strong signal — do not add either tag
-    }
+    // Level flexibility (per child)
+    const cLevelFlex = s(child.levelFlexibility)
+    const q_level = cn('Level flexibility')
+    if (cLevelFlex === 'Yes — we need the ability to move up or down levels freely')
+      addTag('level_flexible', q_level, cLevelFlex)
+    if (cLevelFlex === 'It would be helpful, but is not essential')
+      addTag('level_flexible', q_level, cLevelFlex)
 
-    // Book format (visual vs text)
-    const cBookFormat = s(child.bookFormat)
+    // Reading preference (fiction vs nonfiction) — checkboxes, multiple possible
+    const cReadingPref = a(child.readingPreference)
+    const q_readpref = cn('Reading preference')
+    if (has(cReadingPref, 'Fiction and stories — characters, adventure, and imagination'))
+      addTag('fiction_rich', q_readpref, 'Fiction and stories')
+    if (has(cReadingPref, 'Nonfiction — real facts about animals, science, history, or how things work'))
+      addTag('nonfiction_rich', q_readpref, 'Nonfiction')
+    if (has(cReadingPref, 'Graphic novels or comics — pictures are as important as the words'))
+      addTags(['visual_heavy', 'fiction_rich'], q_readpref, 'Graphic novels or comics')
+
+    // Book format (visual vs text) — checkboxes, multiple possible
+    const cBookFormat = a(child.bookFormat)
     const q_bookfmt = cn('Book format')
-    if (cBookFormat === 'Highly illustrated — lots of pictures, and visual layout matters a lot')
-      addTag('visual_heavy', q_bookfmt, cBookFormat)
-    if (cBookFormat === 'Mostly text — they do not need many pictures')
-      addTag('text_heavy', q_bookfmt, cBookFormat)
+    if (has(cBookFormat, 'Highly illustrated — lots of pictures, and visual layout matters a lot'))
+      addTag('visual_heavy', q_bookfmt, 'Highly illustrated')
+    if (has(cBookFormat, 'Mostly text — they do not need many pictures'))
+      addTag('text_heavy', q_bookfmt, 'Mostly text')
 
     // Independence level
     const cIndependence = s(child.independenceLevel)
