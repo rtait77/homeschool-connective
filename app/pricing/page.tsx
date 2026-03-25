@@ -152,20 +152,19 @@ export default function SubscribePage() {
 
         {/* Consulting card */}
         <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">One-on-One Consulting</p>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-1">One-on-One Consulting</p>
+          <Link href="/consulting" className="text-xs font-bold text-[#238FA4] hover:underline mb-4 inline-block">
+            Learn more →
+          </Link>
           <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0">$47</p>
           <p className="text-xs text-[#a09890] mb-5">one-time payment</p>
-          <ul className="text-sm text-[#3a3a3a] space-y-2 mb-4">
+          <ul className="text-sm text-[#3a3a3a] space-y-2 mb-6">
             <li>✓ Deep-dive intake form</li>
             <li>✓ Personalized recommendations</li>
             <li>✓ Learning style &amp; method match</li>
             <li>✓ 3 months of email support with Mel</li>
             <li className="text-[#55b6ca] font-bold">✓ 7-day games trial included</li>
           </ul>
-
-          <Link href="/consulting" className="text-sm font-bold text-[#238FA4] hover:underline mb-6 inline-block">
-            Learn more about consulting →
-          </Link>
 
           <button
             onClick={() => setModalTarget('consulting')}
