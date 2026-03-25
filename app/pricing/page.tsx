@@ -147,23 +147,11 @@ export default function SubscribePage() {
       <h1 className="text-3xl font-extrabold text-center mb-2">Plans & Pricing</h1>
       <p className="text-center text-[#5c5c5c] mb-12">Two ways to get support for your homeschool.</p>
 
-      {/* Free trial CTA */}
-      {showTrial && (
-        <div className="bg-[#f5f1e9] rounded-2xl p-6 text-center mb-10">
-          <p className="font-extrabold mb-1">Try games free for 7 days</p>
-          <p className="text-[#5c5c5c] text-sm mb-4">No credit card required. Full access. Cancel anytime.</p>
-          <Link href="/signup" className="inline-block bg-[#ed7c5a] text-white font-bold px-8 py-3 rounded-lg text-sm hover:opacity-90 transition">
-            Start Free Trial
-          </Link>
-          <p className="text-xs text-[#5c5c5c] mt-3">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
-        </div>
-      )}
-
       {/* 2-column grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
         {/* Consulting card */}
-        <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
+        <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">One-on-One Consulting</p>
           <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0">$47</p>
           <p className="text-xs text-[#a09890] mb-5">one-time payment</p>
@@ -184,7 +172,7 @@ export default function SubscribePage() {
         </div>
 
         {/* Games card with toggle */}
-        <div className="bg-white rounded-2xl p-7 flex flex-col relative" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
+        <div className="bg-white rounded-2xl p-7 flex flex-col relative border border-[#e2ddd5]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games Subscription</p>
 
           {/* Toggle */}
@@ -222,13 +210,28 @@ export default function SubscribePage() {
             <li>✓ Cancel anytime</li>
           </ul>
 
-          <button
-            onClick={() => setModalTarget(gamesPlan)}
-            disabled={loading}
-            className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50 mt-auto"
-          >
-            {gamesPlan === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly'}
-          </button>
+          {showTrial ? (
+            <>
+              <Link
+                href="/signup"
+                className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
+              >
+                Try Free for 7 Days
+              </Link>
+              <p className="text-xs text-center text-[#a09890] mt-2">No credit card required. Cancel anytime.</p>
+              <p className="text-xs text-center text-[#a09890] mt-1">
+                Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link>
+              </p>
+            </>
+          ) : (
+            <button
+              onClick={() => setModalTarget(gamesPlan)}
+              disabled={loading}
+              className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
+            >
+              {gamesPlan === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly'}
+            </button>
+          )}
         </div>
 
       </div>
