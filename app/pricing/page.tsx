@@ -200,7 +200,7 @@ export default function SubscribePage() {
             )}
           </div>
           {gamesPlan === 'yearly' && (
-            <p className="text-xs font-bold text-[#55b6ca] mb-5">Save $10 vs monthly!</p>
+            <p className="text-xs font-bold text-[#55b6ca] mb-5">Save $10!</p>
           )}
           {gamesPlan === 'monthly' && <div className="mb-5" />}
 
