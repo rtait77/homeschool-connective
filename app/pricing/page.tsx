@@ -148,7 +148,7 @@ export default function SubscribePage() {
       <p className="text-center text-[#5c5c5c] mb-12">Two ways to get support for your homeschool.</p>
 
       {/* 2-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
 
         {/* Consulting card */}
         <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
