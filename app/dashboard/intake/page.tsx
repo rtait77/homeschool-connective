@@ -23,7 +23,8 @@ type ChildData = {
   focusSpan: string; intenseInterests: string
   lovesSubjects: string[]; lovesOther: string
   avoidsSubjects: string[]; avoidsOther: string
-  readingPreference: string; bookFormat: string; independenceLevel: string
+  levelFlexibility: string
+  readingPreference: string[]; bookFormat: string[]; independenceLevel: string
   extraInfo: string[]; diagnosis: string; extraOther: string
 }
 
@@ -43,7 +44,6 @@ type IntakeForm = {
   screenAttitude: string[]
   progressMeasurement: string[]
   prepWillingness: string
-  levelFlexibility: string
   learningEnvironment: string[]
   coopParticipation: string[]
   parentPersonality: string[]
@@ -68,7 +68,8 @@ const EMPTY_CHILD: ChildData = {
   focusSpan: '', intenseInterests: '',
   lovesSubjects: [], lovesOther: '',
   avoidsSubjects: [], avoidsOther: '',
-  readingPreference: '', bookFormat: '', independenceLevel: '',
+  levelFlexibility: '',
+  readingPreference: [], bookFormat: [], independenceLevel: '',
   extraInfo: [], diagnosis: '', extraOther: '',
 }
 
@@ -88,7 +89,6 @@ const EMPTY: IntakeForm = {
   screenAttitude: [],
   progressMeasurement: [],
   prepWillingness: '',
-  levelFlexibility: '',
   learningEnvironment: [],
   coopParticipation: [],
   parentPersonality: [],
@@ -805,18 +805,6 @@ function SectionParent({
         />
       </QBlock>
 
-      <QBlock label="Does your child need curriculum that allows working above or below their age or grade level?" note="Choose one">
-        <RadioList
-          options={[
-            'Yes — we need the ability to move up or down levels freely',
-            'It would be helpful, but is not essential',
-            'No — grade-level curriculum works well for us',
-          ]}
-          value={form.levelFlexibility}
-          onChange={v => set('levelFlexibility', v)}
-        />
-      </QBlock>
-
       <Field label='What would "homeschool success" look like for your family 6 months from now?'>
         <textarea rows={3} value={form.successVision} onChange={e => set('successVision', e.target.value)} placeholder="Describe what success would look like..." className={textareaCls} />
       </Field>
@@ -1271,33 +1259,43 @@ function SectionChild({
         )}
       </div>
 
-      <QBlock num={11} label={`When ${n} reads or is read to, what do they prefer?`} note="Choose one">
+      <QBlock num={11} label={`Does ${n} need curriculum that allows working above or below their age or grade level?`} note="Choose one">
         <RadioList
+          options={[
+            'Yes — we need the ability to move up or down levels freely',
+            'It would be helpful, but is not essential',
+            'No — grade-level curriculum works well for us',
+          ]}
+          value={child.levelFlexibility}
+          onChange={v => setChildField('levelFlexibility', v)}
+        />
+      </QBlock>
+
+      <QBlock num={12} label={`When ${n} reads or is read to, what do they enjoy?`} note="Pick all that apply">
+        <CheckList
           options={[
             'Fiction and stories — characters, adventure, and imagination',
             'Nonfiction — real facts about animals, science, history, or how things work',
             'Graphic novels or comics — pictures are as important as the words',
-            'A mix — they enjoy different things depending on the topic',
           ]}
-          value={child.readingPreference}
-          onChange={v => setChildField('readingPreference', v)}
+          values={child.readingPreference}
+          onChange={v => toggleChildCheck('readingPreference', v)}
         />
       </QBlock>
 
-      <QBlock num={12} label={`What kinds of books does ${n} engage with most?`} note="Choose one">
-        <RadioList
+      <QBlock num={13} label={`What kinds of books does ${n} engage with most?`} note="Pick all that apply">
+        <CheckList
           options={[
             'Highly illustrated — lots of pictures, and visual layout matters a lot',
             'Some illustrations alongside the text',
             'Mostly text — they do not need many pictures',
-            'It depends on the topic',
           ]}
-          value={child.bookFormat}
-          onChange={v => setChildField('bookFormat', v)}
+          values={child.bookFormat}
+          onChange={v => toggleChildCheck('bookFormat', v)}
         />
       </QBlock>
 
-      <QBlock num={13} label={`Once a lesson or task has been introduced, how independently can ${n} work?`} note="Choose one">
+      <QBlock num={14} label={`Once a lesson or task has been introduced, how independently can ${n} work?`} note="Choose one">
         <RadioList
           options={[
             'Very independently — they can work through most things on their own',
@@ -1310,7 +1308,7 @@ function SectionChild({
         />
       </QBlock>
 
-      <QBlock num={14} label={`What else would you like Mel to know about ${n}?`} note="Pick all that apply">
+      <QBlock num={15} label={`What else would you like Mel to know about ${n}?`} note="Pick all that apply">
         <CheckList
           options={[
             'Is currently in speech, OT, or another therapy',
