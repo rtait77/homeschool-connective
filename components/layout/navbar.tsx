@@ -11,7 +11,7 @@ const guestLinks = [
   { href: '/learn', label: 'Learn' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/tips', label: 'Tips' },
-  { href: '/consulting', label: 'Homeschool Help' },
+  { href: '/consulting', label: 'Consulting' },
   { href: '/about', label: 'About' },
 ]
 
@@ -19,7 +19,7 @@ const memberLinks = [
   { href: '/', label: 'Home' },
   { href: '/learn', label: 'Learn' },
   { href: '/tips', label: 'Tips' },
-  { href: '/consulting', label: 'Homeschool Help' },
+  { href: '/consulting', label: 'Consulting' },
   { href: '/about', label: 'About' },
 ]
 
