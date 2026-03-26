@@ -18,8 +18,7 @@ export default function PreviewHomePage() {
           <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
-          <p className="text-xl text-[#5c5c5c] mb-2">Interactive, game-based learning for homeschoolers and educators.</p>
-          <p className="text-base text-[#5c5c5c] mb-8">
+          <p className="text-xl text-[#5c5c5c] mb-8">
             Plus, customized homeschooling support.{' '}
             <Link href="/consulting" className="text-[#238FA4] font-bold hover:underline">
               Learn More »
