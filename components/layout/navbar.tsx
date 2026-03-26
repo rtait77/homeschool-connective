@@ -79,9 +79,9 @@ export default function Navbar() {
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/">
-          <Image src="/Logo.png" alt="Homeschool Connective" width={200} height={56} className="h-14 w-auto" priority />
+          <Image src="/Logo.png" alt="Homeschool Connective" width={220} height={64} className="h-16 w-auto" priority />
         </Link>
 
         {/* Desktop nav */}
