@@ -7,12 +7,9 @@ import { useState, useEffect, useRef } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 
 const guestLinks = [
-  { href: '/', label: 'Home' },
   { href: '/learn', label: 'Learn' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/tips', label: 'Tips' },
-  { href: '/consulting', label: 'Consulting' },
-  { href: '/about', label: 'About' },
 ]
 
 const memberLinks = [
@@ -89,6 +86,16 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          {!user && (
+            <li>
+              <Link
+                href="/consulting"
+                className="bg-[#ed7c5a] text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition whitespace-nowrap"
+              >
+                Get Personalized Help
+              </Link>
+            </li>
+          )}
           <li>
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -213,15 +220,26 @@ export default function Navbar() {
                 </li>
               </>
             ) : (
-              <li className="pt-2">
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="block py-2 font-bold text-[#1c1c1c] hover:text-[#ed7c5a] transition"
-                >
-                  Log In
-                </Link>
-              </li>
+              <>
+                <li className="pt-2">
+                  <Link
+                    href="/consulting"
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-2 font-bold text-[#ed7c5a] hover:opacity-80 transition"
+                  >
+                    Get Personalized Help
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-2 font-bold text-[#1c1c1c] hover:text-[#ed7c5a] transition"
+                  >
+                    Log In
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
         </div>
