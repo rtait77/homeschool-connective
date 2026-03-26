@@ -1,51 +1,36 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import HeroVideo from '@/components/hero-video'
 
 export default function PreviewHomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#f5f1e9] border-b border-[#ddd8cc]">
-        <div className="max-w-6xl mx-auto px-6 py-14 md:py-20 flex flex-col md:flex-row items-center gap-10 md:gap-16">
-          {/* Image */}
-          <div className="w-full md:w-1/2 rounded-2xl overflow-hidden shadow-md flex-shrink-0" style={{ aspectRatio: '4/3', position: 'relative' }}>
-            <Image
-              src="/new-hero-image-homepage.jpg"
-              alt="Homeschool family learning together"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-          {/* Text */}
-          <div className="md:w-1/2 text-center md:text-left">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Homeschool Connective</p>
-            <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.9rem, 4vw, 2.75rem)' }}>
-              Games They'll Love.<br />
-              <span className="text-[#ed7c5a]">Guidance You Can Trust.</span>
-            </h1>
-            <p className="text-lg text-[#5c5c5c] mb-8 leading-relaxed">
-              Fun, interactive games for K–3 + personalized consulting when you're not sure what to do next.
-            </p>
-            <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-              <Link
-                href="/signup"
-                className="inline-flex items-center justify-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
-              >
-                Start Free Trial →
-              </Link>
-              <Link
-                href="/consulting"
-                className="inline-flex items-center justify-center font-extrabold text-sm px-6 py-3 rounded-xl border-2 border-[#ed7c5a] text-[#ed7c5a] bg-white hover:bg-[#ed7c5a] hover:text-white transition"
-              >
-                Book a Consult
-              </Link>
-            </div>
-            <div className="flex gap-3 justify-center md:justify-start mt-5">
-              <span className="bg-white text-[#1c1c1c] text-xs font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">Grades K–3</span>
-              <span className="bg-white text-[#1c1c1c] text-xs font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
-            </div>
-          </div>
+      <section className="border-b border-[#ddd8cc]">
+        <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
+          <HeroVideo />
+          <div
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
+            style={{ height: '40%', background: 'linear-gradient(to bottom, transparent, #ffffff)' }}
+          />
+        </div>
+        <div className="max-w-4xl mx-auto px-6 py-12 text-center">
+          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
+            Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
+          </h1>
+          <p className="text-xl text-[#5c5c5c] mb-2">Interactive, game-based learning for homeschoolers and educators.</p>
+          <p className="text-base text-[#5c5c5c] mb-8">
+            Plus, customized homeschooling support.{' '}
+            <Link href="/consulting" className="text-[#238FA4] font-bold hover:underline">
+              Learn More »
+            </Link>
+          </p>
+          <Link
+            href="/learn"
+            className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all"
+          >
+            Play & Learn →
+          </Link>
         </div>
       </section>
 
