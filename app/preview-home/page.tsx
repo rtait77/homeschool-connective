@@ -20,7 +20,7 @@ export default function PreviewHomePage() {
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-8">
             Plus, customized homeschooling support.{' '}
-            <Link href="/consulting" className="text-[#238FA4] font-bold hover:underline">
+            <Link href="/consulting" className="text-[#55b6ca] font-bold hover:underline">
               Learn More »
             </Link>
           </p>
