@@ -33,97 +33,129 @@ export default function PreviewHomePage() {
         </div>
       </section>
 
-      {/* Two Services */}
-      <section className="py-14 px-6 bg-white">
-        <div className="max-w-[900px] mx-auto">
-          <h2 className="text-2xl font-extrabold text-center mb-2">Two Ways We Can Help</h2>
-          <p className="text-center text-[#5c5c5c] mb-10">Whether you need engaging content for your kids or a personalized plan for your family — we've got you.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            {/* Games card */}
-            <div className="bg-[#f5f1e9] rounded-2xl p-8 flex flex-col border border-[#e2ddd5]">
-              <div className="text-3xl mb-4">🎮</div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Games & Lessons</p>
-              <h3 className="text-xl font-extrabold mb-3">Learning That Feels Like Playing</h3>
-              <p className="text-sm text-[#5c5c5c] leading-relaxed mb-6 flex-1">
-                Interactive games, mini challenges, and bite-sized lessons designed for K–3 homeschoolers. New content added regularly. Start with a free 7-day trial — no credit card needed.
-              </p>
-              <Link
-                href="/pricing"
-                className="inline-flex items-center justify-center font-extrabold text-sm px-5 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
-              >
-                Start Free Trial →
-              </Link>
+      {/* Games Grid */}
+      <section className="bg-white px-6 py-14 border-b border-[#ddd8cc]">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
+            <div>
+              <h2 className="text-2xl font-extrabold">Educational Games and Interactive Lessons</h2>
+              <p className="text-[#5c5c5c] mt-1">Our games and lessons break down big topics into small, manageable chunks.</p>
             </div>
+            <a href="#newsletter" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0">
+              Get notified of new games →
+            </a>
+          </div>
 
-            {/* Consulting card */}
-            <div className="bg-[#f5f1e9] rounded-2xl p-8 flex flex-col border border-[#e2ddd5]">
-              <div className="text-3xl mb-4">💬</div>
-              <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">1-on-1 Consulting</p>
-              <h3 className="text-xl font-extrabold mb-3">Your Homeschool, Figured Out</h3>
-              <p className="text-sm text-[#5c5c5c] leading-relaxed mb-6 flex-1">
-                Not sure which curriculum to use or where to start? Mel will review your family's needs and give you a personalized recommendation — plus 3 months of email support.
-              </p>
-              <Link
-                href="/consulting"
-                className="inline-flex items-center justify-center font-extrabold text-sm px-5 py-3 rounded-xl border-2 border-[#ed7c5a] text-[#ed7c5a] bg-white hover:bg-[#ed7c5a] hover:text-white transition"
-              >
-                Book a Consult →
-              </Link>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+
+            {/* 1 — Mars Lesson */}
+            <a href="https://view.genially.com/699e69be43a96797318311da" target="_blank" rel="noopener noreferrer"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/thumb-lesson-mars.png" alt="Mission to Mars" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Lesson</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Mission to Mars</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Start →</span>
+              </div>
+            </a>
+
+            {/* 2 — Ordering the Planets */}
+            <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Free</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Ordering the Planets</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
+
+            {/* 3 — Solar System Sizzle */}
+            <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Free Demo</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Solar System Sizzle</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
+
+            {/* 4 — Saturn Puzzle */}
+            <a href="/puzzle-saturn-medium.html"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/saturn-with-background.png" alt="Saturn Puzzle" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#a07fc4] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Puzzle</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Saturn Puzzle</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
+
+            {/* 5 — Asteroid Blast */}
+            <a href="/asteroid-blast-planets.html"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/asteroid-thumbnail-planets.jpg" alt="Asteroid Blast" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#e8854a] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Arcade</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Blast the Planets</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
+
+            {/* 6 — Inner Solar System Word Search */}
+            <a href="/word-search-inner-solar-system.html"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/word-search-inner-solar-system-thumbnail.png" alt="Inner Solar System Word Search" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#5b9bd5] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Word Search</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Inner Solar System Word Search</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
+
+            {/* 7 — Find a Pair: Dwarf Planets */}
+            <a href="/matching-dwarf-planets.html"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/thumb-find-pair-dwarf-planets.png" alt="Find a Pair: Dwarf Planets" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#5bab8a] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Find a Pair</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Find a Pair: Dwarf Planets</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
+
+            {/* 8 — Word Sort: Planet Types */}
+            <a href="/word-sort-planet-types.html"
+              className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-32 w-full bg-[#e8e4dc]">
+                <Image src="/word-sort-planet-types-thumbnail.png" alt="Word Sort: Planet Types" fill className="object-cover" />
+                <span className="absolute top-2 left-2 bg-[#9b7fc4] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Word Sort</span>
+              </div>
+              <div className="p-3 flex flex-col flex-1">
+                <h3 className="font-extrabold text-sm leading-tight mb-2">Word Sort: Planet Types</h3>
+                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+              </div>
+            </a>
 
           </div>
-        </div>
-      </section>
 
-      {/* Free Samples */}
-      <section className="bg-[#f5f1e9] px-6 py-14 border-t border-[#ddd8cc]">
-        <div className="max-w-[1100px] mx-auto">
-          <p className="font-extrabold text-lg mb-8 text-center">Try these free — no account needed</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-44 w-full bg-[#e8e4dc]">
-                <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
-              </div>
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-extrabold text-base mb-2">Ordering the Planets</h3>
-                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">Click the planets in order from the Sun. Watch them line up one by one, then finish with a drag-and-drop challenge!</p>
-                <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-                  ▶ Play Now
-                </a>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-44 w-full bg-[#e8e4dc]">
-                <Image src="/the-sun-with-background.png" alt="Sun Puzzle" fill className="object-cover" />
-              </div>
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-extrabold text-base mb-2">Sun Puzzle – Medium</h3>
-                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">A 9-piece sun jigsaw — can you put it back together and learn a new fact along the way?</p>
-                <a href="/puzzle-sun-medium.html?back=home"
-                  className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-                  ▶ Play Now
-                </a>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-44 w-full bg-[#e8e4dc]">
-                <Image src="/thumb-lesson-mars.png" alt="Mission to Mars" fill className="object-cover" />
-              </div>
-              <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-extrabold text-base mb-2">Mission to Mars</h3>
-                <p className="text-sm text-[#5c5c5c] flex-1 mb-5">Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Includes a gamified quiz and rover puzzle.</p>
-                <a href="https://view.genially.com/699e69be43a96797318311da" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-                  ▶ Start Lesson
-                </a>
-              </div>
-            </div>
-
+          <div className="mt-8 text-center">
+            <Link href="/learn" className="text-sm font-bold text-[#55b6ca] hover:underline">See all games →</Link>
           </div>
         </div>
       </section>
