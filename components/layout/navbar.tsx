@@ -69,7 +69,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       {/* Top bar — consulting CTA for guests only */}
       {!user && (
-        <div className="hidden md:flex justify-end px-4 pt-2 pb-0 max-w-6xl mx-auto">
+        <div className="hidden md:flex justify-end px-4 pt-4 pb-0 max-w-6xl mx-auto">
           <Link
             href="/consulting"
             className="bg-[#ed7c5a] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition whitespace-nowrap"
