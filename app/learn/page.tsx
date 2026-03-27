@@ -990,7 +990,7 @@ export default function GamesPage() {
           </button>
           {activityOpen && (
             <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
-              {activityTypes.filter(a => a.id !== 'printables' || hasAccess).map(a => (
+              {activityTypes.map(a => (
                 <button key={a.id} onClick={() => { setActivity(a.id); setActivityOpen(false) }}
                   className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activity === a.id ? 'text-[#55b6ca]' : ''}`}
                 >{a.label}</button>
@@ -1069,7 +1069,18 @@ export default function GamesPage() {
         </div>
       )}
 
-      {filtered.length === 0 && (
+      {/* Printables subscription prompt for non-subscribers */}
+      {activity === 'printables' && !hasAccess && authChecked && (
+        <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-10 text-center">
+          <p className="font-extrabold text-lg mb-2">Full access to all printables with subscription</p>
+          <p className="text-sm text-[#5c5c5c] mb-5">Download and print ready-to-use worksheets and activities for your homeschool.</p>
+          <Link href={trialExpired ? '/pricing' : '/signup'} className="inline-flex items-center bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition">
+            {trialExpired ? 'Subscribe Now' : 'Start Free Trial'}
+          </Link>
+        </div>
+      )}
+
+      {filtered.length === 0 && activity !== 'printables' && (
         <p className="text-[#5c5c5c] text-sm py-12 text-center">No results match your search. Try different keywords or clear your filters!</p>
       )}
 
