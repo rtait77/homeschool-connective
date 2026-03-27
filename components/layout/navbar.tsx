@@ -67,18 +67,6 @@ export default function Navbar() {
 
   return (
     <nav className="bg-white shadow-sm sticky top-0 z-50">
-      {/* Top bar — consulting CTA for guests only */}
-      {!user && (
-        <div className="hidden md:flex justify-end px-4 pt-4 pb-0 max-w-6xl mx-auto">
-          <Link
-            href="/consulting"
-            className="bg-[#ed7c5a] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition whitespace-nowrap"
-          >
-            Get Homeschooling Help
-          </Link>
-        </div>
-      )}
-
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/">
           <Image src="/Logo.png" alt="Homeschool Connective" width={220} height={64} className="h-16 w-auto" priority />
@@ -98,6 +86,16 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          {!user && (
+            <li>
+              <Link
+                href="/consulting"
+                className="bg-[#ed7c5a] text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition whitespace-nowrap"
+              >
+                Get Homeschooling Help
+              </Link>
+            </li>
+          )}
           <li>
             {user ? (
               <div className="relative" ref={dropdownRef}>
