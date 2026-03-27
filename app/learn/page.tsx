@@ -1175,9 +1175,6 @@ function PrintableCard({ printable, hasAccess, trialExpired }: { printable: Prin
     >
       <div className="relative w-full bg-[#e8e4dc]" style={{ aspectRatio: '8.5/11' }}>
         <Image src={printable.thumb} alt={printable.title} fill className="object-contain" />
-        <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-          Printable
-        </span>
       </div>
       <div className="p-3 flex flex-col flex-1 bg-[#f5f1e9]">
         <p className="text-xs font-bold leading-snug mb-1">{printable.title}</p>
