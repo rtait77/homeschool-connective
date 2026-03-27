@@ -1058,7 +1058,7 @@ export default function GamesPage() {
 
       {/* Grid */}
       {paginated.length > 0 && (
-        <div className={activity === 'printables' ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}>
+        <div className={activity === 'printables' ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}>
           {paginated.map(item => (
             item.itemType === 'game'
               ? <GameCard key={item.title} game={item as GameItem} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(item.title)} onToggleFavorite={() => toggleFavorite(item.title)} />
@@ -1179,10 +1179,10 @@ function PrintableCard({ printable, hasAccess, trialExpired }: { printable: Prin
           Printable
         </span>
       </div>
-      <div className="p-5 flex flex-col flex-1">
-        <p className="font-extrabold text-base mb-2">{printable.title}</p>
+      <div className="p-3 flex flex-col flex-1 bg-[#f5f1e9]">
+        <p className="text-xs font-bold leading-snug mb-1">{printable.title}</p>
         {!hasAccess && (
-          <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to print →' : 'Start free trial →'}</p>
+          <p className="mt-2 text-xs font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to print →' : 'Start free trial →'}</p>
         )}
       </div>
     </a>
