@@ -189,6 +189,40 @@ export default function PreviewHomePage() {
         </div>
       </section>
 
+      {/* Printables grid — placeholder, content coming soon */}
+
+      {/* Coming Soon topics interrupt */}
+      <section className="bg-[#f5f1e9] px-6 py-16 border-t border-[#ddd8cc]">
+        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-12">
+          <div className="md:w-2/5">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Coming Soon</p>
+            <h2 className="text-3xl text-[#1c1c1c] leading-snug mb-4">More topics on the way</h2>
+            <p className="text-[#5c5c5c] leading-relaxed mb-6">We're building out new games, lessons, and printables across more science topics. Sign up to be notified when new content drops.</p>
+            <a href="#newsletter" className="inline-flex items-center font-semibold text-sm text-[#ed7c5a] hover:underline">
+              Get notified →
+            </a>
+          </div>
+          <div className="md:w-3/5 flex flex-wrap gap-3">
+            {[
+              'Ocean Animals',
+              'Dinosaurs',
+              'The 7 Continents',
+              'Extreme Environments',
+              'Natural Disasters',
+              'and more...',
+            ].map((topic) => (
+              <span
+                key={topic}
+                className="bg-white border border-[#ddd8cc] text-[#3a3a3a] text-sm px-5 py-2.5 rounded-full"
+                style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Feature: Full Games */}
       <section className="bg-[#f5f1e9] py-14 px-6 border-t border-[#ddd8cc]">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
