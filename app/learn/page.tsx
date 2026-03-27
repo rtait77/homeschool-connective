@@ -675,9 +675,55 @@ const games = [
   },
 ]
 
+const printables = [
+  { title: 'Solar System Flashcards 1', thumb: '/website-pdf-flashcards-1.png', file: 'website-pdf-flashcards-1.pdf', topic: 'solar-system' },
+  { title: 'Solar System Flashcards 2', thumb: '/website-pdf-solar-system-flashcards-2.png', file: 'website-pdf-solar-system-flashcards-2.pdf', topic: 'solar-system' },
+  { title: 'Solar System Vocabulary Cards', thumb: '/website-pdf-vocab-cards.png', file: 'website-pdf-vocab-cards.pdf', topic: 'solar-system' },
+  { title: 'Create a Solar System', thumb: '/website-pdf-create-a-solar-system.png', file: 'website-pdf-create-a-solar-system.pdf', topic: 'solar-system' },
+  { title: 'Leap Year Calendar', thumb: '/website-pdf-leap-year-calendar.png', file: 'website-pdf-leap-year-calendar.pdf', topic: 'solar-system' },
+  { title: 'Rotation vs Revolution', thumb: '/website-pdf-rotation-vs-revolution.png', file: 'website-pdf-rotation-vs-revolution.pdf', topic: 'solar-system' },
+  { title: 'Layers of the Sun', thumb: '/website-pdf-layers-sun-coloring.png', file: 'website-pdf-layers-sun-coloring.pdf', topic: 'solar-system' },
+  { title: 'A Day on Mercury', thumb: '/website-pdf-mercury-journal.png', file: 'website-pdf-mercury-journal.pdf', topic: 'solar-system' },
+  { title: 'An Outfit for Venus', thumb: '/website-pdf-outfit-for-venus.png', file: 'website-pdf-outfit-for-venus.pdf', topic: 'solar-system' },
+  { title: 'Earth Puzzles', thumb: '/website-pdf-earth-puzzles.png', file: 'website-pdf-earth-puzzles.pdf', topic: 'solar-system' },
+  { title: 'Asteroid Crash', thumb: '/website-pdf-asteroid-crash.png', file: 'website-pdf-asteroid-crash.pdf', topic: 'solar-system' },
+  { title: 'Red Spot Weather Report', thumb: '/website-pdf-red-spot-weather-report.png', file: 'website-pdf-red-spot-weather-report.pdf', topic: 'solar-system' },
+  { title: "A Day in Saturn's Rings", thumb: '/website-pdf-saturn-journal.png', file: 'website-pdf-saturn-journal.pdf', topic: 'solar-system' },
+  { title: 'Side Spinning Planet', thumb: '/website-pdf-side-spinning-planet.png', file: 'website-pdf-side-spinning-planet.pdf', topic: 'solar-system' },
+  { title: 'Neptune Weather Report', thumb: '/website-pdf-neptune-weather-report.png', file: 'website-pdf-neptune-weather-report.pdf', topic: 'solar-system' },
+  { title: 'Decorate Arrokoth', thumb: '/website-pdf-decorate-arrokoth.png', file: 'website-pdf-decorate-arrokoth.pdf', topic: 'solar-system' },
+  { title: 'Dwarf Planet Location Match', thumb: '/dwarf-planet-location-match.png', file: 'dwarf-planet-location-match.pdf', topic: 'solar-system' },
+  { title: 'Planet Spelling', thumb: '/website-pdf-planet-spelling.png', file: 'website-pdf-planet-spelling.pdf', topic: 'solar-system' },
+  { title: 'Planet Sort', thumb: '/website-pdf-planet-sort.png', file: 'website-pdf-planet-sort.pdf', topic: 'solar-system' },
+  { title: 'The Best Planet', thumb: '/website-pdf-best-planet-letter.png', file: 'website-pdf-best-planet-letter.pdf', topic: 'solar-system' },
+  { title: 'Solar System Word Search', thumb: '/website-pdf-solar-system-word-search.png', file: 'website-pdf-solar-system-word-search.pdf', topic: 'solar-system' },
+  { title: 'Planet Multiplication', thumb: '/website-pdf-planet-multiplication.png', file: 'website-pdf-planet-multiplication.pdf', topic: 'solar-system' },
+  { title: 'Planet/Moon Match', thumb: '/website-pdf-planet-moon-match.png', file: 'website-pdf-planet-moon-match.pdf', topic: 'solar-system' },
+  { title: 'Ordering the Planets', thumb: '/website-pdf-ordering-the-planets.png', file: 'website-pdf-ordering-the-planets.pdf', topic: 'solar-system' },
+  { title: 'Create a Spacecraft', thumb: '/website-pdf-create-a-spacecraft.png', file: 'website-pdf-create-a-spacecraft.pdf', topic: 'solar-system' },
+  { title: 'Solar System Creative Writing', thumb: '/website-pdf-creative-writing.png', file: 'website-pdf-creative-writing.pdf', topic: 'solar-system' },
+  { title: 'Planet Research', thumb: '/website-pdf-planet-research.png', file: 'website-pdf-planet-research.pdf', topic: 'solar-system' },
+  { title: 'New Scattered Disk Object', thumb: '/website-pdf-sd-object.png', file: 'website-pdf-sd-object.pdf', topic: 'solar-system' },
+  { title: 'Voyager 1 Discovery', thumb: '/website-pdf-voyager-1-discovery.png', file: 'website-pdf-voyager-1-discovery.pdf', topic: 'solar-system' },
+  { title: 'New Planet in the Oort Cloud', thumb: '/website-pdf-new-planet-oort-cloud.png', file: 'website-pdf-new-planet-oort-cloud.pdf', topic: 'solar-system' },
+  { title: "What's on That Comet?", thumb: '/website-pdf-whats-on-that-comet.png', file: 'website-pdf-whats-on-that-comet.pdf', topic: 'solar-system' },
+  { title: 'Planet/AU Match', thumb: '/website-pdf-planet-au-match.png', file: 'website-pdf-planet-au-match.pdf', topic: 'solar-system' },
+  { title: 'Light-Year Match', thumb: '/website-pdf-light-year-match.png', file: 'website-pdf-light-year-match.pdf', topic: 'solar-system' },
+  { title: 'Looking Through a Telescope', thumb: '/website-pdf-look-through-telescope.png', file: 'website-pdf-look-through-telescope.pdf', topic: 'solar-system' },
+  { title: 'International Space Station (ISS) History & Coloring Page', thumb: '/website-pdf-space-station-coloring.png', file: 'website-pdf-space-station-coloring.pdf', topic: 'solar-system' },
+  { title: 'Space Bingo', thumb: '/website-pdf-space-bingo.png', file: 'website-pdf-space-bingo.pdf', topic: 'solar-system' },
+]
+
 const topics = [
   { id: 'all', label: 'All Topics' },
   { id: 'solar-system', label: '🪐 Solar System' },
+]
+
+const activityTypes = [
+  { id: 'all', label: 'All' },
+  { id: 'games', label: 'Games' },
+  { id: 'lessons', label: 'Lessons' },
+  { id: 'printables', label: 'Printables' },
 ]
 
 const gameTypes = [
@@ -688,7 +734,6 @@ const gameTypes = [
   { id: 'matching', label: 'Matching' },
   { id: 'word-sort', label: 'Word Sort' },
   { id: 'hangman', label: 'Hangman' },
-  { id: 'lesson', label: 'Lessons' },
 ]
 
 const difficulties = [
@@ -698,12 +743,17 @@ const difficulties = [
   { id: 'hard', label: 'Hard' },
 ]
 
+type GameItem = (typeof games)[0] & { itemType: 'game' }
+type PrintableItem = { title: string; thumb: string; file: string; topic: string; itemType: 'printable' }
+type AnyItem = GameItem | PrintableItem
 
 export default function GamesPage() {
   const [topic, setTopic] = useState('all')
   const [topicOpen, setTopicOpen] = useState(false)
   const [typeOpen, setTypeOpen] = useState(false)
   const [difficultyOpen, setDifficultyOpen] = useState(false)
+  const [activityOpen, setActivityOpen] = useState(false)
+  const [activity, setActivity] = useState('all')
   const [activeType, setActiveType] = useState('')
   const [activeDifficulty, setActiveDifficulty] = useState('')
   const [search, setSearch] = useState('')
@@ -772,18 +822,59 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeType, activeDifficulty, search])
+  useEffect(() => { setPage(1) }, [topic, activeType, activeDifficulty, search, activity])
 
-  const showDifficulty = activeType !== 'lesson'
+  const showGameTypeDropdown = activity === 'games'
+  const showDifficultyDropdown = activity === 'games'
 
-  const filtered = games.filter(g => {
-    if (topic !== 'all' && g.topic !== topic) return false
-    if (activeType && !g.types.includes(activeType)) return false
-    if (activeDifficulty && showDifficulty) {
-      const titleLower = g.title.toLowerCase()
-      const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
-      if (!diffMatch) return false
+  // Build unified allItems list
+  const allItems: AnyItem[] = [
+    ...games.map(g => ({ ...g, itemType: 'game' as const })),
+    ...printables.map(p => ({ ...p, itemType: 'printable' as const })),
+  ]
+
+  const filtered = allItems.filter(item => {
+    // Topic filter applies to all
+    if (topic !== 'all' && item.topic !== topic) return false
+
+    if (item.itemType === 'printable') {
+      // Printables only shown in 'all' or 'printables'
+      if (activity === 'games' || activity === 'lessons') return false
+      // Search for printables (title + topic only)
+      if (search.trim()) {
+        const haystack = [item.title, item.topic].join(' ').toLowerCase()
+        const queryWords = search.trim().toLowerCase().split(/\s+/)
+        if (!queryWords.every(qw => haystack.includes(qw))) return false
+      }
+      return true
     }
+
+    // item is a game
+    const g = item as GameItem
+
+    if (activity === 'printables') return false
+
+    if (activity === 'lessons') {
+      if (!g.types.includes('lesson')) return false
+    } else if (activity === 'games') {
+      if (g.types.includes('lesson')) return false
+      if (activeType && !g.types.includes(activeType)) return false
+      if (activeDifficulty) {
+        const titleLower = g.title.toLowerCase()
+        const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
+        if (!diffMatch) return false
+      }
+    } else {
+      // activity === 'all': apply game type + difficulty filters only to games
+      if (activeType && !g.types.includes(activeType)) return false
+      if (activeDifficulty) {
+        const titleLower = g.title.toLowerCase()
+        const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
+        if (!diffMatch) return false
+      }
+    }
+
+    // Search for games
     if (search.trim()) {
       const haystack = [
         g.title,
@@ -793,19 +884,35 @@ export default function GamesPage() {
         ...((g as any).keywords ?? []),
       ].join(' ').toLowerCase()
       const queryWords = search.trim().toLowerCase().split(/\s+/)
-      const matched = queryWords.every(qw => haystack.includes(qw))
-      if (!matched) return false
+      if (!queryWords.every(qw => haystack.includes(qw))) return false
     }
+
     return true
   })
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
 
+  function getResultsLabel() {
+    if (activity === 'printables') return 'printables'
+    if (activity === 'lessons') return 'lessons'
+    if (activity === 'games') return 'games'
+    return 'items'
+  }
+
+  const totalCount = (() => {
+    if (activity === 'printables') return printables.length
+    if (activity === 'lessons') return games.filter(g => g.types.includes('lesson')).length
+    if (activity === 'games') return games.filter(g => !g.types.includes('lesson')).length
+    return allItems.length
+  })()
+
+  const isFiltered = search.trim() || activeType || activeDifficulty || topic !== 'all'
+
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
       <h1 className="text-3xl font-extrabold mb-2">Learn</h1>
-      <p className="text-[#5c5c5c] mb-1">Browse our games and lessons. New content added regularly!</p>
+      <p className="text-[#5c5c5c] mb-1">Browse our games, lessons, and printables. New content added regularly!</p>
       <p className="text-sm text-[#5c5c5c] mb-8">All content is secular and designed for Grades K–3.</p>
 
       {/* Paywall banner */}
@@ -824,7 +931,7 @@ export default function GamesPage() {
           ) : (
             <>
               <div>
-                <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games and lessons</p>
+                <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games, lessons, and printables</p>
                 <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
               </div>
               <Link href="/signup" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
@@ -850,10 +957,30 @@ export default function GamesPage() {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-10">
 
-        {/* Topic dropdown */}
+        {/* Activity dropdown — always shown */}
         <div className="relative">
           <button
-            onClick={() => { setTopicOpen(o => !o); setTypeOpen(false); setDifficultyOpen(false) }}
+            onClick={() => { setActivityOpen(o => !o); setTopicOpen(false); setTypeOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activity !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+          >
+            {activityTypes.find(a => a.id === activity)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {activityOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
+              {activityTypes.map(a => (
+                <button key={a.id} onClick={() => { setActivity(a.id); setActivityOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activity === a.id ? 'text-[#55b6ca]' : ''}`}
+                >{a.label}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Topic dropdown — always shown */}
+        <div className="relative">
+          <button
+            onClick={() => { setTopicOpen(o => !o); setTypeOpen(false); setDifficultyOpen(false); setActivityOpen(false) }}
             className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${topic !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
           >
             {topics.find(t => t.id === topic)?.label}
@@ -870,35 +997,36 @@ export default function GamesPage() {
           )}
         </div>
 
-        {/* Type dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => { setTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false) }}
-            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-          >
-            {gameTypes.find(t => t.id === activeType)?.label}
-            <span className="text-xs">▾</span>
-          </button>
-          {typeOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
-              {gameTypes.map(t => (
-                <button key={t.id} onClick={() => {
-                  setActiveType(t.id)
-                  if (t.id === 'lesson') setActiveDifficulty('')
-                  setTypeOpen(false)
-                }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeType === t.id ? 'text-[#55b6ca]' : ''}`}
-                >{t.label}</button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Difficulty dropdown — hidden for Lessons */}
-        {showDifficulty && (
+        {/* Game Type dropdown — only shown when activity === 'games' */}
+        {showGameTypeDropdown && (
           <div className="relative">
             <button
-              onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setTypeOpen(false) }}
+              onClick={() => { setTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false); setActivityOpen(false) }}
+              className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+            >
+              {gameTypes.find(t => t.id === activeType)?.label}
+              <span className="text-xs">▾</span>
+            </button>
+            {typeOpen && (
+              <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
+                {gameTypes.map(t => (
+                  <button key={t.id} onClick={() => {
+                    setActiveType(t.id)
+                    setTypeOpen(false)
+                  }}
+                    className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeType === t.id ? 'text-[#55b6ca]' : ''}`}
+                  >{t.label}</button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Difficulty dropdown — only shown when activity === 'games' */}
+        {showDifficultyDropdown && (
+          <div className="relative">
+            <button
+              onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setTypeOpen(false); setActivityOpen(false) }}
               className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
             >
               {difficulties.find(d => d.id === activeDifficulty)?.label}
@@ -921,24 +1049,26 @@ export default function GamesPage() {
       {/* Results counter */}
       {filtered.length > 0 && (
         <p className="text-sm text-[#5c5c5c] mb-6">
-          {(search.trim() || activeType || activeDifficulty || topic !== 'all')
-            ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> games</>
-            : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{games.length}</span> games</>
+          {isFiltered
+            ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> {getResultsLabel()}</>
+            : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{totalCount}</span> {getResultsLabel()}</>
           }
         </p>
       )}
 
-      {/* Games grid */}
+      {/* Grid */}
       {paginated.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {paginated.map(game => (
-            <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+          {paginated.map(item => (
+            item.itemType === 'game'
+              ? <GameCard key={item.title} game={item as GameItem} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(item.title)} onToggleFavorite={() => toggleFavorite(item.title)} />
+              : <PrintableCard key={item.title} printable={item as PrintableItem} hasAccess={hasAccess} trialExpired={trialExpired} />
           ))}
         </div>
       )}
 
       {filtered.length === 0 && (
-        <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your search. Try different keywords or clear your filters!</p>
+        <p className="text-[#5c5c5c] text-sm py-12 text-center">No results match your search. Try different keywords or clear your filters!</p>
       )}
 
       {/* Pagination */}
@@ -984,7 +1114,7 @@ export default function GamesPage() {
   )
 }
 
-function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
+function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: GameItem, hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
   const href = hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
   const external = hasAccess && game.newTab !== false
 
@@ -1024,6 +1154,35 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
         {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
         {!hasAccess && (
           <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to play →' : 'Start free trial →'}</p>
+        )}
+      </div>
+    </a>
+  )
+}
+
+function PrintableCard({ printable, hasAccess, trialExpired }: { printable: PrintableItem, hasAccess: boolean, trialExpired: boolean }) {
+  const href = hasAccess
+    ? `/printable?file=${printable.file}&title=${encodeURIComponent(printable.title)}`
+    : trialExpired
+    ? '/pricing'
+    : '/signup'
+
+  return (
+    <a
+      href={href}
+      className="group bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5] cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5"
+      style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
+    >
+      <div className="relative h-44 w-full bg-[#e8e4dc]">
+        <Image src={printable.thumb} alt={printable.title} fill className="object-cover" />
+        <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+          Printable
+        </span>
+      </div>
+      <div className="p-5 flex flex-col flex-1">
+        <p className="font-extrabold text-base mb-2">{printable.title}</p>
+        {!hasAccess && (
+          <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to print →' : 'Start free trial →'}</p>
         )}
       </div>
     </a>
