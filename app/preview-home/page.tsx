@@ -130,7 +130,7 @@ export default function PreviewHomePage() {
             <a href="/matching-dwarf-planets.html"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
-                <Image src="/thumb-find-pair-dwarf-planets.png" alt="Find a Pair: Dwarf Planets" fill className="object-cover" />
+                <Image src="/dwarf-planets-matching-game-thumbnail.png" alt="Find a Pair: Dwarf Planets" fill className="object-cover" />
                 <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Find a Pair</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
