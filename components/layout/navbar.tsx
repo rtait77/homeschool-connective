@@ -86,16 +86,6 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
-          {!user && (
-            <li>
-              <Link
-                href="/consulting"
-                className="bg-[#ed7c5a] text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition whitespace-nowrap"
-              >
-                Get Homeschooling Help
-              </Link>
-            </li>
-          )}
           <li>
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -163,6 +153,16 @@ export default function Navbar() {
               </Link>
             )}
           </li>
+          {!user && (
+            <li>
+              <Link
+                href="/consulting"
+                className="bg-[#ed7c5a] text-white px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 transition whitespace-nowrap"
+              >
+                Get Homeschooling Help
+              </Link>
+            </li>
+          )}
         </ul>
 
         {/* Mobile hamburger */}
