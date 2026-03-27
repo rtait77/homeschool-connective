@@ -1058,7 +1058,7 @@ export default function GamesPage() {
 
       {/* Grid */}
       {paginated.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className={activity === 'printables' ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}>
           {paginated.map(item => (
             item.itemType === 'game'
               ? <GameCard key={item.title} game={item as GameItem} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(item.title)} onToggleFavorite={() => toggleFavorite(item.title)} />
