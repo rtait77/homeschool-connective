@@ -22,7 +22,7 @@ export default function HeroVideo() {
       className="w-full block"
       style={{ maxHeight: '58vh', objectFit: 'cover', objectPosition: 'center 40%' }}
     >
-      <source src="/hero-video.mp4" type="video/mp4" />
+      <source src="/new-hero-video.mp4" type="video/mp4" />
     </video>
   )
 }
