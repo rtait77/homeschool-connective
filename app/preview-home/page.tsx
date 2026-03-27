@@ -241,7 +241,7 @@ export default async function PreviewHomePage() {
           <h2 className="text-3xl text-[#1c1c1c] leading-tight mb-10">New Topics Coming Soon</h2>
 
           {/* Topic list — plain text, not clickable */}
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-12 text-[#3a3a3a] text-base">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-[#3a3a3a] text-base">
             {['Ocean Animals', 'Dinosaurs', 'The 7 Continents', 'Extreme Environments', 'Natural Disasters'].map((topic) => (
               <span key={topic}>{topic}</span>
             ))}
