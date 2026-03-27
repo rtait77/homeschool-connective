@@ -56,7 +56,7 @@ export default function PreviewHomePage() {
                 <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Lesson</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Mission to Mars</h3>
+                <h3 className="font-extrabold text-sm leading-tight mb-2">All About Mars</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Start →</span>
               </div>
             </a>
