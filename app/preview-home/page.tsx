@@ -235,13 +235,13 @@ export default async function PreviewHomePage() {
       </section>
 
       {/* Coming Soon topics block */}
-      <section className="bg-[#f5f1e9] px-6 py-10 border-t border-[#ddd8cc]">
+      <section className="bg-[#ed7c5a] px-6 py-10">
         <div className="max-w-[1100px] mx-auto text-center">
 
-          <h2 className="text-3xl text-[#1c1c1c] leading-tight mb-10">New Topics Coming Soon</h2>
+          <h2 className="text-3xl text-white leading-tight mb-10">New Topics Coming Soon</h2>
 
           {/* Topic list — plain text, not clickable */}
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-[#3a3a3a] text-base">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-white text-base">
             {['Ocean Animals', 'Dinosaurs', 'The 7 Continents', 'Extreme Environments', 'Natural Disasters'].map((topic) => (
               <span key={topic}>{topic}</span>
             ))}
