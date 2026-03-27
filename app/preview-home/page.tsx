@@ -161,10 +161,17 @@ export default function PreviewHomePage() {
       </section>
 
       {/* Consulting interrupt */}
-      <section className="bg-[#ed7c5a] px-6 py-16">
-        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
-          <div className="w-full md:w-2/5 rounded-2xl overflow-hidden flex-shrink-0" style={{ minHeight: '280px', position: 'relative' }}>
-            <Image src="/consulting-hero.jpg" alt="Homeschool consulting" fill className="object-cover rounded-2xl" />
+      <section className="px-6 py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #c95f3a 0%, #ed7c5a 45%, #f2976e 100%)' }}>
+        {/* Decorative circles for depth */}
+        <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full opacity-10 bg-white pointer-events-none" />
+        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full opacity-10 bg-white pointer-events-none" />
+        <div className="absolute top-1/2 right-1/4 w-32 h-32 rounded-full opacity-5 bg-white pointer-events-none" />
+
+        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10 relative">
+          <div className="w-full md:w-2/5 flex-shrink-0" style={{ minHeight: '300px', position: 'relative' }}>
+            <div className="relative w-full h-full rounded-2xl overflow-hidden" style={{ minHeight: '300px', boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15)' }}>
+              <Image src="/consulting-hero.jpg" alt="Homeschool consulting" fill className="object-cover" style={{ objectPosition: 'center 65%' }} />
+            </div>
           </div>
           <div className="md:w-3/5 text-white">
             <p className="text-xs font-extrabold uppercase tracking-widest opacity-80 mb-3">Homeschool Help</p>
