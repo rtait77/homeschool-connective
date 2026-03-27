@@ -957,27 +957,7 @@ export default function GamesPage() {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-10">
 
-        {/* Activity dropdown — always shown */}
-        <div className="relative">
-          <button
-            onClick={() => { setActivityOpen(o => !o); setTopicOpen(false); setTypeOpen(false); setDifficultyOpen(false) }}
-            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activity !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-          >
-            {activityTypes.find(a => a.id === activity)?.label}
-            <span className="text-xs">▾</span>
-          </button>
-          {activityOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
-              {activityTypes.map(a => (
-                <button key={a.id} onClick={() => { setActivity(a.id); setActivityOpen(false) }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activity === a.id ? 'text-[#55b6ca]' : ''}`}
-                >{a.label}</button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Topic dropdown — always shown */}
+        {/* Topic dropdown — always shown, first */}
         <div className="relative">
           <button
             onClick={() => { setTopicOpen(o => !o); setTypeOpen(false); setDifficultyOpen(false); setActivityOpen(false) }}
@@ -992,6 +972,26 @@ export default function GamesPage() {
                 <button key={t.id} onClick={() => { setTopic(t.id); setTopicOpen(false) }}
                   className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
                 >{t.label}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Activity dropdown — always shown, second */}
+        <div className="relative">
+          <button
+            onClick={() => { setActivityOpen(o => !o); setTopicOpen(false); setTypeOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activity !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+          >
+            {activityTypes.find(a => a.id === activity)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {activityOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
+              {activityTypes.map(a => (
+                <button key={a.id} onClick={() => { setActivity(a.id); setActivityOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activity === a.id ? 'text-[#55b6ca]' : ''}`}
+                >{a.label}</button>
               ))}
             </div>
           )}
