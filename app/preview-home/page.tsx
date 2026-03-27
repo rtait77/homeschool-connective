@@ -19,7 +19,7 @@ export default function PreviewHomePage() {
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-8">
-            Plus, customized homeschooling support.{' '}
+            Plus, personalized homeschooling support for parents.{' '}
             <Link href="/consulting" className="text-[#55b6ca] font-bold hover:underline">
               Learn More »
             </Link>
