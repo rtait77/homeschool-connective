@@ -235,105 +235,28 @@ export default async function PreviewHomePage() {
       </section>
 
       {/* Coming Soon topics block */}
-      <section className="bg-[#f5f1e9] px-6 py-20 border-t border-[#ddd8cc] relative overflow-hidden">
-        <style dangerouslySetInnerHTML={{ __html: `
-          @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0.4); }
-            50% { opacity: 1; transform: scale(1); }
-          }
-          @keyframes ring-expand {
-            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.5; }
-            100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
-          }
-          .topic-pill {
-            transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
-            cursor: default;
-          }
-          .topic-pill:hover {
-            transform: translateY(-4px) scale(1.04);
-            box-shadow: 0 8px 24px rgba(85, 182, 202, 0.18);
-            border-color: #55b6ca;
-            background: #ffffff;
-          }
-          .notify-btn {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-          }
-          .notify-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 36px rgba(237, 124, 90, 0.38);
-          }
-        `}} />
+      <section className="bg-[#f5f1e9] px-6 py-20 border-t border-[#ddd8cc]">
+        <div className="max-w-[1100px] mx-auto text-center">
 
-        {/* Expanding ring decorative element — top right */}
-        <div className="absolute top-1/2 right-0 pointer-events-none" style={{ transform: 'translateX(30%)' }}>
-          <div className="w-72 h-72 rounded-full border border-[#ddd8cc] opacity-50" />
-          <div className="absolute inset-0 m-8 rounded-full border border-[#ddd8cc] opacity-40" />
-          <div className="absolute inset-0 m-16 rounded-full border border-[#ddd8cc] opacity-30" />
-          <div className="absolute inset-0 m-24 rounded-full bg-[#ed7c5a] opacity-10 rounded-full" />
-        </div>
+          <h2 className="text-3xl text-[#1c1c1c] leading-tight mb-4">New Topics Coming Soon</h2>
+          <p className="text-[#5c5c5c] text-lg leading-relaxed mb-10 max-w-lg mx-auto">
+            We&apos;re expanding beyond space — building games, lessons, and printables across new science topics.
+          </p>
 
-        {/* Sparkle dots */}
-        <div className="absolute top-10 left-16 w-2 h-2 rounded-full bg-[#ed7c5a]" style={{ animation: 'sparkle 2.8s ease-in-out infinite' }} />
-        <div className="absolute top-24 left-1/3 w-1.5 h-1.5 rounded-full bg-[#55b6ca]" style={{ animation: 'sparkle 3.6s ease-in-out infinite 0.9s' }} />
-        <div className="absolute bottom-14 left-1/4 w-1.5 h-1.5 rounded-full bg-[#ed7c5a]" style={{ animation: 'sparkle 4.2s ease-in-out infinite 1.6s' }} />
-        <div className="absolute bottom-8 left-2/3 w-1 h-1 rounded-full bg-[#55b6ca]" style={{ animation: 'sparkle 3.1s ease-in-out infinite 0.4s' }} />
-        <div className="absolute top-16 left-1/2 w-1 h-1 rounded-full bg-[#ed7c5a]" style={{ animation: 'sparkle 2.3s ease-in-out infinite 1.2s' }} />
-
-        <div className="max-w-[1100px] mx-auto relative">
-
-          {/* Eyebrow + Headline — left aligned */}
-          <div className="max-w-xl mb-10">
-            <span className="inline-block text-xs font-extrabold uppercase tracking-widest text-white bg-[#55b6ca] rounded-full px-4 py-1 mb-5">
-              Coming Soon
-            </span>
-            <h2 className="text-4xl font-extrabold text-[#1c1c1c] leading-tight mb-4">
-              More topics<br />on the way
-            </h2>
-            <p className="text-[#5c5c5c] text-lg leading-relaxed">
-              We&apos;re expanding beyond space — building games, lessons, and printables across new science topics.
-            </p>
-          </div>
-
-          {/* Pills */}
-          <div className="flex flex-wrap gap-3 mb-10">
-            {[
-              { label: 'Ocean Animals', color: '#4a90c4' },
-              { label: 'Dinosaurs', color: '#5bab8a' },
-              { label: 'The 7 Continents', color: '#8b72be' },
-              { label: 'Extreme Environments', color: '#d94f4f' },
-              { label: 'Natural Disasters', color: '#c4607a' },
-            ].map(({ label, color }) => (
-              <span
-                key={label}
-                className="topic-pill bg-white border border-[#ddd8cc] text-[#3a3a3a] text-sm font-medium px-6 py-3 rounded-full"
-                style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
-              >
-                <span
-                  className="inline-block w-2 h-2 rounded-full mr-2 align-middle"
-                  style={{ backgroundColor: color, opacity: 0.7 }}
-                />
-                {label}
-              </span>
+          {/* Topic list — plain text, not clickable */}
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-12 text-[#3a3a3a] text-base">
+            {['Ocean Animals', 'Dinosaurs', 'The 7 Continents', 'Extreme Environments', 'Natural Disasters'].map((topic) => (
+              <span key={topic}>{topic}</span>
             ))}
-            <span className="topic-pill border border-dashed border-[#c8c0b8] text-[#a8a09a] text-sm font-medium px-6 py-3 rounded-full italic">
-              and more...
-            </span>
           </div>
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <a
-              href="#newsletter"
-              className="notify-btn inline-flex items-center gap-2.5 font-extrabold text-base px-8 py-4 rounded-xl bg-[#ed7c5a] text-white"
-              style={{ boxShadow: '0 4px 20px rgba(237, 124, 90, 0.32)' }}
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-              Get Notified When New Content Drops
-            </a>
-            <p className="text-xs text-[#a09890]">No spam. Unsubscribe anytime.</p>
-          </div>
+          <a
+            href="#newsletter"
+            className="inline-flex items-center gap-2.5 font-extrabold text-base px-8 py-4 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
+            style={{ boxShadow: '0 4px 20px rgba(237, 124, 90, 0.32)' }}
+          >
+            Get Notified When New Content Drops
+          </a>
 
         </div>
       </section>
