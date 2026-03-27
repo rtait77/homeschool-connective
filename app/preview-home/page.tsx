@@ -216,15 +216,21 @@ export default async function PreviewHomePage() {
             </a>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc]" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-                <div className="h-32 w-full bg-[#f0ece4]" />
-                <div className="p-3 flex flex-col flex-1">
-                  <p className="text-sm text-[#aaa] mb-1">Title</p>
-                  <p className="text-xs text-[#ccc]">Subtext</p>
+          <div className="grid grid-cols-3 gap-4 mt-8 max-w-2xl">
+            {[
+              { title: 'Layers of the Sun', file: 'website-pdf-layers-sun-coloring.pdf', thumb: '/website-pdf-layers-sun-coloring.png' },
+              { title: 'Red Spot Weather Report', file: 'website-pdf-red-spot-weather-report.pdf', thumb: '/website-pdf-red-spot-weather-report.png' },
+              { title: 'Create a Solar System', file: 'website-pdf-create-a-solar-system.pdf', thumb: '/website-pdf-create-a-solar-system.png' },
+            ].map(({ title, file, thumb }) => (
+              <a key={title} href={`/printable?file=${file}&title=${encodeURIComponent(title)}`}
+                className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                <div className="relative w-full" style={{ aspectRatio: '8.5/11' }}>
+                  <Image src={thumb} alt={title} fill className="object-contain" />
                 </div>
-              </div>
+                <div className="p-3 bg-[#f5f1e9]">
+                  <p className="text-xs font-bold leading-snug">{title}</p>
+                </div>
+              </a>
             ))}
           </div>
 
