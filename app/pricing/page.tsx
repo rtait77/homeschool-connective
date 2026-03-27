@@ -147,35 +147,44 @@ export default function SubscribePage() {
       <h1 className="text-3xl font-extrabold text-center mb-2">Plans & Pricing</h1>
       <p className="text-center text-[#5c5c5c] mb-12">Two ways to get support for your homeschool.</p>
 
+      {/* Free trial CTA */}
+      {showTrial && (
+        <div className="bg-[#f5f1e9] rounded-2xl p-6 text-center mb-10">
+          <p className="font-extrabold mb-1">Try games free for 7 days</p>
+          <p className="text-[#5c5c5c] text-sm mb-4">No credit card required. Full access. Cancel anytime.</p>
+          <Link href="/signup" className="inline-block bg-[#ed7c5a] text-white font-bold px-8 py-3 rounded-lg text-sm hover:opacity-90 transition">
+            Start Free Trial
+          </Link>
+          <p className="text-xs text-[#5c5c5c] mt-3">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
+        </div>
+      )}
+
       {/* 2-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
         {/* Consulting card */}
-        <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-1">One-on-One Consulting</p>
-          <Link href="/consulting" className="text-xs font-bold text-[#238FA4] hover:underline mb-4 inline-block">
-            Learn more →
-          </Link>
+        <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">One-on-One Consulting</p>
           <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0">$47</p>
           <p className="text-xs text-[#a09890] mb-5">one-time payment</p>
-          <ul className="text-sm text-[#3a3a3a] space-y-2 mb-6">
+          <ul className="text-sm text-[#3a3a3a] space-y-2 mb-4 flex-1">
             <li>✓ Deep-dive intake form</li>
             <li>✓ Personalized recommendations</li>
             <li>✓ Learning style &amp; method match</li>
             <li>✓ 3 months of email support with Mel</li>
             <li className="text-[#55b6ca] font-bold">✓ 7-day games trial included</li>
           </ul>
-
+          <p className="text-xs text-[#a09890] mb-5">Option to subscribe to games after your trial if you choose.</p>
           <button
             onClick={() => setModalTarget('consulting')}
-            className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition mt-auto"
+            className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
           >
-            Book a Consult →
+            Get Started →
           </button>
         </div>
 
         {/* Games card with toggle */}
-        <div className="bg-white rounded-2xl p-7 flex flex-col relative border border-[#e2ddd5]" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
+        <div className="bg-white rounded-2xl p-7 flex flex-col relative" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games Subscription</p>
 
           {/* Toggle */}
@@ -203,38 +212,24 @@ export default function SubscribePage() {
             )}
           </div>
           {gamesPlan === 'yearly' && (
-            <p className="text-xs font-bold text-[#55b6ca] mb-5">Save $10!</p>
+            <p className="text-xs font-bold text-[#55b6ca] mb-5">Save $10 vs monthly!</p>
           )}
           {gamesPlan === 'monthly' && <div className="mb-5" />}
 
           <ul className="text-sm text-[#5c5c5c] space-y-2 mb-6 flex-1">
             <li>✓ Full access to all games &amp; lessons</li>
+            <li>✓ Access to all printables</li>
             <li>✓ New content as it&apos;s added</li>
             <li>✓ Cancel anytime</li>
           </ul>
 
-          {showTrial ? (
-            <>
-              <Link
-                href="/signup"
-                className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
-              >
-                Try Free for 7 Days
-              </Link>
-              <p className="text-xs text-center text-[#a09890] mt-2">No credit card required. Cancel anytime.</p>
-              <p className="text-xs text-center text-[#a09890] mt-1">
-                Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link>
-              </p>
-            </>
-          ) : (
-            <button
-              onClick={() => setModalTarget(gamesPlan)}
-              disabled={loading}
-              className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50"
-            >
-              {gamesPlan === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly'}
-            </button>
-          )}
+          <button
+            onClick={() => setModalTarget(gamesPlan)}
+            disabled={loading}
+            className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50 mt-auto"
+          >
+            {gamesPlan === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly'}
+          </button>
         </div>
 
       </div>
