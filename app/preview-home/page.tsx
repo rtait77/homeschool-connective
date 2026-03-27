@@ -185,7 +185,7 @@ export default async function PreviewHomePage() {
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Homeschool Help</p>
             <h2 className="text-3xl leading-tight mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
             <p className="text-lg leading-relaxed text-[#5c5c5c] mb-8">
-              Use our deep matching system to get curriculum recommendations and uncover your child's learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
+              Use our deep matching system to get curriculum recommendations and uncover your child&apos;s learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
             </p>
             {resourceCount && (
               <p className="text-sm text-[#5c5c5c] mb-6">
@@ -240,7 +240,7 @@ export default async function PreviewHomePage() {
           <div className="md:w-2/5">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Coming Soon</p>
             <h2 className="text-3xl text-[#1c1c1c] leading-snug mb-4">More topics on the way</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-6">We're building out new games, lessons, and printables across more science topics. Sign up to be notified when new content drops.</p>
+            <p className="text-[#5c5c5c] leading-relaxed mb-6">We&apos;re building out new games, lessons, and printables across more science topics. Sign up to be notified when new content drops.</p>
             <a href="#newsletter" className="inline-flex items-center font-semibold text-sm text-[#ed7c5a] hover:underline">
               Get notified →
             </a>
@@ -288,7 +288,7 @@ export default async function PreviewHomePage() {
               <div className="p-5 flex flex-col flex-1">
                 <p className="text-xs text-[#a09890] mb-1">October 21, 2025 · Game-Based Learning</p>
                 <h3 className="text-base mb-2">Why Play is Important</h3>
-                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">Play's essential function in homeschooling: fostering development and education through curiosity and hands-on exploration.</p>
+                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">Play&apos;s essential function in homeschooling: fostering development and education through curiosity and hands-on exploration.</p>
                 <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
               </div>
             </Link>
@@ -321,53 +321,7 @@ export default async function PreviewHomePage() {
         </div>
       </section>
 
-      {/* Feature: Full Games */}
-      <section className="bg-[#f5f1e9] py-14 px-6 border-t border-[#ddd8cc]">
-        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
-          <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
-            <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
-          </div>
-          <div className="md:w-1/2">
-            <h2 className="text-2xl font-extrabold mb-4">Immersive Learning Adventures</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our educational games use drag-and-drop challenges, voiceover narration, and bite-sized facts to teach kids real content — not just trivia.</p>
-            <p className="text-[#5c5c5c] leading-relaxed mb-6">Each game is built around a specific topic so it fits right into your homeschool curriculum or works as a fun stand-alone lesson.</p>
-            <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center justify-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-              ▶ Play Demo
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature: Mini Games */}
-      <section className="py-14 px-6">
-        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row-reverse items-center gap-10">
-          <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
-            <Image src="/thumb-find-pair-outer.png" alt="Mini Games" fill className="object-cover" />
-          </div>
-          <div className="md:w-1/2">
-            <h2 className="text-2xl font-extrabold mb-4">Quick Wins, Big Learning</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-4">Short on time? Our mini games are perfect for a quick learning boost. Puzzles, word searches, matching games, and word sorts that kids can complete in just a few minutes.</p>
-            <p className="text-[#5c5c5c] leading-relaxed">Mini games are a great way to reinforce what kids have already learned, or to introduce a new topic in a low-pressure, fun way.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature: Lessons */}
-      <section className="bg-[#f5f1e9] py-14 px-6">
-        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
-          <div className="relative w-full md:w-1/2 rounded-2xl overflow-hidden" style={{ minHeight: '280px' }}>
-            <Image src="/thumb-lesson-mars.png" alt="Interactive Lessons" fill className="object-cover" />
-          </div>
-          <div className="md:w-1/2">
-            <h2 className="text-2xl font-extrabold mb-4">Bite-Sized Lessons That Stick</h2>
-            <p className="text-[#5c5c5c] leading-relaxed mb-4">Our lessons break big topics down into small, manageable chunks — with voiceover narration to guide kids through each one.</p>
-            <p className="text-[#5c5c5c] leading-relaxed">Each lesson uses elements like animations, drag-and-drop, and sound effects (varies by lesson).</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Blurb + CTA */}
+      {/* Closing CTA */}
       <section className="py-14 px-6 border-t border-[#ddd8cc]">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-center gap-6">
           <p className="text-base leading-relaxed flex-1">
