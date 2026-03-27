@@ -189,7 +189,36 @@ export default function PreviewHomePage() {
         </div>
       </section>
 
-      {/* Printables grid — placeholder, content coming soon */}
+      {/* Printables grid */}
+      <section className="bg-white px-6 py-14 border-t border-[#ddd8cc]">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
+            <div>
+              <h2 className="text-2xl">Printables</h2>
+              <p className="text-[#5c5c5c] mt-1">Ready-to-use worksheets and activities for your homeschool.</p>
+            </div>
+            <a href="#newsletter" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0">
+              Get notified of new printables →
+            </a>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc]" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+                <div className="h-32 w-full bg-[#f0ece4]" />
+                <div className="p-3 flex flex-col flex-1">
+                  <p className="text-sm text-[#aaa] mb-1">Title</p>
+                  <p className="text-xs text-[#ccc]">Subtext</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center">
+            <span className="text-sm font-bold text-[#55b6ca] cursor-pointer hover:underline">See more</span>
+          </div>
+        </div>
+      </section>
 
       {/* Coming Soon topics interrupt */}
       <section className="bg-[#f5f1e9] px-6 py-16 border-t border-[#ddd8cc]">
