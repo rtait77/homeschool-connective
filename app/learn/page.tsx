@@ -1160,7 +1160,7 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
   )
 }
 
-function PrintableCard({ printable, hasAccess, trialExpired }: { printable: PrintableItem, hasAccess: boolean, trialExpired: boolean }) {
+function PrintableCard({ printable, hasAccess, trialExpired }: { printable: PrintableItem; hasAccess: boolean; trialExpired: boolean }) {
   const href = hasAccess
     ? `/printable?file=${printable.file}&title=${encodeURIComponent(printable.title)}`
     : trialExpired
@@ -1173,8 +1173,8 @@ function PrintableCard({ printable, hasAccess, trialExpired }: { printable: Prin
       className="group bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5] cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5"
       style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
     >
-      <div className="relative h-44 w-full bg-[#e8e4dc]">
-        <Image src={printable.thumb} alt={printable.title} fill className="object-cover" />
+      <div className="relative w-full bg-[#e8e4dc]" style={{ aspectRatio: '8.5/11' }}>
+        <Image src={printable.thumb} alt={printable.title} fill className="object-contain" />
         <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
           Printable
         </span>
