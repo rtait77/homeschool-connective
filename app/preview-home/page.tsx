@@ -23,7 +23,7 @@ export default async function PreviewHomePage() {
           />
         </div>
         <div className="max-w-4xl mx-auto px-6 py-12 text-center">
-          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
+          <h1 className="font-normal leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-8">
