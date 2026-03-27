@@ -221,13 +221,10 @@ export default function ConsultingPage() {
                 {resourceCount}
               </p>
               <p style={{ fontSize: '1rem', fontWeight: 800, color: '#383838', marginBottom: 6 }}>
-                curated resources in our database
+                curated resources in our database (secular and Christian)...and growing
               </p>
               <p style={{ fontSize: '0.85rem', color: '#5c5c5c', marginBottom: 8 }}>
                 Curricula, books, games, toys, activity books, websites, online games, apps, subscription boxes, and more.
-              </p>
-              <p style={{ fontSize: '0.85rem', color: '#55b6ca', fontWeight: 700, margin: 0 }}>
-                And growing — Mel matches from this list to build your personalized report.
               </p>
             </>
           )}
@@ -439,6 +436,10 @@ export default function ConsultingPage() {
               {
                 q: 'Do you recommend secular or religious curriculum?',
                 a: 'Both. The intake form asks about your preference and Mel matches resources accordingly. No assumptions are made.',
+              },
+              {
+                q: 'Is this consulting service for secular and Christian families?',
+                a: 'Yes! Although all of our games, lessons, and printables are secular, our matching system is designed for both secular and Christian families. Mel works with families across the full spectrum and matches curriculum and resources based on your specific preferences.',
               },
               {
                 q: 'How is this different from googling curriculum reviews?',
