@@ -66,7 +66,7 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#52a87a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free</span>
+                <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
                 <h3 className="text-sm leading-tight mb-2">Ordering the Planets</h3>
@@ -105,7 +105,7 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/asteroid-thumbnail-planets.jpg" alt="Asteroid Blast" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#e8854a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Arcade</span>
+                <span className="absolute top-2 left-2 bg-[#d94f4f] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Arcade</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
                 <h3 className="text-sm leading-tight mb-2">Blast the Planets</h3>
