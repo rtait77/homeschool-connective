@@ -22,11 +22,8 @@ export default async function PreviewHomePage() {
             style={{ height: '40%', background: 'linear-gradient(to bottom, transparent, #ffffff)' }}
           />
         </div>
-        <style dangerouslySetInnerHTML={{ __html: `
-          @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=DM+Sans:wght@400;700&family=Sora:wght@400;700&display=swap');
-        `}} />
-        <div className="max-w-4xl mx-auto px-6 py-12 text-center">
-          <h1 className="font-normal leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
+<div className="max-w-4xl mx-auto px-6 py-12 text-center">
+          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
           <p className="text-xl text-[#5c5c5c] mb-8">
@@ -42,13 +39,6 @@ export default async function PreviewHomePage() {
             Play & Learn →
           </Link>
 
-          {/* Font preview — remove once font is chosen */}
-          <div className="mt-10 text-left inline-block text-2xl space-y-3 text-[#1c1c1c]">
-            <p style={{ fontFamily: 'Figtree, sans-serif' }}>Figtree — Learning That Feels Like Playing</p>
-            <p style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Plus Jakarta Sans — Learning That Feels Like Playing</p>
-            <p style={{ fontFamily: 'DM Sans, sans-serif' }}>DM Sans — Learning That Feels Like Playing</p>
-            <p style={{ fontFamily: 'Sora, sans-serif' }}>Sora — Learning That Feels Like Playing</p>
-          </div>
         </div>
       </section>
 
