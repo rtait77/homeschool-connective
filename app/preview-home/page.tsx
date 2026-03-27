@@ -305,17 +305,6 @@ export default async function PreviewHomePage() {
         </div>
       </section>
 
-      {/* Closing CTA */}
-      <section className="py-14 px-6 border-t border-[#ddd8cc]">
-        <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row md:items-center gap-6">
-          <p className="text-base leading-relaxed flex-1">
-            Game-based learning improves retention and keeps kids engaged far longer than traditional methods. Every game on this site is designed to build real knowledge — through play.
-          </p>
-          <Link href="/learn" className="flex-shrink-0 inline-flex items-center font-bold text-sm px-6 py-2.5 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">
-            See all games →
-          </Link>
-        </div>
-      </section>
     </>
   )
 }
