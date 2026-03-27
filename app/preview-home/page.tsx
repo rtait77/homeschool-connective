@@ -161,7 +161,7 @@ export default function PreviewHomePage() {
       </section>
 
       {/* Consulting interrupt */}
-      <section className="px-6 py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #c95f3a 0%, #ed7c5a 45%, #f2976e 100%)' }}>
+      <section className="px-6 py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2e8fa6 0%, #55b6ca 45%, #74ccd8 100%)' }}>
         {/* Decorative circles for depth */}
         <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full opacity-10 bg-white pointer-events-none" />
         <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full opacity-10 bg-white pointer-events-none" />
@@ -170,7 +170,7 @@ export default function PreviewHomePage() {
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10 relative">
           <div className="w-full md:w-2/5 flex-shrink-0" style={{ minHeight: '420px', position: 'relative' }}>
             <div className="relative w-full h-full rounded-2xl overflow-hidden" style={{ minHeight: '420px', boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15)' }}>
-              <Image src="/consulting-hero.jpg" alt="Homeschool consulting" fill className="object-cover" style={{ objectPosition: 'center 65%' }} />
+              <Image src="/new-hero-image-homepage.jpg" alt="Homeschool consulting" fill className="object-cover" style={{ objectPosition: 'center 40%' }} />
             </div>
           </div>
           <div className="md:w-3/5 text-white">
@@ -181,7 +181,7 @@ export default function PreviewHomePage() {
             </p>
             <Link
               href="/consulting"
-              className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-white text-[#ed7c5a] hover:bg-[#f5f1e9] transition"
+              className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-white text-[#238FA4] hover:bg-[#f5f1e9] transition"
             >
               Learn More →
             </Link>
