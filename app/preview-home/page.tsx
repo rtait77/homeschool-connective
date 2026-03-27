@@ -43,7 +43,7 @@ export default async function PreviewHomePage() {
       </section>
 
       {/* Games Grid */}
-      <section className="bg-white px-6 py-14 border-b border-[#ddd8cc]">
+      <section className="bg-white px-6 py-14 relative overflow-hidden">
         <div className="max-w-[1100px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
             <div>
@@ -167,10 +167,16 @@ export default async function PreviewHomePage() {
             <Link href="/learn" className="text-sm font-bold text-[#55b6ca] hover:underline">See all games →</Link>
           </div>
         </div>
+        {/* white → cream wave */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,48 C360,0 1080,48 1440,16 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
       </section>
 
       {/* Consulting interrupt */}
-      <section className="px-6 py-16 relative overflow-hidden bg-[#f5f1e9]">
+      <section className="px-6 py-16 relative overflow-hidden bg-[#f5f1e9]" style={{ marginTop: -2 }}>
         {/* Decorative circles for depth */}
         <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full opacity-10 bg-white pointer-events-none" />
         <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full opacity-10 bg-white pointer-events-none" />
@@ -202,10 +208,16 @@ export default async function PreviewHomePage() {
             </Link>
           </div>
         </div>
+        {/* cream → white wave */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
+          </svg>
+        </div>
       </section>
 
       {/* Printables grid */}
-      <section className="bg-white px-6 py-14 border-t border-[#ddd8cc]">
+      <section className="bg-white px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
         <div className="max-w-[1100px] mx-auto">
           <div className="mb-2">
             <h2 className="text-2xl">Printables</h2>
@@ -233,26 +245,34 @@ export default async function PreviewHomePage() {
           <p className="text-xs text-[#a09890] mt-4">*Full access to all printables with subscription.</p>
 
         </div>
+        {/* white → coral wave */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#ed7c5a" />
+          </svg>
+        </div>
       </section>
 
       {/* Coming Soon topics block */}
-      <section className="bg-[#ed7c5a] px-6 py-10">
+      <section className="bg-[#ed7c5a] px-6 py-10 relative overflow-hidden" style={{ marginTop: -2 }}>
         <div className="max-w-[1100px] mx-auto text-center">
-
           <h2 className="text-3xl text-white leading-tight mb-10">New Topics Coming Soon</h2>
-
-          {/* Topic list — plain text, not clickable */}
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-white text-base">
             {['Ocean Animals', 'Dinosaurs', 'The 7 Continents', 'Extreme Environments', 'Natural Disasters'].map((topic) => (
               <span key={topic}>{topic}</span>
             ))}
           </div>
-
+        </div>
+        {/* coral → white wave */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
+          </svg>
         </div>
       </section>
 
       {/* Homeschool Tips */}
-      <section className="bg-white px-6 py-14 border-t border-[#ddd8cc]">
+      <section className="bg-white px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
         <div className="max-w-[1100px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-8">
             <div>
