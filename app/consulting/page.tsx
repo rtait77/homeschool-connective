@@ -214,7 +214,7 @@ export default function ConsultingPage() {
 
       {/* ── RESOURCE COUNT STAT ── */}
       <div style={{ backgroundColor: '#fff', padding: '48px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ maxWidth: 500, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
           {resourceCount !== null && (
             <>
               <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
