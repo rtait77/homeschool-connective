@@ -161,7 +161,7 @@ export default function PreviewHomePage() {
       </section>
 
       {/* Consulting interrupt */}
-      <section className="px-6 py-16 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #2e8fa6 0%, #55b6ca 45%, #74ccd8 100%)' }}>
+      <section className="px-6 py-16 relative overflow-hidden bg-[#f5f1e9]">
         {/* Decorative circles for depth */}
         <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full opacity-10 bg-white pointer-events-none" />
         <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full opacity-10 bg-white pointer-events-none" />
@@ -173,15 +173,15 @@ export default function PreviewHomePage() {
               <Image src="/new-hero-image-homepage.jpg" alt="Homeschool consulting" fill className="object-cover" style={{ objectPosition: 'center 40%' }} />
             </div>
           </div>
-          <div className="md:w-3/5 text-white">
-            <p className="text-xs font-extrabold uppercase tracking-widest opacity-80 mb-3">Homeschool Help</p>
-            <h2 className="text-3xl font-extrabold leading-tight mb-4">Struggling with homeschooling?</h2>
-            <p className="text-lg leading-relaxed opacity-90 mb-8">
+          <div className="md:w-3/5">
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Homeschool Help</p>
+            <h2 className="text-3xl font-extrabold leading-tight mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
+            <p className="text-lg leading-relaxed text-[#5c5c5c] mb-8">
               Use our deep matching system to get curriculum recommendations and uncover your child's learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
             </p>
             <Link
               href="/consulting"
-              className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-white text-[#238FA4] hover:bg-[#f5f1e9] transition"
+              className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
             >
               Learn More →
             </Link>
