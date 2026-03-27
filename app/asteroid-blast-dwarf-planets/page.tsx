@@ -4,9 +4,13 @@ import { useEffect } from 'react'
 
 export default function AsteroidBlastDwarfPlanets() {
   useEffect(() => {
-    const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = prev }
+    const nav = document.querySelector('nav')
+    if (nav) (nav as HTMLElement).style.display = 'none'
+    return () => {
+      document.body.style.overflow = ''
+      if (nav) (nav as HTMLElement).style.display = ''
+    }
   }, [])
 
   return (
