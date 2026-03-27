@@ -377,14 +377,14 @@ export default async function PreviewHomePage() {
               </div>
             </Link>
 
-            <Link href="/tips/homeschooling-methods" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+            <Link href="/tips/homeschool-beginnings" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-44 w-full bg-[#f5f1e9]">
-                <Image src="/blog-methods-coloring.avif" alt="Homeschooling Methods" fill className="object-cover" />
+                <Image src="/blog-beginnings-bec-family.avif" alt="Homeschool Beginnings" fill className="object-cover" />
               </div>
               <div className="p-5 flex flex-col flex-1">
-                <p className="text-xs text-[#a09890] mb-1">June 12, 2025 · Homeschool Planning</p>
-                <h3 className="text-base mb-2">Homeschooling Methods</h3>
-                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">From classical to unschooling — a guide to the most popular homeschooling approaches and how to find what fits your family.</p>
+                <p className="text-xs text-[#a09890] mb-1">February 3, 2025 · Our Story</p>
+                <h3 className="text-base mb-2">Homeschool Beginnings</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">How two moms — with no plan, no community, and no idea what they were doing — found their way into homeschooling and never looked back.</p>
                 <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
               </div>
             </Link>
