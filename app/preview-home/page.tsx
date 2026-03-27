@@ -238,10 +238,7 @@ export default async function PreviewHomePage() {
       <section className="bg-[#f5f1e9] px-6 py-20 border-t border-[#ddd8cc]">
         <div className="max-w-[1100px] mx-auto text-center">
 
-          <h2 className="text-3xl text-[#1c1c1c] leading-tight mb-4">New Topics Coming Soon</h2>
-          <p className="text-[#5c5c5c] text-lg leading-relaxed mb-10 max-w-lg mx-auto">
-            We&apos;re expanding beyond space — building games, lessons, and printables across new science topics.
-          </p>
+          <h2 className="text-3xl text-[#1c1c1c] leading-tight mb-10">New Topics Coming Soon</h2>
 
           {/* Topic list — plain text, not clickable */}
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-12 text-[#3a3a3a] text-base">
