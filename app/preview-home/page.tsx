@@ -217,7 +217,7 @@ export default async function PreviewHomePage() {
             </a>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
+          <div className="grid grid-cols-4 gap-4 mt-8">
             {[
               { title: 'Layers of the Sun', file: 'website-pdf-layers-sun-coloring.pdf', thumb: '/website-pdf-layers-sun-coloring.png' },
               { title: 'Red Spot Weather Report', file: 'website-pdf-red-spot-weather-report.pdf', thumb: '/website-pdf-red-spot-weather-report.png' },
@@ -236,9 +236,6 @@ export default async function PreviewHomePage() {
             ))}
           </div>
 
-          <div className="mt-8 text-center">
-            <span className="text-sm font-bold text-[#55b6ca] cursor-pointer hover:underline">See all printables →</span>
-          </div>
         </div>
       </section>
 
