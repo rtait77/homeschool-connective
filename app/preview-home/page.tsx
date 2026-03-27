@@ -38,7 +38,7 @@ export default function PreviewHomePage() {
         <div className="max-w-[1100px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
             <div>
-              <h2 className="text-2xl font-extrabold">Educational Games and Interactive Lessons</h2>
+              <h2 className="text-2xl">Educational Games and Interactive Lessons</h2>
               <p className="text-[#5c5c5c] mt-1">Our games and lessons break down big topics into small, manageable chunks.</p>
             </div>
             <a href="#newsletter" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0">
@@ -53,10 +53,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/thumb-lesson-mars.png" alt="Mission to Mars" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Lesson</span>
+                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Lesson</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">All About Mars</h3>
+                <h3 className="text-sm leading-tight mb-2">All About Mars</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Start →</span>
               </div>
             </a>
@@ -66,10 +66,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Free</span>
+                <span className="absolute top-2 left-2 bg-[#52a87a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Ordering the Planets</h3>
+                <h3 className="text-sm leading-tight mb-2">Ordering the Planets</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -79,10 +79,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Free Demo</span>
+                <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free Demo</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Solar System Sizzle</h3>
+                <h3 className="text-sm leading-tight mb-2">Solar System Sizzle</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -92,10 +92,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/saturn-with-background.png" alt="Saturn Puzzle" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Puzzle</span>
+                <span className="absolute top-2 left-2 bg-[#8b72be] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Puzzle</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Saturn Puzzle</h3>
+                <h3 className="text-sm leading-tight mb-2">Saturn Puzzle</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -105,10 +105,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/asteroid-thumbnail-planets.jpg" alt="Asteroid Blast" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Arcade</span>
+                <span className="absolute top-2 left-2 bg-[#e8854a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Arcade</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Blast the Planets</h3>
+                <h3 className="text-sm leading-tight mb-2">Blast the Planets</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -118,10 +118,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/word-search-inner-solar-system-thumbnail.png" alt="Inner Solar System Word Search" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Word Search</span>
+                <span className="absolute top-2 left-2 bg-[#4a90c4] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Word Search</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Inner Solar System Word Search</h3>
+                <h3 className="text-sm leading-tight mb-2">Inner Solar System Word Search</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -131,10 +131,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/dwarf-planets-matching-game-thumbnail.png" alt="Find a Pair: Dwarf Planets" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Find a Pair</span>
+                <span className="absolute top-2 left-2 bg-[#5bab8a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Find a Pair</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Find a Pair: Dwarf Planets</h3>
+                <h3 className="text-sm leading-tight mb-2">Find a Pair: Dwarf Planets</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -144,10 +144,10 @@ export default function PreviewHomePage() {
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
                 <Image src="/word-sort-planet-types-thumbnail.png" alt="Word Sort: Planet Types" fill className="object-cover" />
-                <span className="absolute top-2 left-2 bg-[#55b6ca] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">Word Sort</span>
+                <span className="absolute top-2 left-2 bg-[#c4607a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Word Sort</span>
               </div>
               <div className="p-3 flex flex-col flex-1">
-                <h3 className="font-extrabold text-sm leading-tight mb-2">Word Sort: Planet Types</h3>
+                <h3 className="text-sm leading-tight mb-2">Word Sort: Planet Types</h3>
                 <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
@@ -175,7 +175,7 @@ export default function PreviewHomePage() {
           </div>
           <div className="md:w-3/5">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">Homeschool Help</p>
-            <h2 className="text-3xl font-extrabold leading-tight mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
+            <h2 className="text-3xl leading-tight mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
             <p className="text-lg leading-relaxed text-[#5c5c5c] mb-8">
               Use our deep matching system to get curriculum recommendations and uncover your child's learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
             </p>
