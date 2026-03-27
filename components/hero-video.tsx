@@ -20,7 +20,7 @@ export default function HeroVideo() {
       playsInline
       loop
       className="w-full block"
-      style={{ maxHeight: '70vh', objectFit: 'cover' }}
+      style={{ maxHeight: '58vh', objectFit: 'cover', objectPosition: 'center 40%' }}
     >
       <source src="/new-hero-video.mp4" type="video/mp4" />
     </video>
