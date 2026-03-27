@@ -354,7 +354,7 @@ export default async function PreviewHomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             <Link href="/tips/why-play-is-important" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-44 w-full bg-[#f5f1e9]">
+              <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
                 <Image src="/blog-play-blocks.avif" alt="Why Play is Important" fill className="object-cover" />
               </div>
               <div className="p-5 flex flex-col flex-1">
@@ -366,7 +366,7 @@ export default async function PreviewHomePage() {
             </Link>
 
             <Link href="/tips/learning-styles" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-44 w-full bg-[#f5f1e9]">
+              <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
                 <Image src="/blog-ls-infographic.avif" alt="Learning Styles" fill className="object-cover" />
               </div>
               <div className="p-5 flex flex-col flex-1">
@@ -378,7 +378,7 @@ export default async function PreviewHomePage() {
             </Link>
 
             <Link href="/tips/deschooling" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-              <div className="relative h-44 w-full bg-[#f5f1e9]">
+              <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
                 <Image src="/blog-deschooling-kids-log.avif" alt="Deschooling" fill className="object-cover" />
               </div>
               <div className="p-5 flex flex-col flex-1">
