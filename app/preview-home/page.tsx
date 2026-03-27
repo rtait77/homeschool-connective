@@ -1,8 +1,16 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import HeroVideo from '@/components/hero-video'
+import { createClient } from '@supabase/supabase-js'
 
-export default function PreviewHomePage() {
+export default async function PreviewHomePage() {
+  const admin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!.replace(/\s+/g, '')
+  )
+  const { count: resourceCount } = await admin
+    .from('resources')
+    .select('*', { count: 'exact', head: true })
   return (
     <>
       {/* Hero */}
@@ -179,6 +187,12 @@ export default function PreviewHomePage() {
             <p className="text-lg leading-relaxed text-[#5c5c5c] mb-8">
               Use our deep matching system to get curriculum recommendations and uncover your child's learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
             </p>
+            {resourceCount && (
+              <p className="text-sm text-[#5c5c5c] mb-6">
+                <span className="text-2xl font-extrabold text-[#ed7c5a]">{resourceCount}</span>{' '}
+                curated resources in our database
+              </p>
+            )}
             <Link
               href="/consulting"
               className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
@@ -215,7 +229,7 @@ export default function PreviewHomePage() {
           </div>
 
           <div className="mt-8 text-center">
-            <span className="text-sm font-bold text-[#55b6ca] cursor-pointer hover:underline">See more</span>
+            <span className="text-sm font-bold text-[#55b6ca] cursor-pointer hover:underline">See all printables</span>
           </div>
         </div>
       </section>
