@@ -235,7 +235,7 @@ export default async function PreviewHomePage() {
       </section>
 
       {/* Coming Soon topics block */}
-      <section className="bg-[#f5f1e9] px-6 py-20 border-t border-[#ddd8cc]">
+      <section className="bg-[#f5f1e9] px-6 py-10 border-t border-[#ddd8cc]">
         <div className="max-w-[1100px] mx-auto text-center">
 
           <h2 className="text-3xl text-[#1c1c1c] leading-tight mb-10">New Topics Coming Soon</h2>
