@@ -177,7 +177,7 @@ export default function PreviewHomePage() {
             <p className="text-xs font-extrabold uppercase tracking-widest opacity-80 mb-3">Homeschool Help</p>
             <h2 className="text-3xl font-extrabold leading-tight mb-4">Struggling with homeschooling?</h2>
             <p className="text-lg leading-relaxed opacity-90 mb-8">
-              Get recommendations for curriculum and supplements that are matched to your family — plus ongoing homeschool support.
+              Use our deep matching system to get curriculum recommendations and uncover your child's learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
             </p>
             <Link
               href="/consulting"
