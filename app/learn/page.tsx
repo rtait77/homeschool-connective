@@ -1073,10 +1073,7 @@ export default function GamesPage() {
       {activity === 'printables' && !hasAccess && authChecked && (
         <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-10 text-center">
           <p className="font-extrabold text-lg mb-2">Full access to all printables with subscription</p>
-          <p className="text-sm text-[#5c5c5c] mb-5">Download and print ready-to-use worksheets and activities for your homeschool.</p>
-          <Link href={trialExpired ? '/pricing' : '/signup'} className="inline-flex items-center bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition">
-            {trialExpired ? 'Subscribe Now' : 'Start Free Trial'}
-          </Link>
+          <p className="text-sm text-[#5c5c5c]">Download and print ready-to-use worksheets and activities for your homeschool.</p>
         </div>
       )}
 
