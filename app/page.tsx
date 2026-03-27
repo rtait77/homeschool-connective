@@ -10,10 +10,6 @@ export default function HomePage() {
       <section className="border-b border-[#ddd8cc]">
         <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
           <HeroVideo />
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: 'linear-gradient(to bottom, transparent, #ffffff)' }}
-          />
         </div>
         <div className="max-w-4xl mx-auto px-6 py-12 text-center">
           <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
