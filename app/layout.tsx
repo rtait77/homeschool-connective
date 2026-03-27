@@ -1,14 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Poppins } from 'next/font/google'
+import { Figtree } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 import Navbar from '@/components/layout/navbar'
 import Footer from '@/components/layout/footer'
 import PageViewTracker from '@/components/page-view-tracker'
 
-const poppins = Poppins({
+const figtree = Figtree({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
   variable: '--font-sans',
 })
 
@@ -41,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className={`${figtree.variable} antialiased`}>
         <PageViewTracker />
         <Navbar />
         <main>{children}</main>
