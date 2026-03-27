@@ -168,8 +168,8 @@ export default function PreviewHomePage() {
         <div className="absolute top-1/2 right-1/4 w-32 h-32 rounded-full opacity-5 bg-white pointer-events-none" />
 
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10 relative">
-          <div className="w-full md:w-2/5 flex-shrink-0" style={{ minHeight: '300px', position: 'relative' }}>
-            <div className="relative w-full h-full rounded-2xl overflow-hidden" style={{ minHeight: '300px', boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15)' }}>
+          <div className="w-full md:w-2/5 flex-shrink-0" style={{ minHeight: '420px', position: 'relative' }}>
+            <div className="relative w-full h-full rounded-2xl overflow-hidden" style={{ minHeight: '420px', boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15)' }}>
               <Image src="/consulting-hero.jpg" alt="Homeschool consulting" fill className="object-cover" style={{ objectPosition: 'center 65%' }} />
             </div>
           </div>
