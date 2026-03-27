@@ -266,6 +266,61 @@ export default async function PreviewHomePage() {
         </div>
       </section>
 
+      {/* Homeschool Tips */}
+      <section className="bg-white px-6 py-14 border-t border-[#ddd8cc]">
+        <div className="max-w-[1100px] mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-8">
+            <div>
+              <h2 className="text-2xl">Homeschool Tips</h2>
+              <p className="text-[#5c5c5c] mt-1">Ideas, strategies, and inspiration for your homeschool journey.</p>
+            </div>
+            <Link href="/tips" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0">
+              See all posts →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <Link href="/tips/why-play-is-important" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-44 w-full bg-[#f5f1e9]">
+                <Image src="/blog-play-blocks.avif" alt="Why Play is Important" fill className="object-cover" />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <p className="text-xs text-[#a09890] mb-1">October 21, 2025 · Game-Based Learning</p>
+                <h3 className="text-base mb-2">Why Play is Important</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">Play's essential function in homeschooling: fostering development and education through curiosity and hands-on exploration.</p>
+                <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
+              </div>
+            </Link>
+
+            <Link href="/tips/learning-styles" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-44 w-full bg-[#f5f1e9]">
+                <Image src="/blog-ls-infographic.avif" alt="Learning Styles" fill className="object-cover" />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <p className="text-xs text-[#a09890] mb-1">August 5, 2025 · Homeschool Planning</p>
+                <h3 className="text-base mb-2">Learning Styles</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">Understanding how your child learns best — and how to build a homeschool around their natural strengths.</p>
+                <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
+              </div>
+            </Link>
+
+            <Link href="/tips/homeschooling-methods" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <div className="relative h-44 w-full bg-[#f5f1e9]">
+                <Image src="/blog-methods-coloring.avif" alt="Homeschooling Methods" fill className="object-cover" />
+              </div>
+              <div className="p-5 flex flex-col flex-1">
+                <p className="text-xs text-[#a09890] mb-1">June 12, 2025 · Homeschool Planning</p>
+                <h3 className="text-base mb-2">Homeschooling Methods</h3>
+                <p className="text-sm text-[#5c5c5c] flex-1 line-clamp-3">From classical to unschooling — a guide to the most popular homeschooling approaches and how to find what fits your family.</p>
+                <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
+              </div>
+            </Link>
+
+          </div>
+        </div>
+      </section>
+
       {/* Feature: Full Games */}
       <section className="bg-[#f5f1e9] py-14 px-6 border-t border-[#ddd8cc]">
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10">
