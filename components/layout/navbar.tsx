@@ -69,7 +69,7 @@ export default function Navbar() {
 
       {/* Top bar */}
       <div className="bg-[#f5f1e9] border-b border-[#e8e3da]">
-        <div className="max-w-6xl mx-auto px-4 py-1.5 flex justify-end items-center gap-5">
+        <div className="max-w-6xl mx-auto px-4 py-2 flex justify-end items-center gap-5">
           {user ? (
             <div className="relative" ref={dropdownRef}>
               <button
@@ -117,10 +117,10 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login" className="text-xs font-bold text-[#5c5c5c] hover:text-[#ed7c5a] transition">
+              <Link href="/login" className="text-sm font-semibold text-[#5c5c5c] hover:text-[#ed7c5a] transition">
                 → Log In
               </Link>
-              <Link href="/consulting" className="text-xs font-bold text-[#55b6ca] hover:text-[#238FA4] transition">
+              <Link href="/consulting" className="text-sm font-semibold text-[#55b6ca] hover:text-[#238FA4] transition">
                 Get Homeschooling Help
               </Link>
             </>
@@ -130,28 +130,26 @@ export default function Navbar() {
 
       {/* Main nav row */}
       <div className="bg-white">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/">
-              <Image src="/Logo.png" alt="Homeschool Connective" width={180} height={56} className="h-14 w-auto" priority />
-            </Link>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between relative">
+          <Link href="/">
+            <Image src="/Logo.png" alt="Homeschool Connective" width={180} height={56} className="h-14 w-auto" priority />
+          </Link>
 
-            {/* Desktop links */}
-            <ul className="hidden md:flex items-center gap-6 font-bold text-sm">
-              {activeLinks.map(({ href, label }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className={`transition-colors hover:text-[#ed7c5a] ${
-                      (href === '/' ? pathname === '/' : pathname.startsWith(href)) ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
-                    }`}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Desktop links — centered */}
+          <ul className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 text-base font-medium">
+            {activeLinks.map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`transition-colors hover:text-[#ed7c5a] ${
+                    (href === '/' ? pathname === '/' : pathname.startsWith(href)) ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
           {/* Mobile hamburger */}
           <button
