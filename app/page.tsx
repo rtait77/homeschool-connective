@@ -7,7 +7,7 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-[#ddd8cc]">
+      <section>
         <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
           <HeroVideo />
         </div>
@@ -21,6 +21,12 @@ export default function HomePage() {
             <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
           </div>
           <HeroButtons />
+        </div>
+        {/* white → cream */}
+        <div style={{ lineHeight: 0, marginBottom: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,28 C360,56 1080,0 1440,32 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
         </div>
       </section>
 
@@ -77,6 +83,12 @@ export default function HomePage() {
 
           </div>
         </div>
+        {/* cream → white */}
+        <div style={{ lineHeight: 0, marginTop: 56, marginBottom: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
+          </svg>
+        </div>
       </section>
 
       {/* Feature: Full Games */}
@@ -95,6 +107,12 @@ export default function HomePage() {
             </a>
           </div>
         </div>
+        {/* white → cream */}
+        <div style={{ lineHeight: 0, marginTop: 56, marginBottom: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
+        </div>
       </section>
 
       {/* Feature: Mini Games */}
@@ -109,6 +127,12 @@ export default function HomePage() {
             <p className="text-[#5c5c5c] leading-relaxed">Mini games are a great way to reinforce what kids have already learned, or to introduce a new topic in a low-pressure, fun way.</p>
           </div>
         </div>
+        {/* cream → white */}
+        <div style={{ lineHeight: 0, marginTop: 56, marginBottom: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
+          </svg>
+        </div>
       </section>
 
       {/* Feature: Lessons */}
@@ -122,6 +146,12 @@ export default function HomePage() {
             <p className="text-[#5c5c5c] leading-relaxed mb-4">Our lessons break big topics down into small, manageable chunks — with voiceover narration to guide kids through each one.</p>
             <p className="text-[#5c5c5c] leading-relaxed">Each lesson uses elements like animations, drag-and-drop, and sound effects (varies by lesson).</p>
           </div>
+        </div>
+        {/* white → cream */}
+        <div style={{ lineHeight: 0, marginTop: 56, marginBottom: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
         </div>
       </section>
 
