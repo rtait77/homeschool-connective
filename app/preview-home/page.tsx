@@ -247,14 +247,6 @@ export default async function PreviewHomePage() {
             ))}
           </div>
 
-          <a
-            href="#newsletter"
-            className="inline-flex items-center gap-2.5 font-extrabold text-base px-8 py-4 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
-            style={{ boxShadow: '0 4px 20px rgba(237, 124, 90, 0.32)' }}
-          >
-            Get Notified When New Content Drops
-          </a>
-
         </div>
       </section>
 
