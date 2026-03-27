@@ -191,7 +191,7 @@ export default async function PreviewHomePage() {
             {resourceCount && (
               <p className="text-sm text-[#5c5c5c] mb-6">
                 <span className="text-2xl font-extrabold text-[#ed7c5a]">{resourceCount}</span>{' '}
-                curated resources in our database
+                curated resources in our database (secular and Christian) ...and growing
               </p>
             )}
             <Link
