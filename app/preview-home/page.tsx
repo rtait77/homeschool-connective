@@ -207,14 +207,9 @@ export default async function PreviewHomePage() {
       {/* Printables grid */}
       <section className="bg-white px-6 py-14 border-t border-[#ddd8cc]">
         <div className="max-w-[1100px] mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
-            <div>
-              <h2 className="text-2xl">Printables</h2>
-              <p className="text-[#5c5c5c] mt-1">Ready-to-use worksheets and activities for your homeschool.</p>
-            </div>
-            <a href="#newsletter" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0">
-              Get notified of new printables →
-            </a>
+          <div className="mb-2">
+            <h2 className="text-2xl">Printables</h2>
+            <p className="text-[#5c5c5c] mt-1">Ready-to-use worksheets and activities for your homeschool.</p>
           </div>
 
           <div className="grid grid-cols-4 gap-4 mt-8">
@@ -235,6 +230,7 @@ export default async function PreviewHomePage() {
               </a>
             ))}
           </div>
+          <p className="text-xs text-[#a09890] mt-4">*Full access to all printables with subscription.</p>
 
         </div>
       </section>
