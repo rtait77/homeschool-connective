@@ -229,7 +229,7 @@ export default async function PreviewHomePage() {
           </div>
 
           <div className="mt-8 text-center">
-            <span className="text-sm font-bold text-[#55b6ca] cursor-pointer hover:underline">See all printables</span>
+            <span className="text-sm font-bold text-[#55b6ca] cursor-pointer hover:underline">See all printables →</span>
           </div>
         </div>
       </section>
