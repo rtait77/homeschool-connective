@@ -838,6 +838,8 @@ export default function GamesPage() {
     if (topic !== 'all' && item.topic !== topic) return false
 
     if (item.itemType === 'printable') {
+      // Printables only visible to subscribers/trial users
+      if (!hasAccess) return false
       // Printables only shown in 'all' or 'printables'
       if (activity === 'games' || activity === 'lessons') return false
       // Search for printables (title + topic only)
@@ -988,7 +990,7 @@ export default function GamesPage() {
           </button>
           {activityOpen && (
             <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[160px]">
-              {activityTypes.map(a => (
+              {activityTypes.filter(a => a.id !== 'printables' || hasAccess).map(a => (
                 <button key={a.id} onClick={() => { setActivity(a.id); setActivityOpen(false) }}
                   className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activity === a.id ? 'text-[#55b6ca]' : ''}`}
                 >{a.label}</button>
