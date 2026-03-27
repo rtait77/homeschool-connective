@@ -217,11 +217,12 @@ export default async function PreviewHomePage() {
             </a>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 mt-8 max-w-2xl">
+          <div className="grid grid-cols-4 gap-4 mt-8 max-w-2xl">
             {[
               { title: 'Layers of the Sun', file: 'website-pdf-layers-sun-coloring.pdf', thumb: '/website-pdf-layers-sun-coloring.png' },
               { title: 'Red Spot Weather Report', file: 'website-pdf-red-spot-weather-report.pdf', thumb: '/website-pdf-red-spot-weather-report.png' },
               { title: 'Create a Solar System', file: 'website-pdf-create-a-solar-system.pdf', thumb: '/website-pdf-create-a-solar-system.png' },
+              { title: 'Earth Puzzles', file: 'website-pdf-earth-puzzles.pdf', thumb: '/website-pdf-earth-puzzles.png' },
             ].map(({ title, file, thumb }) => (
               <a key={title} href={`/printable?file=${file}&title=${encodeURIComponent(title)}`}
                 className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
