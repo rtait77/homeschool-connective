@@ -10,8 +10,9 @@ export default function HomePage() {
       <section>
         <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
           <HeroVideo />
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '18%', background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.6))', pointerEvents: 'none' }} />
         </div>
-        <div className="max-w-4xl mx-auto px-6 py-12 text-center">
+        <div className="max-w-4xl mx-auto px-6 py-8 text-center">
           <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
