@@ -7,22 +7,26 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ display: 'flex', height: 'calc(100vh - 72px)', overflow: 'hidden' }}>
-        {/* Video — 60% */}
-        <div style={{ width: '60%', flexShrink: 0, overflow: 'hidden' }}>
+      <section>
+        <div style={{ height: '50vh', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
-        {/* Text — 40% */}
-        <div style={{ width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '48px 48px 48px 40px' }}>
-          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
+        <div className="max-w-4xl mx-auto px-6 py-6 text-center">
+          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
-          <p style={{ fontSize: '1rem', color: '#5c5c5c', marginBottom: '16px', lineHeight: 1.6 }}>Interactive, game-based learning for homeschoolers and educators</p>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '32px' }}>
+          <p className="text-xl text-[#5c5c5c] mb-4">Interactive, game-based learning for homeschoolers and educators</p>
+          <div className="flex items-center justify-center gap-3 mb-8">
             <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">Grades K–3</span>
             <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
           </div>
           <HeroButtons />
+        </div>
+        {/* white → cream */}
+        <div style={{ lineHeight: 0, marginTop: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,28 C360,56 1080,0 1440,32 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
         </div>
       </section>
 
