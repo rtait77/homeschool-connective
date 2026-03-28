@@ -10,7 +10,6 @@ export default function HomePage() {
       <section>
         <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
           <HeroVideo />
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50px', background: 'linear-gradient(to bottom, transparent 0%, white 100%)', pointerEvents: 'none' }} />
         </div>
         <div className="max-w-4xl mx-auto px-6 py-8 text-center">
           <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
@@ -24,7 +23,7 @@ export default function HomePage() {
           <HeroButtons />
         </div>
         {/* white → cream */}
-        <div style={{ lineHeight: 0, marginBottom: -2 }}>
+        <div style={{ lineHeight: 0, marginTop: -2 }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,56 L0,28 C360,56 1080,0 1440,32 L1440,56 Z" fill="#f5f1e9" />
           </svg>
