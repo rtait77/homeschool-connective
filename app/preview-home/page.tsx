@@ -14,7 +14,7 @@ export default async function PreviewHomePage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ display: 'flex', height: 'calc(100vh - 72px)', overflow: 'hidden' }}>
+      <section style={{ display: 'flex', height: "calc(100svh - 120px)", overflow: 'hidden' }}>
         {/* Video — 60% */}
         <div style={{ width: '60%', flexShrink: 0, overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
