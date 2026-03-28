@@ -14,31 +14,28 @@ export default async function PreviewHomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-[#ddd8cc]">
-        <div className="relative w-full bg-black" style={{ lineHeight: 0 }}>
+      <section style={{ display: 'flex', height: 'calc(100vh - 72px)', overflow: 'hidden' }}>
+        {/* Video — 60% */}
+        <div style={{ width: '60%', flexShrink: 0, overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
-          <div
-            className="absolute bottom-0 left-0 right-0 pointer-events-none"
-            style={{ height: '40%', background: 'linear-gradient(to bottom, transparent, #ffffff)' }}
-          />
         </div>
-<div className="max-w-4xl mx-auto px-6 py-4 text-center">
-          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
+        {/* Text — 40%, vertically centered */}
+        <div style={{ width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '48px 40px' }}>
+          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.4rem, 2.8vw, 2.4rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
-          <p className="text-xl text-[#5c5c5c] mb-8">
+          <p className="text-[#5c5c5c] mb-6" style={{ fontSize: '1rem', lineHeight: 1.6 }}>
             Plus, personalized homeschooling support for parents.{' '}
-            <Link href="/consulting" className="text-[#55b6ca] font-bold hover:underline">
-              Learn More »
-            </Link>
+            <Link href="/consulting" className="text-[#55b6ca] font-bold hover:underline">Learn More »</Link>
           </p>
-          <Link
-            href="/learn"
-            className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all"
-          >
-            Play & Learn →
-          </Link>
-
+          <div>
+            <Link
+              href="/learn"
+              className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all"
+            >
+              Play & Learn →
+            </Link>
+          </div>
         </div>
       </section>
 
