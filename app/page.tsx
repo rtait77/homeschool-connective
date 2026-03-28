@@ -8,7 +8,7 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section>
-        <div style={{ height: '50vh', overflow: 'hidden', lineHeight: 0 }}>
+        <div style={{ aspectRatio: '16/9', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
         <div className="max-w-4xl mx-auto px-6 py-6 text-center">
