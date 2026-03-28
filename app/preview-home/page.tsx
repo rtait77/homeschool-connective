@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import HeroVideo from '@/components/hero-video'
+import HeroButtons from '@/components/hero-buttons'
+import NavbarPreview from '@/components/layout/navbar-preview'
 import { createClient } from '@supabase/supabase-js'
 
 export default async function PreviewHomePage() {
@@ -13,29 +15,39 @@ export default async function PreviewHomePage() {
     .select('*', { count: 'exact', head: true })
   return (
     <>
+      <NavbarPreview />
+
       {/* Hero */}
-      <section style={{ display: 'flex', height: "calc(100svh - 120px)", overflow: 'hidden' }}>
-        {/* Video — 60% */}
-        <div style={{ width: '60%', flexShrink: 0, overflow: 'hidden', lineHeight: 0 }}>
+      <section>
+        {/* Full-width 16:9 video — aspect ratio handles sizing at any screen width */}
+        <div style={{ aspectRatio: '16/9', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
-        {/* Text — 40%, vertically centered */}
-        <div style={{ width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '48px 40px' }}>
-          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(1.4rem, 2.8vw, 2.4rem)' }}>
+        {/* Text block — centered below the video */}
+        <div className="max-w-4xl mx-auto px-6 py-6 text-center">
+          <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
-          <p className="text-[#5c5c5c] mb-6" style={{ fontSize: '1rem', lineHeight: 1.6 }}>
-            Plus, personalized homeschooling support for parents.{' '}
-            <Link href="/consulting" className="text-[#55b6ca] font-bold hover:underline">Learn More »</Link>
+          <p className="text-xl text-[#5c5c5c] mb-4">
+            Interactive, game-based learning for homeschoolers and educators
           </p>
-          <div>
-            <Link
-              href="/learn"
-              className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all"
-            >
-              Play & Learn →
-            </Link>
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">Grades K–3</span>
+            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
           </div>
+          <HeroButtons />
+          <p className="mt-5 text-sm text-[#5c5c5c]">
+            Plus, personalized homeschooling support for parents.{' '}
+            <Link href="/consulting" className="text-[#55b6ca] font-semibold hover:underline">
+              Learn More »
+            </Link>
+          </p>
+        </div>
+        {/* white → cream wave */}
+        <div style={{ lineHeight: 0, marginTop: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,28 C360,56 1080,0 1440,32 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
         </div>
       </section>
 
