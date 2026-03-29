@@ -65,7 +65,7 @@ export default function Navbar() {
   const displayEmail = user?.email ?? ''
 
   // Preview page uses its own navbar — suppress the global one
-  if (pathname.startsWith('/preview-home')) return null
+  if (pathname.startsWith('/preview-home') || pathname === '/') return null
 
   return (
     <nav className="sticky top-0 z-50 shadow-sm">
