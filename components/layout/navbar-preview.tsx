@@ -247,7 +247,11 @@ export default function NavbarPreview() {
     if (isAuthPage) return
 
     async function loadUser() {
-      const { data: { session } } = await supabase.auth.getSession()
+      let { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        const { data: refreshed } = await supabase.auth.refreshSession()
+        session = refreshed.session
+      }
       const user = session?.user ?? null
       setUser(user)
       if (!user) return
@@ -266,7 +270,7 @@ export default function NavbarPreview() {
       else if (hasConsulting) setSubType('consulting')
     }
 
-    loadUser()
+    setTimeout(() => loadUser(), 300)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
     return () => subscription.unsubscribe()
   }, [isAuthPage])
