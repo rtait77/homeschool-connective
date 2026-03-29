@@ -143,8 +143,8 @@ export default async function PreviewHomePage() {
           white-space: nowrap;
           font-family: var(--font-body), system-ui, sans-serif;
           font-size: 1rem;
-          font-weight: 600;
-          color: #1c1c1c;
+          font-weight: 400;
+          color: #4a4a4a;
           padding: 0 20px;
         }
         .marquee-dot {
@@ -324,7 +324,7 @@ export default async function PreviewHomePage() {
             </div>
             <div className="md:w-3/5">
               <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3" style={{ letterSpacing: '0.1em' }}>Homeschool Help</p>
-              <h2 className="ph-section-heading text-3xl mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
+              <h2 className="ph-section-heading text-3xl mb-4 text-[#3a3a3a]">Struggling with homeschooling?</h2>
               <p className="text-lg leading-relaxed text-[#5c5c5c] mb-8" style={{ fontFamily: 'var(--font-body)' }}>
                 Use our deep matching system to get curriculum recommendations and uncover your child&apos;s learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
               </p>
@@ -384,10 +384,10 @@ export default async function PreviewHomePage() {
         </section>
 
         {/* Coming Soon — marquee */}
-        <section className="bg-[#f5f1e9] px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
-          <div className="max-w-[700px] mx-auto text-center mb-10">
+        <section className="bg-[#f5f1e9] px-6 relative overflow-hidden" style={{ marginTop: -2, minHeight: '220px', display: 'flex', flexDirection: 'column', justifyContent: 'center', paddingTop: '48px', paddingBottom: '48px' }}>
+          <div className="max-w-[700px] mx-auto text-center mb-8">
             <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#55b6ca', letterSpacing: '0.1em' }}>In the Works</p>
-            <h2 className="ph-section-heading text-2xl text-[#1c1c1c]">More topics are in discussion:</h2>
+            <h2 className="ph-section-heading text-2xl" style={{ color: '#3a3a3a' }}>More topics are in discussion:</h2>
           </div>
           <div className="marquee-outer">
             <div className="marquee-track">
