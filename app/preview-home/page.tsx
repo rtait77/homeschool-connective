@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import HeroVideo from '@/components/hero-video'
-import HeroButtons from '@/components/hero-buttons'
 import NavbarPreview from '@/components/layout/navbar-preview'
 import { createClient } from '@supabase/supabase-js'
 
@@ -19,29 +18,28 @@ export default async function PreviewHomePage() {
 
       {/* Hero — capped height video + text below, both visible above the fold */}
       <section>
-        {/* Video — full width, capped at 48vh so text below is still visible */}
-        <div style={{ width: '100%', height: '48vh', minHeight: '280px', overflow: 'hidden', lineHeight: 0 }}>
+        {/* Video — taller cap to show more game content */}
+        <div style={{ width: '100%', height: '58vh', minHeight: '300px', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
-        {/* Text block — immediately below, clean white background */}
-        <div className="max-w-4xl mx-auto px-6 py-6 text-center">
+        {/* Text block — compact, no pills */}
+        <div className="max-w-4xl mx-auto px-6 py-5 text-center">
           <h1 className="font-extrabold leading-tight mb-3" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
             Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
-          <p className="text-lg text-[#5c5c5c] mb-4">
-            Interactive, game-based learning for homeschoolers and educators
+          <p className="text-lg text-[#5c5c5c] mb-5">
+            100% secular, for homeschoolers and educators
           </p>
-          <div className="flex items-center justify-center gap-3 mb-5">
-            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">Grades K–3</span>
-            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
-          </div>
-          <HeroButtons />
-          <p className="mt-4 text-sm text-[#5c5c5c]">
-            Plus, personalized homeschooling support for parents.{' '}
-            <Link href="/consulting" className="text-[#55b6ca] font-semibold hover:underline">
-              Learn More »
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+            <Link href="/signup"
+              className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white hover:opacity-90 transition-all">
+              Start 7 Day Free Trial
             </Link>
-          </p>
+            <Link href="/consulting"
+              className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#55b6ca] text-white hover:opacity-90 transition-all">
+              Parent Support →
+            </Link>
+          </div>
         </div>
         {/* white → cream wave */}
         <div style={{ lineHeight: 0, marginTop: -2 }}>
