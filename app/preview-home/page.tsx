@@ -350,7 +350,7 @@ export default async function PreviewHomePage() {
         </section>
 
         {/* Printables */}
-        <section className="bg-white px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
+        <section id="printables" className="bg-white px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
           <div className="max-w-[1100px] mx-auto">
             <div className="mb-8">
               <p className="text-xs font-extrabold uppercase tracking-widest mb-2" style={{ color: '#ed7c5a', letterSpacing: '0.1em' }}>Printables</p>
@@ -364,7 +364,7 @@ export default async function PreviewHomePage() {
                 { title: 'Create a Solar System', file: 'website-pdf-create-a-solar-system.pdf', thumb: '/website-pdf-create-a-solar-system.png' },
                 { title: 'Earth Puzzles', file: 'website-pdf-earth-puzzles.pdf', thumb: '/website-pdf-earth-puzzles.png' },
               ].map(({ title, file, thumb }) => (
-                <a key={title} href={`/printable?file=${file}&title=${encodeURIComponent(title)}`}
+                <a key={title} href={`/printable?file=${file}&title=${encodeURIComponent(title)}&from=home`}
                   className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
                   <div className="relative w-full" style={{ aspectRatio: '8.5/11' }}>
                     <Image src={thumb} alt={title} fill className="object-contain" />
