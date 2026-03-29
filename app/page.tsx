@@ -220,7 +220,7 @@ export default async function PreviewHomePage() {
               </a>
 
               {/* Ordering the Planets */}
-              <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
+              <a href="https://view.genially.com/68164fbb7306f160f7843510"
                 className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
                 <div className="relative flex-1 min-h-[200px] w-full bg-[#e8e4dc]">
                   <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
@@ -233,7 +233,7 @@ export default async function PreviewHomePage() {
               </a>
 
               {/* Solar System Sizzle */}
-              <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
+              <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e"
                 className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
                 <div className="relative flex-1 min-h-[200px] w-full bg-[#e8e4dc]">
                   <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
