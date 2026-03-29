@@ -247,7 +247,8 @@ export default function NavbarPreview() {
     if (isAuthPage) return
 
     async function loadUser() {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { session } } = await supabase.auth.getSession()
+      const user = session?.user ?? null
       setUser(user)
       if (!user) return
 
