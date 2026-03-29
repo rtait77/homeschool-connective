@@ -1,14 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Fraunces, DM_Sans } from 'next/font/google'
+import { DM_Serif_Display, DM_Sans } from 'next/font/google'
 import NavbarPreview from '@/components/layout/navbar-preview'
 import { createClient } from '@supabase/supabase-js'
 
-// Fraunces: variable font — no weight array, axes allowed
-const fraunces = Fraunces({
+const dmSerifDisplay = DM_Serif_Display({
   subsets: ['latin'],
   variable: '--font-display',
-  axes: ['opsz'],
+  weight: '400',
   style: ['normal', 'italic'],
 })
 
@@ -38,28 +37,25 @@ export default async function PreviewHomePage() {
   const marqueeItems = [...ALL_TOPICS, ...ALL_TOPICS]
 
   return (
-    <div className={`${fraunces.variable} ${dmSans.variable}`}>
+    <div className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
       <style dangerouslySetInnerHTML={{ __html: `
         .ph-page { font-family: var(--font-body), system-ui, sans-serif; }
         .ph-page p, .ph-page li { font-family: var(--font-body), system-ui, sans-serif; }
         .ph-display {
           font-family: var(--font-display), Georgia, serif;
-          font-weight: 800;
+          font-weight: 400;
           font-style: normal;
-          font-variation-settings: 'opsz' 72;
           line-height: 1.1;
         }
         .ph-display-italic {
           font-family: var(--font-display), Georgia, serif;
-          font-weight: 800;
+          font-weight: 400;
           font-style: italic;
-          font-variation-settings: 'opsz' 72;
         }
         .ph-section-heading {
           font-family: var(--font-display), Georgia, serif;
-          font-weight: 700;
+          font-weight: 400;
           font-style: normal;
-          font-variation-settings: 'opsz' 32;
           line-height: 1.2;
         }
         .hero-wrap {
@@ -71,9 +67,13 @@ export default async function PreviewHomePage() {
           gap: 48px;
           align-items: center;
         }
+        .hero-video-col {
+          min-width: 0;
+          overflow: hidden;
+        }
         .hero-video-box {
           line-height: 0;
-          box-shadow: 10px 10px 0px rgba(237,124,90,0.25), 0 8px 32px rgba(0,0,0,0.14);
+          box-shadow: 10px 10px 0px rgba(85,182,202,0.35), 0 8px 32px rgba(0,0,0,0.12);
         }
         .hero-video-box video { width: 100%; height: auto; display: block; }
         .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
@@ -191,13 +191,13 @@ export default async function PreviewHomePage() {
               {/* Featured — Mars */}
               <a href="https://view.genially.com/699e69be43a96797318311da"
                 className="col-span-2 bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
-                <div className="relative w-full bg-[#0d1b2a]" style={{ height: '200px' }}>
+                <div className="relative flex-1 min-h-[128px] w-full bg-[#0d1b2a]">
                   <Image src="/thumb-lesson-mars.png" alt="Mission to Mars" fill className="object-cover" />
                   <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-extrabold px-3 py-1 rounded-full">Lesson</span>
                 </div>
-                <div className="p-4 flex flex-col flex-1">
-                  <h3 className="font-extrabold text-base leading-tight mb-3">Mission to Mars</h3>
-                  <span className="mt-auto text-sm font-bold text-[#ed7c5a]">Start lesson →</span>
+                <div className="p-3 flex-shrink-0">
+                  <h3 className="font-extrabold text-sm leading-tight mb-2">Mission to Mars</h3>
+                  <span className="text-xs font-bold text-[#ed7c5a]">Start lesson →</span>
                 </div>
               </a>
 
