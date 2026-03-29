@@ -11,7 +11,7 @@ export default function AboutPage() {
       {/* Mission Statement */}
       <div className="bg-[#f5f1e9] border-l-4 border-[#ed7c5a] rounded-[14px] px-8 py-7 mb-12">
         <p className="text-xs font-bold uppercase tracking-widest text-[#ed7c5a] mb-2">Our Mission</p>
-        <p className="text-lg font-extrabold leading-relaxed">Our mission is simple: make learning feel like play. Everything we build is secular, game-based, and made by homeschool moms.</p>
+        <p className="text-lg leading-relaxed">Our mission is simple: make learning feel like play. Everything we build is secular, game-based, and made by homeschool moms.</p>
       </div>
 
       <div className="space-y-5 text-[#1c1c1c] leading-relaxed mb-12">
