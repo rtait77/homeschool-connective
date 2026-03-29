@@ -358,7 +358,7 @@ export default async function PreviewHomePage() {
               <h2 className="ph-section-heading text-2xl">Take learning offline.</h2>
               <p className="text-[#5c5c5c] mt-1" style={{ fontFamily: 'var(--font-body)' }}>Ready-to-use worksheets and activities for your homeschool.</p>
             </div>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { title: 'Layers of the Sun', file: 'website-pdf-layers-sun-coloring.pdf', thumb: '/website-pdf-layers-sun-coloring.png' },
                 { title: 'Red Spot Weather Report', file: 'website-pdf-red-spot-weather-report.pdf', thumb: '/website-pdf-red-spot-weather-report.png' },
