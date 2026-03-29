@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import NavbarPreview from '@/components/layout/navbar-preview'
+import TopicVote from '@/components/topic-vote'
 import { createClient } from '@supabase/supabase-js'
 
 export default async function PreviewHomePage() {
@@ -315,16 +316,15 @@ export default async function PreviewHomePage() {
         </div>
       </section>
 
-      {/* Coming Soon */}
-      <section className="bg-[#ed7c5a] px-6 py-10 relative overflow-hidden" style={{ marginTop: -2 }}>
-        <div className="max-w-[1100px] mx-auto text-center">
-          <h2 className="text-3xl font-extrabold text-white leading-tight mb-10">New Topics Coming Soon</h2>
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-white text-base">
-            {['Ocean Animals', 'Dinosaurs', 'The 7 Continents', 'Extreme Environments', 'Natural Disasters'].map((topic) => (
-              <span key={topic}>{topic}</span>
-            ))}
-          </div>
+      {/* Coming Soon — topic vote */}
+      <section className="bg-[#f5f1e9] px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
+        <div className="max-w-[700px] mx-auto text-center">
+          <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#ed7c5a', letterSpacing: '0.1em' }}>Coming Soon</p>
+          <h2 className="text-2xl font-extrabold text-[#1c1c1c] mb-2">We&apos;re building beyond space.</h2>
+          <p className="text-[#5c5c5c] mb-8">Everything right now is space-themed — but new topics are on the way. Which one would you most like to see?</p>
+          <TopicVote />
         </div>
+        {/* cream → white wave */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
