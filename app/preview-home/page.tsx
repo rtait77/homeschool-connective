@@ -17,33 +17,37 @@ export default async function PreviewHomePage() {
     <>
       <NavbarPreview />
 
-      {/* Hero — video with gradient overlay, text anchored to bottom */}
-      <section style={{ position: 'relative', height: '65vh', minHeight: '520px', overflow: 'hidden' }}>
-        {/* Video fills the full section */}
-        <div style={{ position: 'absolute', inset: 0 }}>
+      {/* Hero — capped height video + text below, both visible above the fold */}
+      <section>
+        {/* Video — full width, capped at 48vh so text below is still visible */}
+        <div style={{ width: '100%', height: '48vh', minHeight: '280px', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
-        {/* Gradient — top 45% fully clear, fades to dark at bottom */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 45%, rgba(0,0,0,0.82) 100%)', pointerEvents: 'none' }} />
-        {/* Text — sits in the gradient zone at the bottom */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 24px 36px', textAlign: 'center' }}>
-          <h1 className="font-extrabold leading-tight" style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3rem)', color: 'white', marginBottom: '12px' }}>
-            Learning That Feels Like <em className="not-italic" style={{ color: '#ed7c5a' }}>Playing</em>
+        {/* Text block — immediately below, clean white background */}
+        <div className="max-w-4xl mx-auto px-6 py-6 text-center">
+          <h1 className="font-extrabold leading-tight mb-3" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
+            Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
           </h1>
-          <p style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.85)', marginBottom: '16px' }}>
+          <p className="text-lg text-[#5c5c5c] mb-4">
             Interactive, game-based learning for homeschoolers and educators
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
-            <span style={{ background: 'rgba(255,255,255,0.15)', color: 'white', fontSize: '0.8rem', fontWeight: 700, padding: '5px 14px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.3)' }}>Grades K–3</span>
-            <span style={{ background: 'rgba(255,255,255,0.15)', color: 'white', fontSize: '0.8rem', fontWeight: 700, padding: '5px 14px', borderRadius: '999px', border: '1px solid rgba(255,255,255,0.3)' }}>100% Secular</span>
+          <div className="flex items-center justify-center gap-3 mb-5">
+            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">Grades K–3</span>
+            <span className="bg-[#f5f1e9] text-[#1c1c1c] text-sm font-bold px-4 py-1.5 rounded-full border border-[#ddd8cc]">100% Secular</span>
           </div>
           <HeroButtons />
-          <p style={{ marginTop: '14px', fontSize: '0.875rem', color: 'rgba(255,255,255,0.7)' }}>
+          <p className="mt-4 text-sm text-[#5c5c5c]">
             Plus, personalized homeschooling support for parents.{' '}
-            <Link href="/consulting" style={{ color: '#55b6ca', fontWeight: 600, textDecoration: 'none' }}>
+            <Link href="/consulting" className="text-[#55b6ca] font-semibold hover:underline">
               Learn More »
             </Link>
           </p>
+        </div>
+        {/* white → cream wave */}
+        <div style={{ lineHeight: 0, marginTop: -2 }}>
+          <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+            <path d="M0,56 L0,28 C360,56 1080,0 1440,32 L1440,56 Z" fill="#f5f1e9" />
+          </svg>
         </div>
       </section>
 
