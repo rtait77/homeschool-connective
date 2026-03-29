@@ -155,26 +155,26 @@ export default async function PreviewHomePage() {
             {/* Ordering the Planets */}
             <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
               className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
-              <div className="relative h-32 w-full bg-[#e8e4dc]">
+              <div className="relative flex-1 min-h-[128px] w-full bg-[#e8e4dc]">
                 <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
                 <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free</span>
               </div>
-              <div className="p-3 flex flex-col flex-1">
+              <div className="p-3 flex-shrink-0">
                 <h3 className="text-sm font-bold leading-tight mb-2">Ordering the Planets</h3>
-                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+                <span className="text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
 
             {/* Solar System Sizzle */}
             <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
               className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
-              <div className="relative h-32 w-full bg-[#e8e4dc]">
+              <div className="relative flex-1 min-h-[128px] w-full bg-[#e8e4dc]">
                 <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
                 <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free Demo</span>
               </div>
-              <div className="p-3 flex flex-col flex-1">
+              <div className="p-3 flex-shrink-0">
                 <h3 className="text-sm font-bold leading-tight mb-2">Solar System Sizzle</h3>
-                <span className="mt-auto text-xs font-bold text-[#ed7c5a]">Play →</span>
+                <span className="text-xs font-bold text-[#ed7c5a]">Play →</span>
               </div>
             </a>
 
