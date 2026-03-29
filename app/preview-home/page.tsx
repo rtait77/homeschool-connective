@@ -1,8 +1,23 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { Fraunces, DM_Sans } from 'next/font/google'
 import NavbarPreview from '@/components/layout/navbar-preview'
 import TopicVote from '@/components/topic-vote'
 import { createClient } from '@supabase/supabase-js'
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-display',
+  axes: ['opsz'],
+  style: ['normal', 'italic'],
+  weight: ['700', '800'],
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-body',
+  weight: ['400', '500', '700'],
+})
 
 export default async function PreviewHomePage() {
   const admin = createClient(
@@ -13,7 +28,34 @@ export default async function PreviewHomePage() {
     .from('resources')
     .select('*', { count: 'exact', head: true })
   return (
-    <>
+    <div className={`${fraunces.variable} ${dmSans.variable}`}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .ph-page { font-family: var(--font-body), system-ui, sans-serif; }
+        .ph-page p, .ph-page li, .ph-page a:not(.hero-btn-primary):not(.hero-btn-secondary):not(.nav-cta) {
+          font-family: var(--font-body), system-ui, sans-serif;
+        }
+        .ph-display {
+          font-family: var(--font-display), Georgia, serif;
+          font-weight: 800;
+          font-style: normal;
+          font-variation-settings: 'opsz' 72;
+          line-height: 1.1;
+        }
+        .ph-display-italic {
+          font-family: var(--font-display), Georgia, serif;
+          font-weight: 800;
+          font-style: italic;
+          font-variation-settings: 'opsz' 72;
+        }
+        .ph-section-heading {
+          font-family: var(--font-display), Georgia, serif;
+          font-weight: 700;
+          font-style: normal;
+          font-variation-settings: 'opsz' 32;
+          line-height: 1.2;
+        }
+      `}} />
+      <div className="ph-page">
       <NavbarPreview />
 
       {/* Hero — cream background, side-by-side video box */}
@@ -93,10 +135,11 @@ export default async function PreviewHomePage() {
         <div className="hero-wrap">
           {/* Text — left */}
           <div className="hero-text">
-            <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 3vw, 3rem)' }}>
-              Learning That Feels Like <em className="not-italic" style={{ color: '#ed7c5a' }}>Playing</em>
+            <h1 className="ph-display mb-4" style={{ fontSize: 'clamp(2.2rem, 3.2vw, 3.4rem)' }}>
+              Learning That Feels Like{' '}
+              <span className="ph-display-italic" style={{ color: '#ed7c5a' }}>Playing</span>
             </h1>
-            <p style={{ fontSize: '1.125rem', color: '#5c5c5c', marginBottom: '28px', lineHeight: '1.6' }}>
+            <p style={{ fontSize: '1.125rem', color: '#5c5c5c', marginBottom: '28px', lineHeight: '1.7' }}>
               100% secular, for homeschoolers and educators
             </p>
             <div className="hero-ctas">
@@ -128,7 +171,7 @@ export default async function PreviewHomePage() {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-8">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-widest mb-2" style={{ color: '#ed7c5a', letterSpacing: '0.1em' }}>Games &amp; Lessons</p>
-              <h2 className="text-2xl font-extrabold">Built to stick.</h2>
+              <h2 className="ph-section-heading text-2xl">Built to stick.</h2>
               <p className="text-[#5c5c5c] mt-1">Interactive games and lessons for K–3. Each one teaches real content through play.</p>
             </div>
             <a href="#newsletter" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0 self-start">
@@ -257,7 +300,7 @@ export default async function PreviewHomePage() {
           </div>
           <div className="md:w-3/5">
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3" style={{ letterSpacing: '0.1em' }}>Homeschool Help</p>
-            <h2 className="text-3xl font-extrabold leading-tight mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
+            <h2 className="ph-section-heading text-3xl mb-4 text-[#1c1c1c]">Struggling with homeschooling?</h2>
             <p className="text-lg leading-relaxed text-[#5c5c5c] mb-8">
               Use our deep matching system to get curriculum recommendations and uncover your child&apos;s learning style, your teaching style, and which homeschool methods may be best for your family. Plus ongoing homeschool support.
             </p>
@@ -285,7 +328,7 @@ export default async function PreviewHomePage() {
         <div className="max-w-[1100px] mx-auto">
           <div className="mb-8">
             <p className="text-xs font-extrabold uppercase tracking-widest mb-2" style={{ color: '#ed7c5a', letterSpacing: '0.1em' }}>Printables</p>
-            <h2 className="text-2xl font-extrabold">Take learning offline.</h2>
+            <h2 className="ph-section-heading text-2xl">Take learning offline.</h2>
             <p className="text-[#5c5c5c] mt-1">Ready-to-use worksheets and activities for your homeschool.</p>
           </div>
           <div className="grid grid-cols-4 gap-4">
@@ -320,7 +363,7 @@ export default async function PreviewHomePage() {
       <section className="bg-[#f5f1e9] px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
         <div className="max-w-[700px] mx-auto text-center">
           <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#ed7c5a', letterSpacing: '0.1em' }}>Coming Soon</p>
-          <h2 className="text-2xl font-extrabold text-[#1c1c1c] mb-2">We&apos;re building beyond space.</h2>
+          <h2 className="ph-section-heading text-2xl text-[#1c1c1c] mb-2">We&apos;re building beyond space.</h2>
           <p className="text-[#5c5c5c] mb-8">Everything right now is space-themed — but new topics are on the way. Which one would you most like to see?</p>
           <TopicVote />
         </div>
@@ -338,7 +381,7 @@ export default async function PreviewHomePage() {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-8">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-widest mb-2" style={{ color: '#ed7c5a', letterSpacing: '0.1em' }}>Homeschool Tips</p>
-              <h2 className="text-2xl font-extrabold">Ideas that work.</h2>
+              <h2 className="ph-section-heading text-2xl">Ideas that work.</h2>
               <p className="text-[#5c5c5c] mt-1">Strategies and inspiration for your homeschool journey.</p>
             </div>
             <Link href="/tips" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap mt-1 sm:mt-0 flex-shrink-0 self-start">
@@ -383,6 +426,7 @@ export default async function PreviewHomePage() {
         </div>
       </section>
 
-    </>
+      </div>
+    </div>
   )
 }
