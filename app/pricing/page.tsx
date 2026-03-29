@@ -130,7 +130,7 @@ export default function SubscribePage() {
       <p className="text-center text-[#5c5c5c] mb-12">Two ways to get support for your homeschool.</p>
 
       {/* 2-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
 
         {/* Consulting card */}
         <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
@@ -145,6 +145,7 @@ export default function SubscribePage() {
             <li className="text-[#55b6ca] font-bold">✓ 7-day games trial included</li>
           </ul>
           <p className="text-xs text-[#a09890] mb-5">Option to subscribe to games after your trial if you choose.</p>
+          <a href="/consulting" className="text-sm font-bold text-[#55b6ca] hover:underline mb-4 inline-block">Learn more about consulting →</a>
           <button
             onClick={() => setModalTarget('consulting')}
             className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
@@ -154,8 +155,8 @@ export default function SubscribePage() {
         </div>
 
         {/* Games card with toggle */}
-        <div className="bg-white rounded-2xl p-7 flex flex-col relative" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games Subscription</p>
+        <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col relative" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games/Lessons/Printables Subscription</p>
 
           {/* Toggle */}
           <div className="flex rounded-xl overflow-hidden border border-[#e2ddd5] mb-5 self-start w-full">
@@ -181,10 +182,9 @@ export default function SubscribePage() {
               <span className="mb-1 bg-[#55b6ca] text-white text-xs font-bold px-3 py-0.5 rounded-full">BEST VALUE</span>
             )}
           </div>
-          {gamesPlan === 'yearly' && (
-            <p className="text-xs font-bold text-[#55b6ca] mb-5">Save $10 vs monthly!</p>
-          )}
-          {gamesPlan === 'monthly' && <div className="mb-5" />}
+          <p className="text-xs font-bold text-[#55b6ca] mb-5" style={{ minHeight: '1.25rem' }}>
+            {gamesPlan === 'yearly' ? 'Save $10 vs monthly!' : ''}
+          </p>
 
           <ul className="text-sm text-[#5c5c5c] space-y-2 mb-6 flex-1">
             <li>✓ Full access to all games &amp; lessons</li>
