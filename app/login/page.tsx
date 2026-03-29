@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { loginAction } from './actions'
 import { createClient } from '@/lib/supabase/client'
+
+const ADMIN_EMAIL = 'support@homeschoolconnective.com'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -17,19 +18,14 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const result = await loginAction(email, password)
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (result.error) {
-      setError(result.error)
+    if (error) {
+      setError(error.message)
       setLoading(false)
-    } else if (result.access_token && result.refresh_token && result.redirectTo) {
-      // Sync session to browser client so navbar/pages see the user immediately
-      const supabase = createClient()
-      await supabase.auth.setSession({
-        access_token: result.access_token,
-        refresh_token: result.refresh_token,
-      })
-      window.location.href = result.redirectTo
+    } else {
+      window.location.href = data.user?.email === ADMIN_EMAIL ? '/admin' : '/learn'
     }
   }
 
