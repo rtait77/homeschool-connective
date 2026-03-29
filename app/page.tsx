@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Nunito, DM_Sans } from 'next/font/google'
-import NavbarPreview from '@/components/layout/navbar-preview'
 import { createClient } from '@supabase/supabase-js'
 
 const nunito = Nunito({
@@ -157,8 +156,6 @@ export default async function PreviewHomePage() {
       `}} />
 
       <div className="ph-page">
-        <NavbarPreview />
-
         {/* Hero */}
         <section style={{ background: '#f5f1e9', paddingBottom: '0' }}>
           <div className="hero-wrap">
