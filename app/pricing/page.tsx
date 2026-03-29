@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useState } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 
 type ModalTarget = 'monthly' | 'yearly' | 'consulting' | null
@@ -86,7 +85,6 @@ function TermsModal({
 }
 
 export default function SubscribePage() {
-  const [showTrial, setShowTrial] = useState(true)
   const [gamesPlan, setGamesPlan] = useState<'monthly' | 'yearly'>('yearly')
   const [modalTarget, setModalTarget] = useState<ModalTarget>(null)
   const [loading, setLoading] = useState(false)
@@ -96,22 +94,6 @@ export default function SubscribePage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  useEffect(() => {
-    async function checkUser() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('trial_end, subscription_status')
-        .eq('id', user.id)
-        .single()
-      const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
-      const trialExpired = profile?.trial_end && new Date(profile.trial_end) <= new Date()
-      const subscribed = profile?.subscription_status === 'active'
-      if (trialActive || trialExpired || subscribed) setShowTrial(false)
-    }
-    checkUser()
-  }, [])
 
   async function handleConfirm(emailOptIn: boolean) {
     if (!modalTarget) return
@@ -146,18 +128,6 @@ export default function SubscribePage() {
 
       <h1 className="text-3xl font-extrabold text-center mb-2">Plans & Pricing</h1>
       <p className="text-center text-[#5c5c5c] mb-12">Two ways to get support for your homeschool.</p>
-
-      {/* Free trial CTA */}
-      {showTrial && (
-        <div className="bg-[#f5f1e9] rounded-2xl p-6 text-center mb-10">
-          <p className="font-extrabold mb-1">Try games free for 7 days</p>
-          <p className="text-[#5c5c5c] text-sm mb-4">No credit card required. Full access. Cancel anytime.</p>
-          <Link href="/signup" className="inline-block bg-[#ed7c5a] text-white font-bold px-8 py-3 rounded-lg text-sm hover:opacity-90 transition">
-            Start Free Trial
-          </Link>
-          <p className="text-xs text-[#5c5c5c] mt-3">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
-        </div>
-      )}
 
       {/* 2-column grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
