@@ -305,6 +305,7 @@ export default async function PreviewHomePage() {
             <div className="mt-8 text-center">
               <Link href="/learn" className="text-sm font-bold text-[#55b6ca] hover:underline">See all games and lessons →</Link>
             </div>
+            <p className="text-xs text-[#a09890] mt-4">*Games and lessons are secular.</p>
           </div>
           {/* white → cream */}
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
