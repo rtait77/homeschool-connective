@@ -81,14 +81,16 @@ export default async function PreviewHomePage() {
           right: 0;
           width: calc(100% - 12px);
           height: calc(100% - 12px);
-          background: rgba(85,182,202,0.35);
-          border-radius: 14px;
+          background: rgba(85,182,202,0.3);
+          border-radius: 16px;
           z-index: 0;
         }
         .hero-video-box {
           line-height: 0;
           position: relative;
           z-index: 1;
+          border-radius: 14px;
+          overflow: hidden;
           box-shadow: 0 8px 32px rgba(0,0,0,0.12);
         }
         .hero-video-box video { width: 100%; height: auto; display: block; }
