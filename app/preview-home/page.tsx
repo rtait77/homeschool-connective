@@ -387,7 +387,7 @@ export default async function PreviewHomePage() {
 
         {/* Coming Soon — marquee */}
         <section className="bg-[#f5f1e9] px-6 py-12 relative overflow-hidden" style={{ marginTop: -2 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px', transform: 'translateY(-16px)' }}>
             <div style={{ textAlign: 'center' }}>
               <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#55b6ca', letterSpacing: '0.1em' }}>In the Works</p>
               <h2 className="ph-section-heading text-2xl" style={{ color: '#3a3a3a' }}>More topics are in discussion:</h2>
