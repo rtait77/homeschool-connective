@@ -6,20 +6,9 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
 
-const coreLinks = [
-  { href: '/learn', label: 'Learn' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/tips', label: 'Tips' },
-  { href: '/about', label: 'About' },
-]
-
-const memberCoreLinks = [
-  { href: '/learn', label: 'Learn' },
-  { href: '/tips', label: 'Tips' },
-  { href: '/about', label: 'About' },
-]
-
 const ADMIN_EMAIL = 'support@homeschoolconnective.com'
+
+type SubType = 'games' | 'consulting' | 'both' | null
 
 const CSS = `
   .nav-inner {
@@ -113,6 +102,17 @@ const CSS = `
     transition: background 0.15s ease;
   }
   .nav-cta:hover { background: #d96a48; }
+  .nav-dashboard-link {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #5c5c5c;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s;
+    padding: 6px 4px;
+  }
+  .nav-dashboard-link:hover { color: #1c1c1c; }
+  .nav-dashboard-link.active { color: #ed7c5a; }
   .nav-avatar-btn {
     display: flex;
     align-items: center;
@@ -180,12 +180,9 @@ const CSS = `
   }
   .nav-dropdown-btn:hover { background: #fdf8f5; color: #ed7c5a; }
 
-  /* Desktop only */
   .desktop-only { display: flex; }
-  .mobile-only { display: none; }
   .hamburger { display: none; }
 
-  /* Mobile menu */
   .mobile-menu {
     display: none;
     background: white;
@@ -240,6 +237,7 @@ export default function NavbarPreview() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [subType, setSubType] = useState<SubType>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const supabase = createBrowserClient(
@@ -248,10 +246,27 @@ export default function NavbarPreview() {
   )
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null)
-    })
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      if (!user) return
+
+      const [{ data: profile }, { data: consulting }] = await Promise.all([
+        supabase.from('profiles').select('subscription_status, trial_end').eq('id', user.id).single(),
+        supabase.from('consulting_customers').select('id').eq('user_id', user.id).maybeSingle(),
+      ])
+
+      const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
+      const hasGames = profile?.subscription_status === 'active' || !!trialActive
+      const hasConsulting = !!consulting
+
+      if (hasGames && hasConsulting) setSubType('both')
+      else if (hasGames) setSubType('games')
+      else if (hasConsulting) setSubType('consulting')
+    }
+
+    loadUser()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
     return () => subscription.unsubscribe()
   }, [])
 
@@ -273,7 +288,6 @@ export default function NavbarPreview() {
   }
 
   const isAdmin = user?.email === ADMIN_EMAIL
-  const coreNavLinks = user ? memberCoreLinks : coreLinks
   const userInitial = user?.email ? user.email[0].toUpperCase() : '?'
   const displayEmail = user?.email ?? ''
 
@@ -281,7 +295,36 @@ export default function NavbarPreview() {
     return href === '/' ? pathname === '/' : pathname.startsWith(href)
   }
 
-  const consultingActive = pathname.startsWith('/consulting')
+  // Pill links by user state
+  let pillLinks: { href: string; label: string; style?: string }[] = []
+  let showConsultingInPill = false
+  let showDashboardLink = false // separate Dashboard link next to avatar
+
+  if (!user) {
+    pillLinks = [
+      { href: '/learn', label: 'Learn' },
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/tips', label: 'Tips' },
+      { href: '/about', label: 'About' },
+    ]
+    showConsultingInPill = true
+  } else if (subType === 'consulting') {
+    pillLinks = [
+      { href: '/dashboard', label: 'Dashboard' },
+      { href: '/tips', label: 'Tips' },
+    ]
+  } else {
+    // games, both, or unknown (default to games links)
+    pillLinks = [
+      { href: '/learn', label: 'Learn' },
+      { href: '/tips', label: 'Tips' },
+    ]
+    showDashboardLink = true
+  }
+
+  // Mobile links
+  const mobilePillLinks = pillLinks
+  const mobileShowDashboard = showDashboardLink
 
   return (
     <>
@@ -294,45 +337,54 @@ export default function NavbarPreview() {
             <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={50} style={{ height: '40px', width: 'auto' }} priority />
           </Link>
 
-          {/* Pill nav — all links including consulting with divider */}
+          {/* Pill nav */}
           <div className="nav-pill-wrap">
             <div className="nav-pill">
-              {coreNavLinks.map(({ href, label }) => (
+              {pillLinks.map(({ href, label }) => (
                 <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
                   {label}
                 </Link>
               ))}
-              {/* Hairline divider before Consulting */}
-              <div className="nav-pill-divider" />
-              <Link href="/consulting" className={`nav-pill-link consulting${consultingActive ? ' active' : ''}`}>
-                Consulting
-              </Link>
+              {showConsultingInPill && (
+                <>
+                  <div className="nav-pill-divider" />
+                  <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
+                    Consulting
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Right — auth + primary CTA only */}
+          {/* Right side */}
           <div className="nav-right desktop-only">
             {user ? (
-              <div style={{ position: 'relative' }} ref={dropdownRef}>
-                <button className="nav-avatar-btn" onClick={() => setDropdownOpen(!dropdownOpen)} aria-label="Account menu">
-                  <span className="nav-avatar">{userInitial}</span>
-                  <svg style={{ width: '12px', height: '12px', color: '#a09890', transition: 'transform 0.15s', transform: dropdownOpen ? 'rotate(180deg)' : 'none' }}
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {dropdownOpen && (
-                  <div className="nav-dropdown">
-                    <div className="nav-dropdown-email">{displayEmail}</div>
-                    {isAdmin && <Link href="/admin" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Admin Panel</Link>}
-                    <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Dashboard</Link>
-                    <Link href="/account" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Account</Link>
-                    <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
-                      <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
-                    </div>
-                  </div>
+              <>
+                {showDashboardLink && (
+                  <Link href="/dashboard" className={`nav-dashboard-link${isActive('/dashboard') ? ' active' : ''}`}>
+                    Dashboard
+                  </Link>
                 )}
-              </div>
+                <div style={{ position: 'relative' }} ref={dropdownRef}>
+                  <button className="nav-avatar-btn" onClick={() => setDropdownOpen(!dropdownOpen)} aria-label="Account menu">
+                    <span className="nav-avatar">{userInitial}</span>
+                    <svg style={{ width: '12px', height: '12px', color: '#a09890', transition: 'transform 0.15s', transform: dropdownOpen ? 'rotate(180deg)' : 'none' }}
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  {dropdownOpen && (
+                    <div className="nav-dropdown">
+                      <div className="nav-dropdown-email">{displayEmail}</div>
+                      {isAdmin && <Link href="/admin" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Admin Panel</Link>}
+                      <Link href="/account" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Account</Link>
+                      <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
+                        <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               <>
                 <Link href="/login" className="nav-login">Log In</Link>
@@ -357,21 +409,27 @@ export default function NavbarPreview() {
         {/* Mobile menu */}
         <div className={`mobile-menu${menuOpen ? ' open' : ''}`}>
           <ul>
-            {coreNavLinks.map(({ href, label }) => (
+            {mobilePillLinks.map(({ href, label }) => (
               <li key={href}>
                 <Link href={href} onClick={() => setMenuOpen(false)} className={isActive(href) ? 'active-mobile' : ''}>{label}</Link>
               </li>
             ))}
-            <hr className="mobile-divider" />
-            <li>
-              <Link href="/consulting" onClick={() => setMenuOpen(false)} className="consulting-mobile">Consulting</Link>
-            </li>
+            {showConsultingInPill && (
+              <>
+                <hr className="mobile-divider" />
+                <li>
+                  <Link href="/consulting" onClick={() => setMenuOpen(false)} className="consulting-mobile">Consulting</Link>
+                </li>
+              </>
+            )}
             {user ? (
               <>
                 <hr className="mobile-divider" />
+                {mobileShowDashboard && (
+                  <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} className={isActive('/dashboard') ? 'active-mobile' : ''}>Dashboard</Link></li>
+                )}
                 <li><p style={{ padding: '4px 0 2px', fontSize: '0.75rem', color: '#a09890', margin: 0 }}>{displayEmail}</p></li>
                 {isAdmin && <li><Link href="/admin" onClick={() => setMenuOpen(false)}>Admin Panel</Link></li>}
-                <li><Link href="/dashboard" onClick={() => setMenuOpen(false)}>Dashboard</Link></li>
                 <li><Link href="/account" onClick={() => setMenuOpen(false)}>Account</Link></li>
                 <li><button onClick={handleLogout} className="muted-mobile">Log Out</button></li>
               </>
