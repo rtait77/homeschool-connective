@@ -22,7 +22,7 @@ export default function LoginPage() {
     if (result.error) {
       setError(result.error)
       setLoading(false)
-    } else if (result.access_token && result.redirectTo) {
+    } else if (result.access_token && result.refresh_token && result.redirectTo) {
       // Sync session to browser client so navbar/pages see the user immediately
       const supabase = createClient()
       await supabase.auth.setSession({
