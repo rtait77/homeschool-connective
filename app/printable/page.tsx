@@ -8,12 +8,15 @@ function PrintablePage() {
   const params = useSearchParams()
   const file = params.get('file') ?? ''
   const title = params.get('title') ?? 'Printable'
+  const from = params.get('from')
   // PDFs not yet uploaded — use the PNG preview instead
   const imageUrl = '/' + file.replace('.pdf', '.png')
+  const backHref = from === 'home' ? '/#printables' : '/learn?activity=printables'
+  const backLabel = from === 'home' ? '← Back to Homepage' : '← Back to Printables'
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-12">
-      <Link href="/learn?activity=printables" className="text-sm font-bold text-[#238FA4] hover:underline">← Back to Printables</Link>
+      <Link href={backHref} className="text-sm font-bold text-[#238FA4] hover:underline">{backLabel}</Link>
 
       <h1 className="text-2xl font-extrabold mt-6 mb-2">{title}</h1>
 
