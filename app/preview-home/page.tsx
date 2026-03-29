@@ -364,13 +364,14 @@ export default async function PreviewHomePage() {
                 { title: 'Create a Solar System', file: 'website-pdf-create-a-solar-system.pdf', thumb: '/website-pdf-create-a-solar-system.png' },
                 { title: 'Earth Puzzles', file: 'website-pdf-earth-puzzles.pdf', thumb: '/website-pdf-earth-puzzles.png' },
               ].map(({ title, file, thumb }) => (
-                <a key={title} href={`/printable?file=${file}&title=${encodeURIComponent(title)}&from=home`}
+                <a key={title} href={`/${file}`} target="_blank" rel="noopener noreferrer"
                   className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
                   <div className="relative w-full" style={{ aspectRatio: '8.5/11' }}>
                     <Image src={thumb} alt={title} fill className="object-contain" />
                   </div>
-                  <div className="p-3 bg-[#f5f1e9]">
+                  <div className="p-3 bg-[#f5f1e9] flex items-center justify-between">
                     <p className="text-xs font-bold leading-snug">{title}</p>
+                    <span className="text-xs font-bold text-[#ed7c5a] whitespace-nowrap ml-2">Get PDF →</span>
                   </div>
                 </a>
               ))}
