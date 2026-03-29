@@ -386,12 +386,13 @@ export default async function PreviewHomePage() {
         </section>
 
         {/* Coming Soon — marquee */}
-        <section className="bg-[#f5f1e9] px-6 relative overflow-hidden" style={{ marginTop: -2, height: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div className="max-w-[700px] mx-auto text-center mb-8">
-            <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#55b6ca', letterSpacing: '0.1em' }}>In the Works</p>
-            <h2 className="ph-section-heading text-2xl" style={{ color: '#3a3a3a' }}>More topics are in discussion:</h2>
-          </div>
-          <div className="marquee-outer">
+        <section className="bg-[#f5f1e9] px-6 py-12 relative overflow-hidden" style={{ marginTop: -2 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px' }}>
+            <div style={{ textAlign: 'center' }}>
+              <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#55b6ca', letterSpacing: '0.1em' }}>In the Works</p>
+              <h2 className="ph-section-heading text-2xl" style={{ color: '#3a3a3a' }}>More topics are in discussion:</h2>
+            </div>
+          <div className="marquee-outer" style={{ width: '100%' }}>
             <div className="marquee-track">
               {marqueeItems.map((topic, i) => (
                 <span key={i} className="marquee-item">
@@ -400,6 +401,7 @@ export default async function PreviewHomePage() {
                 </span>
               ))}
             </div>
+          </div>
           </div>
           {/* cream → white */}
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
