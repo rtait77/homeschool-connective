@@ -28,12 +28,12 @@ export default async function PreviewHomePage() {
             gap: 48px;
           }
           .hero-text {
-            flex: 0 0 45%;
-            max-width: 45%;
+            flex: 0 0 38%;
+            max-width: 38%;
           }
           .hero-video-col {
-            flex: 0 0 55%;
-            max-width: 55%;
+            flex: 0 0 62%;
+            max-width: 62%;
           }
           .hero-video-box {
             aspect-ratio: 16 / 9;
