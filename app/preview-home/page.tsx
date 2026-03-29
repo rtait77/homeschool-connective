@@ -47,11 +47,38 @@ export default async function PreviewHomePage() {
             object-fit: cover;
             display: block;
           }
-          .hero-ctас {
+          .hero-ctas {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
           }
+          .hero-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 0.875rem;
+            padding: 12px 24px;
+            border-radius: 10px;
+            background: #ed7c5a;
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.15s;
+          }
+          .hero-btn-primary:hover { opacity: 0.88; }
+          .hero-btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            padding: 12px 24px;
+            border-radius: 10px;
+            background: transparent;
+            color: #55b6ca;
+            border: 2px solid #55b6ca;
+            text-decoration: none;
+            transition: all 0.15s;
+          }
+          .hero-btn-secondary:hover { background: #55b6ca; color: white; }
           @media (max-width: 767px) {
             .hero-wrap {
               flex-direction: column;
@@ -70,7 +97,7 @@ export default async function PreviewHomePage() {
               width: 100%;
               order: 2;
             }
-            .hero-ctас {
+            .hero-ctas {
               justify-content: center;
             }
           }
@@ -84,19 +111,9 @@ export default async function PreviewHomePage() {
             <p style={{ fontSize: '1.125rem', color: '#5c5c5c', marginBottom: '28px', lineHeight: '1.6' }}>
               100% secular, for homeschoolers and educators
             </p>
-            <div className="hero-ctас">
-              <Link href="/signup"
-                style={{ display: 'inline-flex', alignItems: 'center', fontWeight: 800, fontSize: '0.875rem', padding: '12px 24px', borderRadius: '10px', background: '#ed7c5a', color: 'white', textDecoration: 'none', transition: 'opacity 0.15s' }}
-                onMouseOver={(e) => (e.currentTarget.style.opacity = '0.88')}
-                onMouseOut={(e) => (e.currentTarget.style.opacity = '1')}>
-                Start 7 Day Free Trial
-              </Link>
-              <Link href="/consulting"
-                style={{ display: 'inline-flex', alignItems: 'center', fontWeight: 700, fontSize: '0.875rem', padding: '12px 24px', borderRadius: '10px', background: 'transparent', color: '#55b6ca', border: '2px solid #55b6ca', textDecoration: 'none', transition: 'all 0.15s' }}
-                onMouseOver={(e) => { e.currentTarget.style.background = '#55b6ca'; e.currentTarget.style.color = 'white' }}
-                onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#55b6ca' }}>
-                Get Homeschool Help →
-              </Link>
+            <div className="hero-ctas">
+              <a href="/signup" className="hero-btn-primary">Start 7 Day Free Trial</a>
+              <a href="/consulting" className="hero-btn-secondary">Get Homeschool Help →</a>
             </div>
           </div>
           {/* Video box — right */}
@@ -129,7 +146,6 @@ export default async function PreviewHomePage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
 
-            {/* 1 — Mars Lesson */}
             <a href="https://view.genially.com/699e69be43a96797318311da"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -142,7 +158,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 2 — Ordering the Planets */}
             <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -155,7 +170,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 3 — Solar System Sizzle */}
             <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -168,7 +182,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 4 — Saturn Puzzle */}
             <a href="/puzzle-saturn-medium.html"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -181,7 +194,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 5 — Asteroid Blast */}
             <a href="/asteroid-blast-planets.html"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -194,7 +206,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 6 — Inner Solar System Word Search */}
             <a href="/word-search-inner-solar-system.html"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -207,7 +218,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 7 — Find a Pair: Dwarf Planets */}
             <a href="/matching-dwarf-planets.html"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -220,7 +230,6 @@ export default async function PreviewHomePage() {
               </div>
             </a>
 
-            {/* 8 — Word Sort: Planet Types */}
             <a href="/word-sort-planet-types.html"
               className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative h-32 w-full bg-[#e8e4dc]">
@@ -239,7 +248,6 @@ export default async function PreviewHomePage() {
             <Link href="/learn" className="text-sm font-bold text-[#55b6ca] hover:underline">See all games →</Link>
           </div>
         </div>
-        {/* white → cream wave */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,56 L0,48 C360,0 1080,48 1440,16 L1440,56 Z" fill="#f5f1e9" />
@@ -249,11 +257,9 @@ export default async function PreviewHomePage() {
 
       {/* Consulting interrupt */}
       <section className="px-6 py-16 relative overflow-hidden bg-[#f5f1e9]" style={{ marginTop: -2 }}>
-        {/* Decorative circles for depth */}
         <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full opacity-10 bg-white pointer-events-none" />
         <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full opacity-10 bg-white pointer-events-none" />
         <div className="absolute top-1/2 right-1/4 w-32 h-32 rounded-full opacity-5 bg-white pointer-events-none" />
-
         <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row items-center gap-10 relative">
           <div className="w-full md:w-2/5 flex-shrink-0" style={{ minHeight: '420px', position: 'relative' }}>
             <div className="relative w-full h-full rounded-2xl overflow-hidden" style={{ minHeight: '420px', boxShadow: '0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.15)' }}>
@@ -272,15 +278,11 @@ export default async function PreviewHomePage() {
                 curated resources in our database (secular and Christian) ...and growing
               </p>
             )}
-            <Link
-              href="/consulting"
-              className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition"
-            >
+            <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
               Learn More →
             </Link>
           </div>
         </div>
-        {/* cream → white wave */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
@@ -295,7 +297,6 @@ export default async function PreviewHomePage() {
             <h2 className="text-2xl">Printables</h2>
             <p className="text-[#5c5c5c] mt-1">Ready-to-use worksheets and activities for your homeschool.</p>
           </div>
-
           <div className="grid grid-cols-4 gap-4 mt-8">
             {[
               { title: 'Layers of the Sun', file: 'website-pdf-layers-sun-coloring.pdf', thumb: '/website-pdf-layers-sun-coloring.png' },
@@ -315,9 +316,7 @@ export default async function PreviewHomePage() {
             ))}
           </div>
           <p className="text-xs text-[#a09890] mt-4">*Full access to all printables with subscription.</p>
-
         </div>
-        {/* white → coral wave */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,56 L0,16 C360,56 1080,8 1440,48 L1440,56 Z" fill="#ed7c5a" />
@@ -325,7 +324,7 @@ export default async function PreviewHomePage() {
         </div>
       </section>
 
-      {/* Coming Soon topics block */}
+      {/* Coming Soon */}
       <section className="bg-[#ed7c5a] px-6 py-10 relative overflow-hidden" style={{ marginTop: -2 }}>
         <div className="max-w-[1100px] mx-auto text-center">
           <h2 className="text-3xl text-white leading-tight mb-10">New Topics Coming Soon</h2>
@@ -335,7 +334,6 @@ export default async function PreviewHomePage() {
             ))}
           </div>
         </div>
-        {/* coral → white wave */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none', zIndex: 2 }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
             <path d="M0,56 L0,32 C480,56 960,8 1440,40 L1440,56 Z" fill="#fff" />
@@ -355,9 +353,7 @@ export default async function PreviewHomePage() {
               See all posts →
             </Link>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
             <Link href="/tips/why-play-is-important" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
                 <Image src="/blog-play-blocks.avif" alt="Why Play is Important" fill className="object-cover" />
@@ -369,7 +365,6 @@ export default async function PreviewHomePage() {
                 <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
               </div>
             </Link>
-
             <Link href="/tips/learning-styles" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
                 <Image src="/blog-ls-infographic.avif" alt="Learning Styles" fill className="object-cover" />
@@ -381,7 +376,6 @@ export default async function PreviewHomePage() {
                 <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
               </div>
             </Link>
-
             <Link href="/tips/deschooling" className="bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e8e4dc] hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
               <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
                 <Image src="/blog-deschooling-kids-log.avif" alt="Deschooling" fill className="object-cover" />
@@ -393,7 +387,6 @@ export default async function PreviewHomePage() {
                 <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
               </div>
             </Link>
-
           </div>
         </div>
       </section>
