@@ -386,7 +386,7 @@ export default async function PreviewHomePage() {
         </section>
 
         {/* Coming Soon — marquee */}
-        <section className="bg-[#f5f1e9] px-6 relative overflow-hidden" style={{ marginTop: -2, paddingTop: '72px', paddingBottom: '28px' }}>
+        <section className="bg-[#f5f1e9] px-6 relative overflow-hidden" style={{ marginTop: -2, height: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className="max-w-[700px] mx-auto text-center mb-8">
             <p className="text-xs font-extrabold uppercase tracking-widest mb-3" style={{ color: '#55b6ca', letterSpacing: '0.1em' }}>In the Works</p>
             <h2 className="ph-section-heading text-2xl" style={{ color: '#3a3a3a' }}>More topics are in discussion:</h2>
