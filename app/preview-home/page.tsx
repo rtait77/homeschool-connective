@@ -19,7 +19,7 @@ export default async function PreviewHomePage() {
       {/* Hero — capped height video + text below, both visible above the fold */}
       <section>
         {/* Video — taller cap to show more game content */}
-        <div style={{ width: '100%', height: '58vh', minHeight: '300px', overflow: 'hidden', lineHeight: 0 }}>
+        <div style={{ width: '100%', height: '65vh', minHeight: '300px', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
         {/* Text block — compact, no pills */}
