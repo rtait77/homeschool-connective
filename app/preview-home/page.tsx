@@ -413,7 +413,7 @@ export default async function PreviewHomePage() {
         </section>
 
         {/* Homeschool Tips */}
-        <section className="bg-white px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
+        <section className="bg-[#f5f1e9] px-6 py-14 relative overflow-hidden" style={{ marginTop: -2 }}>
           <div className="max-w-[1100px] mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-8">
               <div>
@@ -426,7 +426,7 @@ export default async function PreviewHomePage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Link href="/tips/why-play-is-important" className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <Link href="/tips/why-play-is-important" className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.09)' }}>
                 <div className="relative w-full bg-[#f5f1e9]" style={{ height: '220px' }}>
                   <Image src="/blog-play-blocks.avif" alt="Why Play is Important" fill className="object-cover" />
                 </div>
@@ -437,7 +437,7 @@ export default async function PreviewHomePage() {
                   <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
                 </div>
               </Link>
-              <Link href="/tips/learning-styles" className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <Link href="/tips/learning-styles" className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.09)' }}>
                 <div className="relative w-full bg-[#f5f1e9]" style={{ height: '220px' }}>
                   <Image src="/blog-ls-infographic.avif" alt="Learning Styles" fill className="object-cover" />
                 </div>
@@ -448,7 +448,7 @@ export default async function PreviewHomePage() {
                   <span className="mt-4 text-sm font-bold text-[#ed7c5a]">Read more →</span>
                 </div>
               </Link>
-              <Link href="/tips/deschooling" className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-md transition-shadow" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+              <Link href="/tips/deschooling" className="bg-white rounded-[14px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.09)' }}>
                 <div className="relative w-full bg-[#f5f1e9]" style={{ height: '220px' }}>
                   <Image src="/blog-deschooling-kids-log.avif" alt="Deschooling" fill className="object-cover" />
                 </div>
