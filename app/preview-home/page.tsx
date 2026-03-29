@@ -18,8 +18,12 @@ export default async function PreviewHomePage() {
 
       {/* Hero — capped height video + text below, both visible above the fold */}
       <section>
-        {/* Video — taller cap to show more game content */}
-        <div style={{ width: '100%', height: '65vh', minHeight: '300px', overflow: 'hidden', lineHeight: 0 }}>
+        <style dangerouslySetInnerHTML={{ __html: `
+          .hero-video-wrap { height: 65vh; min-height: 300px; }
+          @media (max-width: 767px) { .hero-video-wrap { height: 45vh; min-height: 220px; } }
+        `}} />
+        {/* Video — 65vh desktop, 45vh mobile */}
+        <div className="hero-video-wrap" style={{ width: '100%', overflow: 'hidden', lineHeight: 0 }}>
           <HeroVideo />
         </div>
         {/* Text block — compact, no pills */}
