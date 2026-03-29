@@ -236,6 +236,7 @@ export default function AccountPage() {
 
   // Billing portal
   const [billingLoading, setBillingLoading] = useState(false)
+  const [billingError, setBillingError] = useState('')
 
   useEffect(() => {
     async function load() {
@@ -310,12 +311,18 @@ export default function AccountPage() {
 
   async function handleBillingPortal() {
     setBillingLoading(true)
+    setBillingError('')
     try {
       const res = await fetch('/api/billing-portal', { method: 'POST' })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else setBillingLoading(false)
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setBillingError(data.error || 'Could not open billing portal. Please contact support.')
+        setBillingLoading(false)
+      }
     } catch {
+      setBillingError('Something went wrong. Please try again.')
       setBillingLoading(false)
     }
   }
@@ -377,6 +384,7 @@ export default function AccountPage() {
                 </a>
               )}
             </div>
+            {billingError && <div className="account-msg error" style={{ marginTop: 10 }}>{billingError}</div>}
           </div>
 
           {/* Email */}
