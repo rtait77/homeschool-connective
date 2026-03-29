@@ -23,13 +23,22 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    try {
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Request timed out. Please try again.')), 10000)
+      )
+      const authCall = supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await Promise.race([authCall, timeout]) as Awaited<typeof authCall>
 
-    if (error) {
-      setError(error.message)
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+      } else {
+        router.push(data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn')
+      }
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong. Please try again.')
       setLoading(false)
-    } else {
-      router.push(data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn')
     }
   }
 
