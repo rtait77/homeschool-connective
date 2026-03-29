@@ -17,6 +17,7 @@ const games = [
     keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'facts', 'drag'],
     isFree: true,
     freeLabel: 'Free Demo',
+    newTab: false,
   },
   {
     title: 'Ordering the Planets',
@@ -29,6 +30,7 @@ const games = [
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'order', 'distance', 'sun'],
     isFree: true,
     freeLabel: 'Free',
+    newTab: false,
   },
   {
     title: 'The Sun Puzzle – Easy',
