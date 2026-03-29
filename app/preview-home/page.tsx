@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { DM_Serif_Display, DM_Sans } from 'next/font/google'
+import { Nunito, DM_Sans } from 'next/font/google'
 import NavbarPreview from '@/components/layout/navbar-preview'
 import { createClient } from '@supabase/supabase-js'
 
-const dmSerifDisplay = DM_Serif_Display({
+const nunito = Nunito({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: '400',
+  weight: ['800', '900'],
   style: ['normal', 'italic'],
 })
 
@@ -37,24 +37,24 @@ export default async function PreviewHomePage() {
   const marqueeItems = [...ALL_TOPICS, ...ALL_TOPICS]
 
   return (
-    <div className={`${dmSerifDisplay.variable} ${dmSans.variable}`}>
+    <div className={`${nunito.variable} ${dmSans.variable}`}>
       <style dangerouslySetInnerHTML={{ __html: `
         .ph-page { font-family: var(--font-body), system-ui, sans-serif; }
         .ph-page p, .ph-page li { font-family: var(--font-body), system-ui, sans-serif; }
         .ph-display {
-          font-family: var(--font-display), Georgia, serif;
-          font-weight: 400;
+          font-family: var(--font-display), system-ui, sans-serif;
+          font-weight: 900;
           font-style: normal;
           line-height: 1.1;
         }
         .ph-display-italic {
-          font-family: var(--font-display), Georgia, serif;
-          font-weight: 400;
+          font-family: var(--font-display), system-ui, sans-serif;
+          font-weight: 900;
           font-style: italic;
         }
         .ph-section-heading {
-          font-family: var(--font-display), Georgia, serif;
-          font-weight: 400;
+          font-family: var(--font-display), system-ui, sans-serif;
+          font-weight: 800;
           font-style: normal;
           line-height: 1.2;
         }
@@ -69,11 +69,27 @@ export default async function PreviewHomePage() {
         }
         .hero-video-col {
           min-width: 0;
-          overflow: hidden;
+        }
+        .hero-video-depth-wrap {
+          position: relative;
+          padding-bottom: 12px;
+          padding-right: 12px;
+        }
+        .hero-video-depth-block {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: calc(100% - 12px);
+          height: calc(100% - 12px);
+          background: rgba(85,182,202,0.35);
+          border-radius: 14px;
+          z-index: 0;
         }
         .hero-video-box {
           line-height: 0;
-          box-shadow: 10px 10px 0px rgba(85,182,202,0.35), 0 8px 32px rgba(0,0,0,0.12);
+          position: relative;
+          z-index: 1;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.12);
         }
         .hero-video-box video { width: 100%; height: auto; display: block; }
         .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
@@ -158,10 +174,13 @@ export default async function PreviewHomePage() {
               </div>
             </div>
             <div className="hero-video-col">
-              <div className="hero-video-box">
-                <video autoPlay muted playsInline loop style={{ width: '100%', height: 'auto', display: 'block' }}>
-                  <source src="/new-hero-video.mp4" type="video/mp4" />
-                </video>
+              <div className="hero-video-depth-wrap">
+                <div className="hero-video-depth-block" />
+                <div className="hero-video-box">
+                  <video autoPlay muted playsInline loop style={{ width: '100%', height: 'auto', display: 'block' }}>
+                    <source src="/new-hero-video.mp4" type="video/mp4" />
+                  </video>
+                </div>
               </div>
             </div>
           </div>
@@ -191,7 +210,7 @@ export default async function PreviewHomePage() {
               {/* Featured — Mars */}
               <a href="https://view.genially.com/699e69be43a96797318311da"
                 className="col-span-2 bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
-                <div className="relative flex-1 min-h-[128px] w-full bg-[#0d1b2a]">
+                <div className="relative flex-1 min-h-[200px] w-full bg-[#0d1b2a]">
                   <Image src="/thumb-lesson-mars.png" alt="Mission to Mars" fill className="object-cover" />
                   <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-extrabold px-3 py-1 rounded-full">Lesson</span>
                 </div>
@@ -204,7 +223,7 @@ export default async function PreviewHomePage() {
               {/* Ordering the Planets */}
               <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
                 className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
-                <div className="relative flex-1 min-h-[128px] w-full bg-[#e8e4dc]">
+                <div className="relative flex-1 min-h-[200px] w-full bg-[#e8e4dc]">
                   <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
                   <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free</span>
                 </div>
@@ -217,7 +236,7 @@ export default async function PreviewHomePage() {
               {/* Solar System Sizzle */}
               <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
                 className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
-                <div className="relative flex-1 min-h-[128px] w-full bg-[#e8e4dc]">
+                <div className="relative flex-1 min-h-[200px] w-full bg-[#e8e4dc]">
                   <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
                   <span className="absolute top-2 left-2 bg-[#ed7c5a] text-white text-xs font-extrabold px-2.5 py-1 rounded-full">Free Demo</span>
                 </div>
