@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Figtree } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
-import Navbar from '@/components/layout/navbar'
+import NavbarPreview from '@/components/layout/navbar-preview'
 import Footer from '@/components/layout/footer'
 import PageViewTracker from '@/components/page-view-tracker'
 
@@ -42,7 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${figtree.variable} antialiased`}>
         <PageViewTracker />
-        <Navbar />
+        <NavbarPreview />
         <main>{children}</main>
         <Footer />
         <Script
