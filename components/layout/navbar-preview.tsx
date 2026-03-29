@@ -241,8 +241,11 @@ export default function NavbarPreview() {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const supabase = createClient()
+  const isAuthPage = pathname === '/login' || pathname === '/signup'
 
   useEffect(() => {
+    if (isAuthPage) return
+
     async function loadUser() {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
@@ -265,7 +268,7 @@ export default function NavbarPreview() {
     loadUser()
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
     return () => subscription.unsubscribe()
-  }, [])
+  }, [isAuthPage])
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
