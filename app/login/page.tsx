@@ -25,10 +25,7 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      console.log('1) signInWithPassword session:', data.session)
-      const { data: sessionCheck } = await supabase.auth.getSession()
-      console.log('2) getSession() immediately after:', sessionCheck.session)
-      console.log('3) document.cookie:', document.cookie)
+      await supabase.auth.getSession()
       window.location.href = data.user?.email === ADMIN_EMAIL ? '/admin' : '/learn'
     }
   }
