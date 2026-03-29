@@ -15,6 +15,8 @@ const games = [
     mini: false,
     types: ['easy'],
     keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'facts', 'drag'],
+    isFree: true,
+    freeLabel: 'Free Demo',
   },
   {
     title: 'Ordering the Planets',
@@ -25,6 +27,8 @@ const games = [
     mini: false,
     types: ['easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'order', 'distance', 'sun'],
+    isFree: true,
+    freeLabel: 'Free',
   },
   {
     title: 'The Sun Puzzle – Easy',
@@ -1125,8 +1129,9 @@ export default function GamesPage() {
 }
 
 function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: GameItem, hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
-  const href = hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
-  const external = hasAccess && game.newTab !== false
+  const canPlay = hasAccess || !!game.isFree
+  const href = canPlay ? game.url : trialExpired ? '/pricing' : '/signup'
+  const external = canPlay && game.newTab !== false
 
   return (
     <a
@@ -1137,7 +1142,12 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
     >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-        {game.mini && (
+        {game.freeLabel && (
+          <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+            {game.freeLabel}
+          </span>
+        )}
+        {!game.freeLabel && game.mini && (
           <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
             Mini
           </span>
@@ -1162,7 +1172,7 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
       <div className="p-5 flex flex-col flex-1">
         <p className="font-extrabold text-base mb-2">{game.title}</p>
         {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
-        {!hasAccess && (
+        {!hasAccess && !game.isFree && (
           <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to play →' : 'Start free trial →'}</p>
         )}
       </div>
