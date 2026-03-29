@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { loginAction } from './actions'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -21,7 +22,13 @@ export default function LoginPage() {
     if (result.error) {
       setError(result.error)
       setLoading(false)
-    } else if (result.redirectTo) {
+    } else if (result.access_token && result.redirectTo) {
+      // Sync session to browser client so navbar/pages see the user immediately
+      const supabase = createClient()
+      await supabase.auth.setSession({
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+      })
       window.location.href = result.redirectTo
     }
   }
