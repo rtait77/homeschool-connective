@@ -17,6 +17,8 @@ export async function loginAction(
   }
 
   return {
+    access_token: data.session!.access_token,
+    refresh_token: data.session!.refresh_token,
     redirectTo: data.user?.email === ADMIN_EMAIL ? '/admin' : '/learn',
   }
 }
