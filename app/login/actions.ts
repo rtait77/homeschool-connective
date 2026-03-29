@@ -1,0 +1,22 @@
+'use server'
+
+import { createClient } from '@/lib/supabase/server'
+
+const ADMIN_EMAIL = 'support@homeschoolconnective.com'
+
+export async function loginAction(
+  email: string,
+  password: string
+): Promise<{ error?: string; redirectTo?: string }> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return {
+    redirectTo: data.user?.email === ADMIN_EMAIL ? '/admin' : '/learn',
+  }
+}
