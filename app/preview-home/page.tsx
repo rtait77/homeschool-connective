@@ -23,28 +23,20 @@ export default async function PreviewHomePage() {
             max-width: 1200px;
             margin: 0 auto;
             padding: 48px 24px 40px;
-            display: flex;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 38fr 62fr;
             gap: 48px;
-          }
-          .hero-text {
-            flex: 0 0 38%;
-            max-width: 38%;
-          }
-          .hero-video-col {
-            flex: 0 0 62%;
-            max-width: 62%;
+            align-items: center;
           }
           .hero-video-box {
-            aspect-ratio: 16 / 9;
-            border-radius: 18px;
+            border-radius: 16px;
             overflow: hidden;
+            line-height: 0;
             box-shadow: 0 12px 48px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
           }
           .hero-video-box video {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
             display: block;
           }
           .hero-ctas {
@@ -79,22 +71,24 @@ export default async function PreviewHomePage() {
             transition: all 0.15s;
           }
           .hero-btn-secondary:hover { background: #55b6ca; color: white; }
-          @media (max-width: 767px) {
+          @media (max-width: 900px) {
             .hero-wrap {
-              flex-direction: column;
-              padding: 32px 20px 32px;
+              grid-template-columns: 40fr 60fr;
+              gap: 32px;
+              padding: 40px 20px 32px;
+            }
+          }
+          @media (max-width: 640px) {
+            .hero-wrap {
+              grid-template-columns: 1fr;
               gap: 28px;
+              padding: 32px 20px 32px;
             }
             .hero-text {
-              flex: none;
-              max-width: 100%;
               text-align: center;
               order: 1;
             }
             .hero-video-col {
-              flex: none;
-              max-width: 100%;
-              width: 100%;
               order: 2;
             }
             .hero-ctas {
@@ -119,7 +113,15 @@ export default async function PreviewHomePage() {
           {/* Video box — right */}
           <div className="hero-video-col">
             <div className="hero-video-box">
-              <HeroVideo />
+              <video
+                autoPlay
+                muted
+                playsInline
+                loop
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              >
+                <source src="/new-hero-video.mp4" type="video/mp4" />
+              </video>
             </div>
           </div>
         </div>
