@@ -16,33 +16,94 @@ export default async function PreviewHomePage() {
     <>
       <NavbarPreview />
 
-      {/* Hero — capped height video + text below, both visible above the fold */}
-      <section>
+      {/* Hero — contained video box, side by side with text */}
+      <section style={{ background: 'white', paddingBottom: '0' }}>
         <style dangerouslySetInnerHTML={{ __html: `
-          .hero-video-wrap { height: 65vh; min-height: 300px; }
-          @media (max-width: 767px) { .hero-video-wrap { height: 45vh; min-height: 220px; } }
+          .hero-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 48px 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 48px;
+          }
+          .hero-text {
+            flex: 0 0 45%;
+            max-width: 45%;
+          }
+          .hero-video-col {
+            flex: 0 0 55%;
+            max-width: 55%;
+          }
+          .hero-video-box {
+            aspect-ratio: 16 / 9;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+          }
+          .hero-video-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+          }
+          .hero-ctас {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+          }
+          @media (max-width: 767px) {
+            .hero-wrap {
+              flex-direction: column;
+              padding: 32px 20px 32px;
+              gap: 28px;
+            }
+            .hero-text {
+              flex: none;
+              max-width: 100%;
+              text-align: center;
+              order: 1;
+            }
+            .hero-video-col {
+              flex: none;
+              max-width: 100%;
+              width: 100%;
+              order: 2;
+            }
+            .hero-ctас {
+              justify-content: center;
+            }
+          }
         `}} />
-        {/* Video — 65vh desktop, 45vh mobile */}
-        <div className="hero-video-wrap" style={{ width: '100%', overflow: 'hidden', lineHeight: 0 }}>
-          <HeroVideo />
-        </div>
-        {/* Text block — compact, no pills */}
-        <div className="max-w-4xl mx-auto px-6 py-5 text-center">
-          <h1 className="font-extrabold leading-tight mb-3" style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}>
-            Learning That Feels Like <em className="not-italic text-[#ed7c5a]">Playing</em>
-          </h1>
-          <p className="text-lg text-[#5c5c5c] mb-5">
-            100% secular, for homeschoolers and educators
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-            <Link href="/signup"
-              className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white hover:opacity-90 transition-all">
-              Start 7 Day Free Trial
-            </Link>
-            <Link href="/consulting"
-              className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#55b6ca] text-white hover:opacity-90 transition-all">
-              Parent Support →
-            </Link>
+        <div className="hero-wrap">
+          {/* Text — left */}
+          <div className="hero-text">
+            <h1 className="font-extrabold leading-tight mb-4" style={{ fontSize: 'clamp(2rem, 3vw, 3rem)' }}>
+              Learning That Feels Like <em className="not-italic" style={{ color: '#ed7c5a' }}>Playing</em>
+            </h1>
+            <p style={{ fontSize: '1.125rem', color: '#5c5c5c', marginBottom: '28px', lineHeight: '1.6' }}>
+              100% secular, for homeschoolers and educators
+            </p>
+            <div className="hero-ctас">
+              <Link href="/signup"
+                style={{ display: 'inline-flex', alignItems: 'center', fontWeight: 800, fontSize: '0.875rem', padding: '12px 24px', borderRadius: '10px', background: '#ed7c5a', color: 'white', textDecoration: 'none', transition: 'opacity 0.15s' }}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = '0.88')}
+                onMouseOut={(e) => (e.currentTarget.style.opacity = '1')}>
+                Start 7 Day Free Trial
+              </Link>
+              <Link href="/consulting"
+                style={{ display: 'inline-flex', alignItems: 'center', fontWeight: 700, fontSize: '0.875rem', padding: '12px 24px', borderRadius: '10px', background: 'transparent', color: '#55b6ca', border: '2px solid #55b6ca', textDecoration: 'none', transition: 'all 0.15s' }}
+                onMouseOver={(e) => { e.currentTarget.style.background = '#55b6ca'; e.currentTarget.style.color = 'white' }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#55b6ca' }}>
+                Get Homeschool Help →
+              </Link>
+            </div>
+          </div>
+          {/* Video box — right */}
+          <div className="hero-video-col">
+            <div className="hero-video-box">
+              <HeroVideo />
+            </div>
           </div>
         </div>
         {/* white → cream wave */}
