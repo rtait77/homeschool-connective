@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase/client'
 
 type Game = {
   title: string
@@ -68,6 +68,7 @@ const allGames: Game[] = [
 
 export default function DashboardPage() {
   const router = useRouter()
+  const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('')
@@ -80,10 +81,6 @@ export default function DashboardPage() {
   } | null>(null)
   const [reportReady, setReportReady] = useState(false)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
 
   useEffect(() => {
     async function load() {
