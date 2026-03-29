@@ -199,60 +199,66 @@ export default function DashboardPage() {
       {hasConsulting && consulting && (
         <div className="mb-12">
           <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting with Mel</h2>
-          <div className={`rounded-2xl p-6 border ${consulting.intake_completed ? 'bg-white border-[#e2ddd5]' : 'bg-[#fff9f7] border-[#ed7c5a]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-            <div className="flex items-start justify-between flex-wrap gap-4">
-              <div className="flex-1">
-                {/* Subscription terms */}
-                {(() => {
-                  const consultDaysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-                  return (
-                    <div className="flex flex-wrap gap-3 mb-4">
-                      <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                        reportReady ? 'bg-[#5bb87a] text-white'
-                        : consulting.intake_completed ? 'bg-[#d1f5ea] text-[#1a7a52]'
-                        : 'bg-[#ed7c5a] text-white'
-                      }`}>
-                        {reportReady ? 'Your report is ready'
-                          : consulting.intake_completed ? 'Intake submitted — Mel is reviewing'
-                          : 'Complete your intake form'}
-                      </span>
-                      {consultDaysLeft > 0
-                        ? <span className="text-xs text-[#5c5c5c]">{consultDaysLeft} days left in your 3-month support window</span>
-                        : <span className="text-xs text-[#991b1b]">3-month support window has ended</span>
-                      }
-                    </div>
-                  )
-                })()}
+          {(() => {
+            const consultDaysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                {/* Intake form status */}
-                {!consulting.intake_completed ? (
-                  <div>
-                    <p className="text-sm text-[#5c5c5c] mb-1">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
+                {/* Card 1: Intake Form */}
+                <div className={`rounded-2xl p-6 border flex flex-col ${consulting.intake_completed ? 'bg-white border-[#e2ddd5]' : 'bg-[#fff9f7] border-[#ed7c5a]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-base font-extrabold">Intake Form</span>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${consulting.intake_completed ? 'bg-[#d1f5ea] text-[#1a7a52]' : 'bg-[#ed7c5a] text-white'}`}>
+                      {consulting.intake_completed ? 'Submitted' : 'Action needed'}
+                    </span>
                   </div>
-                ) : reportReady ? (
-                  <div>
-                    <p className="text-sm text-[#5c5c5c] mb-3">Your personalized curriculum report from Mel is ready.</p>
-                    <div className="flex flex-wrap gap-4">
-                      <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
+                  {consulting.intake_completed ? (
+                    <>
+                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">Your intake form has been submitted. Mel has everything she needs.</p>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your answers →</Link>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
+                      <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition self-start">
+                        Complete Intake Form →
+                      </Link>
+                    </>
+                  )}
+                </div>
+
+                {/* Card 2: Report */}
+                <div className={`rounded-2xl p-6 border flex flex-col ${reportReady ? 'bg-white border-[#5bb87a]' : 'bg-white border-[#e2ddd5]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-base font-extrabold">Your Report</span>
+                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${reportReady ? 'bg-[#5bb87a] text-white' : 'bg-[#f0ede8] text-[#8a8078]'}`}>
+                      {reportReady ? 'Ready' : 'Pending'}
+                    </span>
+                  </div>
+                  {reportReady ? (
+                    <>
+                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">Your personalized curriculum report from Mel is ready to view.</p>
+                      <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition self-start">
                         View My Report →
                       </Link>
-                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline self-center">Review intake answers →</Link>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-sm text-[#5c5c5c] mb-3">Mel has your answers and will be in touch within 3–5 business days.</p>
-                    <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
-                  </div>
-                )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">
+                        {consulting.intake_completed
+                          ? 'Mel has your answers and will be in touch within 3–5 business days.'
+                          : 'Your report will be ready after you submit the intake form.'}
+                      </p>
+                      <span className="text-sm text-[#a09890]">
+                        {consultDaysLeft > 0 ? `${consultDaysLeft} days left in your support window` : 'Support window has ended'}
+                      </span>
+                    </>
+                  )}
+                </div>
+
               </div>
-              {!consulting.intake_completed && (
-                <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition whitespace-nowrap">
-                  Complete Intake Form →
-                </Link>
-              )}
-            </div>
-          </div>
+            )
+          })()}
         </div>
       )}
 
