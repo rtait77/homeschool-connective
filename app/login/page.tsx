@@ -31,7 +31,7 @@ export default function LoginPage() {
         setError(error.message)
         setLoading(false)
       } else {
-        router.push(data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn')
+        window.location.href = data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn'
       }
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.')
