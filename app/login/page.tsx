@@ -1,41 +1,28 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { loginAction } from './actions'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(true)
-  const router = useRouter()
-
-  const supabase = createClient()
+  const [showPassword, setShowPassword] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    try {
-      const timeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Request timed out. Please try again.')), 10000)
-      )
-      const authCall = supabase.auth.signInWithPassword({ email, password })
-      const { data, error } = await Promise.race([authCall, timeout]) as Awaited<typeof authCall>
+    const result = await loginAction(email, password)
 
-      if (error) {
-        setError(error.message)
-        setLoading(false)
-      } else {
-        window.location.href = data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn'
-      }
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong. Please try again.')
+    if (result.error) {
+      setError(result.error)
       setLoading(false)
+    } else if (result.redirectTo) {
+      window.location.href = result.redirectTo
     }
   }
 
@@ -90,7 +77,8 @@ export default function LoginPage() {
         </button>
 
         <p className="text-center text-xs text-[#5c5c5c]">
-          Don't have an account? <Link href="/signup" className="text-[#238FA4] font-bold hover:underline">Subscribe</Link>
+          Don&apos;t have an account?{' '}
+          <Link href="/signup" className="text-[#238FA4] font-bold hover:underline">Subscribe</Link>
         </p>
       </form>
     </div>
