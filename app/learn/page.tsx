@@ -900,9 +900,9 @@ export default function GamesPage() {
           <div>
             <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Difficulty</p>
             <div className="flex flex-wrap gap-2">
-              <FilterChip label="Easy" dots={1} active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
-              <FilterChip label="Medium" dots={2} active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
-              <FilterChip label="Hard" dots={3} active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
+              <FilterChip label="Easy" dots={1} dotBg="#4caf7d" active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
+              <FilterChip label="Medium" dots={2} dotBg="#f5a623" active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
+              <FilterChip label="Hard" dots={3} dotBg="#e05252" active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
             </div>
           </div>
         )}
@@ -975,7 +975,7 @@ export default function GamesPage() {
   )
 }
 
-function FilterChip({ label, icon, dots, active, onClick }: { label: string, icon?: string, dots?: number, active: boolean, onClick: () => void }) {
+function FilterChip({ label, icon, dots, dotBg, active, onClick }: { label: string, icon?: string, dots?: number, dotBg?: string, active: boolean, onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -988,7 +988,7 @@ function FilterChip({ label, icon, dots, active, onClick }: { label: string, ico
       {dots ? (
         <span className="flex gap-0.5 items-center">
           {Array.from({ length: dots }).map((_, i) => (
-            <span key={i} className={`w-2 h-2 rounded-full ${active ? 'bg-white' : 'bg-[#ed7c5a]'}`} />
+            <span key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: active ? 'white' : dotBg }} />
           ))}
         </span>
       ) : icon ? (
@@ -1037,14 +1037,16 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
       <div className="p-5 flex flex-col flex-1">
         {(() => {
           const t = game.title.toLowerCase()
-          const dots = game.types.includes('easy') || t.includes('– easy') ? 1
-            : game.types.includes('medium') || t.includes('– medium') ? 2
-            : game.types.includes('hard') || t.includes('– hard') ? 3
+          const level = game.types.includes('easy') || t.includes('– easy') ? 'easy'
+            : game.types.includes('medium') || t.includes('– medium') ? 'medium'
+            : game.types.includes('hard') || t.includes('– hard') ? 'hard'
             : null
+          const dots = level === 'easy' ? 1 : level === 'medium' ? 2 : level === 'hard' ? 3 : null
+          const dotColor = level === 'easy' ? '#4caf7d' : level === 'medium' ? '#f5a623' : '#e05252'
           return dots ? (
             <div className="flex gap-1 mb-2">
               {Array.from({ length: dots }).map((_, i) => (
-                <span key={i} className="w-2.5 h-2.5 rounded-full bg-[#ed7c5a] inline-block" />
+                <span key={i} className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: dotColor }} />
               ))}
             </div>
           ) : null
