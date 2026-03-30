@@ -26,6 +26,7 @@ export default function LoginPage() {
       setLoading(false)
     } else {
       router.push(data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn')
+      router.refresh()
     }
   }
 
