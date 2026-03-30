@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Figtree, Nunito } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
-import Navbar from '@/components/layout/navbar'
+import Navbar from '@/components/layout/navbar-preview'
 import Footer from '@/components/layout/footer'
 import PageViewTracker from '@/components/page-view-tracker'
 
