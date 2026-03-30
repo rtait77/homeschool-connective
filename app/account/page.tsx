@@ -239,9 +239,7 @@ export default function AccountPage() {
   const [billingError, setBillingError] = useState('')
 
   useEffect(() => {
-    async function load() {
-      const { data: { session } } = await supabase.auth.getSession()
-      const user = session?.user ?? null
+    async function load(user: any) {
       if (!user) { router.push('/login'); return }
       setUser(user)
       setEmailEdit(user.email ?? '')
@@ -254,7 +252,13 @@ export default function AccountPage() {
       setProfile(prof)
       setLoading(false)
     }
-    load()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        load(session?.user ?? null)
+        subscription.unsubscribe()
+      }
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
