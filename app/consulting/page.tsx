@@ -52,8 +52,8 @@ export default function ConsultingPage() {
               Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship.
             </p>
             <a
-              href="#pricing"
-              style={{ display: 'inline-block', alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: '2px solid rgba(255,255,255,0.6)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}
+              href="/pricing"
+              style={{ display: 'inline-block', alignSelf: 'flex-start', backgroundColor: '#fff', color: '#238FA4', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: 'none', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}
             >
               Book a Consult →
             </a>
