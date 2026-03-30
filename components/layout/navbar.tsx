@@ -149,6 +149,16 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            {user && (
+              <>
+                <li className="w-px h-5 bg-[#ddd8cc]" aria-hidden="true" />
+                <li>
+                  <Link href="/dashboard" className="font-semibold text-[#ed7c5a] hover:opacity-80 transition">
+                    Dashboard
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
 
           {/* Mobile hamburger */}
