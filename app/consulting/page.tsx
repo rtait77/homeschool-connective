@@ -41,7 +41,7 @@ export default function ConsultingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: 560, gap: 0 }} className="consulting-hero">
 
           {/* Left: solid teal panel */}
-          <div style={{ background: '#55b6ca', padding: '80px 52px 100px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ background: '#238FA4', padding: '80px 52px 100px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <p style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 20 }}>
               One-on-One Homeschool Consulting
             </p>
