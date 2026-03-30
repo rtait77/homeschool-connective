@@ -135,8 +135,8 @@ export default function Navbar() {
             <Image src="/Logo.png" alt="Homeschool Connective" width={180} height={56} className="h-14 w-auto" priority />
           </Link>
 
-          {/* Desktop links — centered */}
-          <ul className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 text-base font-medium">
+          {/* Desktop links — centered, cream oval */}
+          <ul className="hidden md:flex items-center gap-6 bg-[#f5f1e9] rounded-full px-6 py-2.5 absolute left-1/2 -translate-x-1/2 text-sm font-semibold">
             {activeLinks.map(({ href, label }) => (
               <li key={href}>
                 <Link
@@ -149,15 +149,19 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            {user && (
-              <>
-                <li className="w-px h-5 bg-[#ddd8cc]" aria-hidden="true" />
-                <li>
-                  <Link href="/dashboard" className="font-semibold text-[#ed7c5a] hover:opacity-80 transition">
-                    Dashboard
-                  </Link>
-                </li>
-              </>
+            <li className="w-px h-4 bg-[#ddd8cc]" aria-hidden="true" />
+            {user ? (
+              <li>
+                <Link href="/dashboard" className="font-semibold text-[#ed7c5a] hover:opacity-80 transition">
+                  Dashboard
+                </Link>
+              </li>
+            ) : (
+              <li>
+                <Link href="/consulting" className="font-semibold text-[#55b6ca] hover:text-[#238FA4] transition">
+                  Consulting
+                </Link>
+              </li>
             )}
           </ul>
 
