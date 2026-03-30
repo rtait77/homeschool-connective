@@ -152,9 +152,9 @@ export default function SubscribePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
         {/* Consulting card */}
-        <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
+        <div className="bg-white rounded-2xl p-7 border-2 border-[#238FA4] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(35,143,164,0.12)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">One-on-One Consulting</p>
-          <p className="text-3xl font-extrabold text-[#ed7c5a] mb-0">$47</p>
+          <p className="text-3xl font-extrabold text-[#238FA4] mb-0">$47</p>
           <p className="text-xs text-[#a09890] mb-5">one-time payment</p>
           <ul className="text-sm text-[#3a3a3a] space-y-2 mb-4 flex-1">
             <li>✓ Deep-dive intake form</li>
@@ -165,13 +165,13 @@ export default function SubscribePage() {
           </ul>
           <p className="text-xs text-[#a09890] mb-5">Option to subscribe to games after your trial if you choose.</p>
           {showTrial ? (
-            <Link href="/signup" className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition">
+            <Link href="/signup" className="block w-full py-3 rounded-lg bg-[#238FA4] text-white font-bold text-sm text-center hover:opacity-90 transition">
               Start Free Trial →
             </Link>
           ) : (
             <button
               onClick={() => setModalTarget('consulting')}
-              className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
+              className="block w-full py-3 rounded-lg bg-[#238FA4] text-white font-bold text-sm text-center hover:opacity-90 transition"
             >
               Get Started — $47 →
             </button>
