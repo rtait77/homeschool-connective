@@ -398,7 +398,7 @@ export default function NavbarPreview() {
             ) : (
               <>
                 <Link href="/login" className="nav-login">Log In</Link>
-                <Link href="/signup" className="nav-cta">Start Free Trial →</Link>
+                <Link href="/pricing" className="nav-cta">Start Free Trial →</Link>
               </>
             )}
           </div>
@@ -446,7 +446,7 @@ export default function NavbarPreview() {
             ) : (
               <>
                 <hr className="mobile-divider" />
-                <li><Link href="/signup" onClick={() => setMenuOpen(false)} className="cta-mobile">Start Free Trial →</Link></li>
+                <li><Link href="/pricing" onClick={() => setMenuOpen(false)} className="cta-mobile">Start Free Trial →</Link></li>
                 <li><Link href="/login" onClick={() => setMenuOpen(false)}>Log In</Link></li>
               </>
             )}
