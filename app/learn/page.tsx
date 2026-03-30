@@ -1111,7 +1111,7 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
         })()}
         <p className="font-extrabold text-base mb-2">{game.title}</p>
         <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
-        {isFree ? (
+        {isFree && !hasAccess ? (
           <p className="mt-3 text-sm font-bold text-[#ed7c5a]">Play →</p>
         ) : !hasAccess && (
           <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to play →' : 'Start free trial →'}</p>
