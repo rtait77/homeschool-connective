@@ -330,11 +330,11 @@ export default async function PreviewHomePage() {
               </p>
               {resourceCount && (
                 <p className="text-sm text-[#5c5c5c] mb-6" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span className="text-2xl font-extrabold text-[#ed7c5a]">{resourceCount}</span>{' '}
+                  <span className="text-2xl font-extrabold text-[#238FA4]">{resourceCount}</span>{' '}
                   curated resources in our database (secular and Christian) ...and growing
                 </p>
               )}
-              <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+              <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#238FA4] text-white hover:opacity-90 transition">
                 Learn More →
               </Link>
             </div>
