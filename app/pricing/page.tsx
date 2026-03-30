@@ -179,8 +179,8 @@ export default function SubscribePage() {
         </div>
 
         {/* Games card with toggle */}
-        <div className="bg-white rounded-2xl p-7 flex flex-col relative" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games Subscription</p>
+        <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col relative" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games/Lessons/Printables Subscription</p>
 
           {/* Toggle */}
           <div className="flex rounded-xl overflow-hidden border border-[#e2ddd5] mb-5 self-start w-full">
