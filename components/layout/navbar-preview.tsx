@@ -247,18 +247,14 @@ export default function NavbarPreview() {
     if (isAuthPage) return
 
     async function loadUser() {
-      let { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        const { data: refreshed } = await supabase.auth.refreshSession()
-        session = refreshed.session
-      }
-      const user = session?.user ?? null
-      setUser(user)
-      if (!user) return
+      const { data: { session } } = await supabase.auth.getSession()
+      const currentUser = session?.user ?? null
+      setUser(currentUser)
+      if (!currentUser) return
 
       const [{ data: profile }, { data: consulting }] = await Promise.all([
-        supabase.from('profiles').select('subscription_status, trial_end').eq('id', user.id).single(),
-        supabase.from('consulting_customers').select('id').eq('user_id', user.id).maybeSingle(),
+        supabase.from('profiles').select('subscription_status, trial_end').eq('id', currentUser.id).single(),
+        supabase.from('consulting_customers').select('id').eq('user_id', currentUser.id).maybeSingle(),
       ])
 
       const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
@@ -270,7 +266,7 @@ export default function NavbarPreview() {
       else if (hasConsulting) setSubType('consulting')
     }
 
-    setTimeout(() => loadUser(), 300)
+    loadUser()
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
     return () => subscription.unsubscribe()
   }, [isAuthPage])
