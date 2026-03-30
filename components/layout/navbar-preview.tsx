@@ -381,7 +381,6 @@ export default function NavbarPreview() {
                   {dropdownOpen && (
                     <div className="nav-dropdown">
                       <div className="nav-dropdown-email">{displayEmail}</div>
-                      {isAdmin && <Link href="/admin" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Admin Panel</Link>}
                       <Link href="/account" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Account</Link>
                       <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
                         <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
@@ -434,7 +433,6 @@ export default function NavbarPreview() {
                   <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} className={isActive('/dashboard') ? 'active-mobile' : ''}>Dashboard</Link></li>
                 )}
                 <li><p style={{ padding: '4px 0 2px', fontSize: '0.75rem', color: '#a09890', margin: 0 }}>{displayEmail}</p></li>
-                {isAdmin && <li><Link href="/admin" onClick={() => setMenuOpen(false)}>Admin Panel</Link></li>}
                 <li><Link href="/account" onClick={() => setMenuOpen(false)}>Account</Link></li>
                 <li><button onClick={handleLogout} className="muted-mobile">Log Out</button></li>
               </>
