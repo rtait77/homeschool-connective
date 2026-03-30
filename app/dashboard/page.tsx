@@ -147,7 +147,7 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-extrabold mb-3">Welcome back, {firstName}!</h1>
         <div className="flex flex-wrap gap-3 items-center">
           {isActive && (
-            <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Games — Active</span>
+            <span className="text-sm font-bold bg-[#ed7c5a] text-white px-3 py-1 rounded-full">Games — Active</span>
           )}
           {isTrialing && (
             <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             </span>
           )}
           {hasConsulting && (
-            <span className="text-sm font-bold bg-[#f0fafa] text-[#238FA4] border border-[#55b6ca] px-3 py-1 rounded-full">Consulting — Active</span>
+            <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Consulting — Active</span>
           )}
           {isTrialing && (
             <Link href="/pricing" className="text-sm font-bold text-[#238FA4] hover:underline">Subscribe to keep access →</Link>
