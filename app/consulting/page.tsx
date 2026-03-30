@@ -333,23 +333,15 @@ export default function ConsultingPage() {
       {/* ── PRICING ── */}
       <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
-          <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', margin: '0 auto 40px' }}>
-            One-time payment. No subscription required.
-          </p>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>What&apos;s included</h2>
 
-          <div style={{ borderRadius: 18, padding: '32px', border: '2px solid #238FA4', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(35,143,164,0.12)', marginBottom: 28 }}>
-            <p style={{ fontSize: '2.2rem', fontWeight: 800, color: '#238FA4', margin: '0 0 2px' }}>$47</p>
-            <p style={{ fontSize: '0.8rem', color: '#a09890', marginBottom: 24 }}>one-time payment</p>
-            <ul style={{ fontSize: '0.9rem', color: '#383838', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <li>✓ Deep-dive intake form</li>
-              <li>✓ Personalized curriculum recommendations</li>
-              <li>✓ Learning styles, teaching styles, and homeschool methods match</li>
-              <li>✓ 3 months of email support with Mel</li>
-              <li style={{ color: '#55b6ca', fontWeight: 700 }}>✓ 7-day free trial of our educational games included</li>
-            </ul>
-            <p style={{ fontSize: '0.8rem', color: '#a09890', marginTop: 12, marginBottom: 0 }}>Option to subscribe to games after your trial if you choose.</p>
-          </div>
+          <ul style={{ fontSize: '0.95rem', color: '#383838', listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> Deep-dive intake form</li>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> Personalized curriculum recommendations</li>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> Learning styles, teaching styles, and homeschool methods match</li>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> 3 months of email support with Mel</li>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#55b6ca', fontWeight: 800, flexShrink: 0 }}>✓</span> <span style={{ color: '#55b6ca', fontWeight: 700 }}>7-day free trial of our educational games included</span></li>
+          </ul>
 
           <a
             href="/pricing"
