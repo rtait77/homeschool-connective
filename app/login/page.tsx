@@ -80,7 +80,7 @@ export default function LoginPage() {
         </button>
 
         <p className="text-center text-xs text-[#5c5c5c]">
-          Don&apos;t have an account? <Link href="/signup" className="text-[#238FA4] font-bold hover:underline">Subscribe</Link>
+          Don&apos;t have an account? <Link href="/pricing" className="text-[#238FA4] font-bold hover:underline">See plans</Link>
         </p>
       </form>
     </div>
