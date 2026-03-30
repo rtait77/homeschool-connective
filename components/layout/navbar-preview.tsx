@@ -339,41 +339,37 @@ export default function NavbarPreview() {
             <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={50} style={{ height: '40px', width: 'auto' }} priority />
           </Link>
 
-          {/* Pill nav — logged-out only */}
-          {!user && (
-            <div className="nav-pill-wrap">
-              <div className="nav-pill">
-                {pillLinks.map(({ href, label }) => (
-                  <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
-                    {label}
+          {/* Pill nav — all users */}
+          <div className="nav-pill-wrap">
+            <div className="nav-pill">
+              {pillLinks.map(({ href, label }) => (
+                <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
+                  {label}
+                </Link>
+              ))}
+              {showConsultingInPill && (
+                <>
+                  <div className="nav-pill-divider" />
+                  <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
+                    Consulting
                   </Link>
-                ))}
-                {showConsultingInPill && (
-                  <>
-                    <div className="nav-pill-divider" />
-                    <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
-                      Consulting
-                    </Link>
-                  </>
-                )}
-              </div>
+                </>
+              )}
+              {showDashboardLink && (
+                <>
+                  <div className="nav-pill-divider" />
+                  <Link href="/dashboard" className={`nav-pill-link consulting${isActive('/dashboard') ? ' active' : ''}`}>
+                    Dashboard
+                  </Link>
+                </>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Right side */}
           <div className="nav-right desktop-only" style={{ marginLeft: user ? 'auto' : undefined }}>
             {user ? (
               <>
-                {pillLinks.map(({ href, label }) => (
-                  <Link key={href} href={href} className={`nav-dashboard-link${isActive(href) ? ' active' : ''}`}>
-                    {label}
-                  </Link>
-                ))}
-                {showDashboardLink && (
-                  <Link href="/dashboard" className={`nav-dashboard-link${isActive('/dashboard') ? ' active' : ''}`}>
-                    Dashboard
-                  </Link>
-                )}
                 <div style={{ position: 'relative' }} ref={dropdownRef}>
                   <button className="nav-avatar-btn" onClick={() => setDropdownOpen(!dropdownOpen)} aria-label="Account menu">
                     <span className="nav-avatar">{userInitial}</span>
