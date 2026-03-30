@@ -74,6 +74,19 @@ const CSS = `
     background: rgba(85,182,202,0.12);
     box-shadow: 0 1px 4px rgba(85,182,202,0.15);
   }
+  .nav-pill-link.admin {
+    color: #ed7c5a;
+    font-weight: 600;
+  }
+  .nav-pill-link.admin:hover {
+    color: #d96a48;
+    background: rgba(237,124,90,0.08);
+  }
+  .nav-pill-link.admin.active {
+    color: #d96a48;
+    background: rgba(237,124,90,0.12);
+    box-shadow: 0 1px 4px rgba(237,124,90,0.15);
+  }
   .nav-right {
     display: flex;
     align-items: center;
@@ -358,9 +371,15 @@ export default function NavbarPreview() {
               {showDashboardLink && (
                 <>
                   <div className="nav-pill-divider" />
-                  <Link href="/dashboard" className={`nav-pill-link consulting${isActive('/dashboard') ? ' active' : ''}`}>
-                    Dashboard
-                  </Link>
+                  {isAdmin ? (
+                    <Link href="/admin" className={`nav-pill-link admin${isActive('/admin') ? ' active' : ''}`}>
+                      Admin Panel
+                    </Link>
+                  ) : (
+                    <Link href="/dashboard" className={`nav-pill-link admin${isActive('/dashboard') ? ' active' : ''}`}>
+                      Dashboard
+                    </Link>
+                  )}
                 </>
               )}
             </div>
@@ -430,7 +449,9 @@ export default function NavbarPreview() {
               <>
                 <hr className="mobile-divider" />
                 {mobileShowDashboard && (
-                  <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} className={isActive('/dashboard') ? 'active-mobile' : ''}>Dashboard</Link></li>
+                  isAdmin
+                    ? <li><Link href="/admin" onClick={() => setMenuOpen(false)} style={{ color: '#ed7c5a' }}>Admin Panel</Link></li>
+                    : <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} style={{ color: '#ed7c5a' }}>Dashboard</Link></li>
                 )}
                 <li><p style={{ padding: '4px 0 2px', fontSize: '0.75rem', color: '#a09890', margin: 0 }}>{displayEmail}</p></li>
                 <li><Link href="/account" onClick={() => setMenuOpen(false)}>Account</Link></li>
