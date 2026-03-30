@@ -12,8 +12,7 @@ export function createClient() {
         auth: {
           // Bypass navigator.locks — Chrome can get a stuck lock that causes
           // signInWithPassword and signOut to hang indefinitely.
-          // This runs auth operations directly without cross-tab serialization.
-          lock: async (_name: string, _acquireTimeout: number, fn: () => Promise<unknown>) => {
+          lock: async <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
             return await fn()
           },
         },
