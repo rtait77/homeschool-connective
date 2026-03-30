@@ -957,7 +957,15 @@ export default function GamesPage() {
         </div>
       )}
 
-      {filtered.length === 0 && (
+      {filtered.length === 0 && activeCategory === 'printables' && !hasAccess && authChecked && (
+        <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-8 text-center">
+          <p className="text-2xl mb-3">🖨️</p>
+          <p className="font-extrabold text-lg mb-2">Printables are included with subscription</p>
+          <p className="text-sm text-[#5c5c5c] mb-5">Get access to all 35+ printable worksheets and activities with any plan.</p>
+          <Link href="/pricing" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition">See Plans →</Link>
+        </div>
+      )}
+      {filtered.length === 0 && activeCategory !== 'printables' && (
         <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your search. Try different keywords or clear your filters!</p>
       )}
 
@@ -1029,6 +1037,22 @@ function FilterChip({ label, icon, dots, dotBg, active, onClick }: { label: stri
 }
 
 function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
+  const isPrintable = game.types.includes('printable')
+
+  if (isPrintable) {
+    return (
+      <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div className="relative w-full" style={{ aspectRatio: '8.5/11' }}>
+          <Image src={game.thumb} alt={game.title} fill className="object-contain" />
+        </div>
+        <div className="p-3 bg-[#f5f1e9] flex items-center justify-between gap-2">
+          <p className="text-xs font-bold leading-snug">{game.title}</p>
+          <a href={game.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline whitespace-nowrap">Get PDF →</a>
+        </div>
+      </div>
+    )
+  }
+
   const href = hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
   const external = hasAccess && game.newTab !== false
 
@@ -1039,17 +1063,13 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
       className="group bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5] cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5"
       style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
     >
-      <div className="relative w-full bg-[#e8e4dc]" style={{ height: game.types.includes('printable') ? 'auto' : '11rem', aspectRatio: game.types.includes('printable') ? '3/4' : 'unset' }}>
+      <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-        {game.types.includes('printable') ? (
-          <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-            Printable
-          </span>
-        ) : game.mini ? (
+        {game.mini && (
           <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
             Mini
           </span>
-        ) : null}
+        )}
         {userId && (
           <button
             onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFavorite() }}
