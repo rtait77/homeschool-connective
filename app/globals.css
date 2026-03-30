@@ -3,6 +3,6 @@
 body {
   background-color: #ffffff;
   color: #1c1c1c;
-  font-family: 'Nunito', sans-serif;
+  font-family: var(--font-display), 'Nunito', sans-serif;
   line-height: 1.6;
 }
