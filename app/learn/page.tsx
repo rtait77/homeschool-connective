@@ -676,13 +676,13 @@ const games = [
   // Printables
   { title: 'Asteroid Crash', thumb: '/website-pdf-asteroid-crash.png', url: '/website-pdf-asteroid-crash.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Best Planet Letter', thumb: '/website-pdf-best-planet-letter.png', url: '/website-pdf-best-planet-letter.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
-  { title: 'Create a Solar System', thumb: '/website-pdf-create-a-solar-system.png', url: '/website-pdf-create-a-solar-system.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Create a Solar System', thumb: '/website-pdf-create-a-solar-system.png', url: '/website-pdf-create-a-solar-system.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Create a Spacecraft', thumb: '/website-pdf-create-a-spacecraft.png', url: '/website-pdf-create-a-spacecraft.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Creative Writing', thumb: '/website-pdf-creative-writing.png', url: '/website-pdf-creative-writing.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Decorate Arrokoth', thumb: '/website-pdf-decorate-arrokoth.png', url: '/website-pdf-decorate-arrokoth.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
-  { title: 'Earth Puzzles', thumb: '/website-pdf-earth-puzzles.png', url: '/website-pdf-earth-puzzles.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Earth Puzzles', thumb: '/website-pdf-earth-puzzles.png', url: '/website-pdf-earth-puzzles.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Flashcards — Set 1', thumb: '/website-pdf-flashcards-1.png', url: '/website-pdf-flashcards-1.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
-  { title: 'Layers of the Sun Coloring', thumb: '/website-pdf-layers-sun-coloring.png', url: '/website-pdf-layers-sun-coloring.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Layers of the Sun Coloring', thumb: '/website-pdf-layers-sun-coloring.png', url: '/website-pdf-layers-sun-coloring.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Leap Year Calendar', thumb: '/website-pdf-leap-year-calendar.png', url: '/website-pdf-leap-year-calendar.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Light Year Match', thumb: '/website-pdf-light-year-match.png', url: '/website-pdf-light-year-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Look Through a Telescope', thumb: '/website-pdf-look-through-telescope.png', url: '/website-pdf-look-through-telescope.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
@@ -697,7 +697,7 @@ const games = [
   { title: 'Planet Research', thumb: '/website-pdf-planet-research.png', url: '/website-pdf-planet-research.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Planet Sort', thumb: '/website-pdf-planet-sort.png', url: '/website-pdf-planet-sort.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Planet Spelling', thumb: '/website-pdf-planet-spelling.png', url: '/website-pdf-planet-spelling.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
-  { title: 'Red Spot Weather Report', thumb: '/website-pdf-red-spot-weather-report.png', url: '/website-pdf-red-spot-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Red Spot Weather Report', thumb: '/website-pdf-red-spot-weather-report.png', url: '/website-pdf-red-spot-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Rotation vs Revolution', thumb: '/website-pdf-rotation-vs-revolution.png', url: '/website-pdf-rotation-vs-revolution.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Saturn Journal', thumb: '/website-pdf-saturn-journal.png', url: '/website-pdf-saturn-journal.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
   { title: 'Solar System Object', thumb: '/website-pdf-sd-object.png', url: '/website-pdf-sd-object.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
@@ -1047,7 +1047,10 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
         </div>
         <div className="p-3 bg-[#f5f1e9] flex items-center justify-between gap-2">
           <p className="text-xs font-bold leading-snug">{game.title}</p>
-          <a href={game.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline whitespace-nowrap">Get PDF →</a>
+          {(game as any).hasPdf
+            ? <a href={game.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline whitespace-nowrap">Get PDF →</a>
+            : <span className="text-xs text-[#a09890] whitespace-nowrap">Coming soon</span>
+          }
         </div>
       </div>
     )
