@@ -860,50 +860,42 @@ export default function GamesPage() {
       </div>
 
       {/* Filters */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-8 space-y-3">
 
         {/* Row 1: Topic */}
-        <div>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Topic</p>
-          <div className="flex flex-wrap gap-2">
-            <FilterChip label="Solar System" icon="🚀" active={topic === 'solar-system'} onClick={() => setTopic(topic === 'solar-system' ? 'all' : 'solar-system')} />
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Topic</span>
+          <FilterChip label="Solar System" icon="🚀" active={topic === 'solar-system'} onClick={() => setTopic(topic === 'solar-system' ? 'all' : 'solar-system')} />
         </div>
 
         {/* Row 2: Category */}
-        <div>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Browse</p>
-          <div className="flex flex-wrap gap-2">
-            <FilterChip label="Games" icon="🎮" active={activeCategory === 'games'} onClick={() => handleCategoryClick('games')} />
-            <FilterChip label="Lessons" icon="📖" active={activeCategory === 'lessons'} onClick={() => handleCategoryClick('lessons')} />
-            <FilterChip label="Printables" icon="🖨️" active={activeCategory === 'printables'} onClick={() => handleCategoryClick('printables')} />
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Type</span>
+          <FilterChip label="Games" icon="🎮" active={activeCategory === 'games'} onClick={() => handleCategoryClick('games')} />
+          <FilterChip label="Lessons" icon="📖" active={activeCategory === 'lessons'} onClick={() => handleCategoryClick('lessons')} />
+          <FilterChip label="Printables" icon="🖨️" active={activeCategory === 'printables'} onClick={() => handleCategoryClick('printables')} />
         </div>
 
         {/* Row 3: Game type (Games only) */}
         {activeCategory === 'games' && (
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Type</p>
-            <div className="flex flex-wrap gap-2">
-              <FilterChip label="Arcade" icon="⚡" active={activeGameType === 'arcade'} onClick={() => setActiveGameType(t => t === 'arcade' ? '' : 'arcade')} />
-              <FilterChip label="Puzzles" icon="🧩" active={activeGameType === 'puzzle'} onClick={() => setActiveGameType(t => t === 'puzzle' ? '' : 'puzzle')} />
-              <FilterChip label="Word Search" icon="🔍" active={activeGameType === 'word-search'} onClick={() => setActiveGameType(t => t === 'word-search' ? '' : 'word-search')} />
-              <FilterChip label="Matching" icon="🃏" active={activeGameType === 'matching'} onClick={() => setActiveGameType(t => t === 'matching' ? '' : 'matching')} />
-              <FilterChip label="Word Sort" icon="🔤" active={activeGameType === 'word-sort'} onClick={() => setActiveGameType(t => t === 'word-sort' ? '' : 'word-sort')} />
-              <FilterChip label="Hangman" icon="✏️" active={activeGameType === 'hangman'} onClick={() => setActiveGameType(t => t === 'hangman' ? '' : 'hangman')} />
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Game Type</span>
+            <FilterChip label="Arcade" icon="⚡" active={activeGameType === 'arcade'} onClick={() => setActiveGameType(t => t === 'arcade' ? '' : 'arcade')} />
+            <FilterChip label="Puzzles" icon="🧩" active={activeGameType === 'puzzle'} onClick={() => setActiveGameType(t => t === 'puzzle' ? '' : 'puzzle')} />
+            <FilterChip label="Word Search" icon="🔍" active={activeGameType === 'word-search'} onClick={() => setActiveGameType(t => t === 'word-search' ? '' : 'word-search')} />
+            <FilterChip label="Matching" icon="🃏" active={activeGameType === 'matching'} onClick={() => setActiveGameType(t => t === 'matching' ? '' : 'matching')} />
+            <FilterChip label="Word Sort" icon="🔤" active={activeGameType === 'word-sort'} onClick={() => setActiveGameType(t => t === 'word-sort' ? '' : 'word-sort')} />
+            <FilterChip label="Hangman" icon="✏️" active={activeGameType === 'hangman'} onClick={() => setActiveGameType(t => t === 'hangman' ? '' : 'hangman')} />
           </div>
         )}
 
         {/* Row 4: Difficulty (Games only) */}
         {activeCategory === 'games' && (
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Difficulty</p>
-            <div className="flex flex-wrap gap-2">
-              <FilterChip label="Easy" dots={1} dotBg="#4caf7d" active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
-              <FilterChip label="Medium" dots={2} dotBg="#f5a623" active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
-              <FilterChip label="Hard" dots={3} dotBg="#e05252" active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Difficulty</span>
+            <FilterChip label="Easy" dots={1} dotBg="#4caf7d" active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
+            <FilterChip label="Medium" dots={2} dotBg="#f5a623" active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
+            <FilterChip label="Hard" dots={3} dotBg="#e05252" active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
           </div>
         )}
 
