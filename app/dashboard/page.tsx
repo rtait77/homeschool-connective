@@ -83,9 +83,7 @@ export default function DashboardPage() {
 
 
   useEffect(() => {
-    async function load() {
-      const { data: { session } } = await supabase.auth.getSession()
-      const user = session?.user ?? null
+    async function load(user: any) {
       if (!user) { router.push('/login'); return }
 
       setEmail(user.email ?? '')
@@ -111,7 +109,13 @@ export default function DashboardPage() {
 
       setLoading(false)
     }
-    load()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        load(session?.user ?? null)
+        subscription.unsubscribe()
+      }
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   async function toggleFavorite(title: string) {
