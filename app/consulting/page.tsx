@@ -24,8 +24,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function ConsultingPage() {
-  const [agreed, setAgreed] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [resourceCount, setResourceCount] = useState<number | null>(null)
 
   useEffect(() => {
@@ -34,13 +32,6 @@ export default function ConsultingPage() {
       .then(data => setResourceCount(data.count))
       .catch(() => {})
   }, [])
-
-  async function handleCheckout() {
-    setLoading(true)
-    const res = await fetch('/api/checkout-consulting', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
-    const { url } = await res.json()
-    window.location.href = url
-  }
 
   return (
     <div style={{ fontFamily: 'Nunito, sans-serif' }}>
@@ -360,40 +351,12 @@ export default function ConsultingPage() {
             <p style={{ fontSize: '0.8rem', color: '#a09890', marginTop: 12, marginBottom: 0 }}>Option to subscribe to games after your trial if you choose.</p>
           </div>
 
-          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#5c5c5c', marginBottom: 20 }}>
-            Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
-          </p>
-
-          <div style={{ backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5', borderRadius: 14, padding: '28px', marginBottom: 20 }}>
-            <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#383838', marginBottom: 16 }}>Terms & Agreement</h3>
-            <div style={{ fontSize: '0.85rem', color: '#5c5c5c', lineHeight: 1.7, marginBottom: 20 }}>
-              <p style={{ marginBottom: 10 }}>By signing up for this consulting service, you agree to the following:</p>
-              <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <li>No refunds once the intake form has been sent to you.</li>
-                <li>Email support is provided for 3 months from the date your report is delivered. Mel will respond within 3 to 5 business days.</li>
-                <li>Curriculum recommendations are suggestions based on your intake form. They are not guarantees of outcome. The final curriculum decision remains with the parent/guardian.</li>
-                <li>Your family&apos;s information will not be shared with any third party.</li>
-                <li>This is an educational consulting service, not a licensed tutoring or therapy service.</li>
-              </ol>
-            </div>
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={agreed}
-                onChange={e => setAgreed(e.target.checked)}
-                style={{ marginTop: 2, width: 16, height: 16, accentColor: '#ed7c5a', cursor: 'pointer', flexShrink: 0 }}
-              />
-              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#383838' }}>I have read and agree to the terms above.</span>
-            </label>
-          </div>
-
           <a
             href="/pricing"
             style={{ display: 'block', width: '100%', backgroundColor: '#238FA4', color: '#fff', fontWeight: 800, fontSize: '1.05rem', padding: '1rem', borderRadius: 12, border: 'none', textDecoration: 'none', textAlign: 'center', transition: 'opacity 0.15s' }}
           >
             See Pricing →
           </a>
-          <p style={{ textAlign: 'center', fontSize: '0.78rem', color: '#a09890', marginTop: 10 }}>Secure payment via Stripe. You&apos;ll receive a confirmation email right after payment.</p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
