@@ -673,6 +673,42 @@ const games = [
     keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
   },
+  // Printables
+  { title: 'Asteroid Crash', thumb: '/website-pdf-asteroid-crash.png', url: '/website-pdf-asteroid-crash.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Best Planet Letter', thumb: '/website-pdf-best-planet-letter.png', url: '/website-pdf-best-planet-letter.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Create a Solar System', thumb: '/website-pdf-create-a-solar-system.png', url: '/website-pdf-create-a-solar-system.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Create a Spacecraft', thumb: '/website-pdf-create-a-spacecraft.png', url: '/website-pdf-create-a-spacecraft.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Creative Writing', thumb: '/website-pdf-creative-writing.png', url: '/website-pdf-creative-writing.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Decorate Arrokoth', thumb: '/website-pdf-decorate-arrokoth.png', url: '/website-pdf-decorate-arrokoth.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Earth Puzzles', thumb: '/website-pdf-earth-puzzles.png', url: '/website-pdf-earth-puzzles.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Flashcards — Set 1', thumb: '/website-pdf-flashcards-1.png', url: '/website-pdf-flashcards-1.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Layers of the Sun Coloring', thumb: '/website-pdf-layers-sun-coloring.png', url: '/website-pdf-layers-sun-coloring.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Leap Year Calendar', thumb: '/website-pdf-leap-year-calendar.png', url: '/website-pdf-leap-year-calendar.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Light Year Match', thumb: '/website-pdf-light-year-match.png', url: '/website-pdf-light-year-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Look Through a Telescope', thumb: '/website-pdf-look-through-telescope.png', url: '/website-pdf-look-through-telescope.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Mercury Journal', thumb: '/website-pdf-mercury-journal.png', url: '/website-pdf-mercury-journal.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Neptune Weather Report', thumb: '/website-pdf-neptune-weather-report.png', url: '/website-pdf-neptune-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'New Planet in the Oort Cloud', thumb: '/website-pdf-new-planet-oort-cloud.png', url: '/website-pdf-new-planet-oort-cloud.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Ordering the Planets', thumb: '/website-pdf-ordering-the-planets.png', url: '/website-pdf-ordering-the-planets.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Outfit for Venus', thumb: '/website-pdf-outfit-for-venus.png', url: '/website-pdf-outfit-for-venus.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Planet AU Match', thumb: '/website-pdf-planet-au-match.png', url: '/website-pdf-planet-au-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Planet & Moon Match', thumb: '/website-pdf-planet-moon-match.png', url: '/website-pdf-planet-moon-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Planet Multiplication', thumb: '/website-pdf-planet-multiplication.png', url: '/website-pdf-planet-multiplication.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Planet Research', thumb: '/website-pdf-planet-research.png', url: '/website-pdf-planet-research.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Planet Sort', thumb: '/website-pdf-planet-sort.png', url: '/website-pdf-planet-sort.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Planet Spelling', thumb: '/website-pdf-planet-spelling.png', url: '/website-pdf-planet-spelling.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Red Spot Weather Report', thumb: '/website-pdf-red-spot-weather-report.png', url: '/website-pdf-red-spot-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Rotation vs Revolution', thumb: '/website-pdf-rotation-vs-revolution.png', url: '/website-pdf-rotation-vs-revolution.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Saturn Journal', thumb: '/website-pdf-saturn-journal.png', url: '/website-pdf-saturn-journal.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Solar System Object', thumb: '/website-pdf-sd-object.png', url: '/website-pdf-sd-object.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Side Spinning Planet', thumb: '/website-pdf-side-spinning-planet.png', url: '/website-pdf-side-spinning-planet.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Solar System Flashcards — Set 2', thumb: '/website-pdf-solar-system-flashcards-2.png', url: '/website-pdf-solar-system-flashcards-2.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Solar System Word Search', thumb: '/website-pdf-solar-system-word-search.png', url: '/website-pdf-solar-system-word-search.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Space Bingo', thumb: '/website-pdf-space-bingo.png', url: '/website-pdf-space-bingo.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Space Station Coloring', thumb: '/website-pdf-space-station-coloring.png', url: '/website-pdf-space-station-coloring.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Vocab Cards', thumb: '/website-pdf-vocab-cards.png', url: '/website-pdf-vocab-cards.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: 'Voyager 1 Discovery', thumb: '/website-pdf-voyager-1-discovery.png', url: '/website-pdf-voyager-1-discovery.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
+  { title: "What's on That Comet?", thumb: '/website-pdf-whats-on-that-comet.png', url: '/website-pdf-whats-on-that-comet.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true },
 ]
 
 const topics = [
@@ -782,6 +818,7 @@ export default function GamesPage() {
   }
 
   const filtered = games.filter(g => {
+    if (g.types.includes('printable') && !hasAccess) return false
     if (topic !== 'all' && g.topic !== topic) return false
     if (activeCategory === 'lessons') {
       if (!g.types.includes('lesson')) return false
@@ -1004,11 +1041,15 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
     >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-        {game.mini && (
+        {game.types.includes('printable') ? (
+          <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+            Printable
+          </span>
+        ) : game.mini ? (
           <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
             Mini
           </span>
-        )}
+        ) : null}
         {userId && (
           <button
             onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFavorite() }}
