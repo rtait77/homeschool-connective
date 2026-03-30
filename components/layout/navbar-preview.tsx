@@ -281,8 +281,10 @@ export default function NavbarPreview() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  async function handleLogout() {
-    await supabase.auth.signOut()
+  function handleLogout() {
+    supabase.auth.signOut().catch(() => {})
+    setUser(null)
+    setSubType(null)
     setDropdownOpen(false)
     setMenuOpen(false)
     router.push('/')
