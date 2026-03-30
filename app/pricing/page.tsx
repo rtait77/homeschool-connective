@@ -163,7 +163,7 @@ export default function SubscribePage() {
       <p className="text-center text-xs text-[#a09890] mb-10">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
 
       {/* 2-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
 
         {/* Consulting card */}
         <div className="bg-white rounded-2xl p-7 border-2 border-[#238FA4] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(35,143,164,0.12)' }}>
@@ -178,18 +178,12 @@ export default function SubscribePage() {
             <li className="text-[#55b6ca] font-bold">✓ 7-day games trial included</li>
           </ul>
           <p className="text-xs text-[#a09890] mb-5">Option to subscribe to games after your trial if you choose.</p>
-          {showTrial ? (
-            <Link href="/signup" className="block w-full py-3 rounded-lg bg-[#238FA4] text-white font-bold text-sm text-center hover:opacity-90 transition">
-              Start Free Trial →
-            </Link>
-          ) : (
-            <button
-              onClick={() => setModalTarget('consulting')}
-              className="block w-full py-3 rounded-lg bg-[#238FA4] text-white font-bold text-sm text-center hover:opacity-90 transition"
-            >
-              Get Started — $47 →
-            </button>
-          )}
+          <button
+            onClick={() => setModalTarget('consulting')}
+            className="block w-full py-3 rounded-lg bg-[#238FA4] text-white font-bold text-sm text-center hover:opacity-90 transition mt-auto"
+          >
+            Book a Consult →
+          </button>
         </div>
 
         {/* Games card with toggle */}
