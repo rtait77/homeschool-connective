@@ -244,8 +244,6 @@ export default function NavbarPreview() {
   const isAuthPage = pathname === '/login' || pathname === '/signup'
 
   useEffect(() => {
-    if (isAuthPage) return
-
     async function loadUser() {
       const { data: { session } } = await supabase.auth.getSession()
       const currentUser = session?.user ?? null
@@ -269,7 +267,7 @@ export default function NavbarPreview() {
     loadUser()
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
     return () => subscription.unsubscribe()
-  }, [isAuthPage])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
