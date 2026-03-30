@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 
 type ModalTarget = 'monthly' | 'yearly' | 'consulting' | null
@@ -85,6 +86,7 @@ function TermsModal({
 }
 
 export default function SubscribePage() {
+  const [showTrial, setShowTrial] = useState(true)
   const [gamesPlan, setGamesPlan] = useState<'monthly' | 'yearly'>('yearly')
   const [modalTarget, setModalTarget] = useState<ModalTarget>(null)
   const [loading, setLoading] = useState(false)
@@ -94,6 +96,22 @@ export default function SubscribePage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
+  useEffect(() => {
+    async function checkUser() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('trial_end, subscription_status')
+        .eq('id', user.id)
+        .single()
+      const trialActive = profile?.trial_end && new Date(profile.trial_end) > new Date()
+      const trialExpired = profile?.trial_end && new Date(profile.trial_end) <= new Date()
+      const subscribed = profile?.subscription_status === 'active'
+      if (trialActive || trialExpired || subscribed) setShowTrial(false)
+    }
+    checkUser()
+  }, [])
 
   async function handleConfirm(emailOptIn: boolean) {
     if (!modalTarget) return
@@ -127,10 +145,11 @@ export default function SubscribePage() {
       )}
 
       <h1 className="text-3xl font-extrabold text-center mb-2">Plans & Pricing</h1>
-      <p className="text-center text-[#5c5c5c] mb-12">Two ways to get support for your homeschool.</p>
+      <p className="text-center text-[#5c5c5c] mb-2">Two ways to get support for your homeschool.</p>
+      <p className="text-center text-xs text-[#a09890] mb-10">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
 
       {/* 2-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
 
         {/* Consulting card */}
         <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
@@ -145,18 +164,23 @@ export default function SubscribePage() {
             <li className="text-[#55b6ca] font-bold">✓ 7-day games trial included</li>
           </ul>
           <p className="text-xs text-[#a09890] mb-5">Option to subscribe to games after your trial if you choose.</p>
-          <a href="/consulting" className="text-sm font-bold text-[#55b6ca] hover:underline mb-4 inline-block">Learn more about consulting →</a>
-          <button
-            onClick={() => setModalTarget('consulting')}
-            className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
-          >
-            Get Started →
-          </button>
+          {showTrial ? (
+            <Link href="/signup" className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition">
+              Start Free Trial →
+            </Link>
+          ) : (
+            <button
+              onClick={() => setModalTarget('consulting')}
+              className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition"
+            >
+              Get Started — $47 →
+            </button>
+          )}
         </div>
 
         {/* Games card with toggle */}
-        <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col relative" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games/Lessons/Printables Subscription</p>
+        <div className="bg-white rounded-2xl p-7 flex flex-col relative" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-4">Games Subscription</p>
 
           {/* Toggle */}
           <div className="flex rounded-xl overflow-hidden border border-[#e2ddd5] mb-5 self-start w-full">
@@ -182,9 +206,10 @@ export default function SubscribePage() {
               <span className="mb-1 bg-[#55b6ca] text-white text-xs font-bold px-3 py-0.5 rounded-full">BEST VALUE</span>
             )}
           </div>
-          <p className="text-xs font-bold text-[#55b6ca] mb-5" style={{ minHeight: '1.25rem' }}>
-            {gamesPlan === 'yearly' ? 'Save $10 vs monthly!' : ''}
-          </p>
+          {gamesPlan === 'yearly' && (
+            <p className="text-xs font-bold text-[#55b6ca] mb-5">Save $10 vs monthly!</p>
+          )}
+          {gamesPlan === 'monthly' && <div className="mb-5" />}
 
           <ul className="text-sm text-[#5c5c5c] space-y-2 mb-6 flex-1">
             <li>✓ Full access to all games &amp; lessons</li>
@@ -193,13 +218,19 @@ export default function SubscribePage() {
             <li>✓ Cancel anytime</li>
           </ul>
 
-          <button
-            onClick={() => setModalTarget(gamesPlan)}
-            disabled={loading}
-            className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50 mt-auto"
-          >
-            {gamesPlan === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly'}
-          </button>
+          {showTrial ? (
+            <Link href="/signup" className="block w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm text-center hover:opacity-90 transition mt-auto">
+              Start Free Trial →
+            </Link>
+          ) : (
+            <button
+              onClick={() => setModalTarget(gamesPlan)}
+              disabled={loading}
+              className="w-full py-3 rounded-lg bg-[#ed7c5a] text-white font-bold text-sm hover:opacity-90 transition disabled:opacity-50 mt-auto"
+            >
+              {gamesPlan === 'monthly' ? 'Subscribe Monthly' : 'Subscribe Yearly'}
+            </button>
+          )}
         </div>
 
       </div>
