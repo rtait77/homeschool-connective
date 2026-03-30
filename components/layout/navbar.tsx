@@ -135,30 +135,39 @@ export default function Navbar() {
             <Image src="/Logo.png" alt="Homeschool Connective" width={180} height={56} className="h-14 w-auto" priority />
           </Link>
 
-          {/* Desktop links — centered, cream oval */}
-          <ul className="hidden md:flex items-center gap-6 bg-[#f5f1e9] rounded-full px-6 py-2.5 absolute left-1/2 -translate-x-1/2 text-sm font-semibold">
-            {activeLinks.map(({ href, label }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className={`transition-colors hover:text-[#ed7c5a] ${
-                    (href === '/' ? pathname === '/' : pathname.startsWith(href)) ? 'text-[#ed7c5a]' : 'text-[#1c1c1c]'
-                  }`}
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
-            <li className="w-px h-4 bg-[#ddd8cc]" aria-hidden="true" />
+          {/* Desktop links — centered, cream oval pill */}
+          <ul className="hidden md:flex items-center gap-0.5 bg-[#f5f1e9] border border-[#e8e3da] rounded-full p-1 absolute left-1/2 -translate-x-1/2">
+            {activeLinks.map(({ href, label }) => {
+              const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={`block px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'text-[#ed7c5a] bg-white shadow-sm'
+                        : 'text-[#5c5c5c] hover:text-[#1c1c1c] hover:bg-white/60'
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              )
+            })}
+            <li className="w-px h-[18px] bg-[#d8d3ca] mx-1 shrink-0" aria-hidden="true" />
             {user ? (
               <li>
-                <Link href="/dashboard" className="font-semibold text-[#ed7c5a] hover:opacity-80 transition">
+                <Link href="/dashboard" className={`block px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                  pathname.startsWith('/dashboard') ? 'text-[#ed7c5a] bg-white shadow-sm' : 'text-[#ed7c5a] hover:bg-white/60'
+                }`}>
                   Dashboard
                 </Link>
               </li>
             ) : (
               <li>
-                <Link href="/consulting" className="font-semibold text-[#55b6ca] hover:text-[#238FA4] transition">
+                <Link href="/consulting" className={`block px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                  pathname.startsWith('/consulting') ? 'text-[#55b6ca] bg-white shadow-sm' : 'text-[#55b6ca] hover:bg-white/60'
+                }`}>
                   Consulting
                 </Link>
               </li>
