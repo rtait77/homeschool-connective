@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase/client'
 
 const guestLinks = [
   { href: '/learn', label: 'Learn' },
@@ -29,10 +29,7 @@ export default function Navbar() {
   const [user, setUser] = useState<any>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
