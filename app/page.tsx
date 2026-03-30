@@ -168,7 +168,7 @@ export default async function PreviewHomePage() {
                 Plus, ongoing homeschool support for parents.
               </p>
               <div className="hero-ctas">
-                <a href="/pricing" className="hero-btn-primary">Play &amp; Learn</a>
+                <a href="/learn" className="hero-btn-primary">Play &amp; Learn</a>
                 <a href="/consulting" className="hero-btn-secondary">Get Homeschool Help →</a>
               </div>
             </div>
