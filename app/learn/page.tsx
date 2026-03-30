@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@/lib/supabase/client'
 
 const games = [
   {
@@ -701,10 +701,8 @@ const difficulties = [
 
 export default function GamesPage() {
   const [topic, setTopic] = useState('all')
-  const [topicOpen, setTopicOpen] = useState(false)
-  const [typeOpen, setTypeOpen] = useState(false)
-  const [difficultyOpen, setDifficultyOpen] = useState(false)
-  const [activeType, setActiveType] = useState('')
+  const [activeCategory, setActiveCategory] = useState('')
+  const [activeGameType, setActiveGameType] = useState('')
   const [activeDifficulty, setActiveDifficulty] = useState('')
   const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
@@ -719,10 +717,7 @@ export default function GamesPage() {
     setPage(n)
   }
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+  const supabase = createClient()
 
   useEffect(() => {
     async function checkAccess() {
@@ -772,17 +767,34 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeType, activeDifficulty, search])
+  useEffect(() => { setPage(1) }, [topic, activeCategory, activeGameType, activeDifficulty, search])
 
-  const showDifficulty = activeType !== 'lesson'
+  function handleCategoryClick(cat: string) {
+    if (activeCategory === cat) {
+      setActiveCategory('')
+    } else {
+      setActiveCategory(cat)
+      if (cat !== 'games') {
+        setActiveGameType('')
+        setActiveDifficulty('')
+      }
+    }
+  }
 
   const filtered = games.filter(g => {
     if (topic !== 'all' && g.topic !== topic) return false
-    if (activeType && !g.types.includes(activeType)) return false
-    if (activeDifficulty && showDifficulty) {
-      const titleLower = g.title.toLowerCase()
-      const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
-      if (!diffMatch) return false
+    if (activeCategory === 'lessons') {
+      if (!g.types.includes('lesson')) return false
+    } else if (activeCategory === 'printables') {
+      if (!g.types.includes('printable')) return false
+    } else if (activeCategory === 'games') {
+      if (g.types.includes('lesson') || g.types.includes('printable')) return false
+      if (activeGameType && !g.types.includes(activeGameType)) return false
+      if (activeDifficulty) {
+        const titleLower = g.title.toLowerCase()
+        const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
+        if (!diffMatch) return false
+      }
     }
     if (search.trim()) {
       const haystack = [
@@ -848,71 +860,50 @@ export default function GamesPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 mb-10">
+      <div className="mb-8 space-y-4">
 
-        {/* Topic dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => { setTopicOpen(o => !o); setTypeOpen(false); setDifficultyOpen(false) }}
-            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${topic !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-          >
-            {topics.find(t => t.id === topic)?.label}
-            <span className="text-xs">▾</span>
-          </button>
-          {topicOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
-              {topics.map(t => (
-                <button key={t.id} onClick={() => { setTopic(t.id); setTopicOpen(false) }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
-                >{t.label}</button>
-              ))}
-            </div>
-          )}
+        {/* Row 1: Topic */}
+        <div>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Topic</p>
+          <div className="flex flex-wrap gap-2">
+            <FilterChip label="Solar System" icon="🚀" active={topic === 'solar-system'} onClick={() => setTopic(topic === 'solar-system' ? 'all' : 'solar-system')} />
+          </div>
         </div>
 
-        {/* Type dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => { setTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false) }}
-            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-          >
-            {gameTypes.find(t => t.id === activeType)?.label}
-            <span className="text-xs">▾</span>
-          </button>
-          {typeOpen && (
-            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
-              {gameTypes.map(t => (
-                <button key={t.id} onClick={() => {
-                  setActiveType(t.id)
-                  if (t.id === 'lesson') setActiveDifficulty('')
-                  setTypeOpen(false)
-                }}
-                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeType === t.id ? 'text-[#55b6ca]' : ''}`}
-                >{t.label}</button>
-              ))}
-            </div>
-          )}
+        {/* Row 2: Category */}
+        <div>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Browse</p>
+          <div className="flex flex-wrap gap-2">
+            <FilterChip label="Games" icon="🎮" active={activeCategory === 'games'} onClick={() => handleCategoryClick('games')} />
+            <FilterChip label="Lessons" icon="📖" active={activeCategory === 'lessons'} onClick={() => handleCategoryClick('lessons')} />
+            <FilterChip label="Printables" icon="🖨️" active={activeCategory === 'printables'} onClick={() => handleCategoryClick('printables')} />
+          </div>
         </div>
 
-        {/* Difficulty dropdown — hidden for Lessons */}
-        {showDifficulty && (
-          <div className="relative">
-            <button
-              onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setTypeOpen(false) }}
-              className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
-            >
-              {difficulties.find(d => d.id === activeDifficulty)?.label}
-              <span className="text-xs">▾</span>
-            </button>
-            {difficultyOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[150px]">
-                {difficulties.map(d => (
-                  <button key={d.id} onClick={() => { setActiveDifficulty(d.id); setDifficultyOpen(false) }}
-                    className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeDifficulty === d.id ? 'text-[#55b6ca]' : ''}`}
-                  >{d.label}</button>
-                ))}
-              </div>
-            )}
+        {/* Row 3: Game type (Games only) */}
+        {activeCategory === 'games' && (
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Type</p>
+            <div className="flex flex-wrap gap-2">
+              <FilterChip label="Arcade" icon="⚡" active={activeGameType === 'arcade'} onClick={() => setActiveGameType(t => t === 'arcade' ? '' : 'arcade')} />
+              <FilterChip label="Puzzles" icon="🧩" active={activeGameType === 'puzzle'} onClick={() => setActiveGameType(t => t === 'puzzle' ? '' : 'puzzle')} />
+              <FilterChip label="Word Search" icon="🔍" active={activeGameType === 'word-search'} onClick={() => setActiveGameType(t => t === 'word-search' ? '' : 'word-search')} />
+              <FilterChip label="Matching" icon="🃏" active={activeGameType === 'matching'} onClick={() => setActiveGameType(t => t === 'matching' ? '' : 'matching')} />
+              <FilterChip label="Word Sort" icon="🔤" active={activeGameType === 'word-sort'} onClick={() => setActiveGameType(t => t === 'word-sort' ? '' : 'word-sort')} />
+              <FilterChip label="Hangman" icon="✏️" active={activeGameType === 'hangman'} onClick={() => setActiveGameType(t => t === 'hangman' ? '' : 'hangman')} />
+            </div>
+          </div>
+        )}
+
+        {/* Row 4: Difficulty (Games only) */}
+        {activeCategory === 'games' && (
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] mb-2">Difficulty</p>
+            <div className="flex flex-wrap gap-2">
+              <FilterChip label="Easy" dots={1} active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
+              <FilterChip label="Medium" dots={2} active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
+              <FilterChip label="Hard" dots={3} active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
+            </div>
           </div>
         )}
 
@@ -984,6 +975,30 @@ export default function GamesPage() {
   )
 }
 
+function FilterChip({ label, icon, dots, active, onClick }: { label: string, icon?: string, dots?: number, active: boolean, onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-2.5 rounded-full border-2 font-bold text-sm transition-all cursor-pointer ${
+        active
+          ? 'bg-[#ed7c5a] border-[#ed7c5a] text-white'
+          : 'bg-white border-[#e2ddd5] text-[#1c1c1c] hover:border-[#ed7c5a]'
+      }`}
+    >
+      {dots ? (
+        <span className="flex gap-0.5 items-center">
+          {Array.from({ length: dots }).map((_, i) => (
+            <span key={i} className={`w-2 h-2 rounded-full ${active ? 'bg-white' : 'bg-[#ed7c5a]'}`} />
+          ))}
+        </span>
+      ) : icon ? (
+        <span className="text-base leading-none">{icon}</span>
+      ) : null}
+      <span>{label}</span>
+    </button>
+  )
+}
+
 function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
   const href = hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
   const external = hasAccess && game.newTab !== false
@@ -1020,6 +1035,20 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
         )}
       </div>
       <div className="p-5 flex flex-col flex-1">
+        {(() => {
+          const t = game.title.toLowerCase()
+          const dots = game.types.includes('easy') || t.includes('– easy') ? 1
+            : game.types.includes('medium') || t.includes('– medium') ? 2
+            : game.types.includes('hard') || t.includes('– hard') ? 3
+            : null
+          return dots ? (
+            <div className="flex gap-1 mb-2">
+              {Array.from({ length: dots }).map((_, i) => (
+                <span key={i} className="w-2.5 h-2.5 rounded-full bg-[#ed7c5a] inline-block" />
+              ))}
+            </div>
+          ) : null
+        })()}
         <p className="font-extrabold text-base mb-2">{game.title}</p>
         {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
         {!hasAccess && (
