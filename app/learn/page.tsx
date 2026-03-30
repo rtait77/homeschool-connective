@@ -962,7 +962,7 @@ export default function GamesPage() {
         <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-8 text-center">
           <p className="text-2xl mb-3">🖨️</p>
           <p className="font-extrabold text-lg mb-2">Printables are included with subscription</p>
-          <p className="text-sm text-[#5c5c5c] mb-5">Get access to all 35+ printable worksheets and activities with any plan.</p>
+          <p className="text-sm text-[#5c5c5c] mb-5">Get access to all printable worksheets and activities with any plan.</p>
           <Link href="/pricing" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition">See Plans →</Link>
         </div>
       )}
@@ -1007,7 +1007,7 @@ export default function GamesPage() {
       <div className="mt-12 bg-white rounded-[14px] p-8 text-center border-2 border-dashed border-[#ddd8cc]">
         <p className="text-2xl mb-2">🌊 🪸 🐠</p>
         <h2 className="text-lg font-extrabold mb-2">More Topics Coming Soon</h2>
-        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in the works.</p>
+        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in discussion.</p>
       </div>
     </div>
   )
