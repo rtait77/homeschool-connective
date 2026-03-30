@@ -115,7 +115,7 @@ export default function ConsultingPage() {
             {[
               {
                 icon: (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#238FA4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                     <polyline points="14 2 14 8 20 8"/>
                     <line x1="16" y1="13" x2="8" y2="13"/>
@@ -128,7 +128,7 @@ export default function ConsultingPage() {
               },
               {
                 icon: (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#238FA4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 18h6"/>
                     <path d="M10 22h4"/>
                     <path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6H8.3C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/>
@@ -139,7 +139,7 @@ export default function ConsultingPage() {
               },
               {
                 icon: (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#238FA4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
                 ),
@@ -148,7 +148,7 @@ export default function ConsultingPage() {
               },
             ].map((card) => (
               <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 16, padding: '32px 28px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: '#fff5f1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: '#edf7fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {card.icon}
                 </div>
                 <p style={{ fontWeight: 800, fontSize: '1rem', color: '#383838', margin: 0 }}>{card.title}</p>
@@ -208,7 +208,7 @@ export default function ConsultingPage() {
         <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
           {resourceCount !== null && (
             <>
-              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
+              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#238FA4', lineHeight: 1, margin: '0 0 8px' }}>
                 {resourceCount}
               </p>
               <p style={{ fontSize: '1rem', fontWeight: 800, color: '#383838', marginBottom: 6 }}>
