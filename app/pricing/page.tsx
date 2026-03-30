@@ -40,6 +40,20 @@ function TermsModal({
         <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#55b6ca', marginBottom: 8 }}>Almost there!</p>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#1c1c1c', marginBottom: 20 }}>Before you continue</h2>
 
+        {target === 'consulting' && (
+          <div style={{ backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5', borderRadius: 12, padding: '20px 20px 16px', marginBottom: 20 }}>
+            <p style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#a09890', marginBottom: 10 }}>Consulting Terms</p>
+            <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, marginBottom: 8 }}>By completing your purchase, you agree to the following:</p>
+            <ol style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.65, paddingLeft: '1.2rem', margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <li>No refunds once the intake form has been sent to you.</li>
+              <li>Email support is provided for 3 months from the date your report is delivered. Mel will respond within 3 to 5 business days.</li>
+              <li>Curriculum recommendations are suggestions based on your intake form. They are not guarantees of outcome. The final curriculum decision remains with the parent/guardian.</li>
+              <li>Your family&apos;s information will not be shared with any third party.</li>
+              <li>This is an educational consulting service, not a licensed tutoring or therapy service.</li>
+            </ol>
+          </div>
+        )}
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 28 }}>
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
             <input
