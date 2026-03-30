@@ -690,7 +690,7 @@ const games = [
   { title: 'Side Spinning Planet', thumb: '/website-pdf-side-spinning-planet.png', url: '/website-pdf-side-spinning-planet.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Neptune Weather Report', thumb: '/website-pdf-neptune-weather-report.png', url: '/website-pdf-neptune-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Decorate Arrokoth', thumb: '/website-pdf-decorate-arrokoth.png', url: '/website-pdf-decorate-arrokoth.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Dwarf Planet Location Match', thumb: '/dwarf-planet-location-match.png', url: '/dwarf-planet-location-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
+  { title: 'Dwarf Planet Location Match', thumb: '/website-pdf-dwarf-planet-location-match.png', url: '/website-pdf-dwarf-planet-location-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Planet Spelling', thumb: '/website-pdf-planet-spelling.png', url: '/website-pdf-planet-spelling.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'Planet Sort', thumb: '/website-pdf-planet-sort.png', url: '/website-pdf-planet-sort.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
   { title: 'The Best Planet', thumb: '/website-pdf-best-planet-letter.png', url: '/website-pdf-best-planet-letter.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
