@@ -950,7 +950,7 @@ export default function GamesPage() {
 
       {/* Games grid */}
       {paginated.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className={`grid gap-4 ${activeCategory === 'printables' ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
           {paginated.map(game => (
             <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
@@ -1039,7 +1039,7 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
       className="group bg-white rounded-[14px] overflow-hidden flex flex-col border border-[#e2ddd5] cursor-pointer transition-all hover:shadow-xl hover:-translate-y-0.5"
       style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
     >
-      <div className="relative h-44 w-full bg-[#e8e4dc]">
+      <div className="relative w-full bg-[#e8e4dc]" style={{ height: game.types.includes('printable') ? 'auto' : '11rem', aspectRatio: game.types.includes('printable') ? '3/4' : 'unset' }}>
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
         {game.types.includes('printable') ? (
           <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
