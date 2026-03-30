@@ -1,14 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree } from 'next/font/google'
+import { Figtree, Nunito } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
-import NavbarPreview from '@/components/layout/navbar-preview'
+import Navbar from '@/components/layout/navbar'
 import Footer from '@/components/layout/footer'
 import PageViewTracker from '@/components/page-view-tracker'
 
 const figtree = Figtree({
   subsets: ['latin'],
   variable: '--font-sans',
+})
+
+const nunito = Nunito({
+  subsets: ['latin'],
+  variable: '--font-display',
+  weight: ['400', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
 })
 
 export const viewport: Viewport = {
@@ -40,9 +47,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${figtree.variable} antialiased`}>
+      <body className={`${figtree.variable} ${nunito.variable} antialiased`}>
         <PageViewTracker />
-        <NavbarPreview />
+        <Navbar />
         <main>{children}</main>
         <Footer />
         <Script
