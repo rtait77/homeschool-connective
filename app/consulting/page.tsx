@@ -197,7 +197,7 @@ export default function ConsultingPage() {
                 { num: '4', title: 'Mentorship & Support', desc: 'Email Mel anytime for 3 months. She\'s here for follow-up questions, guidance, and ongoing homeschool support.' },
               ].map(step => (
                 <div key={step.num} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#238FA4', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
                   <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 8 }}>{step.title}</p>
                   <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
                 </div>
@@ -347,8 +347,8 @@ export default function ConsultingPage() {
             One-time payment. No subscription required.
           </p>
 
-          <div style={{ borderRadius: 18, padding: '32px', border: '2px solid #ed7c5a', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(237,124,90,0.12)', marginBottom: 28 }}>
-            <p style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$47</p>
+          <div style={{ borderRadius: 18, padding: '32px', border: '2px solid #238FA4', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(35,143,164,0.12)', marginBottom: 28 }}>
+            <p style={{ fontSize: '2.2rem', fontWeight: 800, color: '#238FA4', margin: '0 0 2px' }}>$47</p>
             <p style={{ fontSize: '0.8rem', color: '#a09890', marginBottom: 24 }}>one-time payment</p>
             <ul style={{ fontSize: '0.9rem', color: '#383838', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <li>✓ Deep-dive intake form</li>
@@ -387,13 +387,12 @@ export default function ConsultingPage() {
             </label>
           </div>
 
-          <button
-            onClick={handleCheckout}
-            disabled={!agreed || loading}
-            style={{ width: '100%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.05rem', padding: '1rem', borderRadius: 12, border: 'none', cursor: agreed && !loading ? 'pointer' : 'not-allowed', opacity: agreed && !loading ? 1 : 0.4, transition: 'opacity 0.15s' }}
+          <a
+            href="/pricing"
+            style={{ display: 'block', width: '100%', backgroundColor: '#238FA4', color: '#fff', fontWeight: 800, fontSize: '1.05rem', padding: '1rem', borderRadius: 12, border: 'none', textDecoration: 'none', textAlign: 'center', transition: 'opacity 0.15s' }}
           >
-            {loading ? 'Redirecting to payment...' : 'Get Started — $47'}
-          </button>
+            See Pricing →
+          </a>
           <p style={{ textAlign: 'center', fontSize: '0.78rem', color: '#a09890', marginTop: 10 }}>Secure payment via Stripe. You&apos;ll receive a confirmation email right after payment.</p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
