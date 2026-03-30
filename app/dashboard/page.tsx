@@ -162,7 +162,7 @@ export default function DashboardPage() {
       {hasGames && (
         <>
           {/* Favorites */}
-          <div className="mb-12">
+          <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] mb-8" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
             <h2 className="text-xl font-extrabold mb-4">Your Favorites</h2>
             {favoriteGames.length === 0 ? (
               <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center">
@@ -181,7 +181,7 @@ export default function DashboardPage() {
           </div>
 
           {/* New Games & Lessons */}
-          <div className="mb-12">
+          <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] mb-8" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-extrabold">New Games & Lessons</h2>
               <Link href="/learn" className="text-sm font-bold text-[#238FA4] hover:underline">Browse all →</Link>
@@ -197,7 +197,7 @@ export default function DashboardPage() {
 
       {/* Consulting section — shown for consulting/both users */}
       {hasConsulting && consulting && (
-        <div className="mb-12">
+        <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] mb-8" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
           <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting with Mel</h2>
           {(() => {
             const consultDaysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
