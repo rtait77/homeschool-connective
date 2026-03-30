@@ -60,7 +60,7 @@ function TermsModal({
               type="checkbox"
               checked={agreedToTos}
               onChange={e => setAgreedToTos(e.target.checked)}
-              style={{ marginTop: 2, width: 16, height: 16, accentColor: '#ed7c5a', flexShrink: 0, cursor: 'pointer' }}
+              style={{ marginTop: 2, width: 16, height: 16, accentColor: '#238FA4', flexShrink: 0, cursor: 'pointer' }}
             />
             <span style={{ fontSize: '0.85rem', color: '#3a3a3a', lineHeight: 1.6 }}>
               I agree to the{' '}
@@ -76,7 +76,7 @@ function TermsModal({
               type="checkbox"
               checked={emailOptIn}
               onChange={e => setEmailOptIn(e.target.checked)}
-              style={{ marginTop: 2, width: 16, height: 16, accentColor: '#ed7c5a', flexShrink: 0, cursor: 'pointer' }}
+              style={{ marginTop: 2, width: 16, height: 16, accentColor: '#238FA4', flexShrink: 0, cursor: 'pointer' }}
             />
             <span style={{ fontSize: '0.85rem', color: '#5c5c5c', lineHeight: 1.6 }}>
               I&apos;d like to receive updates about new games, lessons, and homeschool tips. You can unsubscribe anytime.
@@ -87,7 +87,7 @@ function TermsModal({
         <button
           onClick={() => onConfirm(emailOptIn)}
           disabled={!agreedToTos || loading}
-          style={{ width: '100%', backgroundColor: agreedToTos && !loading ? '#ed7c5a' : '#d4cdc8', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '0.85rem', borderRadius: 12, border: 'none', cursor: agreedToTos && !loading ? 'pointer' : 'not-allowed', transition: 'background-color 0.15s', marginBottom: 10 }}
+          style={{ width: '100%', backgroundColor: agreedToTos && !loading ? '#238FA4' : '#d4cdc8', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '0.85rem', borderRadius: 12, border: 'none', cursor: agreedToTos && !loading ? 'pointer' : 'not-allowed', transition: 'background-color 0.15s', marginBottom: 10 }}
         >
           {loading ? 'Loading...' : label + ' →'}
         </button>
