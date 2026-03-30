@@ -12,7 +12,7 @@ const games = [
     thumb: '/thumb-sss.png',
     url: 'https://view.genially.com/68b468a36df9dbd6433fe511',
     topic: 'solar-system',
-    mini: false,
+    freeLabel: 'Free Demo',
     types: ['easy'],
     keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'facts', 'drag'],
   },
@@ -22,7 +22,7 @@ const games = [
     thumb: '/ordering-the-planets-thumbnail.png',
     url: 'https://view.genially.com/68164fbb7306f160f7843510',
     topic: 'solar-system',
-    mini: false,
+    freeLabel: 'Free',
     types: ['easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'order', 'distance', 'sun'],
   },
@@ -32,7 +32,7 @@ const games = [
     thumb: '/thumb-sun-easy.png',
     url: '/puzzle-sun-shape-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -42,7 +42,7 @@ const games = [
     thumb: '/the-sun-with-background.png',
     url: '/puzzle-sun-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -52,7 +52,7 @@ const games = [
     thumb: '/the-sun-with-background.png',
     url: '/puzzle-sun-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -63,7 +63,7 @@ const games = [
     thumb: '/mercury-with-background.png',
     url: '/puzzle-mercury-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -73,7 +73,7 @@ const games = [
     thumb: '/mercury-with-background.png',
     url: '/puzzle-mercury-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -83,7 +83,7 @@ const games = [
     thumb: '/mercury-with-background.png',
     url: '/puzzle-mercury-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -94,7 +94,7 @@ const games = [
     thumb: '/venus-with-background.png',
     url: '/puzzle-venus-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -104,7 +104,7 @@ const games = [
     thumb: '/venus-with-background.png',
     url: '/puzzle-venus-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -114,7 +114,7 @@ const games = [
     thumb: '/venus-with-background.png',
     url: '/puzzle-venus-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -125,7 +125,7 @@ const games = [
     thumb: '/earth-with-background.png',
     url: '/puzzle-earth-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -135,7 +135,7 @@ const games = [
     thumb: '/earth-with-background.png',
     url: '/puzzle-earth-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -145,7 +145,7 @@ const games = [
     thumb: '/earth-with-background.png',
     url: '/puzzle-earth-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -156,7 +156,7 @@ const games = [
     thumb: '/moon-with-background.png',
     url: '/puzzle-moon-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -166,7 +166,7 @@ const games = [
     thumb: '/moon-with-background.png',
     url: '/puzzle-moon-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -176,7 +176,7 @@ const games = [
     thumb: '/moon-with-background.png',
     url: '/puzzle-moon-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -187,7 +187,7 @@ const games = [
     thumb: '/mars-with-background.png',
     url: '/puzzle-mars-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -197,7 +197,7 @@ const games = [
     thumb: '/mars-with-background.png',
     url: '/puzzle-mars-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -207,7 +207,7 @@ const games = [
     thumb: '/mars-with-background.png',
     url: '/puzzle-mars-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -218,7 +218,7 @@ const games = [
     thumb: '/vesta-with-background.png',
     url: '/puzzle-vesta-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -228,7 +228,7 @@ const games = [
     thumb: '/vesta-with-background.png',
     url: '/puzzle-vesta-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -238,7 +238,7 @@ const games = [
     thumb: '/vesta-with-background.png',
     url: '/puzzle-vesta-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -249,7 +249,7 @@ const games = [
     thumb: '/jupiter-with-background.png',
     url: '/puzzle-jupiter-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -259,7 +259,7 @@ const games = [
     thumb: '/jupiter-with-background.png',
     url: '/puzzle-jupiter-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -269,7 +269,7 @@ const games = [
     thumb: '/jupiter-with-background.png',
     url: '/puzzle-jupiter-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -280,7 +280,7 @@ const games = [
     thumb: '/saturn-with-background.png',
     url: '/puzzle-saturn-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -290,7 +290,7 @@ const games = [
     thumb: '/saturn-with-background.png',
     url: '/puzzle-saturn-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -300,7 +300,7 @@ const games = [
     thumb: '/saturn-with-background.png',
     url: '/puzzle-saturn-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -311,7 +311,7 @@ const games = [
     thumb: '/uranus-with-background.png',
     url: '/puzzle-uranus-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -321,7 +321,7 @@ const games = [
     thumb: '/uranus-with-background.png',
     url: '/puzzle-uranus-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -331,7 +331,7 @@ const games = [
     thumb: '/uranus-with-background.png',
     url: '/puzzle-uranus-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -342,7 +342,7 @@ const games = [
     thumb: '/neptune-with-background.png',
     url: '/puzzle-neptune-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -352,7 +352,7 @@ const games = [
     thumb: '/neptune-with-background.png',
     url: '/puzzle-neptune-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -362,7 +362,7 @@ const games = [
     thumb: '/neptune-with-background.png',
     url: '/puzzle-neptune-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -373,7 +373,7 @@ const games = [
     thumb: '/arrokoth-with-background.png',
     url: '/puzzle-arrokoth-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -383,7 +383,7 @@ const games = [
     thumb: '/arrokoth-with-background.png',
     url: '/puzzle-arrokoth-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -393,7 +393,7 @@ const games = [
     thumb: '/arrokoth-with-background.png',
     url: '/puzzle-arrokoth-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['puzzle'],
     newTab: false,
   },
@@ -403,7 +403,7 @@ const games = [
     thumb: '/thumb-find-pair-inner.png',
     url: '/matching-inner-planets.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['matching'],
     keywords: ['mercury', 'venus', 'earth', 'mars'],
     newTab: false,
@@ -414,7 +414,7 @@ const games = [
     thumb: '/thumb-find-pair-outer.png',
     url: '/matching-outer-planets.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['matching'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune'],
     newTab: false,
@@ -425,7 +425,7 @@ const games = [
     thumb: '/dwarf-planets-matching-game-thumbnail.png',
     url: '/matching-dwarf-planets.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['matching'],
     keywords: ['pluto', 'eris', 'ceres', 'makemake', 'haumea'],
     newTab: false,
@@ -436,7 +436,7 @@ const games = [
     thumb: '/word-sort-planet-types-thumbnail.png',
     url: '/word-sort-planet-types.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'haumea', 'eris', 'makemake', 'ceres', 'rocky', 'gas giant', 'ice giant', 'dwarf'],
     newTab: false,
@@ -447,7 +447,7 @@ const games = [
     thumb: '/word-sort-moons-no-moons-thumbnail.png',
     url: '/word-sort-moons.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'moon', 'moons'],
     newTab: false,
@@ -458,7 +458,7 @@ const games = [
     thumb: '/word-sort-rings-no-rings-thumbnail.png',
     url: '/word-sort-rings.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'rings'],
     newTab: false,
@@ -469,7 +469,7 @@ const games = [
     thumb: '/word-sort-atmosphere-no-atmosphere-thumbnail.png',
     url: '/word-sort-atmosphere.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'atmosphere'],
     newTab: false,
@@ -480,7 +480,7 @@ const games = [
     thumb: '/word-sort-jupiter-saturn-moons-thumbnail.png',
     url: '/word-sort-jupiter-saturn-moons.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-sort'],
     keywords: ['io', 'europa', 'ganymede', 'callisto', 'titan', 'enceladus', 'mimas', 'rhea', 'dione', 'tethys'],
     newTab: false,
@@ -491,7 +491,7 @@ const games = [
     thumb: '/space-hangman-easy-thumbnail.png',
     url: '/hangman-space-easy.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['hangman', 'easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'ceres', 'eris', 'makemake', 'haumea', 'sun', 'moon', 'rocket', 'asteroid', 'comet', 'planets', 'dwarf planets'],
     newTab: false,
@@ -502,7 +502,7 @@ const games = [
     thumb: '/space-hangman-medium-thumbnail.png',
     url: '/hangman-space-medium.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['hangman', 'medium'],
     keywords: ['planets', 'moons', 'spacecraft', 'missions', 'voyager', 'cassini', 'curiosity', 'perseverance', 'asteroids', 'comets', 'solar system', 'astronaut', 'rover'],
     newTab: false,
@@ -513,7 +513,7 @@ const games = [
     thumb: '/space-hangman-hard-thumbnail.png',
     url: '/hangman-space-hard.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['hangman', 'hard'],
     keywords: ['planets', 'moons', 'spacecraft', 'missions', 'voyager', 'cassini', 'curiosity', 'perseverance', 'asteroids', 'comets', 'solar system', 'astronaut', 'rover'],
     newTab: false,
@@ -524,7 +524,7 @@ const games = [
     thumb: '/planets-word-search-thumbnail.png',
     url: '/word-search-planets.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-search'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'],
     newTab: false,
@@ -535,7 +535,7 @@ const games = [
     thumb: '/word-search-dwarf-planets-thumbnail.png',
     url: '/word-search-dwarf-planets.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-search'],
     keywords: ['pluto', 'eris', 'makemake', 'ceres', 'haumea'],
     newTab: false,
@@ -546,7 +546,7 @@ const games = [
     thumb: '/word-search-inner-solar-system-thumbnail.png',
     url: '/word-search-inner-solar-system.html',
     topic: 'solar-system',
-    mini: true,
+
     types: ['word-search'],
     keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'moon', 'asteroid', 'comet', 'vesta'],
     newTab: false,
@@ -557,7 +557,7 @@ const games = [
     thumb: '/thumb-lesson-mars.png',
     url: 'https://view.genially.com/69b4244b49561c5da75382ae',
     topic: 'solar-system',
-    mini: false,
+
     types: ['lesson', 'medium'],
     keywords: ['mars', 'phobos', 'deimos', 'rover', 'curiosity', 'perseverance', 'red planet', 'nasa'],
     newTab: false,
@@ -569,7 +569,7 @@ const games = [
     thumb: '/asteroid-thumbnail-planets.jpg',
     url: '/asteroid-blast-planets',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'medium'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'planets', 'blast', 'action', 'asteroid'],
     newTab: false,
@@ -580,7 +580,7 @@ const games = [
     thumb: '/asteroid-thumbnail-planets.jpg',
     url: '/asteroid-blast-planets-easy',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
@@ -591,7 +591,7 @@ const games = [
     thumb: '/asteroid-thumbnail-gas-ice-giants.jpg',
     url: '/asteroid-blast-gas-giants',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'medium'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'gas giants', 'ice giants', 'outer planets', 'blast', 'action', 'asteroid'],
     newTab: false,
@@ -602,7 +602,7 @@ const games = [
     thumb: '/asteroid-thumbnail-gas-ice-giants.jpg',
     url: '/asteroid-blast-gas-giants-easy',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'easy'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'gas giants', 'ice giants', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
@@ -613,7 +613,7 @@ const games = [
     thumb: '/asteroid-thumbnail-inner-planets.jpg',
     url: '/asteroid-blast-inner-planets',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'medium'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'inner planets', 'rocky planets', 'blast', 'action', 'asteroid'],
     newTab: false,
@@ -624,7 +624,7 @@ const games = [
     thumb: '/asteroid-thumbnail-inner-planets.jpg',
     url: '/asteroid-blast-inner-planets-easy',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'inner planets', 'rocky planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
@@ -635,7 +635,7 @@ const games = [
     thumb: '/asteroid-thumbnail-rings.jpg',
     url: '/asteroid-blast-rings',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'medium'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid'],
     newTab: false,
@@ -646,7 +646,7 @@ const games = [
     thumb: '/asteroid-thumbnail-rings.jpg',
     url: '/asteroid-blast-rings-easy',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'easy'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
@@ -657,7 +657,7 @@ const games = [
     thumb: '/asteroid-thumbnail-dwarf-planets.jpg',
     url: '/asteroid-blast-dwarf-planets',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'medium'],
     keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid'],
     newTab: false,
@@ -668,7 +668,7 @@ const games = [
     thumb: '/asteroid-thumbnail-dwarf-planets.jpg',
     url: '/asteroid-blast-dwarf-planets-easy',
     topic: 'solar-system',
-    mini: false,
+
     types: ['arcade', 'easy'],
     keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid', 'easy'],
     newTab: false,
@@ -1057,8 +1057,9 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
     )
   }
 
-  const href = hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
-  const external = hasAccess && game.newTab !== false
+  const isFree = !!(game as any).freeLabel
+  const href = isFree ? game.url : hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
+  const external = (isFree || hasAccess) && game.newTab !== false
 
   return (
     <a
@@ -1069,9 +1070,9 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
     >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
-        {game.mini && (
-          <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-            Mini
+        {isFree && !hasAccess && (
+          <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+            {(game as any).freeLabel}
           </span>
         )}
         {userId && (
@@ -1109,8 +1110,10 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
           ) : null
         })()}
         <p className="font-extrabold text-base mb-2">{game.title}</p>
-        {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
-        {!hasAccess && (
+        <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
+        {isFree ? (
+          <p className="mt-3 text-sm font-bold text-[#ed7c5a]">Play →</p>
+        ) : !hasAccess && (
           <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to play →' : 'Start free trial →'}</p>
         )}
       </div>
