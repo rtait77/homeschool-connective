@@ -912,7 +912,7 @@ export default function GamesPage() {
       {/* Results counter */}
       {filtered.length > 0 && (
         <p className="text-sm text-[#5c5c5c] mb-6">
-          {(search.trim() || activeType || activeDifficulty || topic !== 'all')
+          {(search.trim() || activeCategory || activeGameType || activeDifficulty || topic !== 'all')
             ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> games</>
             : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{games.length}</span> games</>
           }
