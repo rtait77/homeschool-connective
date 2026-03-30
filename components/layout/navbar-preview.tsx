@@ -57,7 +57,6 @@ const CSS = `
     background: rgba(255,255,255,0.6);
   }
   .nav-pill-link.active {
-    font-weight: 700;
     color: #ed7c5a;
     background: #ffffff;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
