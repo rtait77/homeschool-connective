@@ -9,7 +9,7 @@ import { DashboardSidebar } from '@/components/dashboard/sidebar'
 const CSS = `
   .account-wrap {
     min-height: calc(100vh - 64px);
-    background: #f5f1e9;
+    background: white;
     padding: 40px 16px 80px;
   }
   .account-container {
@@ -41,7 +41,7 @@ const CSS = `
     margin: 0 0 36px;
   }
   .account-card {
-    background: white;
+    background: #f5f1e9;
     border-radius: 16px;
     border: 1px solid #ede9e0;
     padding: 24px;
@@ -84,7 +84,7 @@ const CSS = `
     border-color: #ed7c5a;
   }
   .account-input:disabled {
-    background: #faf8f5;
+    background: #f0ece6;
     color: #a09890;
     cursor: not-allowed;
   }
