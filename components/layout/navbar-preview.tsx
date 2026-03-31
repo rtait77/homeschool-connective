@@ -74,6 +74,19 @@ const CSS = `
     background: rgba(85,182,202,0.12);
     box-shadow: 0 1px 4px rgba(85,182,202,0.15);
   }
+  .nav-pill-link.dashboard {
+    color: #ed7c5a;
+    font-weight: 700;
+  }
+  .nav-pill-link.dashboard:hover {
+    color: #d96a48;
+    background: rgba(237,124,90,0.08);
+  }
+  .nav-pill-link.dashboard.active {
+    color: #d96a48;
+    background: rgba(237,124,90,0.12);
+    box-shadow: 0 1px 4px rgba(237,124,90,0.15);
+  }
   .nav-right {
     display: flex;
     align-items: center;
@@ -355,6 +368,14 @@ export default function NavbarPreview() {
                   </Link>
                 </>
               )}
+              {user && showDashboardLink && (
+                <>
+                  <div className="nav-pill-divider" />
+                  <Link href="/dashboard" className={`nav-pill-link dashboard${isActive('/dashboard') ? ' active' : ''}`}>
+                    Dashboard
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -362,7 +383,6 @@ export default function NavbarPreview() {
           <div className="nav-right desktop-only" style={{ marginLeft: user ? 'auto' : undefined }}>
             {user ? (
               <>
-                <Link href="/dashboard" className="nav-cta" style={{ textDecoration: 'none' }}>Dashboard</Link>
                 <div style={{ position: 'relative' }} ref={dropdownRef}>
                   <button className="nav-avatar-btn" onClick={() => setDropdownOpen(!dropdownOpen)} aria-label="Account menu">
                     <span className="nav-avatar">{userInitial}</span>
