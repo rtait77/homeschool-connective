@@ -1207,7 +1207,7 @@ export default function AdminPage() {
                                     {c.style_profile && (
                                       <div style={{ backgroundColor: '#1a1c1e', borderRadius: 12, padding: '1.25rem 1.5rem', marginBottom: '1.5rem', border: '1px solid #3d4248' }}>
                                         <p style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a', margin: '0 0 1rem' }}>Results at a Glance</p>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem' }}>
                                           <div>
                                             <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.4rem' }}>Learning Styles</p>
                                             {c.style_profile.learningStyles.map((s, i) => (
@@ -1237,7 +1237,7 @@ export default function AdminPage() {
 
                                       {/* LEFT: Recommendations */}
                                       <div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                                           <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a' }}>Curriculum Recommendations</p>
                                           <button
                                             onClick={() => generateRecs(c.id)}
