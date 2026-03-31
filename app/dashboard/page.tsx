@@ -71,6 +71,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState('')
   const [status, setStatus] = useState('')
   const [trialEnd, setTrialEnd] = useState<Date | null>(null)
   const [favorites, setFavorites] = useState<string[]>([])
@@ -104,13 +105,14 @@ export default function DashboardPage() {
 
         const { data: profile } = await supabase
           .from('profiles')
-          .select('trial_end, subscription_status, stripe_customer_id')
+          .select('trial_end, subscription_status, stripe_customer_id, first_name')
           .eq('id', user.id)
           .single()
 
         setStatus(profile?.subscription_status ?? '')
         setTrialEnd(profile?.trial_end ? new Date(profile.trial_end) : null)
         setHasStripe(!!profile?.stripe_customer_id)
+        setFirstName(profile?.first_name ?? '')
 
         const { data: favData } = await supabase
           .from('favorites')
@@ -206,7 +208,7 @@ export default function DashboardPage() {
 
   if (loading) return <div className="max-w-[1100px] mx-auto px-6 py-14 text-[#5c5c5c]">Loading...</div>
 
-  const firstName = email.split('@')[0]
+  const displayName = firstName || email.split('@')[0]
   const favoriteGames = allGames.filter(g => favorites.includes(g.title))
 
   const daysLeft = trialEnd ? Math.ceil((trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null
@@ -221,7 +223,7 @@ export default function DashboardPage() {
 
       {/* Welcome */}
       <div className="mb-10">
-        <h1 className="text-3xl font-extrabold mb-2">Welcome back, {firstName}!</h1>
+        <h1 className="text-3xl font-extrabold mb-2">Welcome back, {displayName}!</h1>
         <div className="flex items-center gap-3 flex-wrap">
           {isActive && (
             <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>
