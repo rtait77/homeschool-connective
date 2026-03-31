@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false)
@@ -24,14 +26,31 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function ConsultingPage() {
+  const router = useRouter()
+  const supabase = createClient()
+  const [agreed, setAgreed] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [resourceCount, setResourceCount] = useState<number | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     fetch('/api/consulting/resource-count')
       .then(r => r.json())
       .then(data => setResourceCount(data.count))
       .catch(() => {})
+    supabase.auth.getUser().then(({ data: { user } }) => setIsLoggedIn(!!user))
   }, [])
+
+  async function handleCheckout() {
+    setLoading(true)
+    if (!isLoggedIn) {
+      router.push('/consulting/signup')
+      return
+    }
+    const res = await fetch('/api/checkout-consulting', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+    const { url } = await res.json()
+    window.location.href = url
+  }
 
   return (
     <div style={{ fontFamily: 'Nunito, sans-serif' }}>
@@ -40,8 +59,8 @@ export default function ConsultingPage() {
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: 560, gap: 0 }} className="consulting-hero">
 
-          {/* Left: solid teal panel */}
-          <div style={{ background: '#238FA4', padding: '80px 52px 100px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          {/* Left: solid coral panel */}
+          <div style={{ background: '#e86d47', padding: '80px 52px 100px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <p style={{ fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', marginBottom: 20 }}>
               One-on-One Homeschool Consulting
             </p>
@@ -52,8 +71,8 @@ export default function ConsultingPage() {
               Mel provides personalized support for your family — curriculum recommendations, resource matching, and ongoing mentorship.
             </p>
             <a
-              href="/pricing"
-              style={{ display: 'inline-block', alignSelf: 'flex-start', backgroundColor: '#fff', color: '#238FA4', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: 'none', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}
+              href="#pricing"
+              style={{ display: 'inline-block', alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 800, fontSize: '0.95rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none', border: '2px solid rgba(255,255,255,0.6)', letterSpacing: '0.02em', whiteSpace: 'nowrap' }}
             >
               Book a Consult →
             </a>
@@ -115,7 +134,7 @@ export default function ConsultingPage() {
             {[
               {
                 icon: (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#238FA4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                     <polyline points="14 2 14 8 20 8"/>
                     <line x1="16" y1="13" x2="8" y2="13"/>
@@ -128,7 +147,7 @@ export default function ConsultingPage() {
               },
               {
                 icon: (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#238FA4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 18h6"/>
                     <path d="M10 22h4"/>
                     <path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6H8.3C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/>
@@ -139,7 +158,7 @@ export default function ConsultingPage() {
               },
               {
                 icon: (
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#238FA4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ed7c5a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
                 ),
@@ -148,7 +167,7 @@ export default function ConsultingPage() {
               },
             ].map((card) => (
               <div key={card.title} style={{ backgroundColor: '#fff', borderRadius: 16, padding: '32px 28px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: '#edf7fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 56, height: 56, borderRadius: 14, backgroundColor: '#fff5f1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {card.icon}
                 </div>
                 <p style={{ fontWeight: 800, fontSize: '1rem', color: '#383838', margin: 0 }}>{card.title}</p>
@@ -180,7 +199,7 @@ export default function ConsultingPage() {
               pointerEvents: 'none',
               transform: 'translateY(-50%)',
             }} className="step-connector" />
-            <div className="step-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
               {[
                 { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
                 { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
@@ -188,7 +207,7 @@ export default function ConsultingPage() {
                 { num: '4', title: 'Mentorship & Support', desc: 'Email Mel anytime for 3 months. She\'s here for follow-up questions, guidance, and ongoing homeschool support.' },
               ].map(step => (
                 <div key={step.num} style={{ backgroundColor: '#fff', borderRadius: 14, padding: '28px 18px', textAlign: 'center', border: '1px solid #e2ddd5' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#238FA4', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', position: 'relative', zIndex: 1 }}>{step.num}</div>
                   <p style={{ fontWeight: 800, fontSize: '0.92rem', color: '#383838', marginBottom: 8 }}>{step.title}</p>
                   <p style={{ fontSize: '0.82rem', color: '#5c5c5c', lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
                 </div>
@@ -208,7 +227,7 @@ export default function ConsultingPage() {
         <div style={{ maxWidth: 680, margin: '0 auto', textAlign: 'center' }}>
           {resourceCount !== null && (
             <>
-              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#238FA4', lineHeight: 1, margin: '0 0 8px' }}>
+              <p style={{ fontSize: 'clamp(3rem, 8vw, 5rem)', fontWeight: 800, color: '#ed7c5a', lineHeight: 1, margin: '0 0 8px' }}>
                 {resourceCount}
               </p>
               <p style={{ fontSize: '1rem', fontWeight: 800, color: '#383838', marginBottom: 6 }}>
@@ -333,22 +352,59 @@ export default function ConsultingPage() {
       {/* ── PRICING ── */}
       <div id="pricing" style={{ backgroundColor: '#fff', padding: '64px 24px 96px', marginTop: -2, position: 'relative', overflow: 'hidden' }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 40 }}>What&apos;s included</h2>
+          <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 600, color: '#383838', textAlign: 'center', marginBottom: 8 }}>Get Started</h2>
+          <p style={{ fontSize: '0.9rem', color: '#5c5c5c', textAlign: 'center', margin: '0 auto 40px' }}>
+            One-time payment. No subscription required.
+          </p>
 
-          <ul style={{ fontSize: '0.95rem', color: '#383838', listStyle: 'none', padding: 0, margin: '0 0 32px', display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> Deep-dive intake form</li>
-            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> Personalized curriculum recommendations</li>
-            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> Learning styles, teaching styles, and homeschool methods match</li>
-            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#238FA4', fontWeight: 800, flexShrink: 0 }}>✓</span> 3 months of email support with Mel</li>
-            <li style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}><span style={{ color: '#55b6ca', fontWeight: 800, flexShrink: 0 }}>✓</span> <span style={{ color: '#55b6ca', fontWeight: 700 }}>7-day free trial of our educational games included</span></li>
-          </ul>
+          <div style={{ borderRadius: 18, padding: '32px', border: '2px solid #ed7c5a', backgroundColor: '#fff', boxShadow: '0 4px 20px rgba(237,124,90,0.12)', marginBottom: 28 }}>
+            <p style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ed7c5a', margin: '0 0 2px' }}>$47</p>
+            <p style={{ fontSize: '0.8rem', color: '#a09890', marginBottom: 24 }}>one-time payment</p>
+            <ul style={{ fontSize: '0.9rem', color: '#383838', listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <li>✓ Deep-dive intake form</li>
+              <li>✓ Personalized curriculum recommendations</li>
+              <li>✓ Learning styles, teaching styles, and homeschool methods match</li>
+              <li>✓ 3 months of email support with Mel</li>
+              <li style={{ color: '#55b6ca', fontWeight: 700 }}>✓ 7-day free trial of our educational games included</li>
+            </ul>
+            <p style={{ fontSize: '0.8rem', color: '#a09890', marginTop: 12, marginBottom: 0 }}>Option to subscribe to games after your trial if you choose.</p>
+          </div>
 
-          <a
-            href="/pricing"
-            style={{ display: 'block', width: '100%', backgroundColor: '#238FA4', color: '#fff', fontWeight: 800, fontSize: '1.05rem', padding: '1rem', borderRadius: 12, border: 'none', textDecoration: 'none', textAlign: 'center', transition: 'opacity 0.15s' }}
+          <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#5c5c5c', marginBottom: 20 }}>
+            Looking for games only? <a href="/pricing" style={{ color: '#ed7c5a', fontWeight: 700, textDecoration: 'none' }}>See all pricing options →</a>
+          </p>
+
+          <div style={{ backgroundColor: '#f5f1e9', border: '1px solid #e2ddd5', borderRadius: 14, padding: '28px', marginBottom: 20 }}>
+            <h3 style={{ fontWeight: 800, fontSize: '0.95rem', color: '#383838', marginBottom: 16 }}>Terms & Agreement</h3>
+            <div style={{ fontSize: '0.85rem', color: '#5c5c5c', lineHeight: 1.7, marginBottom: 20 }}>
+              <p style={{ marginBottom: 10 }}>By signing up for this consulting service, you agree to the following:</p>
+              <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <li>No refunds once the intake form has been sent to you.</li>
+                <li>Email support is provided for 3 months from the date your report is delivered. Mel will respond within 3 to 5 business days.</li>
+                <li>Curriculum recommendations are suggestions based on your intake form. They are not guarantees of outcome. The final curriculum decision remains with the parent/guardian.</li>
+                <li>Your family&apos;s information will not be shared with any third party.</li>
+                <li>This is an educational consulting service, not a licensed tutoring or therapy service.</li>
+              </ol>
+            </div>
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={e => setAgreed(e.target.checked)}
+                style={{ marginTop: 2, width: 16, height: 16, accentColor: '#ed7c5a', cursor: 'pointer', flexShrink: 0 }}
+              />
+              <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#383838' }}>I have read and agree to the terms above.</span>
+            </label>
+          </div>
+
+          <button
+            onClick={handleCheckout}
+            disabled={!agreed || loading}
+            style={{ width: '100%', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800, fontSize: '1.05rem', padding: '1rem', borderRadius: 12, border: 'none', cursor: agreed && !loading ? 'pointer' : 'not-allowed', opacity: agreed && !loading ? 1 : 0.4, transition: 'opacity 0.15s' }}
           >
-            See Pricing →
-          </a>
+            {loading ? 'Redirecting to payment...' : 'Get Started — $47'}
+          </button>
+          <p style={{ textAlign: 'center', fontSize: '0.78rem', color: '#a09890', marginTop: 10 }}>Secure payment via Stripe. You&apos;ll receive a confirmation email right after payment.</p>
         </div>
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
           <svg viewBox="0 0 1440 56" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
@@ -431,9 +487,6 @@ export default function ConsultingPage() {
           }
           .step-connector {
             display: none !important;
-          }
-          .step-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
           }
           .mel-layout {
             grid-template-columns: 1fr !important;
