@@ -277,8 +277,24 @@ export default function IntakePage() {
 
   async function handleSubmit() {
     setError('')
-    if (!form.parentName.trim() || !form.children[0]?.name.trim()) {
-      setError("Please fill in your name and your child's name before submitting.")
+    const missing: string[] = []
+    if (!form.parentName.trim()) missing.push('your name')
+    if (!form.parentState.trim()) missing.push('your state')
+    if (!form.children[0]?.name.trim()) missing.push("your child's name")
+    if (!form.children[0]?.age.trim()) missing.push("your child's age")
+    if (!form.experienceLength) missing.push('experience level')
+    if (form.whyHomeschooling.length === 0) missing.push('why you homeschool')
+    if (form.teachingStyle.length === 0) missing.push('your teaching style')
+    if (form.idealDay.length === 0) missing.push('your ideal school day')
+    if (!form.religiousPreference) missing.push('resource preference (secular/faith-based)')
+    if (form.biggestChallenges.length === 0) missing.push('biggest challenges')
+    if (!form.daysPerWeek) missing.push('days per week')
+    if (!form.hoursPerDay) missing.push('hours per day')
+    if (form.screenAttitude.length === 0) missing.push('screen attitude')
+    if (!form.prepWillingness) missing.push('prep willingness')
+    if (missing.length > 0) {
+      setError(`Please answer all required questions before submitting. Missing: ${missing.join(', ')}.`)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
     setSubmitting(true)
