@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
         const trialEnd = new Date(paidAt)
         trialEnd.setDate(trialEnd.getDate() + 7)
         await supabase.from('profiles')
-          .update({ trial_end: trialEnd.toISOString() })
+          .update({ trial_end: trialEnd.toISOString(), subscription_status: 'trialing' })
           .eq('id', userId)
       }
 
