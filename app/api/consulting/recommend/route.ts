@@ -784,8 +784,9 @@ export async function POST(req: NextRequest) {
 
   // Inject style profile signals into the tag engine so resource recommendations reflect
   // the child's learning style, parent teaching style, and best-fit method.
-  const { learningStyles, methods, teachingStyle: tStyle } = styleProfile
-  // Learning styles → tags (top style gets full boost, others partial)
+  // Only inject if the underlying score is > 0 — prevents empty forms from getting default matches.
+  const { learningStyles, methods, teachingStyle: tStyle, rawScores } = styleProfile
+  // Learning styles → tags (already filtered to score > 0 by scoreStyleProfile)
   if (learningStyles.includes('Visual')) profile.tags.add('visual_learner')
   if (learningStyles.includes('Auditory')) {
     profile.tags.add('auditory_learner')
@@ -801,13 +802,15 @@ export async function POST(req: NextRequest) {
     profile.tags.add('hands_on')
     profile.tags.add('kinesthetic')
   }
-  // Teaching style → tags
-  if (tStyle === 'Direct Teacher') { profile.tags.add('teacher_led'); profile.tags.add('discussion_based') }
-  if (tStyle === 'Facilitator') { profile.tags.add('child_led'); profile.tags.add('hands_on') }
-  if (tStyle === 'Read-aloud & Discussion') { profile.tags.add('read_aloud'); profile.tags.add('literature_based'); profile.tags.add('discussion_based') }
-  if (tStyle === 'Experience-based') { profile.tags.add('project_based'); profile.tags.add('hands_on') }
-  if (tStyle === 'Resource-dependent') { profile.tags.add('low_prep'); profile.tags.add('self_paced'); profile.tags.add('independent_learner') }
-  // Method → tags
+  // Teaching style → tags (only inject if score > 0)
+  if (rawScores.teachingStyles[tStyle] > 0) {
+    if (tStyle === 'Direct Teacher') { profile.tags.add('teacher_led'); profile.tags.add('discussion_based') }
+    if (tStyle === 'Facilitator') { profile.tags.add('child_led'); profile.tags.add('hands_on') }
+    if (tStyle === 'Read-aloud & Discussion') { profile.tags.add('read_aloud'); profile.tags.add('literature_based'); profile.tags.add('discussion_based') }
+    if (tStyle === 'Experience-based') { profile.tags.add('project_based'); profile.tags.add('hands_on') }
+    if (tStyle === 'Resource-dependent') { profile.tags.add('low_prep'); profile.tags.add('self_paced'); profile.tags.add('independent_learner') }
+  }
+  // Method → tags (already filtered to score > 0 by scoreStyleProfile)
   if (methods.includes('Charlotte Mason')) { profile.tags.add('read_aloud'); profile.tags.add('literature_based'); profile.tags.add('hands_on') }
   if (methods.includes('Classical')) { profile.tags.add('discussion_based'); profile.tags.add('literature_based'); profile.tags.add('structured') }
   if (methods.includes('Montessori')) { profile.tags.add('hands_on'); profile.tags.add('child_led'); profile.tags.add('self_paced') }
