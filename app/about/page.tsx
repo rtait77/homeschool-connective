@@ -42,7 +42,7 @@ export default function AboutPage() {
           <Image src="/rebecca.png" alt="Rebecca Tait" width={140} height={140} className="rounded-full object-cover w-[140px] h-[140px]" />
         </div>
         <div>
-          <h3 className="font-extrabold text-lg mb-3">Rebecca Tait | Founder and Chief Executive Manager</h3>
+          <h3 className="font-extrabold text-lg mb-3">Rebecca Tait<span className="hidden sm:inline"> | Co-Founder &amp; Head of Product</span><span className="block sm:hidden text-sm font-bold text-[#5c5c5c] mt-0.5">Co-Founder &amp; Head of Product</span></h3>
           <p className="text-[#5c5c5c] text-sm leading-relaxed mb-2">Rebecca has been homeschooling for over 10 years and has spent much of that time building hands-on, creative learning experiences for kids. She holds a bachelor's degree in business and she co-founded Homeschool Connective where she develops interactive online courses and gamified curriculum for homeschoolers. Her goal is to create fun, engaging ways for kids to learn complex topics.</p>
           <p className="text-[#5c5c5c] text-sm leading-relaxed">Rebecca teaches at a microschool for homeschoolers, and she also serves on Parent Council as the school's Clubs Coordinator. She also co-leads after school clubs.</p>
         </div>
@@ -54,7 +54,7 @@ export default function AboutPage() {
           <Image src="/melanie.avif" alt="Melanie Miller" width={140} height={140} className="rounded-full object-cover w-[140px] h-[140px]" />
         </div>
         <div>
-          <h3 className="font-extrabold text-lg mb-3">Melanie Miller | Founder and Chief Marketing Manager</h3>
+          <h3 className="font-extrabold text-lg mb-3">Melanie Miller<span className="hidden sm:inline"> | Co-Founder &amp; Head of Consulting</span><span className="block sm:hidden text-sm font-bold text-[#5c5c5c] mt-0.5">Co-Founder &amp; Head of Consulting</span></h3>
           <p className="text-[#5c5c5c] text-sm leading-relaxed mb-2">With over 25 years of homeschooling experience, I have dedicated my life to nurturing young learners and supporting families on their educational journeys. I began homeschooling my own children in 2000, and today I have the joy of homeschooling my grandchildren.</p>
           <p className="text-[#5c5c5c] text-sm leading-relaxed mb-2">Along the way, I have worked in a homeschool co-op as assistant director, at church nursery as coordinator, and a pre-K center as lead teacher, giving me a well-rounded perspective on how children learn best in a variety of settings. I am passionate about coming alongside other homeschooling families as a mentor, helping them find curriculum and resources that truly fit their unique family, teaching style, and children's needs.</p>
           <p className="text-[#5c5c5c] text-sm leading-relaxed">I also create educational resources designed specifically for homeschoolers in grades Pre-K through 3rd grade, with a focus on making learning engaging, accessible, and effective for all types of learners.</p>
