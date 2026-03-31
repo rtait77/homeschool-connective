@@ -8,7 +8,7 @@ export default function Page() {
       <p className="text-sm text-[#5c5c5c] mt-6 mb-2">March 17, 2025</p>
       <h1 className="text-3xl font-extrabold mb-8">Homeschooling 101</h1>
 
-      <div className="relative w-full h-64 mb-8 rounded-xl overflow-hidden">
+      <div className="relative w-full mb-8 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
         <Image src="/blog-101-banner.avif" alt="Homeschooling 101" fill className="object-cover" />
       </div>
 
