@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { createBrowserClient } from '@supabase/ssr'
 
 type Game = {
   title: string
@@ -68,59 +68,87 @@ const allGames: Game[] = [
 
 export default function DashboardPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('')
   const [trialEnd, setTrialEnd] = useState<Date | null>(null)
   const [favorites, setFavorites] = useState<string[]>([])
-  const [hasConsulting, setHasConsulting] = useState(false)
+  const [billingLoading, setBillingLoading] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [hasStripe, setHasStripe] = useState(false)
   const [consulting, setConsulting] = useState<{
     ends_at: string
     intake_completed: boolean
+    intake_status: string
   } | null>(null)
   const [reportReady, setReportReady] = useState(false)
+  const [emailMelOpen, setEmailMelOpen] = useState(false)
+  const [emailMelMessage, setEmailMelMessage] = useState('')
+  const [emailMelSending, setEmailMelSending] = useState(false)
+  const [emailMelSent, setEmailMelSent] = useState(false)
 
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   useEffect(() => {
-    async function load(user: any) {
-      if (!user) { router.push('/login'); return }
+    async function load() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { router.push('/login'); return }
 
-      setEmail(user.email ?? '')
+        setEmail(user.email ?? '')
 
-      const [{ data: profile }, { data: favData }, { data: consultingRecord }] = await Promise.all([
-        supabase.from('profiles').select('trial_end, subscription_status').eq('id', user.id).single(),
-        supabase.from('favorites').select('game_title').eq('user_id', user.id),
-        supabase.from('consulting_customers').select('ends_at, intake_completed').eq('user_id', user.id).maybeSingle(),
-      ])
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('trial_end, subscription_status, stripe_customer_id')
+          .eq('id', user.id)
+          .single()
 
-      setStatus(profile?.subscription_status ?? '')
-      setTrialEnd(profile?.trial_end ? new Date(profile.trial_end) : null)
-      setFavorites(favData?.map((f: any) => f.game_title) ?? [])
+        setStatus(profile?.subscription_status ?? '')
+        setTrialEnd(profile?.trial_end ? new Date(profile.trial_end) : null)
+        setHasStripe(!!profile?.stripe_customer_id)
 
-      if (consultingRecord) {
-        setHasConsulting(true)
-        setConsulting({ ends_at: consultingRecord.ends_at, intake_completed: consultingRecord.intake_completed })
-        fetch('/api/consulting/client-report')
-          .then(r => r.json())
-          .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
-          .catch(() => {})
+        const { data: favData } = await supabase
+          .from('favorites')
+          .select('game_title')
+          .eq('user_id', user.id)
+
+        setFavorites(favData?.map(f => f.game_title) ?? [])
+
+        // Check for consulting purchase — consulting_customers is the source of truth
+        const { data: consultingRecord } = await supabase
+          .from('consulting_customers')
+          .select('ends_at, intake_completed')
+          .eq('user_id', user.id)
+          .single()
+        if (consultingRecord) {
+          setConsulting({
+            ends_at: consultingRecord.ends_at,
+            intake_completed: consultingRecord.intake_completed,
+            intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft',
+          })
+          // Always check for a sent report, regardless of intake_completed status
+          fetch('/api/consulting/client-report')
+            .then(r => r.json())
+            .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
+            .catch(() => {})
+        }
+      } catch {
+        // silently continue — show dashboard with empty state
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     }
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
-        load(session?.user ?? null)
-        subscription.unsubscribe()
-      }
-    })
-    return () => subscription.unsubscribe()
+    load()
   }, [])
 
   async function toggleFavorite(title: string) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
+
     if (favorites.includes(title)) {
       await supabase.from('favorites').delete().eq('user_id', user.id).eq('game_title', title)
       setFavorites(prev => prev.filter(f => f !== title))
@@ -130,176 +158,310 @@ export default function DashboardPage() {
     }
   }
 
+  async function openBillingPortal() {
+    setBillingLoading(true)
+    const res = await fetch('/api/billing-portal', { method: 'POST' })
+    const { url, error } = await res.json()
+    if (url) window.location.href = url
+    else { alert(error || 'Could not open billing portal.'); setBillingLoading(false) }
+  }
+
+  async function deleteAccount() {
+    setDeleteLoading(true)
+    const res = await fetch('/api/delete-account', { method: 'POST' })
+    if (res.ok) {
+      await supabase.auth.signOut()
+      router.push('/')
+    } else {
+      alert('Something went wrong. Please contact support@homeschoolconnective.com.')
+      setDeleteLoading(false)
+    }
+  }
+
+  async function sendEmailToMel(e: React.FormEvent) {
+    e.preventDefault()
+    setEmailMelSending(true)
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'e9fa8d0f-0004-4b87-bdf7-5403329c59cb',
+          to: 'consulting@homeschoolconnective.com',
+          from_name: firstName,
+          reply_to: email,
+          subject: `Consulting question from ${firstName} (${email})`,
+          message: emailMelMessage,
+        }),
+      })
+      setEmailMelSent(true)
+      setEmailMelMessage('')
+    } catch {
+      alert('Something went wrong. Please email consulting@homeschoolconnective.com directly.')
+    } finally {
+      setEmailMelSending(false)
+    }
+  }
+
   if (loading) return <div className="max-w-[1100px] mx-auto px-6 py-14 text-[#5c5c5c]">Loading...</div>
 
-  const daysLeft = trialEnd ? Math.ceil((trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null
-  const isTrialing = status === 'trialing' && daysLeft !== null && daysLeft > 0
-  const isActive = status === 'active'
-  const hasGames = isActive || isTrialing
   const firstName = email.split('@')[0]
   const favoriteGames = allGames.filter(g => favorites.includes(g.title))
+
+  const daysLeft = trialEnd ? Math.ceil((trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null
+  const isTrialing = status === 'trialing' && daysLeft && daysLeft > 0
+  const isActive = status === 'active'
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
 
-      {/* Header */}
+      {/* Welcome */}
       <div className="mb-10">
-        <h1 className="text-3xl font-extrabold mb-3">Welcome back, {firstName}!</h1>
-        <div className="flex flex-wrap gap-3 items-center">
+        <h1 className="text-3xl font-extrabold mb-2">Welcome back, {firstName}!</h1>
+        <div className="flex items-center gap-3 flex-wrap">
           {isActive && (
-            <span className="text-sm font-bold bg-[#ed7c5a] text-white px-3 py-1 rounded-full">Games — Active</span>
+            <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>
           )}
           {isTrialing && (
             <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">
-              Games trial — {daysLeft} day{daysLeft === 1 ? '' : 's'} left
+              {daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial
             </span>
           )}
-          {hasConsulting && (
-            <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Consulting — Active</span>
-          )}
           {isTrialing && (
-            <Link href="/pricing" className="text-sm font-bold text-[#238FA4] hover:underline">Subscribe to keep access →</Link>
+            <Link href="/pricing" className="text-sm font-bold text-[#238FA4] hover:underline">
+              Subscribe to keep access →
+            </Link>
           )}
         </div>
       </div>
 
-      {/* Games section — shown for games/both users */}
-      {hasGames && (
-        <>
-          {/* Favorites */}
-          <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] mb-8" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-            <h2 className="text-xl font-extrabold mb-4">Your Favorites</h2>
-            {favoriteGames.length === 0 ? (
-              <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center">
-                <p className="text-[#5c5c5c] text-sm mb-4">No favorites yet. Heart a game on the Learn page to save it here.</p>
-                <Link href="/learn" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
-                  Browse Games & Lessons
-                </Link>
+      {/* Favorites */}
+      <div className="mb-12">
+        <h2 className="text-xl font-extrabold mb-4">⭐ Your Favorites</h2>
+        {favoriteGames.length === 0 ? (
+          <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center">
+            <p className="text-[#5c5c5c] text-sm mb-4">You haven't saved any favorites yet.</p>
+            <Link href="/learn" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-lg text-sm hover:opacity-90 transition">
+              Browse Games & Lessons
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {favoriteGames.map(game => (
+              <FavoriteCard key={game.title} game={game} isFavorited={true} onToggleFavorite={() => toggleFavorite(game.title)} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Your Account */}
+      <div className="mb-12">
+        <h2 className="text-xl font-extrabold mb-4">Your Account</h2>
+        <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5] flex flex-col gap-5" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+
+          {/* Account info */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Email</p>
+              <p className="font-semibold text-sm">{email}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Games Plan</p>
+              {isActive && <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>}
+              {isTrialing && <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">{daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial</span>}
+              {!isActive && !isTrialing && <span className="text-sm text-[#5c5c5c]">No active plan</span>}
+            </div>
+          </div>
+
+          <hr className="border-[#e2ddd5]" />
+
+          {/* Billing portal */}
+          {hasStripe ? (
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="font-bold text-sm mb-0.5">Billing & Subscription</p>
+                <p className="text-xs text-[#5c5c5c]">Update your payment method, view invoices, or cancel your subscription.</p>
               </div>
+              <button
+                onClick={openBillingPortal}
+                disabled={billingLoading}
+                className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#55b6ca] text-[#55b6ca] hover:bg-[#55b6ca] hover:text-white transition disabled:opacity-50 whitespace-nowrap"
+              >
+                {billingLoading ? 'Loading...' : 'Manage Billing'}
+              </button>
+            </div>
+          ) : isTrialing ? (
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <p className="font-bold text-sm mb-0.5">Subscribe</p>
+                <p className="text-xs text-[#5c5c5c]">Keep access after your trial ends.</p>
+              </div>
+              <Link href="/pricing" className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#ed7c5a] text-[#ed7c5a] hover:bg-[#ed7c5a] hover:text-white transition whitespace-nowrap">
+                View Plans
+              </Link>
+            </div>
+          ) : null}
+
+          <hr className="border-[#e2ddd5]" />
+
+          {/* Delete account */}
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <p className="font-bold text-sm mb-0.5">Delete Account</p>
+              <p className="text-xs text-[#5c5c5c]">Permanently delete your account and all your data. This cannot be undone.</p>
+            </div>
+            {!deleteConfirm ? (
+              <button
+                onClick={() => setDeleteConfirm(true)}
+                className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-red-400 hover:text-red-500 transition whitespace-nowrap"
+              >
+                Delete Account
+              </button>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {favoriteGames.map(game => (
-                  <GameCard key={game.title} game={game} isFavorited={true} onToggleFavorite={() => toggleFavorite(game.title)} />
-                ))}
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-xs text-red-500 font-bold">Are you sure?</p>
+                <button
+                  onClick={deleteAccount}
+                  disabled={deleteLoading}
+                  className="text-sm font-bold px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
+                >
+                  {deleteLoading ? 'Deleting...' : 'Yes, delete'}
+                </button>
+                <button
+                  onClick={() => setDeleteConfirm(false)}
+                  className="text-sm font-bold px-4 py-2 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-[#1c1c1c] transition"
+                >
+                  Cancel
+                </button>
               </div>
             )}
           </div>
 
-          {/* New Games & Lessons */}
-          <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] mb-8" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-extrabold">New Games & Lessons</h2>
-              <Link href="/learn" className="text-sm font-bold text-[#238FA4] hover:underline">Browse all →</Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {allGames.slice(-3).map(game => (
-                <GameCard key={game.title} game={game} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
-              ))}
-            </div>
-          </div>
-        </>
-      )}
+        </div>
+      </div>
 
-      {/* Consulting section — shown for consulting/both users */}
-      {hasConsulting && consulting && (
-        <div className="bg-white rounded-2xl p-7 border border-[#e2ddd5] mb-8" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+      {/* Consulting section — only shown if they purchased consulting */}
+      {consulting?.ends_at && (
+        <div className="mb-12">
           <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting with Mel</h2>
-          {(() => {
-            const consultDaysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-            return (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                {/* Card 1: Intake Form */}
-                <div className={`rounded-2xl p-6 border flex flex-col ${consulting.intake_completed ? 'bg-white border-[#e2ddd5]' : 'bg-[#fff9f7] border-[#ed7c5a]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-base font-extrabold">Intake Form</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${consulting.intake_completed ? 'bg-[#d1f5ea] text-[#1a7a52]' : 'bg-[#ed7c5a] text-white'}`}>
-                      {consulting.intake_completed ? 'Submitted' : 'Action needed'}
-                    </span>
-                  </div>
-                  {consulting.intake_completed ? (
-                    <>
-                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">Your intake form has been submitted. Mel has everything she needs.</p>
-                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your answers →</Link>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
-                      <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition self-start">
-                        Complete Intake Form →
-                      </Link>
-                    </>
-                  )}
+          <div className={`rounded-2xl p-6 border ${consulting.intake_completed ? 'bg-white border-[#e2ddd5]' : 'bg-[#fff9f7] border-[#ed7c5a]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3 flex-wrap">
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    reportReady
+                      ? 'bg-[#5bb87a] text-white'
+                      : consulting.intake_completed
+                      ? 'bg-[#d1f5ea] text-[#1a7a52]'
+                      : 'bg-[#ed7c5a] text-white'
+                  }`}>
+                    {reportReady ? 'Your report is ready!' : consulting.intake_completed ? 'Intake submitted — Mel is reviewing' : 'Action needed — complete your intake form'}
+                  </span>
+                  {(() => {
+                    const daysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                    return daysLeft > 0 ? (
+                      <span className="text-xs font-semibold text-[#5c5c5c]">{daysLeft} days left in your 3-month window</span>
+                    ) : (
+                      <span className="text-xs font-semibold text-[#991b1b]">3-month window has ended</span>
+                    )
+                  })()}
                 </div>
-
-                {/* Card 2: Report */}
-                <div className={`rounded-2xl p-6 border flex flex-col ${reportReady ? 'bg-white border-[#5bb87a]' : 'bg-white border-[#e2ddd5]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-base font-extrabold">Your Report</span>
-                    <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${reportReady ? 'bg-[#5bb87a] text-white' : 'bg-[#f0ede8] text-[#8a8078]'}`}>
-                      {reportReady ? 'Ready' : 'Pending'}
-                    </span>
-                  </div>
-                  {reportReady ? (
-                    <>
-                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">Your personalized curriculum report from Mel is ready to view.</p>
-                      <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition self-start">
+                {!consulting.intake_completed ? (
+                  <p className="text-sm text-[#5c5c5c]">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
+                ) : reportReady ? (
+                  <div>
+                    <p className="text-sm text-[#5c5c5c] mb-3">Your personalized curriculum report from Mel is ready!</p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
                         View My Report →
                       </Link>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-sm text-[#5c5c5c] mb-4 flex-1">
-                        {consulting.intake_completed
-                          ? 'Mel has your answers and will be in touch within 3–5 business days.'
-                          : 'Your report will be ready after you submit the intake form.'}
-                      </p>
-                      <span className="text-sm text-[#a09890]">
-                        {consultDaysLeft > 0 ? `${consultDaysLeft} days left in your support window` : 'Support window has ended'}
-                      </span>
-                    </>
-                  )}
-                </div>
-
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+                        Email Mel
+                      </button>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review my intake answers →</Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-sm text-[#5c5c5c] mb-3">Mel has your answers and will be in touch within 3–5 business days.</p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+                        Email Mel
+                      </button>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
+                    </div>
+                  </div>
+                )}
               </div>
-            )
-          })()}
-        </div>
-      )}
-
-      {/* Upsell: Consulting → for games-only users */}
-      {hasGames && !hasConsulting && (
-        <div className="mb-12">
-          <div className="bg-[#f0fafa] rounded-2xl p-7 border border-[#55b6ca]">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-2">Homeschool Help</p>
-            <h2 className="text-xl font-extrabold mb-2">Looking for more personalized support?</h2>
-            <p className="text-sm text-[#5c5c5c] mb-5">Get a personalized curriculum match, learning style analysis, and 3 months of email support from Mel. One-time, $47.</p>
-            <Link href="/consulting" className="inline-block bg-[#55b6ca] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition">
-              Learn About Consulting →
-            </Link>
+              {!consulting.intake_completed && (
+                <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition whitespace-nowrap">
+                  Complete Intake Form →
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Upsell: Games → for consulting-only users */}
-      {hasConsulting && !hasGames && (
-        <div className="mb-12">
-          <div className="bg-[#fff9f7] rounded-2xl p-7 border border-[#ed7c5a]">
-            <p className="text-xs font-extrabold uppercase tracking-widest text-[#ed7c5a] mb-2">Games & Lessons</p>
-            <h2 className="text-xl font-extrabold mb-2">Add interactive games for your kids</h2>
-            <p className="text-sm text-[#5c5c5c] mb-5">Full access to all games, lessons, and printables. $5/month or $50/year. Cancel anytime.</p>
-            <Link href="/pricing" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition">
-              See Plans →
-            </Link>
+      {/* Email Mel modal */}
+      {emailMelOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setEmailMelOpen(false)}>
+          <div className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+            {emailMelSent ? (
+              <div className="text-center py-4">
+                <p className="text-2xl mb-3">✅</p>
+                <p className="font-extrabold text-lg mb-2">Message sent!</p>
+                <p className="text-sm text-[#5c5c5c] mb-6">Mel will get back to you within 3–5 business days at <span className="font-bold">{email}</span>.</p>
+                <button onClick={() => setEmailMelOpen(false)} className="bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition">Done</button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-extrabold text-lg">Email Mel</h3>
+                  <button onClick={() => setEmailMelOpen(false)} className="text-[#5c5c5c] hover:text-[#1c1c1c] text-xl leading-none">×</button>
+                </div>
+                <p className="text-sm text-[#5c5c5c] mb-5">Your message will be sent from <span className="font-bold">{email}</span> so Mel can reply directly to you.</p>
+                <form onSubmit={sendEmailToMel} className="flex flex-col gap-4">
+                  <textarea
+                    value={emailMelMessage}
+                    onChange={e => setEmailMelMessage(e.target.value)}
+                    placeholder="What's on your mind?"
+                    rows={6}
+                    required
+                    className="w-full border border-[#e2ddd5] rounded-xl p-4 text-sm text-[#383838] resize-none focus:outline-none focus:border-[#55b6ca]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={emailMelSending || !emailMelMessage.trim()}
+                    className="bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition disabled:opacity-40"
+                  >
+                    {emailMelSending ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              </>
+            )}
           </div>
         </div>
       )}
+
+      {/* New Games */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-extrabold">New Games & Lessons</h2>
+          <Link href="/learn" className="text-sm font-bold text-[#238FA4] hover:underline">Browse all →</Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {allGames.slice(-3).map(game => (
+            <FavoriteCard key={game.title} game={game} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+          ))}
+        </div>
+      </div>
 
     </div>
   )
 }
 
-function GameCard({ game, isFavorited, onToggleFavorite }: { game: Game, isFavorited: boolean, onToggleFavorite: () => void }) {
+function FavoriteCard({ game, isFavorited, onToggleFavorite }: { game: Game, isFavorited: boolean, onToggleFavorite: () => void }) {
   const external = game.url.startsWith('http')
   return (
     <a
@@ -312,8 +474,10 @@ function GameCard({ game, isFavorited, onToggleFavorite }: { game: Game, isFavor
         <Image src={game.thumb} alt={game.title} fill className="object-cover" />
         <button
           onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFavorite() }}
-          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-            isFavorited ? 'bg-[#ed7c5a] text-white' : 'bg-white/80 text-[#5c5c5c] hover:bg-[#ed7c5a] hover:text-white'
+          className={`absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-base transition-all ${
+            isFavorited
+              ? 'bg-[#ed7c5a] text-white'
+              : 'bg-white/80 text-[#5c5c5c] hover:bg-[#ed7c5a] hover:text-white'
           }`}
           title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
         >
@@ -323,7 +487,7 @@ function GameCard({ game, isFavorited, onToggleFavorite }: { game: Game, isFavor
           }
         </button>
       </div>
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         <p className="font-extrabold text-base">{game.title}</p>
       </div>
     </a>
