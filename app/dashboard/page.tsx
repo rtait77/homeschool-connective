@@ -228,11 +228,14 @@ export default function DashboardPage() {
           )}
           {isTrialing && (
             <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">
-              {daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial
+              {daysLeft} day{daysLeft === 1 ? '' : 's'} left in free trial
             </span>
           )}
-          {isTrialing && (
-            <Link href="/pricing" className="text-sm font-bold text-[#238FA4] hover:underline">
+          {!isActive && !isTrialing && trialEnd && (
+            <span className="text-sm font-bold bg-[#fff0f0] text-[#cc4444] px-3 py-1 rounded-full">Trial ended</span>
+          )}
+          {!isActive && !isTrialing && trialEnd && (
+            <Link href="/pricing" className="text-sm font-bold text-[#ed7c5a] hover:underline">
               Subscribe to keep access →
             </Link>
           )}
