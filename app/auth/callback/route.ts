@@ -37,6 +37,7 @@ export async function GET(req: NextRequest) {
       .update({
         trial_end: trialEnd.toISOString(),
         subscription_status: 'trialing',
+        first_name: user.user_metadata?.first_name ?? null,
       })
       .eq('id', user.id)
   }
