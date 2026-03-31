@@ -669,7 +669,8 @@ export default function AdminPage() {
       </div>
 
       {/* Tab nav */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', borderBottom: `1px solid ${isDarkTab ? '#3d4248' : '#e2ddd5'}` }}>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: '2rem', borderBottom: `1px solid ${isDarkTab ? '#3d4248' : '#e2ddd5'}` }}>
+      <div style={{ display: 'flex', gap: '0.5rem', minWidth: 'max-content' }}>
         {tabs.map(t => (
           <button
             key={t.id}
@@ -689,6 +690,7 @@ export default function AdminPage() {
             {t.label}
           </button>
         ))}
+      </div>
       </div>
 
       {/* OVERVIEW TAB */}
