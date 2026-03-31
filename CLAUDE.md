@@ -16,7 +16,7 @@
 
 **After every change:** Provide a short summary of what changed and a checklist of what to test in the browser.
 
-**Context discipline:** Always read CLAUDE.md and memory before starting work. Never suggest tools or services that are already in the stack (e.g. Sender.net is the email provider — already integrated, do not suggest alternatives). If unsure whether something exists, check the codebase first.
+**Context discipline:** Always read CLAUDE.md and memory before starting work. Never suggest tools or services that are already in the stack. If unsure whether something exists, check the codebase first.
 
 ## What This Is
 
@@ -34,7 +34,8 @@ Game-based learning platform for homeschoolers. **Live at homeschoolconnective.c
 | Payments | Stripe (Checkout + webhooks) |
 | Styling | Tailwind CSS v4 |
 | Hosting | Vercel |
-| Email | Sender.net (newsletter + trial reminders) |
+| Email (newsletters + trial reminders) | Sender.net |
+| Email (transactional — purchase confirmations, welcome emails) | Resend |
 
 ## Commands
 
@@ -67,7 +68,7 @@ stripe listen --forward-to localhost:3000/api/webhook
 ```
 /api/start-trial  — Creates trial record in Supabase
 /api/checkout     — Creates Stripe Checkout session
-/api/webhook      — Stripe webhook (subscription.created/updated/deleted)
+/api/webhook      — Stripe webhook (subscription.created/updated/deleted + consulting checkout.session.completed)
 /api/cron         — Sends trial reminder emails (Vercel cron, daily 10am UTC)
 /auth/callback    — Supabase auth callback
 ```
