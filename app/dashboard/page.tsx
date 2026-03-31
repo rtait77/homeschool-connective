@@ -96,11 +96,9 @@ export default function DashboardPage() {
   )
 
   useEffect(() => {
-    async function load() {
+    async function load(user: any) {
+      if (!user) { router.push('/login'); return }
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) { router.push('/login'); return }
-
         setEmail(user.email ?? '')
 
         const { data: profile } = await supabase
@@ -121,7 +119,6 @@ export default function DashboardPage() {
 
         setFavorites(favData?.map(f => f.game_title) ?? [])
 
-        // Check for consulting purchase — consulting_customers is the source of truth
         const { data: consultingRecord } = await supabase
           .from('consulting_customers')
           .select('ends_at, intake_completed')
@@ -133,7 +130,6 @@ export default function DashboardPage() {
             intake_completed: consultingRecord.intake_completed,
             intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft',
           })
-          // Always check for a sent report, regardless of intake_completed status
           fetch('/api/consulting/client-report')
             .then(r => r.json())
             .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
@@ -145,7 +141,13 @@ export default function DashboardPage() {
         setLoading(false)
       }
     }
-    load()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        load(session?.user ?? null)
+        subscription.unsubscribe()
+      }
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   async function toggleFavorite(title: string) {
