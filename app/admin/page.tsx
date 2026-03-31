@@ -1738,8 +1738,8 @@ function DarkSummaryRow({ label, value }: { label: string; value: string | strin
   if (!value || value === '—' || (Array.isArray(value) && value.length === 0)) return null
   if (Array.isArray(value)) {
     return (
-      <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.9rem', alignItems: 'flex-start' }}>
-        <span style={{ fontWeight: 700, color: '#a09890', minWidth: '185px', flexShrink: 0 }}>{label}:</span>
+      <div style={{ display: 'flex', gap: '0.25rem 0.5rem', fontSize: '0.9rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+        <span style={{ fontWeight: 700, color: '#a09890', minWidth: '130px', flexShrink: 0 }}>{label}:</span>
         <ul style={{ margin: '0 0 0 1rem', padding: 0, color: '#e8e0d5', listStyleType: 'disc', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
           {value.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
@@ -1747,9 +1747,9 @@ function DarkSummaryRow({ label, value }: { label: string; value: string | strin
     )
   }
   return (
-    <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.9rem' }}>
-      <span style={{ fontWeight: 700, color: '#a09890', minWidth: '185px', flexShrink: 0 }}>{label}:</span>
-      <span style={{ color: '#e8e0d5' }}>{value}</span>
+    <div style={{ display: 'flex', gap: '0.25rem 0.5rem', fontSize: '0.9rem', flexWrap: 'wrap' }}>
+      <span style={{ fontWeight: 700, color: '#a09890', minWidth: '130px', flexShrink: 0 }}>{label}:</span>
+      <span style={{ color: '#e8e0d5', overflowWrap: 'anywhere' }}>{value}</span>
     </div>
   )
 }
