@@ -8,8 +8,8 @@ export default function Page() {
       <p className="text-sm text-[#5c5c5c] mt-6 mb-2">April 28, 2025</p>
       <h1 className="text-3xl font-extrabold mb-8">Deschooling</h1>
 
-      <div className="relative w-full mb-8 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
-        <Image src="/blog-deschooling-banner.avif" alt="Deschooling" fill className="object-cover" />
+      <div className="w-full mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-deschooling-banner.avif" alt="Deschooling" width={1200} height={400} className="w-full h-auto" />
       </div>
 
       <h2 className="text-xl font-extrabold mb-4">What is Deschooling?</h2>
