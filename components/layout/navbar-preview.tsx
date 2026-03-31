@@ -74,19 +74,6 @@ const CSS = `
     background: rgba(85,182,202,0.12);
     box-shadow: 0 1px 4px rgba(85,182,202,0.15);
   }
-  .nav-pill-link.admin {
-    color: #ed7c5a;
-    font-weight: 600;
-  }
-  .nav-pill-link.admin:hover {
-    color: #d96a48;
-    background: rgba(237,124,90,0.08);
-  }
-  .nav-pill-link.admin.active {
-    color: #d96a48;
-    background: rgba(237,124,90,0.12);
-    box-shadow: 0 1px 4px rgba(237,124,90,0.15);
-  }
   .nav-right {
     display: flex;
     align-items: center;
@@ -352,43 +339,41 @@ export default function NavbarPreview() {
             <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={50} style={{ height: '40px', width: 'auto' }} priority />
           </Link>
 
-          {/* Pill nav — all users */}
-          <div className="nav-pill-wrap">
-            <div className="nav-pill">
-              {pillLinks.map(({ href, label }) => (
-                <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
-                  {label}
-                </Link>
-              ))}
-              {showConsultingInPill && (
-                <>
-                  <div className="nav-pill-divider" />
-                  <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
-                    Consulting
+          {/* Pill nav — logged-out only */}
+          {!user && (
+            <div className="nav-pill-wrap">
+              <div className="nav-pill">
+                {pillLinks.map(({ href, label }) => (
+                  <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
+                    {label}
                   </Link>
-                </>
-              )}
-              {showDashboardLink && (
-                <>
-                  <div className="nav-pill-divider" />
-                  {isAdmin ? (
-                    <Link href="/admin" className={`nav-pill-link admin${isActive('/admin') ? ' active' : ''}`}>
-                      Admin Panel
+                ))}
+                {showConsultingInPill && (
+                  <>
+                    <div className="nav-pill-divider" />
+                    <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
+                      Consulting
                     </Link>
-                  ) : (
-                    <Link href="/dashboard" className={`nav-pill-link admin${isActive('/dashboard') ? ' active' : ''}`}>
-                      Dashboard
-                    </Link>
-                  )}
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Right side */}
           <div className="nav-right desktop-only" style={{ marginLeft: user ? 'auto' : undefined }}>
             {user ? (
               <>
+                {pillLinks.map(({ href, label }) => (
+                  <Link key={href} href={href} className={`nav-dashboard-link${isActive(href) ? ' active' : ''}`}>
+                    {label}
+                  </Link>
+                ))}
+                {showDashboardLink && (
+                  <Link href="/dashboard" className={`nav-dashboard-link${isActive('/dashboard') ? ' active' : ''}`}>
+                    Dashboard
+                  </Link>
+                )}
                 <div style={{ position: 'relative' }} ref={dropdownRef}>
                   <button className="nav-avatar-btn" onClick={() => setDropdownOpen(!dropdownOpen)} aria-label="Account menu">
                     <span className="nav-avatar">{userInitial}</span>
@@ -400,7 +385,9 @@ export default function NavbarPreview() {
                   {dropdownOpen && (
                     <div className="nav-dropdown">
                       <div className="nav-dropdown-email">{displayEmail}</div>
-                      <Link href="/account" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Account</Link>
+                      {isAdmin && <Link href="/admin" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Admin Panel</Link>}
+                      <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Dashboard</Link>
+                      <Link href="/account" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Account Settings</Link>
                       <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
                         <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
                       </div>
@@ -449,11 +436,10 @@ export default function NavbarPreview() {
               <>
                 <hr className="mobile-divider" />
                 {mobileShowDashboard && (
-                  isAdmin
-                    ? <li><Link href="/admin" onClick={() => setMenuOpen(false)} style={{ color: '#ed7c5a' }}>Admin Panel</Link></li>
-                    : <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} style={{ color: '#ed7c5a' }}>Dashboard</Link></li>
+                  <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} className={isActive('/dashboard') ? 'active-mobile' : ''}>Dashboard</Link></li>
                 )}
                 <li><p style={{ padding: '4px 0 2px', fontSize: '0.75rem', color: '#a09890', margin: 0 }}>{displayEmail}</p></li>
+                {isAdmin && <li><Link href="/admin" onClick={() => setMenuOpen(false)}>Admin Panel</Link></li>}
                 <li><Link href="/account" onClick={() => setMenuOpen(false)}>Account</Link></li>
                 <li><button onClick={handleLogout} className="muted-mobile">Log Out</button></li>
               </>
