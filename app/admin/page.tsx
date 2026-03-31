@@ -244,6 +244,16 @@ export default function AdminPage() {
   const [previewExpanded, setPreviewExpanded] = useState<Record<string, boolean>>({})
   const [previewCustomer, setPreviewCustomer] = useState<string | null>(null)
   const [tagPopup, setTagPopup] = useState<{ name: string; tags: { tag: string; sources: { question: string; answer: string }[] }[] } | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; email: string } | null>(null)
+  const [deleting, setDeleting] = useState(false)
+
+  async function deleteConsultingCustomer(id: string) {
+    setDeleting(true)
+    await fetch(`/api/admin/consulting?id=${id}`, { method: 'DELETE' })
+    setConsulting(prev => prev ? prev.filter(c => c.id !== id) : prev)
+    setDeleteConfirm(null)
+    setDeleting(false)
+  }
 
   async function loadReportItems(customerId: string) {
     const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
@@ -658,6 +668,35 @@ export default function AdminPage() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {deleteConfirm && (
+        <div
+          onClick={() => setDeleteConfirm(null)}
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{ backgroundColor: '#1e2126', borderRadius: 14, padding: '28px', maxWidth: 420, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,0.6)', border: '1px solid #5a2a2a' }}
+          >
+            <p style={{ fontWeight: 800, color: '#f87171', fontSize: '1rem', marginBottom: '0.5rem' }}>Delete this client?</p>
+            <p style={{ color: '#a09890', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+              This will permanently delete <strong style={{ color: '#e8e0d5' }}>{deleteConfirm.email}</strong> and their intake form. This cannot be undone.
+            </p>
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                style={{ padding: '0.5rem 1.25rem', borderRadius: 8, border: '1px solid #3d4248', background: 'none', color: '#a09890', fontWeight: 700, cursor: 'pointer', fontSize: '0.875rem' }}
+              >Cancel</button>
+              <button
+                onClick={() => deleteConsultingCustomer(deleteConfirm.id)}
+                disabled={deleting}
+                style={{ padding: '0.5rem 1.25rem', borderRadius: 8, border: 'none', backgroundColor: '#7f1d1d', color: '#fca5a5', fontWeight: 700, cursor: deleting ? 'not-allowed' : 'pointer', fontSize: '0.875rem', opacity: deleting ? 0.6 : 1 }}
+              >{deleting ? 'Deleting…' : 'Yes, delete'}</button>
+            </div>
           </div>
         </div>
       )}
@@ -1128,6 +1167,10 @@ export default function AdminPage() {
                               </span>
                             )}
                             <span>Paid {new Date(c.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <button
+                              onClick={e => { e.stopPropagation(); setDeleteConfirm({ id: c.id, email: c.email }) }}
+                              style={{ background: 'none', border: '1px solid #5a2a2a', borderRadius: '6px', color: '#f87171', fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.6rem', cursor: 'pointer' }}
+                            >Delete</button>
                             <span>{isExpanded ? '▲' : '▼'}</span>
                           </div>
                         </div>
