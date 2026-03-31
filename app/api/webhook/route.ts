@@ -37,12 +37,35 @@ export async function POST(req: NextRequest) {
       const customerEmail = session.customer_details?.email ?? ''
       const customerName = session.customer_details?.name ?? 'a new customer'
 
-      // Find Supabase user_id — prefer metadata, fallback to email lookup
+      // Find or create Supabase user
       let userId: string | null = session.metadata?.supabase_user_id ?? null
+      let isNewUser = false
       if (!userId && customerEmail) {
         const { data: authData } = await supabase.auth.admin.listUsers({ perPage: 1000 })
         const found = (authData?.users ?? []).find(u => u.email === customerEmail)
-        userId = found?.id ?? null
+        if (found) {
+          userId = found.id
+        } else {
+          const { data: created } = await supabase.auth.admin.createUser({
+            email: customerEmail,
+            email_confirm: true,
+          })
+          userId = created?.user?.id ?? null
+          isNewUser = true
+        }
+      }
+
+      // Generate password setup link for new users
+      let passwordSetupLink = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`
+      if (isNewUser && customerEmail) {
+        const { data: linkData } = await supabase.auth.admin.generateLink({
+          type: 'recovery',
+          email: customerEmail,
+          options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard` },
+        })
+        if (linkData?.properties?.action_link) {
+          passwordSetupLink = linkData.properties.action_link
+        }
       }
 
       // Create consulting_customers record + grant 7-day games trial
@@ -56,11 +79,15 @@ export async function POST(req: NextRequest) {
           paid_at: paidAt.toISOString(),
           ends_at: endsAt.toISOString(),
         })
-        // Give consulting buyers a 7-day free trial of games
         const trialEnd = new Date(paidAt)
         trialEnd.setDate(trialEnd.getDate() + 7)
+        const firstName = customerName !== 'a new customer' ? customerName.split(' ')[0] : null
         await supabase.from('profiles')
-          .update({ trial_end: trialEnd.toISOString(), subscription_status: 'trialing' })
+          .update({
+            trial_end: trialEnd.toISOString(),
+            subscription_status: 'trialing',
+            ...(firstName ? { first_name: firstName } : {}),
+          })
           .eq('id', userId)
       }
 
@@ -109,6 +136,11 @@ export async function POST(req: NextRequest) {
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
                 <p style="color: #888; font-size: 13px; font-style: italic;">Welcome email from Mel coming soon. In the meantime, please complete your intake form below — your 3-month window starts today!</p>
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                ${isNewUser ? `
+                <p style="font-size: 15px; margin-bottom: 16px;">First, set up your password to access your dashboard and intake form:</p>
+                <p><a href="${passwordSetupLink}" style="display: inline-block; background: #55b6ca; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-bottom: 20px;">Set Up My Password →</a></p>
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                ` : ''}
                 <p><a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/intake" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-bottom: 12px;">Complete Your Intake Form →</a></p>
                 ${quizUrl ? `<p style="margin-top: 12px;"><a href="${quizUrl}" style="display: inline-block; background: #55b6ca; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none;">Take the Learning Style Quiz →</a></p>` : ''}
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
