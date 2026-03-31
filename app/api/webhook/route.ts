@@ -9,6 +9,21 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!.replace(/\s+/g, '')
 )
 
+async function sendEmail(from: string, to: string, subject: string, html: string) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ from, to: [to], subject, html }),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Resend error ${res.status}: ${text}`)
+  }
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const sig = req.headers.get('stripe-signature')!
@@ -80,58 +95,44 @@ export async function POST(req: NextRequest) {
           .eq('id', userId)
       }
 
-      // Email to Mel (via Sender.net API)
+      // Email to Mel
       try {
-        await fetch('https://api.sender.net/v2/transactional/email', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: { name: 'Homeschool Connective', email: 'support@homeschoolconnective.com' },
-            to: [{ email: 'consulting@homeschoolconnective.com' }],
-            subject: 'New consulting signup!',
-            html: `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
-                <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
-                <h2>New consulting signup</h2>
-                <p><strong>Name:</strong> ${customerName}</p>
-                <p><strong>Email:</strong> ${customerEmail}</p>
-                <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-                <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
-                <h3>Agreed Terms</h3>
-                <ol style="color: #555; font-size: 14px; line-height: 1.7;">
-                  <li>No refunds once the intake form has been sent.</li>
-                  <li>Email support for 3 months. Replies within 3–5 business days, generally once per week.</li>
-                  <li>Curriculum recommendations are suggestions, not guarantees. Final decision is the parent's.</li>
-                  <li>Family information will not be shared with any third party.</li>
-                  <li>This is an educational consulting service, not licensed tutoring or therapy.</li>
-                </ol>
-              </div>
-            `,
-          }),
-        })
+        await sendEmail(
+          'Homeschool Connective <support@homeschoolconnective.com>',
+          'consulting@homeschoolconnective.com',
+          'New consulting signup!',
+          `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+              <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
+              <h2>New consulting signup</h2>
+              <p><strong>Name:</strong> ${customerName}</p>
+              <p><strong>Email:</strong> ${customerEmail}</p>
+              <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+              <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+              <h3>Agreed Terms</h3>
+              <ol style="color: #555; font-size: 14px; line-height: 1.7;">
+                <li>No refunds once the intake form has been sent.</li>
+                <li>Email support for 3 months. Replies within 3–5 business days, generally once per week.</li>
+                <li>Curriculum recommendations are suggestions, not guarantees. Final decision is the parent's.</li>
+                <li>Family information will not be shared with any third party.</li>
+                <li>This is an educational consulting service, not licensed tutoring or therapy.</li>
+              </ol>
+            </div>
+          `
+        )
       } catch (err) {
-        console.error('Sender.net error (Mel notification):', err)
+        console.error('Resend error (Mel notification):', err)
       }
 
       // Email to customer
       if (customerEmail) {
-        const intakeFormUrl = process.env.CONSULTING_INTAKE_FORM_URL ?? ''
         const quizUrl = process.env.CONSULTING_QUIZ_URL ?? ''
-
-        await fetch('https://api.sender.net/v2/transactional/email', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: { name: 'Mel at Homeschool Connective', email: 'consulting@homeschoolconnective.com' },
-            to: [{ email: customerEmail }],
-            subject: 'Welcome! Here\'s your intake form',
-            html: `
+        try {
+          await sendEmail(
+            'Mel at Homeschool Connective <consulting@homeschoolconnective.com>',
+            customerEmail,
+            "Welcome! Here's your intake form",
+            `
               <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
                 <p style="color: #888; font-size: 13px; font-style: italic;">Welcome email from Mel coming soon. In the meantime, please complete your intake form below — your 3-month window starts today!</p>
@@ -154,9 +155,11 @@ export async function POST(req: NextRequest) {
                 </ol>
                 <p style="margin-top: 24px; color: #888; font-size: 13px;">Questions? Reply to this email — Mel will get back to you.</p>
               </div>
-            `,
-          }),
-        })
+            `
+          )
+        } catch (err) {
+          console.error('Resend error (customer email):', err)
+        }
       }
     }
   }
