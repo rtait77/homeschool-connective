@@ -8,8 +8,8 @@ export default function Page() {
       <p className="text-sm text-[#5c5c5c] mt-6 mb-2">June 12, 2025</p>
       <h1 className="text-3xl font-extrabold mb-8">Homeschooling Methods</h1>
 
-      <div className="relative w-full mb-8 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
-        <Image src="/blog-methods-banner.avif" alt="Homeschooling Methods" fill className="object-cover" />
+      <div className="w-full mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-methods-banner.avif" alt="Homeschooling Methods" width={1200} height={400} className="w-full h-auto" />
       </div>
 
       <p className="mb-4 leading-relaxed">Lately, homeschooling has been getting pretty popular. More and more families are into it, wanting to customize education to match their kids' needs and interests. And with this trend, there are tons of ways to do homeschooling. They've all got their own styles and ideas about teaching. So, whether you're just starting out or wanting to tweak what you're already doing, checking out different methods can help you figure out what works best for your fam's learning adventure.</p>
