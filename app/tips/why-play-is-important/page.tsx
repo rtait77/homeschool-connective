@@ -9,8 +9,8 @@ export default function Page() {
       <h1 className="text-3xl font-extrabold mb-2">Why Play is Important</h1>
       <p className="text-lg text-[#5c5c5c] mb-8">Play's Essential Function in Homeschooling: Fostering Development and Education</p>
 
-      <div className="relative w-full mb-8 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
-        <Image src="/blog-play-banner.avif" alt="Why Play is Important" fill className="object-cover" />
+      <div className="w-full mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-play-banner.avif" alt="Why Play is Important" width={1200} height={400} className="w-full h-auto" />
       </div>
 
       <p className="mb-6 leading-relaxed">Homeschooling provides a distinctive and adaptable educational path, enabling parents to customize their child's learning to fit their unique needs and passions. In this customized learning adventure, play stands out as a crucial element, playing a significant role in a child's growth and education. Let's explore the importance of integrating play into homeschooling and its benefits for enhancing the learning experience.</p>
