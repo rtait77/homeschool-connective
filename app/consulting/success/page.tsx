@@ -14,17 +14,18 @@ export default function ConsultingSuccessPage() {
   )
 
   useEffect(() => {
-    async function check() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setChecked(true); return }
-      const res = await fetch('/api/consulting/load-intake')
-      if (res.ok) {
-        const data = await res.json()
-        setIntakeSubmitted(data.status === 'submitted')
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        subscription.unsubscribe()
+        if (!session?.user) { setChecked(true); return }
+        const res = await fetch('/api/consulting/load-intake')
+        if (res.ok) {
+          const data = await res.json()
+          setIntakeSubmitted(data.status === 'submitted')
+        }
+        setChecked(true)
       }
-      setChecked(true)
-    }
-    check()
+    })
   }, [])
 
   return (
