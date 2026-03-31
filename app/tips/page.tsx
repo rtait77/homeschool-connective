@@ -63,7 +63,7 @@ export default function TipsPage() {
             <div key={post.href} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
               <a href={post.href}>
                 <div className="relative w-full bg-[#f5f1e9]" style={{ aspectRatio: '16/9' }}>
-                  <Image src={post.img} alt={post.title} fill className="object-cover object-top" />
+                  <Image src={post.img} alt={post.title} fill className="object-contain" />
                 </div>
               </a>
               <div className="p-5 flex flex-col flex-1">
