@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 
 type ModalTarget = 'monthly' | 'yearly' | 'consulting' | null
@@ -100,7 +101,9 @@ function TermsModal({
 }
 
 export default function SubscribePage() {
+  const router = useRouter()
   const [showTrial, setShowTrial] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [gamesPlan, setGamesPlan] = useState<'monthly' | 'yearly'>('yearly')
   const [modalTarget, setModalTarget] = useState<ModalTarget>(null)
   const [loading, setLoading] = useState(false)
@@ -123,6 +126,7 @@ export default function SubscribePage() {
       const trialExpired = profile?.trial_end && new Date(profile.trial_end) <= new Date()
       const subscribed = profile?.subscription_status === 'active'
       if (trialActive || trialExpired || subscribed) setShowTrial(false)
+      setIsLoggedIn(true)
     }
     checkUser()
   }, [])
@@ -132,6 +136,10 @@ export default function SubscribePage() {
     setLoading(true)
 
     if (modalTarget === 'consulting') {
+      if (!isLoggedIn) {
+        router.push('/consulting/signup')
+        return
+      }
       const res = await fetch('/api/checkout-consulting', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
       const { url } = await res.json()
       window.location.href = url
