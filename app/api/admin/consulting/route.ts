@@ -56,3 +56,30 @@ export async function GET() {
 
   return NextResponse.json({ customers: result })
 }
+
+export async function DELETE(req: Request) {
+  const cookieStore = await cookies()
+  const authClient = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
+  )
+  const { data: { user } } = await authClient.auth.getUser()
+  if (!user || user.email !== ADMIN_EMAIL) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { searchParams } = new URL(req.url)
+  const id = searchParams.get('id')
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+
+  const admin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!.replace(/\s+/g, '')
+  )
+
+  await admin.from('consulting_intake_responses').delete().eq('customer_id', id)
+  await admin.from('consulting_customers').delete().eq('id', id)
+
+  return NextResponse.json({ ok: true })
+}
