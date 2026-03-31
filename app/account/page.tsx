@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { DashboardSidebar } from '@/components/dashboard/sidebar'
 
 const CSS = `
   .account-wrap {
@@ -358,10 +359,9 @@ export default function AccountPage() {
     <>
       <style dangerouslySetInnerHTML={{ __html: CSS }} />
       <div className="account-wrap">
-        <div className="account-container">
-          <Link href="/dashboard" className="account-back">
-            ← Back to Dashboard
-          </Link>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', display: 'flex', gap: '40px' }}>
+          <DashboardSidebar />
+          <div className="account-container" style={{ maxWidth: '600px', width: '100%', margin: 0 }}>
 
           <h1 className="account-title">Account Settings</h1>
           <p className="account-subtitle">{user?.email}</p>
@@ -503,6 +503,7 @@ export default function AccountPage() {
             )}
           </div>
 
+        </div>
         </div>
       </div>
     </>
