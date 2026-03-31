@@ -1,17 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@supabase/supabase-js'
-import nodemailer from 'nodemailer'
-
-const titanTransport = nodemailer.createTransport({
-  host: 'smtp.titan.email',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'consulting@homeschoolconnective.com',
-    pass: process.env.TITAN_SMTP_PASSWORD,
-  },
-})
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -91,30 +80,41 @@ export async function POST(req: NextRequest) {
           .eq('id', userId)
       }
 
-      // Email to Mel (via Titan SMTP)
-      await titanTransport.sendMail({
-        from: '"Homeschool Connective" <consulting@homeschoolconnective.com>',
-        to: 'consulting@homeschoolconnective.com',
-        subject: 'New consulting signup!',
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
-            <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
-            <h2>New consulting signup</h2>
-            <p><strong>Name:</strong> ${customerName}</p>
-            <p><strong>Email:</strong> ${customerEmail}</p>
-            <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-            <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
-            <h3>Agreed Terms</h3>
-            <ol style="color: #555; font-size: 14px; line-height: 1.7;">
-              <li>No refunds once the intake form has been sent.</li>
-              <li>Email support for 3 months. Replies within 3–5 business days, generally once per week.</li>
-              <li>Curriculum recommendations are suggestions, not guarantees. Final decision is the parent's.</li>
-              <li>Family information will not be shared with any third party.</li>
-              <li>This is an educational consulting service, not licensed tutoring or therapy.</li>
-            </ol>
-          </div>
-        `,
-      })
+      // Email to Mel (via Sender.net API)
+      try {
+        await fetch('https://api.sender.net/v2/transactional/email', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.SENDER_API_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: { name: 'Homeschool Connective', email: 'support@homeschoolconnective.com' },
+            to: [{ email: 'consulting@homeschoolconnective.com' }],
+            subject: 'New consulting signup!',
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+                <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
+                <h2>New consulting signup</h2>
+                <p><strong>Name:</strong> ${customerName}</p>
+                <p><strong>Email:</strong> ${customerEmail}</p>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+                <h3>Agreed Terms</h3>
+                <ol style="color: #555; font-size: 14px; line-height: 1.7;">
+                  <li>No refunds once the intake form has been sent.</li>
+                  <li>Email support for 3 months. Replies within 3–5 business days, generally once per week.</li>
+                  <li>Curriculum recommendations are suggestions, not guarantees. Final decision is the parent's.</li>
+                  <li>Family information will not be shared with any third party.</li>
+                  <li>This is an educational consulting service, not licensed tutoring or therapy.</li>
+                </ol>
+              </div>
+            `,
+          }),
+        })
+      } catch (err) {
+        console.error('Sender.net error (Mel notification):', err)
+      }
 
       // Email to customer
       if (customerEmail) {
