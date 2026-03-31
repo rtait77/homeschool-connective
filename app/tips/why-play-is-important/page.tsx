@@ -9,7 +9,7 @@ export default function Page() {
       <h1 className="text-3xl font-extrabold mb-2">Why Play is Important</h1>
       <p className="text-lg text-[#5c5c5c] mb-8">Play's Essential Function in Homeschooling: Fostering Development and Education</p>
 
-      <div className="relative w-full h-64 mb-8 rounded-xl overflow-hidden">
+      <div className="relative w-full mb-8 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
         <Image src="/blog-play-banner.avif" alt="Why Play is Important" fill className="object-cover" />
       </div>
 
