@@ -180,7 +180,7 @@ export default function ConsultingPage() {
               pointerEvents: 'none',
               transform: 'translateY(-50%)',
             }} className="step-connector" />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
+            <div className="step-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, position: 'relative' }}>
               {[
                 { num: '1', title: 'Sign Up', desc: 'Choose your plan and complete your purchase. You\'ll get immediate access to your dashboard.' },
                 { num: '2', title: 'Fill Out Your Intake Form', desc: 'Answer questions about your child, your teaching style, what\'s working, and what isn\'t.' },
@@ -431,6 +431,9 @@ export default function ConsultingPage() {
           }
           .step-connector {
             display: none !important;
+          }
+          .step-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
           }
           .mel-layout {
             grid-template-columns: 1fr !important;
