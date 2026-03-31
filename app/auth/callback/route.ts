@@ -41,5 +41,5 @@ export async function GET(req: NextRequest) {
       .eq('id', user.id)
   }
 
-  return NextResponse.redirect(new URL('/learn', req.url))
+  return NextResponse.redirect(new URL('/auth/confirm', req.url))
 }
