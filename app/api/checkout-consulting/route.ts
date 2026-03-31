@@ -12,12 +12,15 @@ export async function POST() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     { cookies: { getAll: () => cookieStore.getAll(), setAll: () => {} } }
   )
+  // Auth is optional — new visitors can pay without an account
   const { data: { user } } = await authClient.auth.getUser()
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     payment_method_types: ['card'],
     line_items: [{ price: process.env.STRIPE_PRICE_CONSULTING!, quantity: 1 }],
+    customer_creation: 'always',
+    ...(user ? { customer_email: user.email } : {}),
     metadata: {
       type: 'consulting',
       ...(user ? { supabase_user_id: user.id } : {}),
