@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
             <p>Hi there! We hope you've been enjoying your free access to Homeschool Connective games.</p>
             <p>Your 7-day free trial ends on <strong>${trialEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong>.</p>
             <p>To keep access to all games, subscribe for just <strong>$5/month</strong> or <strong>$50/year</strong>.</p>
-            <a href="https://homeschoolconnective.com/subscribe" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 16px;">
+            <a href="https://homeschoolconnective.com/pricing" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 16px;">
               Subscribe Now
             </a>
             <p style="margin-top: 24px; color: #888; font-size: 13px;">Questions? Reply to this email — we're happy to help!</p>
