@@ -339,41 +339,30 @@ export default function NavbarPreview() {
             <Image src="/Logo.png" alt="Homeschool Connective" width={160} height={50} style={{ height: '40px', width: 'auto' }} priority />
           </Link>
 
-          {/* Pill nav — logged-out only */}
-          {!user && (
-            <div className="nav-pill-wrap">
-              <div className="nav-pill">
-                {pillLinks.map(({ href, label }) => (
-                  <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
-                    {label}
+          {/* Pill nav — center */}
+          <div className="nav-pill-wrap">
+            <div className="nav-pill">
+              {pillLinks.map(({ href, label }) => (
+                <Link key={href} href={href} className={`nav-pill-link${isActive(href) ? ' active' : ''}`}>
+                  {label}
+                </Link>
+              ))}
+              {!user && showConsultingInPill && (
+                <>
+                  <div className="nav-pill-divider" />
+                  <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
+                    Consulting
                   </Link>
-                ))}
-                {showConsultingInPill && (
-                  <>
-                    <div className="nav-pill-divider" />
-                    <Link href="/consulting" className={`nav-pill-link consulting${isActive('/consulting') ? ' active' : ''}`}>
-                      Consulting
-                    </Link>
-                  </>
-                )}
-              </div>
+                </>
+              )}
             </div>
-          )}
+          </div>
 
           {/* Right side */}
           <div className="nav-right desktop-only" style={{ marginLeft: user ? 'auto' : undefined }}>
             {user ? (
               <>
-                {pillLinks.map(({ href, label }) => (
-                  <Link key={href} href={href} className={`nav-dashboard-link${isActive(href) ? ' active' : ''}`}>
-                    {label}
-                  </Link>
-                ))}
-                {showDashboardLink && (
-                  <Link href="/dashboard" className={`nav-dashboard-link${isActive('/dashboard') ? ' active' : ''}`}>
-                    Dashboard
-                  </Link>
-                )}
+                <Link href="/dashboard" className="nav-cta" style={{ textDecoration: 'none' }}>Dashboard</Link>
                 <div style={{ position: 'relative' }} ref={dropdownRef}>
                   <button className="nav-avatar-btn" onClick={() => setDropdownOpen(!dropdownOpen)} aria-label="Account menu">
                     <span className="nav-avatar">{userInitial}</span>
@@ -386,8 +375,6 @@ export default function NavbarPreview() {
                     <div className="nav-dropdown">
                       <div className="nav-dropdown-email">{displayEmail}</div>
                       {isAdmin && <Link href="/admin" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Admin Panel</Link>}
-                      <Link href="/dashboard" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Dashboard</Link>
-                      <Link href="/account" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Account Settings</Link>
                       <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
                         <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
                       </div>
