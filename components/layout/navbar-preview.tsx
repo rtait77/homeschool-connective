@@ -279,7 +279,10 @@ export default function NavbarPreview() {
     }
 
     loadUser()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') { setUser(null); setSubType(null); return }
+      loadUser()
+    })
     return () => subscription.unsubscribe()
   }, [isAuthPage])
 
@@ -293,12 +296,10 @@ export default function NavbarPreview() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  function handleLogout() {
-    supabase.auth.signOut().catch(() => {})
-    setUser(null)
-    setSubType(null)
+  async function handleLogout() {
     setDropdownOpen(false)
     setMenuOpen(false)
+    await supabase.auth.signOut()
     router.push('/')
   }
 
