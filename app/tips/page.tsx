@@ -62,8 +62,8 @@ export default function TipsPage() {
           {posts.map((post) => (
             <div key={post.href} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
               <a href={post.href}>
-                <div className="relative w-full bg-[#f5f1e9]" style={{ height: '300px' }}>
-                  <Image src={post.img} alt={post.title} fill className="object-cover object-center" />
+                <div className="relative w-full bg-[#f5f1e9]" style={{ aspectRatio: '16/9' }}>
+                  <Image src={post.img} alt={post.title} fill className="object-cover object-top" />
                 </div>
               </a>
               <div className="p-5 flex flex-col flex-1">
