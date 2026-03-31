@@ -219,6 +219,11 @@ export default function AccountPage() {
   const [user, setUser] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
 
+  // First name edit
+  const [firstNameEdit, setFirstNameEdit] = useState('')
+  const [firstNameMsg, setFirstNameMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [firstNameSaving, setFirstNameSaving] = useState(false)
+
   // Email edit
   const [emailEdit, setEmailEdit] = useState('')
   const [emailMsg, setEmailMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
@@ -247,10 +252,11 @@ export default function AccountPage() {
 
       const { data: prof } = await supabase
         .from('profiles')
-        .select('subscription_status, trial_end, stripe_customer_id')
+        .select('subscription_status, trial_end, stripe_customer_id, first_name')
         .eq('id', user.id)
         .single()
       setProfile(prof)
+      setFirstNameEdit(prof?.first_name ?? '')
       setLoading(false)
     }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -278,6 +284,19 @@ export default function AccountPage() {
     : subStatus === 'trialing' ? `Trial ends ${new Date(profile?.trial_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
     : subStatus === 'expired' ? 'Your free trial has ended'
     : null
+
+  async function handleFirstNameSave() {
+    if (!firstNameEdit.trim()) return
+    setFirstNameSaving(true)
+    setFirstNameMsg(null)
+    const { error } = await supabase.from('profiles').update({ first_name: firstNameEdit.trim() }).eq('id', user.id)
+    setFirstNameSaving(false)
+    if (error) {
+      setFirstNameMsg({ type: 'error', text: error.message })
+    } else {
+      setFirstNameMsg({ type: 'success', text: 'Name updated.' })
+    }
+  }
 
   async function handleEmailSave() {
     if (!emailEdit || emailEdit === user?.email) return
@@ -390,6 +409,31 @@ export default function AccountPage() {
               )}
             </div>
             {billingError && <div className="account-msg error" style={{ marginTop: 10 }}>{billingError}</div>}
+          </div>
+
+          {/* First Name */}
+          <div className="account-card">
+            <div className="account-card-title">Your Name</div>
+            <div className="account-row">
+              <div className="account-field">
+                <label className="account-label">First Name</label>
+                <input
+                  type="text"
+                  className="account-input"
+                  value={firstNameEdit}
+                  onChange={e => setFirstNameEdit(e.target.value)}
+                  placeholder="Your first name"
+                />
+              </div>
+              <button
+                className="btn-primary"
+                onClick={handleFirstNameSave}
+                disabled={firstNameSaving || !firstNameEdit.trim() || firstNameEdit.trim() === (profile?.first_name ?? '')}
+              >
+                {firstNameSaving ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+            {firstNameMsg && <div className={`account-msg ${firstNameMsg.type}`}>{firstNameMsg.text}</div>}
           </div>
 
           {/* Email */}
