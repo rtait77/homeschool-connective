@@ -307,7 +307,9 @@ export default function NavbarPreview() {
   const displayEmail = user?.email ?? ''
 
   function isActive(href: string) {
-    return href === '/' ? pathname === '/' : pathname.startsWith(href)
+    if (href === '/') return pathname === '/'
+    if (href === '/dashboard') return pathname === '/dashboard' || pathname === '/account'
+    return pathname.startsWith(href)
   }
 
   // Pill links by user state
