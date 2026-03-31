@@ -555,6 +555,7 @@ const games = [
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
+    thumbPos: 'left center',
     url: 'https://view.genially.com/69b4244b49561c5da75382ae',
     topic: 'solar-system',
 
@@ -902,13 +903,13 @@ export default function GamesPage() {
 
         {/* Row 1: Topic */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Topic</span>
+          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Topic</span>
           <FilterChip label="Solar System" icon="🚀" active={topic === 'solar-system'} onClick={() => setTopic(topic === 'solar-system' ? 'all' : 'solar-system')} />
         </div>
 
         {/* Row 2: Category */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Type</span>
+          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Type</span>
           <FilterChip label="Games" icon="🎮" active={activeCategory === 'games'} onClick={() => handleCategoryClick('games')} />
           <FilterChip label="Lessons" icon="📖" active={activeCategory === 'lessons'} onClick={() => handleCategoryClick('lessons')} />
           <FilterChip label="Printables" icon="🖨️" active={activeCategory === 'printables'} onClick={() => handleCategoryClick('printables')} />
@@ -917,7 +918,7 @@ export default function GamesPage() {
         {/* Row 3: Game type (Games only) */}
         {activeCategory === 'games' && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Game Type</span>
+            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Game Type</span>
             <FilterChip label="Arcade" icon="⚡" active={activeGameType === 'arcade'} onClick={() => setActiveGameType(t => t === 'arcade' ? '' : 'arcade')} />
             <FilterChip label="Puzzles" icon="🧩" active={activeGameType === 'puzzle'} onClick={() => setActiveGameType(t => t === 'puzzle' ? '' : 'puzzle')} />
             <FilterChip label="Word Search" icon="🔍" active={activeGameType === 'word-search'} onClick={() => setActiveGameType(t => t === 'word-search' ? '' : 'word-search')} />
@@ -930,7 +931,7 @@ export default function GamesPage() {
         {/* Row 4: Difficulty (Games only) */}
         {activeCategory === 'games' && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0">Difficulty</span>
+            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Difficulty</span>
             <FilterChip label="Easy" dots={1} dotBg="#4caf7d" active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
             <FilterChip label="Medium" dots={2} dotBg="#f5a623" active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
             <FilterChip label="Hard" dots={3} dotBg="#e05252" active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
@@ -1043,14 +1044,14 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
   if (isPrintable) {
     return (
       <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-        <div className="relative w-full" style={{ aspectRatio: '8.5/11' }}>
+        <div className="relative w-full bg-white" style={{ aspectRatio: '8.5/11' }}>
           <Image src={game.thumb} alt={game.title} fill className="object-contain" />
         </div>
-        <div className="p-3 bg-[#f5f1e9] flex items-center justify-between gap-2">
+        <div className="p-3 bg-[#f5f1e9] flex flex-col gap-1">
           <p className="text-xs font-bold leading-snug">{game.title}</p>
           {(game as any).hasPdf
-            ? <a href={game.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline whitespace-nowrap">Get PDF →</a>
-            : <span className="text-xs text-[#a09890] whitespace-nowrap">Coming soon</span>
+            ? <a href={game.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline">Get PDF →</a>
+            : <span className="text-xs text-[#a09890]">Coming soon</span>
           }
         </div>
       </div>
@@ -1069,7 +1070,7 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
       style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
     >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
-        <Image src={game.thumb} alt={game.title} fill className="object-cover" />
+        <Image src={game.thumb} alt={game.title} fill className="object-cover" style={(game as any).thumbPos ? { objectPosition: (game as any).thumbPos } : {}} />
         {isFree && !hasAccess && (
           <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
             {(game as any).freeLabel}
