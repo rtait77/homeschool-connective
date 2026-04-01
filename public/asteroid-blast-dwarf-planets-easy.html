@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Asteroid Blast – Dwarf Planets (Easy)</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -35,38 +35,46 @@
       padding: 0 3%;
     }
     #prompt {
-      font-size: 2.6vw;
+      font-size: clamp(13px, 4vw, 32px);
       font-weight: 900;
       text-shadow: 0 0 12px #fff, 0 2px 8px rgba(0,0,0,0.8);
       letter-spacing: 0.03em;
     }
     #prompt span { color: #f9d84a; }
     #lives-display {
-      font-size: 2vw;
+      font-size: clamp(18px, 3.5vw, 28px);
       display: flex;
-      gap: 0.4vw;
+      gap: 4px;
       align-items: center;
     }
     .life-icon { filter: drop-shadow(0 0 4px #ff6b6b); }
 
     /* Progress bar */
     #progress-bar {
-      position: absolute;
-      top: 10%; left: 3%; right: 3%;
-      height: 0.6vw;
+      flex-shrink: 0;
+      height: 6px;
       background: rgba(255,255,255,0.15);
-      border-radius: 1vw;
       overflow: hidden;
     }
     #progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #55b6ca, #a8f0ff);
-      border-radius: 1vw;
       transition: width 0.3s;
       width: 0%;
     }
 
-    /* Asteroid */
+    /* Game container */
+    #game-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    #game-area {
+      position: absolute;
+      inset: 0;
+    }
+
+        /* Asteroid */
     .asteroid {
       position: absolute;
       cursor: pointer;
@@ -117,7 +125,7 @@
       pointer-events: none;
       z-index: 100;
       transform: translate(-50%, -50%);
-      font-size: 3vw;
+      font-size: clamp(18px, 4.5vw, 36px);
       font-weight: 900;
       color: #ff4444;
       text-shadow: 0 0 10px #ff0000;
@@ -139,17 +147,17 @@
       background: rgba(5, 10, 30, 0.88);
       z-index: 200;
       text-align: center;
-      padding: 4%;
+      padding: 24px;
     }
     #overlay h1 {
-      font-size: 5vw;
+      font-size: clamp(26px, 6vw, 60px);
       font-weight: 900;
-      margin-bottom: 2%;
+      margin-bottom: 12px;
       line-height: 1.1;
     }
     #overlay p {
-      font-size: 2vw;
-      margin-bottom: 4%;
+      font-size: clamp(15px, 3vw, 28px);
+      margin-bottom: 20px;
       color: #c8e6ff;
       line-height: 1.5;
     }
@@ -159,11 +167,11 @@
       border: none;
       border-radius: 100px;
       font-family: 'Nunito', sans-serif;
-      font-size: 2vw;
+      font-size: clamp(15px, 3vw, 24px);
       font-weight: 900;
-      padding: 1.2% 4%;
+      padding: 12px 28px;
       cursor: pointer;
-      margin: 0.5%;
+      margin: 4px;
       transition: transform 0.1s, background 0.15s;
       text-decoration: none;
       display: inline-block;
@@ -191,11 +199,10 @@
   </style>
 </head>
 <body>
-<div id="stage">
-  <div id="hud">
+  <div id="header">
     <div id="lives-display"></div>
     <div id="prompt">BLAST THE <span>DWARF PLANETS</span>!</div>
-    <div id="planet-counter" style="font-size:1.8vw;font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">☄️ 0 / 5 dwarf planets</div>
+    <div id="planet-counter" style="font-size:clamp(12px,3vw,22px);font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">☄️ 0 / 5 dwarf planets</div>
   </div>
   <div id="progress-bar"><div id="progress-fill"></div></div>
   <div id="game-area"></div>
@@ -220,8 +227,32 @@ const CONFIG = {
 const CORRECT = ['Pluto','Eris','Haumea','Makemake','Ceres'];
 const WRONG   = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune','Moon','Sun','Comet','Asteroid'];
 
-function playCorrect() { new Audio('/astroid-crash.mp3').play().catch(() => {}); }
-function playWrong()   { new Audio('/space-sound-teleport.mp3').play().catch(() => {}); }
+let audioCtx = null;
+const audioBuffers = {};
+
+function initAudio() {
+  if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; }
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  [['correct', '/astroid-crash.mp3'], ['wrong', '/space-sound-teleport.mp3']].forEach(([key, src]) => {
+    fetch(src).then(r => r.arrayBuffer())
+              .then(buf => audioCtx.decodeAudioData(buf))
+              .then(decoded => { audioBuffers[key] = decoded; })
+              .catch(() => {});
+  });
+}
+
+function playSound(key) {
+  if (!audioCtx || !audioBuffers[key]) return;
+  try {
+    const s = audioCtx.createBufferSource();
+    s.buffer = audioBuffers[key];
+    s.connect(audioCtx.destination);
+    s.start(0);
+  } catch(e) {}
+}
+
+function playCorrect() { playSound('correct'); }
+function playWrong()   { playSound('wrong'); }); }
 
 // ─── STATE ────────────────────────────────────────────────────────────────
 let lives, score, blasted, gameActive, spawnTimer, topUpTimer, asteroidId, spawnQueue, activeCount, blastedSet;
@@ -257,7 +288,7 @@ function renderHUD() {
   ld.innerHTML = '';
   for (let i = 0; i < CONFIG.startLives; i++) {
     const icon = document.createElement('span');
-    icon.style.fontSize = '2vw';
+    icon.style.fontSize = 'clamp(18px, 3.5vw, 28px)';
     icon.textContent = i < lives ? '❤️' : '🖤';
     ld.appendChild(icon);
   }
@@ -289,8 +320,8 @@ function spawnAsteroid(label, isCorrect) {
   el.style.cssText = `
     top: ${topPct}%;
     left: ${fromLeft ? -size : 100 + size}vw;
-    width: ${size}vw;
-    height: ${size}vw;
+    width: ${size}vmin;
+    height: ${size}vmin;
     z-index: 10;
   `;
 
@@ -307,7 +338,7 @@ function spawnAsteroid(label, isCorrect) {
         <circle cx="65" cy="60" r="5" fill="hsl(${hue},${sat}%,${lum-8}%)" opacity="0.6"/>
         <circle cx="55" cy="30" r="4" fill="hsl(${hue},${sat}%,${lum-5}%)" opacity="0.5"/>
       </svg>
-      <span class="asteroid-label" style="font-size:${size * 0.16}vw">${label}</span>
+      <span class="asteroid-label" style="font-size:${size * 0.16}vmin">${label}</span>
     </div>
   `;
 
@@ -340,7 +371,7 @@ function onAsteroidClick(el, isCorrect, label) {
   el.classList.add('blasting');
 
   const rect = el.getBoundingClientRect();
-  const sr = document.getElementById('stage').getBoundingClientRect();
+  const sr = document.getElementById('game-container').getBoundingClientRect();
   const cx = ((rect.left + rect.width / 2 - sr.left) / sr.width * 100).toFixed(1);
   const cy = ((rect.top + rect.height / 2 - sr.top) / sr.height * 100).toFixed(1);
 
@@ -433,13 +464,13 @@ function endGame(won) {
     <h1>Mission Complete!</h1>
     <p>You blasted all 5 dwarf planets!</p>
     <button class="btn" id="play-again-btn">Play Again</button>
-    <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
+    <a href="/learn" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   ` : `
     <h1>🚀 Mission Failed</h1>
     <p>You blasted <strong style="color:#f9d84a">${blasted} of 5 dwarf planets</strong>.<br>
     Remember: only blast the <strong>dwarf planets</strong>!</p>
     <button class="btn" id="play-again-btn">Try Again</button>
-    <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
+    <a href="/learn" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   `;
   overlay.style.display = 'flex';
   document.getElementById('play-again-btn').addEventListener('click', startGame);
@@ -447,6 +478,7 @@ function endGame(won) {
 
 // ─── GAME LOOP ────────────────────────────────────────────────────────────
 function startGame() {
+  initAudio();
   init();
   document.getElementById('overlay').style.display = 'none';
   gameActive = true;
