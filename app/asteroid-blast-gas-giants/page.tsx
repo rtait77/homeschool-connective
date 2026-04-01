@@ -7,9 +7,13 @@ export default function AsteroidBlastGasGiantsPage() {
     document.body.style.overflow = 'hidden'
     const nav = document.querySelector('nav')
     if (nav) (nav as HTMLElement).style.display = 'none'
+    const viewport = document.querySelector('meta[name="viewport"]')
+    const prevContent = viewport?.getAttribute('content') ?? ''
+    viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
     return () => {
       document.body.style.overflow = ''
       if (nav) (nav as HTMLElement).style.display = ''
+      if (viewport && prevContent) viewport.setAttribute('content', prevContent)
     }
   }, [])
 
@@ -26,15 +30,14 @@ export default function AsteroidBlastGasGiantsPage() {
           top: 12,
           left: 12,
           zIndex: 200,
-          backgroundColor: 'rgba(0,0,0,0.55)',
           color: '#fff',
           fontWeight: 700,
           fontSize: '0.8rem',
           padding: '6px 14px',
           borderRadius: 20,
           textDecoration: 'none',
-          backdropFilter: 'blur(4px)',
           letterSpacing: '0.01em',
+          textShadow: '0 1px 4px rgba(0,0,0,0.9)',
         }}
       >
         ← Back to Games
