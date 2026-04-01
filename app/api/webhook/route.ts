@@ -170,7 +170,8 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
 
     if (subscription.status === 'active') {
-      const currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
+      const cpeRaw = (subscription as any).current_period_end
+      const currentPeriodEnd = cpeRaw ? new Date(cpeRaw * 1000).toISOString() : null
 
       // Get email from Stripe customer (works whether or not user was logged in)
       let customerEmail = ''
@@ -217,7 +218,7 @@ export async function POST(req: NextRequest) {
           const greeting = customerFirstName ? `Hi ${customerFirstName},` : 'Hi there,'
           const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
           const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
-          const renewalDate = new Date((subscription as any).current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+          const renewalDate = cpeRaw ? new Date(cpeRaw * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''
           await sendEmail(
             'Homeschool Connective <support@homeschoolconnective.com>',
             customerEmail,
@@ -243,10 +244,11 @@ export async function POST(req: NextRequest) {
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
-    const currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
+    const cpeRaw = (subscription as any).current_period_end
+    const currentPeriodEnd = cpeRaw ? new Date(cpeRaw * 1000).toISOString() : null
 
     await supabase.from('profiles')
-      .update({ subscription_status: subscription.status, current_period_end: currentPeriodEnd })
+      .update({ subscription_status: subscription.status, ...(currentPeriodEnd ? { current_period_end: currentPeriodEnd } : {}) })
       .eq('stripe_customer_id', customerId)
   }
 
