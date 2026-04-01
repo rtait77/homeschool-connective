@@ -13,63 +13,67 @@
       color: white;
       overflow: hidden;
       width: 100vw; height: 100vh;
-    }
-    #stage {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100vw; height: 56.25vw;
-      max-height: 100vh; max-width: 177.78vh;
-    }
-    @media (max-aspect-ratio: 16/9) {
-      #stage { top: 0; transform: translateX(-50%); }
+      display: flex;
+      flex-direction: column;
     }
 
-    /* HUD */
-    #hud {
-      position: absolute;
-      top: 2.5%; left: 0; right: 0;
+    /* Header / HUD */
+    #header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 3%;
+      padding: 8px 16px;
+      flex-shrink: 0;
+      min-height: 50px;
+      background: rgba(0, 0, 0, 0.25);
     }
     #prompt {
-      font-size: 2.6vw;
+      font-size: clamp(13px, 4vw, 32px);
       font-weight: 900;
       text-shadow: 0 0 12px #fff, 0 2px 8px rgba(0,0,0,0.8);
       letter-spacing: 0.03em;
+      text-align: center;
     }
     #prompt span { color: #f9d84a; }
-    #score-display {
-      font-size: 1.8vw;
+    #planet-counter {
+      font-size: clamp(12px, 3vw, 22px);
       font-weight: 800;
       color: #a8f0ff;
       text-shadow: 0 2px 6px rgba(0,0,0,0.8);
     }
     #lives-display {
-      font-size: 2vw;
+      font-size: clamp(18px, 3.5vw, 28px);
       display: flex;
-      gap: 0.4vw;
+      gap: 4px;
       align-items: center;
     }
     .life-icon { filter: drop-shadow(0 0 4px #ff6b6b); }
 
     /* Progress bar */
     #progress-bar {
-      position: absolute;
-      top: 10%; left: 3%; right: 3%;
-      height: 0.6vw;
+      flex-shrink: 0;
+      height: 6px;
       background: rgba(255,255,255,0.15);
-      border-radius: 1vw;
       overflow: hidden;
     }
     #progress-fill {
       height: 100%;
       background: linear-gradient(90deg, #55b6ca, #a8f0ff);
-      border-radius: 1vw;
       transition: width 0.3s;
       width: 0%;
+    }
+
+    /* Game container — fills remaining height */
+    #game-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Game area — full size of game-container */
+    #game-area {
+      position: absolute;
+      inset: 0;
     }
 
     /* Asteroid */
@@ -123,7 +127,7 @@
       pointer-events: none;
       z-index: 100;
       transform: translate(-50%, -50%);
-      font-size: 3vw;
+      font-size: clamp(18px, 4.5vw, 36px);
       font-weight: 900;
       color: #ff4444;
       text-shadow: 0 0 10px #ff0000;
@@ -139,7 +143,7 @@
       position: absolute;
       pointer-events: none;
       z-index: 100;
-      font-size: 1.8vw;
+      font-size: clamp(13px, 2.8vw, 22px);
       font-weight: 800;
       color: #ff8844;
       text-shadow: 0 0 8px rgba(255,100,0,0.8);
@@ -161,17 +165,17 @@
       background: rgba(5, 10, 30, 0.88);
       z-index: 200;
       text-align: center;
-      padding: 4%;
+      padding: 24px;
     }
     #overlay h1 {
-      font-size: 5vw;
+      font-size: clamp(26px, 6vw, 60px);
       font-weight: 900;
-      margin-bottom: 2%;
+      margin-bottom: 12px;
       line-height: 1.1;
     }
     #overlay p {
-      font-size: 2vw;
-      margin-bottom: 4%;
+      font-size: clamp(15px, 3vw, 28px);
+      margin-bottom: 20px;
       color: #c8e6ff;
       line-height: 1.5;
     }
@@ -181,11 +185,11 @@
       border: none;
       border-radius: 100px;
       font-family: 'Nunito', sans-serif;
-      font-size: 2vw;
+      font-size: clamp(15px, 3vw, 24px);
       font-weight: 900;
-      padding: 1.2% 4%;
+      padding: 12px 28px;
       cursor: pointer;
-      margin: 0.5%;
+      margin: 4px;
       transition: transform 0.1s, background 0.15s;
       text-decoration: none;
       display: inline-block;
@@ -196,18 +200,16 @@
       border: 2px solid rgba(255,255,255,0.3);
     }
     .btn-secondary:hover { background: rgba(255,255,255,0.25); }
-
-    #overlay .star-score { color: #f9d84a; font-size: 3vw; margin-bottom: 1%; }
   </style>
 </head>
 <body>
-<div id="stage">
-  <div id="hud">
-    <div id="lives-display"></div>
-    <div id="prompt">BLAST THE <span>PLANETS</span>!</div>
-    <div id="planet-counter" style="font-size:1.8vw;font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">🪐 0 / 8 planets</div>
-  </div>
-  <div id="progress-bar"><div id="progress-fill"></div></div>
+<div id="header">
+  <div id="lives-display"></div>
+  <div id="prompt">BLAST THE <span>PLANETS</span>!</div>
+  <div id="planet-counter" style="font-size:clamp(12px,3vw,22px);font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">🪐 0 / 8 planets</div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div id="game-container">
   <div id="game-area"></div>
   <div id="overlay">
     <h1>🚀 Asteroid Blast!</h1>
@@ -266,7 +268,7 @@ function renderHUD() {
   ld.innerHTML = '';
   for (let i = 0; i < CONFIG.startLives; i++) {
     const icon = document.createElement('span');
-    icon.style.fontSize = '2vw';
+    icon.style.fontSize = 'clamp(18px, 3.5vw, 28px)';
     icon.textContent = i < lives ? '❤️' : '🖤';
     ld.appendChild(icon);
   }
@@ -360,7 +362,7 @@ function onAsteroidClick(el, isCorrect, label) {
   el.classList.add('blasting');
 
   const rect = el.getBoundingClientRect();
-  const sr = document.getElementById('stage').getBoundingClientRect();
+  const sr = document.getElementById('game-container').getBoundingClientRect();
   const cx = ((rect.left + rect.width / 2 - sr.left) / sr.width * 100).toFixed(1);
   const cy = ((rect.top + rect.height / 2 - sr.top) / sr.height * 100).toFixed(1);
 
@@ -386,7 +388,7 @@ function onAsteroidClick(el, isCorrect, label) {
 
 function onMissed(el, label) {
   const rect = el.getBoundingClientRect();
-  const sr = document.getElementById('stage').getBoundingClientRect();
+  const sr = document.getElementById('game-container').getBoundingClientRect();
   const cy = ((rect.top + rect.height / 2 - sr.top) / sr.height * 100).toFixed(1);
   const cx = parseFloat(el.style.left) > 50 ? '95' : '5';
   showMissedFlash(cx, cy, label);
@@ -475,13 +477,13 @@ function endGame(won) {
     <h1>Mission Complete!</h1>
     <p>You blasted all 8 planets!<br>Outstanding astronaut work!</p>
     <button class="btn" id="play-again-btn">Play Again</button>
-    <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
+    <a href="/learn" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   ` : `
     <h1>🚀 Mission Failed</h1>
     <p>You blasted <strong style="color:#f9d84a">${blasted} of 8 planets</strong>.<br>
     Remember: only blast the <strong>planets</strong>!</p>
     <button class="btn" id="play-again-btn">Try Again</button>
-    <a href="/learn" class="btn btn-secondary" style="margin-top:1%">Back to Learn</a>
+    <a href="/learn" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   `;
   overlay.style.display = 'flex';
   document.getElementById('play-again-btn').addEventListener('click', startGame);
