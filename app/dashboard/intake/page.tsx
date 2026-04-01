@@ -29,7 +29,7 @@ type ChildData = {
 }
 
 type IntakeForm = {
-  parentName: string; parentEmail: string; parentState: string
+  parentName: string; parentState: string
   children: ChildData[]
   whyHomeschooling: string[]; whyOther: string
   experienceLength: string
@@ -74,7 +74,7 @@ const EMPTY_CHILD: ChildData = {
 }
 
 const EMPTY: IntakeForm = {
-  parentName: '', parentEmail: '', parentState: '',
+  parentName: '', parentState: '',
   children: [{ ...EMPTY_CHILD }],
   whyHomeschooling: [], whyOther: '',
   experienceLength: '',
@@ -473,9 +473,6 @@ function SectionIntro({
       <div className="grid grid-cols-2 gap-4">
         <Field label="Your name *">
           <input type="text" value={form.parentName} onChange={e => set('parentName', e.target.value)} placeholder="Jane Smith" className={inputCls} />
-        </Field>
-        <Field label="Your email *">
-          <input type="email" value={form.parentEmail} onChange={e => set('parentEmail', e.target.value)} placeholder="jane@email.com" className={inputCls} />
         </Field>
       </div>
 
