@@ -135,7 +135,8 @@ export async function POST(req: NextRequest) {
             `
               <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
-                <p style="color: #888; font-size: 13px; font-style: italic;">Welcome email from Mel coming soon. In the meantime, please complete your intake form below — your 3-month window starts today!</p>
+                <p style="color: #444; font-size: 15px; line-height: 1.7;">Hi! I'm Mel, and I'm so glad you're here. I can't wait to dig into your family's story and put together recommendations that actually fit how you learn and live.</p>
+                <p style="color: #444; font-size: 15px; line-height: 1.7;">Your first step is to fill out the intake form below — take your time, it saves as you go. Once I receive it, I'll be in touch within a few business days.</p>
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
                 ${isNewUser ? `
                 <p style="font-size: 15px; margin-bottom: 16px;">First, set up your password to access your dashboard and intake form:</p>
