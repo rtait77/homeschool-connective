@@ -108,6 +108,7 @@ export default function SubscribePage() {
   const [modalTarget, setModalTarget] = useState<ModalTarget>(null)
   const [loading, setLoading] = useState(false)
   const [hasConsulting, setHasConsulting] = useState(false)
+  const [pricingReady, setPricingReady] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -117,7 +118,7 @@ export default function SubscribePage() {
   useEffect(() => {
     async function checkUser() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) { setPricingReady(true); return }
       const { data: profile } = await supabase
         .from('profiles')
         .select('trial_end, subscription_status')
@@ -134,6 +135,7 @@ export default function SubscribePage() {
         .eq('user_id', user.id)
         .single()
       if (consultingRecord) setHasConsulting(true)
+      setPricingReady(true)
     }
     checkUser()
   }, [])
@@ -177,8 +179,8 @@ export default function SubscribePage() {
       <p className="text-center text-[#5c5c5c] mb-2">Two ways to get support for your homeschool.</p>
       <p className="text-center text-xs text-[#a09890] mb-10">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
 
-      {/* 2-column grid — switches to 1-col if consulting is hidden */}
-      <div className={`grid grid-cols-1 gap-6 items-stretch ${!hasConsulting ? 'md:grid-cols-2' : 'max-w-[480px] mx-auto'}`}>
+      {/* 2-column grid — only renders after auth check to avoid flash */}
+      {pricingReady && <div className={`grid grid-cols-1 gap-6 items-stretch ${!hasConsulting ? 'md:grid-cols-2' : 'max-w-[480px] mx-auto'}`}>
 
         {/* Consulting card — hidden for existing consulting customers */}
         {!hasConsulting && <div className="bg-white rounded-2xl p-7 border-2 border-[#238FA4] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(35,143,164,0.12)' }}>
@@ -256,7 +258,7 @@ export default function SubscribePage() {
           )}
         </div>
 
-      </div>
+      </div>}
     </div>
   )
 }
