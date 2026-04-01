@@ -305,6 +305,7 @@ export default function IntakePage() {
     })
     if (res.ok) {
       setSubmitted(true)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       const d = await res.json()
       setError(d.error ?? 'Could not submit. Please try again.')
@@ -443,15 +444,6 @@ export default function IntakePage() {
         </div>
       </div>
 
-      {submitted && (
-        <div className="mt-6 bg-[#edfaf4] border-2 border-[#3dbb7e] rounded-2xl px-6 py-4 flex items-start justify-between gap-4">
-          <div>
-            <p className="font-extrabold text-sm text-[#1a7a52] mb-0.5">Form submitted</p>
-            <p className="text-sm text-[#5c5c5c]">Your answers are with Mel. She'll be in touch within 3–5 business days.</p>
-          </div>
-          <a href="/dashboard" className="text-sm font-bold text-[#55b6ca] hover:underline whitespace-nowrap flex-shrink-0">← Dashboard</a>
-        </div>
-      )}
     </div>
   )
 }
