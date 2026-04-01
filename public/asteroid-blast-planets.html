@@ -229,10 +229,32 @@ const CONFIG = {
 const CORRECT = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
 const WRONG   = ['Pluto','Eris','Makemake','Haumea','Ceres','Moon','Sun','Comet'];
 
-const correctAudio = new Audio('/astroid-crash.mp3');
-const wrongAudio   = new Audio('/space-sound-teleport.mp3');
-function playCorrect() { correctAudio.currentTime = 0; correctAudio.play().catch(() => {}); }
-function playWrong()   { wrongAudio.currentTime = 0;   wrongAudio.play().catch(() => {}); }
+let audioCtx = null;
+const audioBuffers = {};
+
+function initAudio() {
+  if (audioCtx) { if (audioCtx.state === 'suspended') audioCtx.resume(); return; }
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  [['correct', '/astroid-crash.mp3'], ['wrong', '/space-sound-teleport.mp3']].forEach(([key, src]) => {
+    fetch(src).then(r => r.arrayBuffer())
+              .then(buf => audioCtx.decodeAudioData(buf))
+              .then(decoded => { audioBuffers[key] = decoded; })
+              .catch(() => {});
+  });
+}
+
+function playSound(key) {
+  if (!audioCtx || !audioBuffers[key]) return;
+  try {
+    const s = audioCtx.createBufferSource();
+    s.buffer = audioBuffers[key];
+    s.connect(audioCtx.destination);
+    s.start(0);
+  } catch(e) {}
+}
+
+function playCorrect() { playSound('correct'); }
+function playWrong()   { playSound('wrong'); }
 
 // ─── STATE ────────────────────────────────────────────────────────────────
 let lives, score, blasted, gameActive, spawnTimer, topUpTimer, asteroidId, spawnQueue, activeCount, blastedSet;
@@ -492,6 +514,7 @@ function endGame(won) {
 
 // ─── GAME LOOP ────────────────────────────────────────────────────────────
 function startGame() {
+  initAudio();
   init();
   document.getElementById('overlay').style.display = 'none';
   gameActive = true;
