@@ -246,6 +246,19 @@ export async function POST(req: NextRequest) {
 
       // Welcome email to customer
       if (customerEmail) {
+        // Generate magic link so clicking "Start Learning" logs them in directly
+        let startLearningUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/login`
+        try {
+          const { data: linkData } = await supabase.auth.admin.generateLink({
+            type: 'magiclink',
+            email: customerEmail,
+            options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback` },
+          })
+          if (linkData?.properties?.action_link) {
+            startLearningUrl = linkData.properties.action_link
+          }
+        } catch(e) {}
+
         try {
           const greeting = customerFirstName ? `Hi ${customerFirstName},` : 'Hi there,'
           await sendEmail(
@@ -258,7 +271,7 @@ export async function POST(req: NextRequest) {
                 <h2 style="color: #1c1c1c;">${greeting}</h2>
                 <p style="color: #444; font-size: 15px; line-height: 1.6;">Your subscription is active — you now have full access to all games, lessons, and printables on Homeschool Connective.</p>
                 <p style="color: #444; font-size: 14px;"><strong>Plan:</strong> ${planLabel}<br><strong>Renews:</strong> ${renewalDate}</p>
-                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/login" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 20px 0;">Start Learning →</a>
+                <a href="${startLearningUrl}" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 20px 0;">Start Learning →</a>
                 <p style="color: #888; font-size: 13px;">Questions? Reply to this email and we'll get back to you.</p>
               </div>
             `
