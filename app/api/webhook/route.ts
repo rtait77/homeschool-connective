@@ -170,7 +170,14 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
 
     if (subscription.status === 'active') {
-      const cpeRaw = (subscription as any).current_period_end
+      // Retrieve subscription fresh from Stripe — webhook payload may omit current_period_end
+      let cpeRaw: number | undefined
+      try {
+        const freshSub = await stripe.subscriptions.retrieve(subscription.id)
+        cpeRaw = (freshSub as any).current_period_end
+      } catch(e) {
+        cpeRaw = (subscription as any).current_period_end
+      }
       const currentPeriodEnd = cpeRaw ? new Date(cpeRaw * 1000).toISOString() : null
 
       // Get email from Stripe customer (works whether or not user was logged in)
@@ -200,7 +207,7 @@ export async function POST(req: NextRequest) {
           subscription_status: 'active',
           stripe_customer_id: customerId,
           stripe_subscription_id: subscription.id,
-          current_period_end: currentPeriodEnd,
+          ...(currentPeriodEnd ? { current_period_end: currentPeriodEnd } : {}),
         }).eq('id', userId)
 
         // Prefer first name from profile over Stripe name
@@ -212,13 +219,36 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Send welcome email to anyone who paid, logged in or not
+      const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
+      const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
+      const renewalDate = cpeRaw ? new Date(cpeRaw * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''
+
+      // Internal notification to support
+      try {
+        await sendEmail(
+          'Homeschool Connective <support@homeschoolconnective.com>',
+          'support@homeschoolconnective.com',
+          'New subscriber!',
+          `
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+              <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
+              <h2>New subscriber</h2>
+              <p><strong>Name:</strong> ${customerFirstName || '(unknown)'}</p>
+              <p><strong>Email:</strong> ${customerEmail}</p>
+              <p><strong>Plan:</strong> ${planLabel}</p>
+              ${renewalDate ? `<p><strong>Renews:</strong> ${renewalDate}</p>` : ''}
+              <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            </div>
+          `
+        )
+      } catch (err) {
+        console.error('Resend error (subscriber notification):', err)
+      }
+
+      // Welcome email to customer
       if (customerEmail) {
         try {
           const greeting = customerFirstName ? `Hi ${customerFirstName},` : 'Hi there,'
-          const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
-          const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
-          const renewalDate = cpeRaw ? new Date(cpeRaw * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''
           await sendEmail(
             'Homeschool Connective <support@homeschoolconnective.com>',
             customerEmail,
@@ -228,8 +258,8 @@ export async function POST(req: NextRequest) {
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
                 <h2 style="color: #1c1c1c;">${greeting}</h2>
                 <p style="color: #444; font-size: 15px; line-height: 1.6;">Your subscription is active — you now have full access to all games, lessons, and printables on Homeschool Connective.</p>
-                <p style="color: #444; font-size: 14px;"><strong>Plan:</strong> ${planLabel}<br><strong>Renews:</strong> ${renewalDate}</p>
-                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/learn" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 20px 0;">Start Learning →</a>
+                <p style="color: #444; font-size: 14px;"><strong>Plan:</strong> ${planLabel}${renewalDate ? `<br><strong>Renews:</strong> ${renewalDate}` : ''}</p>
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/login" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 20px 0;">Start Learning →</a>
                 <p style="color: #888; font-size: 13px;">Questions? Reply to this email and we'll get back to you.</p>
               </div>
             `
@@ -244,7 +274,13 @@ export async function POST(req: NextRequest) {
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
-    const cpeRaw = (subscription as any).current_period_end
+    let cpeRaw: number | undefined
+    try {
+      const freshSub = await stripe.subscriptions.retrieve(subscription.id)
+      cpeRaw = (freshSub as any).current_period_end
+    } catch(e) {
+      cpeRaw = (subscription as any).current_period_end
+    }
     const currentPeriodEnd = cpeRaw ? new Date(cpeRaw * 1000).toISOString() : null
 
     await supabase.from('profiles')
