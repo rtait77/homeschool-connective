@@ -170,20 +170,55 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
 
     if (userId && subscription.status === 'active') {
+      const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString()
       await supabase.from('profiles').update({
         subscription_status: 'active',
         stripe_customer_id: customerId,
         stripe_subscription_id: subscription.id,
+        current_period_end: currentPeriodEnd,
       }).eq('id', userId)
+
+      // Send welcome email
+      try {
+        const { data: { user: authUser } } = await supabase.auth.admin.getUserById(userId)
+        const { data: profileData } = await supabase.from('profiles').select('first_name').eq('id', userId).single()
+        const customerEmail = authUser?.email ?? ''
+        const firstName = profileData?.first_name ?? ''
+        const greeting = firstName ? `Hi ${firstName},` : 'Hi there,'
+        const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
+        const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
+        const renewalDate = new Date(subscription.current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+
+        if (customerEmail) {
+          await sendEmail(
+            'Homeschool Connective <support@homeschoolconnective.com>',
+            customerEmail,
+            'Welcome to Homeschool Connective!',
+            `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px;">
+                <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
+                <h2 style="color: #1c1c1c;">${greeting}</h2>
+                <p style="color: #444; font-size: 15px; line-height: 1.6;">Your subscription is active — you now have full access to all games, lessons, and printables on Homeschool Connective.</p>
+                <p style="color: #444; font-size: 14px;"><strong>Plan:</strong> ${planLabel}<br><strong>Renews:</strong> ${renewalDate}</p>
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/learn" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 20px 0;">Start Learning →</a>
+                <p style="color: #888; font-size: 13px;">Questions? Reply to this email and we'll get back to you.</p>
+              </div>
+            `
+          )
+        }
+      } catch (err) {
+        console.error('Welcome email error (subscription):', err)
+      }
     }
   }
 
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
+    const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString()
 
     await supabase.from('profiles')
-      .update({ subscription_status: subscription.status })
+      .update({ subscription_status: subscription.status, current_period_end: currentPeriodEnd })
       .eq('stripe_customer_id', customerId)
   }
 
