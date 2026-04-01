@@ -170,7 +170,7 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
 
     if (userId && subscription.status === 'active') {
-      const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString()
+      const currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
       await supabase.from('profiles').update({
         subscription_status: 'active',
         stripe_customer_id: customerId,
@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
         const greeting = firstName ? `Hi ${firstName},` : 'Hi there,'
         const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
         const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
-        const renewalDate = new Date(subscription.current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        const renewalDate = new Date((subscription as any).current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
         if (customerEmail) {
           await sendEmail(
@@ -215,7 +215,7 @@ export async function POST(req: NextRequest) {
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
-    const currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString()
+    const currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
 
     await supabase.from('profiles')
       .update({ subscription_status: subscription.status, current_period_end: currentPeriodEnd })
