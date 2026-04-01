@@ -224,7 +224,7 @@ const CONFIG = {
   easyMode: false,
   startLives: 3,
   spawnInterval: 1600,
-  asteroidSize: 10,
+  asteroidSize: 18,
 };
 
 const CORRECT = ['Mercury','Venus','Earth','Mars','Jupiter','Saturn','Uranus','Neptune'];
@@ -331,7 +331,7 @@ function spawnAsteroid(label, isCorrect) {
         <circle cx="65" cy="60" r="5" fill="hsl(${hue},${sat}%,${lum-8}%)" opacity="0.6"/>
         <circle cx="55" cy="30" r="4" fill="hsl(${hue},${sat}%,${lum-5}%)" opacity="0.5"/>
       </svg>
-      <span class="asteroid-label" style="font-size:${size * 0.16}vw">${label}</span>
+      <span class="asteroid-label" style="font-size:${size * 0.20}vw">${label}</span>
     </div>
   `;
 
