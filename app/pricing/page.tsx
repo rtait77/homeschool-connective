@@ -107,6 +107,7 @@ export default function SubscribePage() {
   const [gamesPlan, setGamesPlan] = useState<'monthly' | 'yearly'>('yearly')
   const [modalTarget, setModalTarget] = useState<ModalTarget>(null)
   const [loading, setLoading] = useState(false)
+  const [hasConsulting, setHasConsulting] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -127,6 +128,12 @@ export default function SubscribePage() {
       const subscribed = profile?.subscription_status === 'active'
       if (trialActive || trialExpired || subscribed) setShowTrial(false)
       setIsLoggedIn(true)
+      const { data: consultingRecord } = await supabase
+        .from('consulting_customers')
+        .select('id')
+        .eq('user_id', user.id)
+        .single()
+      if (consultingRecord) setHasConsulting(true)
     }
     checkUser()
   }, [])
@@ -170,11 +177,11 @@ export default function SubscribePage() {
       <p className="text-center text-[#5c5c5c] mb-2">Two ways to get support for your homeschool.</p>
       <p className="text-center text-xs text-[#a09890] mb-10">Already have an account? <Link href="/login" className="text-[#238FA4] font-bold hover:underline">Log in</Link></p>
 
-      {/* 2-column grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+      {/* 2-column grid — switches to 1-col if consulting is hidden */}
+      <div className={`grid grid-cols-1 gap-6 items-stretch ${!hasConsulting ? 'md:grid-cols-2' : 'max-w-[480px] mx-auto'}`}>
 
-        {/* Consulting card */}
-        <div className="bg-white rounded-2xl p-7 border-2 border-[#238FA4] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(35,143,164,0.12)' }}>
+        {/* Consulting card — hidden for existing consulting customers */}
+        {!hasConsulting && <div className="bg-white rounded-2xl p-7 border-2 border-[#238FA4] flex flex-col" style={{ boxShadow: '0 4px 20px rgba(35,143,164,0.12)' }}>
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#55b6ca] mb-3">One-on-One Consulting</p>
           <p className="text-3xl font-extrabold text-[#238FA4] mb-0">$47</p>
           <p className="text-xs text-[#a09890] mb-5">one-time payment</p>
@@ -192,7 +199,7 @@ export default function SubscribePage() {
           >
             Book a Consult →
           </button>
-        </div>
+        </div>}
 
         {/* Games card with toggle */}
         <div className="bg-white rounded-2xl p-7 border-2 border-[#ed7c5a] flex flex-col relative" style={{ boxShadow: '0 4px 20px rgba(237,124,90,0.12)' }}>
