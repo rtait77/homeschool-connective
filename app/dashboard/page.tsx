@@ -248,7 +248,7 @@ export default function DashboardPage() {
 
       {/* Favorites */}
       <div className="mb-12">
-        <h2 className="text-xl font-extrabold mb-4">⭐ Your Favorites</h2>
+        <h2 className="text-xl font-extrabold mb-4">🤍 Your Favorites</h2>
         {favoriteGames.length === 0 ? (
           <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center">
             <p className="text-[#5c5c5c] text-sm mb-4">You haven't saved any favorites yet.</p>
