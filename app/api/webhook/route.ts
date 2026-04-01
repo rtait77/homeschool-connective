@@ -170,18 +170,15 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
 
     if (subscription.status === 'active') {
-      // Get current_period_end via latest_invoice.period_end — more reliable than subscription field in newer SDK
-      let cpeRaw: number | undefined
-      try {
-        const freshSub = await stripe.subscriptions.retrieve(subscription.id, {
-          expand: ['latest_invoice'],
-        })
-        const invoice = freshSub.latest_invoice as import('stripe').default.Invoice | null
-        cpeRaw = invoice?.period_end ?? (freshSub as any).current_period_end
-      } catch(e) {
-        cpeRaw = (subscription as any).current_period_end
+      // Compute renewal date from subscription.created + interval (reliable for new subscriptions)
+      const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
+      const renewalTs = new Date((subscription as any).created * 1000)
+      if (interval === 'year') {
+        renewalTs.setFullYear(renewalTs.getFullYear() + 1)
+      } else {
+        renewalTs.setMonth(renewalTs.getMonth() + 1)
       }
-      const currentPeriodEnd = cpeRaw ? new Date(cpeRaw * 1000).toISOString() : null
+      const currentPeriodEnd = renewalTs.toISOString()
 
       // Get email from Stripe customer (works whether or not user was logged in)
       let customerEmail = ''
@@ -222,9 +219,8 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
       const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
-      const renewalDate = cpeRaw ? new Date(cpeRaw * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''
+      const renewalDate = renewalTs.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
 
       // Internal notification to support
       try {
@@ -261,7 +257,7 @@ export async function POST(req: NextRequest) {
                 <img src="https://homeschoolconnective.com/Logo.png" alt="Homeschool Connective" style="height: 48px; margin-bottom: 24px;" />
                 <h2 style="color: #1c1c1c;">${greeting}</h2>
                 <p style="color: #444; font-size: 15px; line-height: 1.6;">Your subscription is active — you now have full access to all games, lessons, and printables on Homeschool Connective.</p>
-                <p style="color: #444; font-size: 14px;"><strong>Plan:</strong> ${planLabel}${renewalDate ? `<br><strong>Renews:</strong> ${renewalDate}` : ''}</p>
+                <p style="color: #444; font-size: 14px;"><strong>Plan:</strong> ${planLabel}<br><strong>Renews:</strong> ${renewalDate}</p>
                 <a href="${process.env.NEXT_PUBLIC_SITE_URL}/login" style="display: inline-block; background: #ed7c5a; color: white; padding: 12px 28px; border-radius: 8px; font-weight: bold; text-decoration: none; margin: 20px 0;">Start Learning →</a>
                 <p style="color: #888; font-size: 13px;">Questions? Reply to this email and we'll get back to you.</p>
               </div>
