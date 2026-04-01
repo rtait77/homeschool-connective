@@ -7,9 +7,13 @@ export default function AsteroidBlastPlanetsPage() {
     document.body.style.overflow = 'hidden'
     const nav = document.querySelector('nav')
     if (nav) (nav as HTMLElement).style.display = 'none'
+    const viewport = document.querySelector('meta[name="viewport"]')
+    const prevContent = viewport?.getAttribute('content') ?? ''
+    viewport?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
     return () => {
       document.body.style.overflow = ''
       if (nav) (nav as HTMLElement).style.display = ''
+      if (viewport && prevContent) viewport.setAttribute('content', prevContent)
     }
   }, [])
 
