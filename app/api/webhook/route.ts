@@ -166,30 +166,58 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'customer.subscription.created') {
     const subscription = event.data.object as Stripe.Subscription
-    const userId = subscription.metadata?.supabase_user_id
+    let userId = subscription.metadata?.supabase_user_id || null
     const customerId = subscription.customer as string
 
-    if (userId && subscription.status === 'active') {
+    if (subscription.status === 'active') {
       const currentPeriodEnd = new Date((subscription as any).current_period_end * 1000).toISOString()
-      await supabase.from('profiles').update({
-        subscription_status: 'active',
-        stripe_customer_id: customerId,
-        stripe_subscription_id: subscription.id,
-        current_period_end: currentPeriodEnd,
-      }).eq('id', userId)
 
-      // Send welcome email
+      // Get email from Stripe customer (works whether or not user was logged in)
+      let customerEmail = ''
+      let customerFirstName = ''
       try {
-        const { data: { user: authUser } } = await supabase.auth.admin.getUserById(userId)
-        const { data: profileData } = await supabase.from('profiles').select('first_name').eq('id', userId).single()
-        const customerEmail = authUser?.email ?? ''
-        const firstName = profileData?.first_name ?? ''
-        const greeting = firstName ? `Hi ${firstName},` : 'Hi there,'
-        const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
-        const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
-        const renewalDate = new Date((subscription as any).current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        const customer = await stripe.customers.retrieve(customerId)
+        if (customer && !customer.deleted) {
+          customerEmail = (customer as Stripe.Customer).email ?? ''
+          const name = (customer as Stripe.Customer).name ?? ''
+          customerFirstName = name.split(' ')[0] ?? ''
+        }
+      } catch(e) {}
 
-        if (customerEmail) {
+      // If no userId from metadata, look up by email
+      if (!userId && customerEmail) {
+        try {
+          const { data: authData } = await supabase.auth.admin.listUsers({ perPage: 1000 })
+          const found = (authData?.users ?? []).find((u: any) => u.email === customerEmail)
+          if (found) userId = found.id
+        } catch(e) {}
+      }
+
+      // Update Supabase profile if we found a user
+      if (userId) {
+        await supabase.from('profiles').update({
+          subscription_status: 'active',
+          stripe_customer_id: customerId,
+          stripe_subscription_id: subscription.id,
+          current_period_end: currentPeriodEnd,
+        }).eq('id', userId)
+
+        // Prefer first name from profile over Stripe name
+        if (!customerFirstName) {
+          try {
+            const { data: profileData } = await supabase.from('profiles').select('first_name').eq('id', userId).single()
+            customerFirstName = profileData?.first_name ?? ''
+          } catch(e) {}
+        }
+      }
+
+      // Send welcome email to anyone who paid, logged in or not
+      if (customerEmail) {
+        try {
+          const greeting = customerFirstName ? `Hi ${customerFirstName},` : 'Hi there,'
+          const interval = subscription.items.data[0]?.plan?.interval ?? 'month'
+          const planLabel = interval === 'year' ? 'Yearly Plan ($50/year)' : 'Monthly Plan ($5/month)'
+          const renewalDate = new Date((subscription as any).current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
           await sendEmail(
             'Homeschool Connective <support@homeschoolconnective.com>',
             customerEmail,
@@ -205,9 +233,9 @@ export async function POST(req: NextRequest) {
               </div>
             `
           )
+        } catch (err) {
+          console.error('Welcome email error (subscription):', err)
         }
-      } catch (err) {
-        console.error('Welcome email error (subscription):', err)
       }
     }
   }
