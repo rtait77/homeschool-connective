@@ -170,11 +170,14 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
 
     if (subscription.status === 'active') {
-      // Retrieve subscription fresh from Stripe — webhook payload may omit current_period_end
+      // Get current_period_end via latest_invoice.period_end — more reliable than subscription field in newer SDK
       let cpeRaw: number | undefined
       try {
-        const freshSub = await stripe.subscriptions.retrieve(subscription.id)
-        cpeRaw = (freshSub as any).current_period_end
+        const freshSub = await stripe.subscriptions.retrieve(subscription.id, {
+          expand: ['latest_invoice'],
+        })
+        const invoice = freshSub.latest_invoice as import('stripe').default.Invoice | null
+        cpeRaw = invoice?.period_end ?? (freshSub as any).current_period_end
       } catch(e) {
         cpeRaw = (subscription as any).current_period_end
       }
@@ -276,8 +279,11 @@ export async function POST(req: NextRequest) {
     const customerId = subscription.customer as string
     let cpeRaw: number | undefined
     try {
-      const freshSub = await stripe.subscriptions.retrieve(subscription.id)
-      cpeRaw = (freshSub as any).current_period_end
+      const freshSub = await stripe.subscriptions.retrieve(subscription.id, {
+        expand: ['latest_invoice'],
+      })
+      const invoice = freshSub.latest_invoice as import('stripe').default.Invoice | null
+      cpeRaw = invoice?.period_end ?? (freshSub as any).current_period_end
     } catch(e) {
       cpeRaw = (subscription as any).current_period_end
     }
