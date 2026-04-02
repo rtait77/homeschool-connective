@@ -87,19 +87,6 @@ const CSS = `
     background: rgba(237,124,90,0.12);
     box-shadow: 0 1px 4px rgba(237,124,90,0.15);
   }
-  .nav-pill-link.admin {
-    color: #238FA4;
-    font-weight: 700;
-  }
-  .nav-pill-link.admin:hover {
-    color: #1a7a8c;
-    background: rgba(35,143,164,0.08);
-  }
-  .nav-pill-link.admin.active {
-    color: #1a7a8c;
-    background: rgba(35,143,164,0.12);
-    box-shadow: 0 1px 4px rgba(35,143,164,0.15);
-  }
   .nav-right {
     display: flex;
     align-items: center;
@@ -163,7 +150,8 @@ const CSS = `
     position: absolute;
     right: 0;
     top: calc(100% + 8px);
-    width: 208px;
+    min-width: 208px;
+    max-width: 320px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
@@ -177,9 +165,7 @@ const CSS = `
     margin-bottom: 4px;
     font-size: 0.75rem;
     color: #a09890;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-all;
   }
   .nav-dropdown-link {
     display: block;
@@ -292,10 +278,7 @@ export default function NavbarPreview() {
     }
 
     loadUser()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_OUT') { setUser(null); setSubType(null); return }
-      loadUser()
-    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser())
     return () => subscription.unsubscribe()
   }, [isAuthPage])
 
@@ -309,10 +292,12 @@ export default function NavbarPreview() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  async function handleLogout() {
+  function handleLogout() {
+    supabase.auth.signOut().catch(() => {})
+    setUser(null)
+    setSubType(null)
     setDropdownOpen(false)
     setMenuOpen(false)
-    await supabase.auth.signOut()
     router.push('/')
   }
 
@@ -392,14 +377,6 @@ export default function NavbarPreview() {
                   </Link>
                 </>
               )}
-              {isAdmin && (
-                <>
-                  <div className="nav-pill-divider" />
-                  <Link href="/admin" className={`nav-pill-link admin${isActive('/admin') ? ' active' : ''}`}>
-                    Admin
-                  </Link>
-                </>
-              )}
             </div>
           </div>
 
@@ -418,7 +395,8 @@ export default function NavbarPreview() {
                   {dropdownOpen && (
                     <div className="nav-dropdown">
                       <div className="nav-dropdown-email">{displayEmail}</div>
-                      <div style={{ paddingTop: '4px' }}>
+                      <Link href="/contact" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Contact</Link>
+                      <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
                         <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
                       </div>
                     </div>
