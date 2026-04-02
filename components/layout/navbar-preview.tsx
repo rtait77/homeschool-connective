@@ -87,6 +87,19 @@ const CSS = `
     background: rgba(237,124,90,0.12);
     box-shadow: 0 1px 4px rgba(237,124,90,0.15);
   }
+  .nav-pill-link.admin {
+    color: #238FA4;
+    font-weight: 700;
+  }
+  .nav-pill-link.admin:hover {
+    color: #1a7a8c;
+    background: rgba(35,143,164,0.08);
+  }
+  .nav-pill-link.admin.active {
+    color: #1a7a8c;
+    background: rgba(35,143,164,0.12);
+    box-shadow: 0 1px 4px rgba(35,143,164,0.15);
+  }
   .nav-right {
     display: flex;
     align-items: center;
@@ -379,6 +392,14 @@ export default function NavbarPreview() {
                   </Link>
                 </>
               )}
+              {isAdmin && (
+                <>
+                  <div className="nav-pill-divider" />
+                  <Link href="/admin" className={`nav-pill-link admin${isActive('/admin') ? ' active' : ''}`}>
+                    Admin
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -397,9 +418,7 @@ export default function NavbarPreview() {
                   {dropdownOpen && (
                     <div className="nav-dropdown">
                       <div className="nav-dropdown-email">{displayEmail}</div>
-                      {isAdmin && <Link href="/admin" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Admin Panel</Link>}
-                      <Link href="/contact" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Contact</Link>
-                      <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
+                      <div style={{ paddingTop: '4px' }}>
                         <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
                       </div>
                     </div>
