@@ -98,6 +98,7 @@ export default function DashboardPage() {
   useEffect(() => {
     async function load(user: any) {
       if (!user) { router.push('/login'); return }
+      if (user.email === 'support@homeschoolconnective.com') { router.push('/admin'); return }
       try {
         setEmail(user.email ?? '')
 
