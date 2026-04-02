@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBrowserClient } from '@supabase/ssr'
+import { DashboardSidebar } from '@/components/dashboard/sidebar'
 
 const ADMIN_EMAIL = 'support@homeschoolconnective.com'
 
@@ -244,16 +245,6 @@ export default function AdminPage() {
   const [previewExpanded, setPreviewExpanded] = useState<Record<string, boolean>>({})
   const [previewCustomer, setPreviewCustomer] = useState<string | null>(null)
   const [tagPopup, setTagPopup] = useState<{ name: string; tags: { tag: string; sources: { question: string; answer: string }[] }[] } | null>(null)
-  const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; email: string } | null>(null)
-  const [deleting, setDeleting] = useState(false)
-
-  async function deleteConsultingCustomer(id: string) {
-    setDeleting(true)
-    await fetch(`/api/admin/consulting?id=${id}`, { method: 'DELETE' })
-    setConsulting(prev => prev ? prev.filter(c => c.id !== id) : prev)
-    setDeleteConfirm(null)
-    setDeleting(false)
-  }
 
   async function loadReportItems(customerId: string) {
     const res = await fetch(`/api/consulting/report?customer_id=${customerId}`)
@@ -672,34 +663,9 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Delete confirmation modal */}
-      {deleteConfirm && (
-        <div
-          onClick={() => setDeleteConfirm(null)}
-          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}
-        >
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{ backgroundColor: '#1e2126', borderRadius: 14, padding: '28px', maxWidth: 420, width: '100%', boxShadow: '0 8px 40px rgba(0,0,0,0.6)', border: '1px solid #5a2a2a' }}
-          >
-            <p style={{ fontWeight: 800, color: '#f87171', fontSize: '1rem', marginBottom: '0.5rem' }}>Delete this client?</p>
-            <p style={{ color: '#a09890', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
-              This will permanently delete <strong style={{ color: '#e8e0d5' }}>{deleteConfirm.email}</strong> and their intake form. This cannot be undone.
-            </p>
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                style={{ padding: '0.5rem 1.25rem', borderRadius: 8, border: '1px solid #3d4248', background: 'none', color: '#a09890', fontWeight: 700, cursor: 'pointer', fontSize: '0.875rem' }}
-              >Cancel</button>
-              <button
-                onClick={() => deleteConsultingCustomer(deleteConfirm.id)}
-                disabled={deleting}
-                style={{ padding: '0.5rem 1.25rem', borderRadius: 8, border: 'none', backgroundColor: '#7f1d1d', color: '#fca5a5', fontWeight: 700, cursor: deleting ? 'not-allowed' : 'pointer', fontSize: '0.875rem', opacity: deleting ? 0.6 : 1 }}
-              >{deleting ? 'Deleting…' : 'Yes, delete'}</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="flex gap-10">
+        <DashboardSidebar isAdmin={true} />
+        <div className="flex-1 min-w-0">
 
       {/* Header */}
       <div className="mb-8">
@@ -708,8 +674,7 @@ export default function AdminPage() {
       </div>
 
       {/* Tab nav */}
-      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', marginBottom: '2rem', borderBottom: `1px solid ${isDarkTab ? '#3d4248' : '#e2ddd5'}` }}>
-      <div style={{ display: 'flex', gap: '0.5rem', minWidth: 'max-content' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', borderBottom: `1px solid ${isDarkTab ? '#3d4248' : '#e2ddd5'}` }}>
         {tabs.map(t => (
           <button
             key={t.id}
@@ -729,7 +694,6 @@ export default function AdminPage() {
             {t.label}
           </button>
         ))}
-      </div>
       </div>
 
       {/* OVERVIEW TAB */}
@@ -1167,10 +1131,6 @@ export default function AdminPage() {
                               </span>
                             )}
                             <span>Paid {new Date(c.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                            <button
-                              onClick={e => { e.stopPropagation(); setDeleteConfirm({ id: c.id, email: c.email }) }}
-                              style={{ background: 'none', border: '1px solid #5a2a2a', borderRadius: '6px', color: '#f87171', fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.6rem', cursor: 'pointer' }}
-                            >Delete</button>
                             <span>{isExpanded ? '▲' : '▼'}</span>
                           </div>
                         </div>
@@ -1250,7 +1210,7 @@ export default function AdminPage() {
                                     {c.style_profile && (
                                       <div style={{ backgroundColor: '#1a1c1e', borderRadius: 12, padding: '1.25rem 1.5rem', marginBottom: '1.5rem', border: '1px solid #3d4248' }}>
                                         <p style={{ fontSize: '0.65rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a', margin: '0 0 1rem' }}>Results at a Glance</p>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                                           <div>
                                             <p style={{ fontSize: '0.6rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 0.4rem' }}>Learning Styles</p>
                                             {c.style_profile.learningStyles.map((s, i) => (
@@ -1280,7 +1240,7 @@ export default function AdminPage() {
 
                                       {/* LEFT: Recommendations */}
                                       <div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
                                           <p style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#ed7c5a' }}>Curriculum Recommendations</p>
                                           <button
                                             onClick={() => generateRecs(c.id)}
@@ -1662,6 +1622,8 @@ export default function AdminPage() {
         </div>
       )}
 
+        </div>
+      </div>
     </div>
   )
 }
@@ -1781,8 +1743,8 @@ function DarkSummaryRow({ label, value }: { label: string; value: string | strin
   if (!value || value === '—' || (Array.isArray(value) && value.length === 0)) return null
   if (Array.isArray(value)) {
     return (
-      <div style={{ display: 'flex', gap: '0.25rem 0.5rem', fontSize: '0.9rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-        <span style={{ fontWeight: 700, color: '#a09890', minWidth: '130px', flexShrink: 0 }}>{label}:</span>
+      <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.9rem', alignItems: 'flex-start' }}>
+        <span style={{ fontWeight: 700, color: '#a09890', minWidth: '185px', flexShrink: 0 }}>{label}:</span>
         <ul style={{ margin: '0 0 0 1rem', padding: 0, color: '#e8e0d5', listStyleType: 'disc', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
           {value.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
@@ -1790,9 +1752,9 @@ function DarkSummaryRow({ label, value }: { label: string; value: string | strin
     )
   }
   return (
-    <div style={{ display: 'flex', gap: '0.25rem 0.5rem', fontSize: '0.9rem', flexWrap: 'wrap' }}>
-      <span style={{ fontWeight: 700, color: '#a09890', minWidth: '130px', flexShrink: 0 }}>{label}:</span>
-      <span style={{ color: '#e8e0d5', overflowWrap: 'anywhere' }}>{value}</span>
+    <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.9rem' }}>
+      <span style={{ fontWeight: 700, color: '#a09890', minWidth: '185px', flexShrink: 0 }}>{label}:</span>
+      <span style={{ color: '#e8e0d5' }}>{value}</span>
     </div>
   )
 }
