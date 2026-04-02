@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { Nunito, DM_Sans } from 'next/font/google'
 import { createClient } from '@supabase/supabase-js'
 
+export const dynamic = 'force-dynamic'
+
 const nunito = Nunito({
   subsets: ['latin'],
   variable: '--font-display',
