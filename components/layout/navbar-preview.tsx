@@ -150,8 +150,8 @@ const CSS = `
     position: absolute;
     right: 0;
     top: calc(100% + 8px);
-    min-width: 208px;
-    max-width: 320px;
+    width: max-content;
+    min-width: 180px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
@@ -165,7 +165,7 @@ const CSS = `
     margin-bottom: 4px;
     font-size: 0.75rem;
     color: #a09890;
-    word-break: break-all;
+    white-space: nowrap;
   }
   .nav-dropdown-link {
     display: block;
@@ -372,8 +372,11 @@ export default function NavbarPreview() {
               {user && showDashboardLink && (
                 <>
                   <div className="nav-pill-divider" />
-                  <Link href="/dashboard" className={`nav-pill-link dashboard${isActive('/dashboard') ? ' active' : ''}`}>
-                    Dashboard
+                  <Link
+                    href={isAdmin ? '/admin' : '/dashboard'}
+                    className={`nav-pill-link dashboard${isActive(isAdmin ? '/admin' : '/dashboard') ? ' active' : ''}`}
+                  >
+                    {isAdmin ? 'Admin' : 'Dashboard'}
                   </Link>
                 </>
               )}
@@ -395,7 +398,6 @@ export default function NavbarPreview() {
                   {dropdownOpen && (
                     <div className="nav-dropdown">
                       <div className="nav-dropdown-email">{displayEmail}</div>
-                      <Link href="/contact" onClick={() => setDropdownOpen(false)} className="nav-dropdown-link">Contact</Link>
                       <div style={{ borderTop: '1px solid #f0ece6', marginTop: '4px', paddingTop: '4px' }}>
                         <button onClick={handleLogout} className="nav-dropdown-btn">Log Out</button>
                       </div>
@@ -444,7 +446,7 @@ export default function NavbarPreview() {
               <>
                 <hr className="mobile-divider" />
                 {mobileShowDashboard && (
-                  <li><Link href="/dashboard" onClick={() => setMenuOpen(false)} className={isActive('/dashboard') ? 'active-mobile' : ''}>Dashboard</Link></li>
+                  <li><Link href={isAdmin ? '/admin' : '/dashboard'} onClick={() => setMenuOpen(false)} className={isActive(isAdmin ? '/admin' : '/dashboard') ? 'active-mobile' : ''}>{isAdmin ? 'Admin' : 'Dashboard'}</Link></li>
                 )}
                 <li><p style={{ padding: '4px 0 2px', fontSize: '0.75rem', color: '#a09890', margin: 0 }}>{displayEmail}</p></li>
                 {isAdmin && <li><Link href="/admin" onClick={() => setMenuOpen(false)}>Admin Panel</Link></li>}
