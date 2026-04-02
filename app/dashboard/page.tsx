@@ -85,6 +85,10 @@ export default function DashboardPage() {
     intake_status: string
   } | null>(null)
   const [reportReady, setReportReady] = useState(false)
+  const [emailMelOpen, setEmailMelOpen] = useState(false)
+  const [emailMelMessage, setEmailMelMessage] = useState('')
+  const [emailMelSending, setEmailMelSending] = useState(false)
+  const [emailMelSent, setEmailMelSent] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -179,6 +183,30 @@ export default function DashboardPage() {
     }
   }
 
+  async function sendEmailToMel(e: React.FormEvent) {
+    e.preventDefault()
+    setEmailMelSending(true)
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'e9fa8d0f-0004-4b87-bdf7-5403329c59cb',
+          to: 'consulting@homeschoolconnective.com',
+          from_name: firstName,
+          reply_to: email,
+          subject: `Consulting question from ${firstName} (${email})`,
+          message: emailMelMessage,
+        }),
+      })
+      setEmailMelSent(true)
+      setEmailMelMessage('')
+    } catch {
+      alert('Something went wrong. Please email consulting@homeschoolconnective.com directly.')
+    } finally {
+      setEmailMelSending(false)
+    }
+  }
 
   if (loading) return <div className="max-w-[1100px] mx-auto px-6 py-14 text-[#5c5c5c]">Loading...</div>
 
@@ -192,7 +220,7 @@ export default function DashboardPage() {
   return (
     <div className="max-w-[1200px] mx-auto px-6 py-14">
       <div className="flex gap-10">
-        <DashboardSidebar />
+        <DashboardSidebar isAdmin={email === 'support@homeschoolconnective.com'} />
         <div className="flex-1 min-w-0">
 
       {/* Welcome */}
@@ -220,7 +248,7 @@ export default function DashboardPage() {
 
       {/* Favorites */}
       <div className="mb-12">
-        <h2 className="text-xl font-extrabold mb-4">🩷 Your Favorites</h2>
+        <h2 className="text-xl font-extrabold mb-4">⭐ Your Favorites</h2>
         {favoriteGames.length === 0 ? (
           <div className="bg-[#f5f1e9] rounded-2xl p-8 text-center">
             <p className="text-[#5c5c5c] text-sm mb-4">You haven't saved any favorites yet.</p>
@@ -272,13 +300,21 @@ export default function DashboardPage() {
                       <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
                         View My Report →
                       </Link>
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+                        Email Mel
+                      </button>
                       <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review my intake answers →</Link>
                     </div>
                   </div>
                 ) : (
                   <div>
                     <p className="text-sm text-[#5c5c5c] mb-3">Mel has your answers and will be in touch within 3–5 business days.</p>
-                    <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+                        Email Mel
+                      </button>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
+                    </div>
                   </div>
                 )}
               </div>
@@ -292,6 +328,46 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Email Mel modal */}
+      {emailMelOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setEmailMelOpen(false)}>
+          <div className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+            {emailMelSent ? (
+              <div className="text-center py-4">
+                <p className="text-2xl mb-3">✅</p>
+                <p className="font-extrabold text-lg mb-2">Message sent!</p>
+                <p className="text-sm text-[#5c5c5c] mb-6">Mel will get back to you within 3–5 business days at <span className="font-bold">{email}</span>.</p>
+                <button onClick={() => setEmailMelOpen(false)} className="bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition">Done</button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-extrabold text-lg">Email Mel</h3>
+                  <button onClick={() => setEmailMelOpen(false)} className="text-[#5c5c5c] hover:text-[#1c1c1c] text-xl leading-none">×</button>
+                </div>
+                <p className="text-sm text-[#5c5c5c] mb-5">Your message will be sent from <span className="font-bold">{email}</span> so Mel can reply directly to you.</p>
+                <form onSubmit={sendEmailToMel} className="flex flex-col gap-4">
+                  <textarea
+                    value={emailMelMessage}
+                    onChange={e => setEmailMelMessage(e.target.value)}
+                    placeholder="What's on your mind?"
+                    rows={6}
+                    required
+                    className="w-full border border-[#e2ddd5] rounded-xl p-4 text-sm text-[#383838] resize-none focus:outline-none focus:border-[#55b6ca]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={emailMelSending || !emailMelMessage.trim()}
+                    className="bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition disabled:opacity-40"
+                  >
+                    {emailMelSending ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* New Games */}
       <div>
