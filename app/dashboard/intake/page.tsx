@@ -30,7 +30,7 @@ type ChildData = {
   mathTopics: string[]; mathTopicsOther: string
   scienceTopics: string[]; scienceTopicsOther: string
   historyTopics: string[]; historyTopicsOther: string
-  elaTopics: string[]
+  elaTopics: string[]; elaTopicsOther: string
   foreignLanguages: string[]; foreignLanguagesOther: string
   skillsPractice: string[]; skillsPracticeOther: string
 }
@@ -82,7 +82,7 @@ const EMPTY_CHILD: ChildData = {
   mathTopics: [], mathTopicsOther: '',
   scienceTopics: [], scienceTopicsOther: '',
   historyTopics: [], historyTopicsOther: '',
-  elaTopics: [],
+  elaTopics: [], elaTopicsOther: '',
   foreignLanguages: [], foreignLanguagesOther: '',
   skillsPractice: [], skillsPracticeOther: '',
 }
@@ -1214,8 +1214,7 @@ function SectionChild({
       </QBlock>
 
       <div>
-        <p className="text-sm font-bold text-[#1c1c1c] mb-1">10. What topics or subjects does {n} love — and what do they avoid?</p>
-        <SubLabel>They gravitate toward:</SubLabel>
+        <p className="text-sm font-bold text-[#1c1c1c] mb-1">10. What topics or subjects does {n} love?</p>
         <p className="text-xs text-[#5c5c5c] mb-1">Pick all that apply</p>
         <CheckList
           options={[
@@ -1243,34 +1242,6 @@ function SectionChild({
           </div>
         )}
 
-        <SubLabel>They tend to avoid or dread:</SubLabel>
-        <p className="text-xs text-[#5c5c5c] mb-1">Pick all that apply</p>
-        <CheckList
-          options={[
-            'Science and how things work',
-            'Animals and nature',
-            'History and stories from the past',
-            'Math and numbers and patterns',
-            'Art, music, or creative making',
-            'Reading and stories',
-            'Writing',
-            'Building and engineering',
-            'Space and the universe',
-            'People, relationships, and emotions',
-            'Sports, movement, and the body',
-            'Technology and computers',
-            'Other',
-          ]}
-          values={child.avoidsSubjects}
-          onChange={v => toggleChildCheck('avoidsSubjects', v)}
-        />
-        {child.avoidsSubjects.includes('Other') && (
-          <div className="mt-3">
-            <Field label="What do they tend to avoid?">
-              <input type="text" value={child.avoidsOther} onChange={e => setChildField('avoidsOther', e.target.value)} placeholder="What do they tend to avoid?" className={inputCls} />
-            </Field>
-          </div>
-        )}
       </div>
 
       <QBlock num={11} label={`Does ${n} need curriculum that allows working above or below their age or grade level?`} note="Choose one">
@@ -1436,10 +1407,17 @@ function SectionChild({
               <div className="mt-2 ml-6 p-4 bg-[#f5f1e9] rounded-xl border-l-4 border-[#55b6ca] space-y-2">
                 <p className="text-xs font-bold text-[#55b6ca] mb-1">Which ELA topic(s)?</p>
                 <CheckList
-                  options={['Phonics','Reading (early/fluency)','Spelling','Handwriting','Vocabulary','Grammar','Writing (sentences/paragraphs)','Writing (essays)','Writing (creative)','Reading Comprehension','Literature (American, British, World, Classical)','Research Skills','Note Taking','SAT Vocab']}
+                  options={['Phonics','Reading (early/fluency)','Spelling','Handwriting','Vocabulary','Grammar','Writing (sentences/paragraphs)','Writing (essays)','Writing (creative)','Reading Comprehension','Literature (American, British, World, Classical)','Research Skills','Note Taking','SAT Vocab','Other']}
                   values={child.elaTopics}
                   onChange={v => toggleChildCheck('elaTopics', v)}
                 />
+                {child.elaTopics.includes('Other') && (
+                  <div className="mt-2">
+                    <Field label="Please describe:">
+                      <input type="text" value={child.elaTopicsOther} onChange={e => setChildField('elaTopicsOther', e.target.value)} placeholder="Other ELA topic..." className={inputCls} />
+                    </Field>
+                  </div>
+                )}
               </div>
             )}
           </div>
