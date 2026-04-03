@@ -97,3 +97,40 @@ Access logic: user has access if `subscription_status = 'active'` OR `trial_end 
 - `@/` path alias for all imports
 - kebab-case filenames
 - No `any` types — define proper TypeScript interfaces
+
+## Consulting Recommendation Database
+
+### Resources Table (Supabase)
+283+ resources in `public.resources`. Key fields:
+- `name`, `url`, `description`, `price_range`
+- `subjects[]`, `grade_levels[]`, `learning_styles[]`, `good_for[]`
+- `match_tags[]` — ALL tags go here: structural tags + topic/keyword tags
+- `religious_pref`: `secular` | `christian` | `christian_lite` | `neutral`
+- `approved`: always `true` on insert
+- `category`: always `''` on insert (NOT NULL)
+
+### match_tags Strategy
+`match_tags` holds BOTH structural tags (subjects, grade levels, features) AND topic/keyword tags (e.g. `dinosaurs`, `ancient_egypt`, `baking`, `origami`). This lets Mel search by any keyword. Add rich topic tags every time a resource is inserted.
+
+### Intake Form → Tag Mappings (Q16 + Q17)
+Full mapping in memory file `project_consulting_tags.md`. Summary:
+- Q16 Math topics → tags like `math`, `algebra`, `geometry`, `calculus`, `pre_algebra`, `statistics`, `personal_finance`
+- Q16 Science topics → `life_science`, `earth_science`, `astronomy`, `biology`, `chemistry`, `physics`, `marine_biology`, etc.
+- Q16 History/SS → `us_history`, `world_history`, `civics`, `economics`, `map_skills`, `geography`, etc.
+- Q16 ELA → `phonics`, `reading`, `spelling`, `handwriting`, `grammar`, `writing`, `literature`, `vocabulary`, etc.
+- Q16 Foreign Language → `spanish`, `french`, `latin`, `mandarin`, `japanese`, `asl`, etc.
+- Q17 Skills → `gross_motor`, `fine_motor`, `memory`, `critical_thinking`, `focus`, `adhd`, `visual_spatial`, `logic`, `problem_solving`, `processing_speed`
+
+### Write-in Keyword Scanning (to build)
+Recommendation engine should extract keywords from write-in fields (`intenseInterests`, `lovesOther`, `primaryGoal`, `parentNotes`, topic Others) and match against `match_tags`.
+
+### Inserting Resources
+```bash
+SUPA_URL="https://vbeieznywomwthngenyt.supabase.co/rest/v1/resources"
+SUPA_KEY="[service_role_key from .env.local]"
+curl -s -X POST "$SUPA_URL" \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" \
+  -H "Content-Type: application/json" -H "Prefer: return=representation" \
+  -d '{...}' | jq '{id: .[0].id, name: .[0].name}'
+```
+**Always research every resource before inserting — even if you have prior knowledge.**
