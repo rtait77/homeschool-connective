@@ -26,10 +26,17 @@ type ChildData = {
   levelFlexibility: string
   readingPreference: string[]; bookFormat: string[]; independenceLevel: string
   extraInfo: string[]; diagnosis: string; extraOther: string
+  coreSubjects: string[]
+  mathTopics: string[]; mathTopicsOther: string
+  scienceTopics: string[]; scienceTopicsOther: string
+  historyTopics: string[]; historyTopicsOther: string
+  elaTopics: string[]
+  foreignLanguages: string[]; foreignLanguagesOther: string
+  skillsPractice: string[]; skillsPracticeOther: string
 }
 
 type IntakeForm = {
-  parentName: string; parentState: string
+  parentName: string; parentEmail: string; parentState: string
   children: ChildData[]
   whyHomeschooling: string[]; whyOther: string
   experienceLength: string
@@ -71,10 +78,17 @@ const EMPTY_CHILD: ChildData = {
   levelFlexibility: '',
   readingPreference: [], bookFormat: [], independenceLevel: '',
   extraInfo: [], diagnosis: '', extraOther: '',
+  coreSubjects: [],
+  mathTopics: [], mathTopicsOther: '',
+  scienceTopics: [], scienceTopicsOther: '',
+  historyTopics: [], historyTopicsOther: '',
+  elaTopics: [],
+  foreignLanguages: [], foreignLanguagesOther: '',
+  skillsPractice: [], skillsPracticeOther: '',
 }
 
 const EMPTY: IntakeForm = {
-  parentName: '', parentState: '',
+  parentName: '', parentEmail: '', parentState: '',
   children: [{ ...EMPTY_CHILD }],
   whyHomeschooling: [], whyOther: '',
   experienceLength: '',
@@ -277,24 +291,8 @@ export default function IntakePage() {
 
   async function handleSubmit() {
     setError('')
-    const missing: string[] = []
-    if (!form.parentName.trim()) missing.push('your name')
-    if (!form.parentState.trim()) missing.push('your state')
-    if (!form.children[0]?.name.trim()) missing.push("your child's name")
-    if (!form.children[0]?.age.trim()) missing.push("your child's age")
-    if (!form.experienceLength) missing.push('experience level')
-    if (form.whyHomeschooling.length === 0) missing.push('why you homeschool')
-    if (form.teachingStyle.length === 0) missing.push('your teaching style')
-    if (form.idealDay.length === 0) missing.push('your ideal school day')
-    if (!form.religiousPreference) missing.push('resource preference (secular/faith-based)')
-    if (form.biggestChallenges.length === 0) missing.push('biggest challenges')
-    if (!form.daysPerWeek) missing.push('days per week')
-    if (!form.hoursPerDay) missing.push('hours per day')
-    if (form.screenAttitude.length === 0) missing.push('screen attitude')
-    if (!form.prepWillingness) missing.push('prep willingness')
-    if (missing.length > 0) {
-      setError(`Please answer all required questions before submitting. Missing: ${missing.join(', ')}.`)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (!form.parentName.trim() || !form.children[0]?.name.trim()) {
+      setError("Please fill in your name and your child's name before submitting.")
       return
     }
     setSubmitting(true)
@@ -305,7 +303,6 @@ export default function IntakePage() {
     })
     if (res.ok) {
       setSubmitted(true)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       const d = await res.json()
       setError(d.error ?? 'Could not submit. Please try again.')
@@ -443,7 +440,6 @@ export default function IntakePage() {
           )}
         </div>
       </div>
-
     </div>
   )
 }
@@ -465,6 +461,9 @@ function SectionIntro({
       <div className="grid grid-cols-2 gap-4">
         <Field label="Your name *">
           <input type="text" value={form.parentName} onChange={e => set('parentName', e.target.value)} placeholder="Jane Smith" className={inputCls} />
+        </Field>
+        <Field label="Your email *">
+          <input type="email" value={form.parentEmail} onChange={e => set('parentEmail', e.target.value)} placeholder="jane@email.com" className={inputCls} />
         </Field>
       </div>
 
@@ -1344,6 +1343,145 @@ function SectionChild({
           <div className="mt-3">
             <Field label="Please describe:">
               <input type="text" value={child.extraOther} onChange={e => setChildField('extraOther', e.target.value)} placeholder="Anything else Mel should know..." className={inputCls} />
+            </Field>
+          </div>
+        )}
+      </QBlock>
+
+      <QBlock num={16} label={`Would you like to see recommendations for ${n} in any of these core subjects?`} note="Pick all that apply — then select specific topics">
+        <div className="space-y-2 mt-1">
+
+          {/* Math */}
+          <div>
+            <label className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${child.coreSubjects.includes('Math') ? 'bg-[#eaf7fb] border-[#55b6ca] text-[#1c1c1c]' : 'bg-white border-[#ddd8cc] text-[#5c5c5c] hover:border-[#55b6ca]'}`}>
+              <input type="checkbox" checked={child.coreSubjects.includes('Math')} onChange={() => toggleChildCheck('coreSubjects', 'Math')} className="mt-0.5 accent-[#ed7c5a] flex-shrink-0 w-4 h-4" />
+              <span>Math</span>
+            </label>
+            {child.coreSubjects.includes('Math') && (
+              <div className="mt-2 ml-6 p-4 bg-[#f5f1e9] rounded-xl border-l-4 border-[#55b6ca] space-y-2">
+                <p className="text-xs font-bold text-[#55b6ca] mb-1">Which math topic(s)?</p>
+                <CheckList
+                  options={['Pre-K Math','Kindergarten Math','1st Grade Math','2nd Grade Math','3rd Grade Math','4th Grade Math','5th Grade Math','Middle School Math','Pre-Algebra','Algebra 1','Geometry','Algebra 2','Pre-Calculus','Calculus','Statistics','Personal Finance','Consumer Math','Other']}
+                  values={child.mathTopics}
+                  onChange={v => toggleChildCheck('mathTopics', v)}
+                />
+                {child.mathTopics.includes('Other') && (
+                  <div className="mt-2">
+                    <Field label="Please describe:">
+                      <input type="text" value={child.mathTopicsOther} onChange={e => setChildField('mathTopicsOther', e.target.value)} placeholder="Other math topic..." className={inputCls} />
+                    </Field>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Science */}
+          <div>
+            <label className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${child.coreSubjects.includes('Science') ? 'bg-[#eaf7fb] border-[#55b6ca] text-[#1c1c1c]' : 'bg-white border-[#ddd8cc] text-[#5c5c5c] hover:border-[#55b6ca]'}`}>
+              <input type="checkbox" checked={child.coreSubjects.includes('Science')} onChange={() => toggleChildCheck('coreSubjects', 'Science')} className="mt-0.5 accent-[#ed7c5a] flex-shrink-0 w-4 h-4" />
+              <span>Science</span>
+            </label>
+            {child.coreSubjects.includes('Science') && (
+              <div className="mt-2 ml-6 p-4 bg-[#f5f1e9] rounded-xl border-l-4 border-[#55b6ca] space-y-2">
+                <p className="text-xs font-bold text-[#55b6ca] mb-1">Which science topic(s)?</p>
+                <CheckList
+                  options={['Life Science','Earth Science','Weather and Atmosphere','Physical Science','Space & Astronomy','Biology','Chemistry','Physics','Environmental Science','Geology','Forensic Science','Marine Biology','Other']}
+                  values={child.scienceTopics}
+                  onChange={v => toggleChildCheck('scienceTopics', v)}
+                />
+                {child.scienceTopics.includes('Other') && (
+                  <div className="mt-2">
+                    <Field label="Please describe:">
+                      <input type="text" value={child.scienceTopicsOther} onChange={e => setChildField('scienceTopicsOther', e.target.value)} placeholder="Other science topic..." className={inputCls} />
+                    </Field>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* History/Geography/Social Studies */}
+          <div>
+            <label className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${child.coreSubjects.includes('History/Geography/Social Studies') ? 'bg-[#eaf7fb] border-[#55b6ca] text-[#1c1c1c]' : 'bg-white border-[#ddd8cc] text-[#5c5c5c] hover:border-[#55b6ca]'}`}>
+              <input type="checkbox" checked={child.coreSubjects.includes('History/Geography/Social Studies')} onChange={() => toggleChildCheck('coreSubjects', 'History/Geography/Social Studies')} className="mt-0.5 accent-[#ed7c5a] flex-shrink-0 w-4 h-4" />
+              <span>History/Geography/Social Studies</span>
+            </label>
+            {child.coreSubjects.includes('History/Geography/Social Studies') && (
+              <div className="mt-2 ml-6 p-4 bg-[#f5f1e9] rounded-xl border-l-4 border-[#55b6ca] space-y-2">
+                <p className="text-xs font-bold text-[#55b6ca] mb-1">Which topic(s)?</p>
+                <CheckList
+                  options={['US History','World History','Civics & Government','Economics','Current Events','Sociology','Psychology','Philosophy','Community & Citizenship','Map Skills','U.S. Geography','World Geography','Other']}
+                  values={child.historyTopics}
+                  onChange={v => toggleChildCheck('historyTopics', v)}
+                />
+                {child.historyTopics.includes('Other') && (
+                  <div className="mt-2">
+                    <Field label="Please describe:">
+                      <input type="text" value={child.historyTopicsOther} onChange={e => setChildField('historyTopicsOther', e.target.value)} placeholder="Other topic..." className={inputCls} />
+                    </Field>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* English Language Arts */}
+          <div>
+            <label className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${child.coreSubjects.includes('English Language Arts') ? 'bg-[#eaf7fb] border-[#55b6ca] text-[#1c1c1c]' : 'bg-white border-[#ddd8cc] text-[#5c5c5c] hover:border-[#55b6ca]'}`}>
+              <input type="checkbox" checked={child.coreSubjects.includes('English Language Arts')} onChange={() => toggleChildCheck('coreSubjects', 'English Language Arts')} className="mt-0.5 accent-[#ed7c5a] flex-shrink-0 w-4 h-4" />
+              <span>English Language Arts</span>
+            </label>
+            {child.coreSubjects.includes('English Language Arts') && (
+              <div className="mt-2 ml-6 p-4 bg-[#f5f1e9] rounded-xl border-l-4 border-[#55b6ca] space-y-2">
+                <p className="text-xs font-bold text-[#55b6ca] mb-1">Which ELA topic(s)?</p>
+                <CheckList
+                  options={['Phonics','Reading (early/fluency)','Spelling','Handwriting','Vocabulary','Grammar','Writing (sentences/paragraphs)','Writing (essays)','Writing (creative)','Reading Comprehension','Literature (American, British, World, Classical)','Research Skills','Note Taking','SAT Vocab']}
+                  values={child.elaTopics}
+                  onChange={v => toggleChildCheck('elaTopics', v)}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Foreign Language */}
+          <div>
+            <label className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg border-2 cursor-pointer text-sm font-semibold transition-all ${child.coreSubjects.includes('Foreign Language') ? 'bg-[#eaf7fb] border-[#55b6ca] text-[#1c1c1c]' : 'bg-white border-[#ddd8cc] text-[#5c5c5c] hover:border-[#55b6ca]'}`}>
+              <input type="checkbox" checked={child.coreSubjects.includes('Foreign Language')} onChange={() => toggleChildCheck('coreSubjects', 'Foreign Language')} className="mt-0.5 accent-[#ed7c5a] flex-shrink-0 w-4 h-4" />
+              <span>Foreign Language</span>
+            </label>
+            {child.coreSubjects.includes('Foreign Language') && (
+              <div className="mt-2 ml-6 p-4 bg-[#f5f1e9] rounded-xl border-l-4 border-[#55b6ca] space-y-2">
+                <p className="text-xs font-bold text-[#55b6ca] mb-1">Which language(s)?</p>
+                <CheckList
+                  options={['French','Spanish','Italian','German','Mandarin','Japanese','Latin','American Sign Language (ASL)','Other']}
+                  values={child.foreignLanguages}
+                  onChange={v => toggleChildCheck('foreignLanguages', v)}
+                />
+                {child.foreignLanguages.includes('Other') && (
+                  <div className="mt-2">
+                    <Field label="Please describe:">
+                      <input type="text" value={child.foreignLanguagesOther} onChange={e => setChildField('foreignLanguagesOther', e.target.value)} placeholder="Other language..." className={inputCls} />
+                    </Field>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+        </div>
+      </QBlock>
+
+      <QBlock num={17} label={`Which of the following skills does ${n} need extra practice in?`} note="Pick all that apply">
+        <CheckList
+          options={['Gross Motor Skills','Fine Motor Skills','Memory','Critical Thinking','Spatial Reasoning','Attention & Focus','Visual-Spatial Awareness','Logic, If/Then','Problem Solving','Processing Speed','Other']}
+          values={child.skillsPractice}
+          onChange={v => toggleChildCheck('skillsPractice', v)}
+        />
+        {child.skillsPractice.includes('Other') && (
+          <div className="mt-3">
+            <Field label="Please describe:">
+              <input type="text" value={child.skillsPracticeOther} onChange={e => setChildField('skillsPracticeOther', e.target.value)} placeholder="Other skill..." className={inputCls} />
             </Field>
           </div>
         )}
