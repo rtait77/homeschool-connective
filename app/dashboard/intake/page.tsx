@@ -1474,7 +1474,7 @@ function SectionChild({
 
       <QBlock num={17} label={`Which of the following skills does ${n} need extra practice in?`} note="Pick all that apply">
         <CheckList
-          options={['Gross Motor Skills','Fine Motor Skills','Memory','Critical Thinking','Spatial Reasoning','Attention & Focus','Visual-Spatial Awareness','Logic, If/Then','Problem Solving','Processing Speed','Other']}
+          options={['Gross Motor Skills','Fine Motor Skills','Memory','Critical Thinking','Attention & Focus','Visual-Spatial Awareness','Logic, If/Then','Problem Solving','Processing Speed','Other']}
           values={child.skillsPractice}
           onChange={v => toggleChildCheck('skillsPractice', v)}
         />
