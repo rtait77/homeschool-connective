@@ -134,3 +134,46 @@ curl -s -X POST "$SUPA_URL" \
   -d '{...}' | jq '{id: .[0].id, name: .[0].name}'
 ```
 **Always research every resource before inserting — even if you have prior knowledge.**
+
+## Resources Database (Supabase `resources` table)
+
+**Current count:** ~375 resources (as of 2026-04-03)
+
+### Schema — CRITICAL insert requirements
+- `category` column is NOT NULL — always include `"category": ""` (empty string)
+- `requires_screen` — always include, default `"no"`
+- `approved` — always include, default `true`
+- Valid `resource_type` enum values: `app`, `board_game`, `book`, `curriculum`, `online_classes`, `online_game`, `online_lessons`, `online_school`, `subscription_box`, `toy`, `unit_study`, `video`, `website`, `workbook`
+- "activity_kit" and "game" are NOT valid — map to `subscription_box` or `toy`/`board_game`
+- For URL query strings with spaces: use `urllib.parse.quote("text", safe='')` before embedding
+
+### Insert function pattern (Python, no external libs)
+```python
+import urllib.request, json
+
+SUPABASE_URL = "https://vbeieznywomwthngenyt.supabase.co"
+SERVICE_KEY = "<service_role_key>"
+
+def insert(r):
+    r.setdefault("category", "")
+    r.setdefault("requires_screen", "no")
+    r.setdefault("approved", True)
+    body = json.dumps(r).encode()
+    req = urllib.request.Request(
+        f"{SUPABASE_URL}/rest/v1/resources", data=body, method='POST',
+        headers={"apikey": SERVICE_KEY, "Authorization": f"Bearer {SERVICE_KEY}",
+                 "Content-Type": "application/json", "Prefer": "return=minimal"})
+    with urllib.request.urlopen(req) as resp: return resp.status
+```
+
+### match_tags — how they work
+All tags live in `match_tags[]` array — structural (grade levels, subjects) AND topic keywords all in the same array.
+Standard grade tags: `preschool`, `early_elementary`, `elementary`, `middle`, `high_school`
+Grade-level sync and subject sub-topic sync were completed 2026-04-03 (254 + 137 resources updated).
+
+### Denison Math — single entry covers all levels
+One "Denison Math" resource covers grades 7–12 with tags: `math`, `pre_algebra`, `algebra`, `middle`, `high_school`.
+Do NOT add separate Denison Pre-Algebra or Denison Algebra entries.
+
+### Research before insert — always
+Every resource must be researched via agent/web before inserting. Verify URLs point to correct product pages (not blog posts, not UK stores for US sites).
