@@ -177,3 +177,32 @@ Do NOT add separate Denison Pre-Algebra or Denison Algebra entries.
 
 ### Research before insert — always
 Every resource must be researched via agent/web before inserting. Verify URLs point to correct product pages (not blog posts, not UK stores for US sites).
+
+## Session 2026-04-04 — Major DB Expansion
+
+**Current resource count: ~643** (was ~375 at start of session)
+
+### Batches added this session
+- Batch 4 (50): Geography books, animal/nature books, Nat Geo readers, Soundprints, DK, Barefoot Books
+- Batch 5 (50): Usborne Extreme Planet series, Lifesize series, math books, grammar/vocabulary, ThinkFun games, Usborne 100 Things to Know series
+- Batch 6 (34): Evolution/natural history books, Ancient Egypt/Mesopotamia/China, biography series (Extraordinary Life of, I Am, Who Was)
+- Batch 7 (29): US History books, I Can Read History series, Be Naturally Curious curriculum, Dare to Compare Math, cursive workbook, Barefoot/Shakespeare literature
+- Batch 8 (28): Usborne Illustrated Originals, Classic Starts, Junior Classics for Young Readers, Usborne Graphic Novels, Usborne Storybook Reading Library
+- Batch 9 (74): 41 SimplyFun board games, major board games (Ticket to Ride, Azul, Pandemic, Scrabble, etc.), Usborne Lots of Things to Know series
+- Final 3: Times Tales, National Geographic Explore VR (Oculus), GeoGuessr
+
+### Critical schema fix discovered 2026-04-04
+`grade_levels` is a Postgres ARRAY column — MUST pass as a JSON list: `["K–3"]`, never a plain string.
+`requires_subscription` does NOT exist in schema — omit it entirely.
+
+### Consulting Dashboard — FULLY BUILT ✅
+Phase 1 AND Phase 2 are both complete including:
+- Generate Recommendations button (tag-based match against resources DB)
+- Add to Report on each match
+- Report builder (editable sections, reorder/remove)
+- Send Report → emails from consulting@homeschoolconnective.com
+- Supabase tables: reports, report_items — already exist
+Do NOT suggest building any of this.
+
+### SimplyFun games note
+41 SimplyFun physical board games are in the DB, all with simplyfun.com product URLs and "SimplyFun" prefix in the name. They cover math, reading, science, logic, spelling, geography, and more for grades PreK–8.
