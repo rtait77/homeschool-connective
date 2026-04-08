@@ -171,7 +171,7 @@ export default async function PreviewHomePage() {
               </p>
               <div className="hero-ctas">
                 <a href="/learn" className="hero-btn-primary">Play &amp; Learn</a>
-                <a href="/consulting" className="hero-btn-secondary">Get Homeschool Help →</a>
+                <a href="/consulting" className="hero-btn-secondary">Find Your Homeschool Fit →</a>
               </div>
             </div>
             <div className="hero-video-col">
@@ -336,9 +336,15 @@ export default async function PreviewHomePage() {
                   curated resources in our database (secular and Christian) ...and growing
                 </p>
               )}
-              <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#238FA4] text-white hover:opacity-90 transition">
-                Learn More →
-              </Link>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl border-2 border-[#238FA4] text-[#238FA4] hover:bg-[#238FA4] hover:text-white transition">
+                  Find Your Fit — Free
+                </Link>
+                <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#238FA4] text-white hover:opacity-90 transition">
+                  Work With Melanie →
+                </Link>
+              </div>
+              <p className="text-xs text-[#999] mt-2">2 minutes. No account needed.</p>
             </div>
           </div>
           {/* cream → white */}
