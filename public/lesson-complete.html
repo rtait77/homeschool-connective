@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson Complete!</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #0a1428;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    color: white;
+  }
+</style>
+</head>
+<body>
+<script>
+  // Reads ?lesson=all-about-mars from URL, marks complete, redirects to map.
+  // This is the page the Genially "Back to Map" button should link to:
+  //   https://homeschoolconnective.com/lesson-complete.html?lesson=all-about-mars
+  //   https://homeschoolconnective.com/lesson-complete.html?lesson=mars-rovers
+  //   https://homeschoolconnective.com/lesson-complete.html?lesson=marss-moons
+  //   https://homeschoolconnective.com/lesson-complete.html?lesson=quiz
+  //   https://homeschoolconnective.com/lesson-complete.html?lesson=badge
+
+  const params = new URLSearchParams(window.location.search);
+  const lesson = params.get('lesson');
+
+  if (lesson) {
+    // Save to localStorage (will be replaced with Supabase later)
+    try {
+      const completed = JSON.parse(localStorage.getItem('mars_completed') || '[]');
+      if (!completed.includes(lesson)) {
+        completed.push(lesson);
+        localStorage.setItem('mars_completed', JSON.stringify(completed));
+      }
+    } catch (e) {}
+  }
+
+  // Redirect to map — passes lesson id so the unlock animation plays
+  window.location.replace('/mars-map?just-completed=' + (lesson || ''));
+</script>
+</body>
+</html>

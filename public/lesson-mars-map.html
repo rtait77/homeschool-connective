@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // Redirect to the Next.js map page — preserves any ?just-completed= param
+  var params = window.location.search;
+  window.location.replace('/mars-map' + params);
+</script>
+<title>Mission to Mars — Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #0a1428;
+    overflow: hidden;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* 16:9 stage */
+  .stage {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 56.25vw;
+    max-height: 100vh;
+    max-width: 177.78vh;
+    background: url('/mars-lesson-map-blank.jpg') center center / cover no-repeat;
+  }
+
+  /* ── Each stop ── */
+  .stop {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    overflow: visible;
+  }
+
+  /* ── Circle image ── */
+  .stop-circle {
+    position: relative;
+    width: 9vw;
+    height: 9vw;
+    max-width: 125px;
+    max-height: 125px;
+    border-radius: 50%;
+    background-color: #1e2d4a;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 3px solid rgba(255,255,255,0.2);
+    transition: transform 0.25s, box-shadow 0.25s, filter 0.4s, border-color 0.4s;
+    overflow: hidden;
+  }
+
+  /* Quiz circle — teal bg with "?" */
+  .stop-circle.quiz-bg {
+    background: linear-gradient(135deg, #2a9db5, #55b6ca);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 4.5vw;
+    color: white;
+    overflow: visible;
+  }
+  .stop-circle.quiz-bg.locked-img {
+    filter: grayscale(1) brightness(0.6);
+  }
+
+  /* Locked — greyscale */
+  .stop.locked .stop-circle {
+    filter: grayscale(1) brightness(0.82);
+    border-color: rgba(255,255,255,0.15);
+    cursor: default;
+  }
+  .stop.locked {
+    cursor: default !important;
+  }
+
+  /* Unlocked (active or completed) — full color + golden glow */
+  .stop.active .stop-circle,
+  .stop.completed .stop-circle {
+    box-shadow: 0 0 1.5vw rgba(255,210,60,0.75), 0 0 3vw rgba(255,160,0,0.3);
+    border-color: rgba(255,210,60,0.8);
+  }
+  .stop.active:hover .stop-circle,
+  .stop.completed:hover .stop-circle {
+    transform: scale(1.12);
+  }
+
+  /* ── Lock icon — centered on circle ── */
+  .lock-badge {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42%; height: 42%;
+    background: rgba(5,12,35,0.75);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid rgba(255,255,255,0.45);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .lock-badge svg { width: 55%; height: 55%; fill: white; }
+
+  /* ── Unlock animation ── */
+  @keyframes lockShake {
+    0%   { transform: translate(-50%,-50%) rotate(0deg) scale(1);   opacity: 1; }
+    20%  { transform: translate(-50%,-50%) rotate(-18deg) scale(1.1); }
+    40%  { transform: translate(-50%,-50%) rotate(14deg) scale(1.1); }
+    60%  { transform: translate(-50%,-50%) rotate(-10deg) scale(1.05); }
+    80%  { transform: translate(-50%,-50%) rotate(6deg) scale(0.8);  opacity: 0.6; }
+    100% { transform: translate(-50%,-50%) rotate(0deg) scale(0);    opacity: 0; }
+  }
+  @keyframes circleReveal {
+    0%   { transform: scale(1);    box-shadow: none; filter: grayscale(1) brightness(0.6); }
+    40%  { transform: scale(1.18); }
+    70%  { transform: scale(0.95); }
+    100% { transform: scale(1);    box-shadow: 0 0 1.5vw rgba(255,210,60,0.75), 0 0 3vw rgba(255,160,0,0.3); filter: grayscale(0) brightness(1); }
+  }
+  .stop.unlocking .lock-badge {
+    animation: lockShake 0.55s ease-in forwards;
+  }
+  .stop.unlocking .stop-circle {
+    animation: circleReveal 0.7s 0.35s ease-out forwards;
+  }
+
+  /* ── Label under circle ── */
+  .stop-label {
+    margin-top: 2.4vw;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.2vw;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    line-height: 1.2;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: transform 0.2s;
+  }
+  .stop:hover .stop-label {
+    transform: scale(0.92);
+  }
+
+  /* ── Shooting stars ── */
+  .shooting-star {
+    position: absolute;
+    width: 7vw;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 40%, rgba(255,255,255,0.95) 100%);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+  @keyframes shoot {
+    0%   { opacity: 0;   transform: rotate(var(--angle)) translateX(0); }
+    12%  { opacity: 1; }
+    85%  { opacity: 0.7; }
+    100% { opacity: 0;   transform: rotate(var(--angle)) translateX(38vw); }
+  }
+
+  /* ── Reset button ── */
+  .reset-btn {
+    position: absolute;
+    bottom: 2.5%; left: 1.5%;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85vw;
+    font-weight: 800;
+    color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 99px;
+    padding: 0.35vw 0.9vw;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, color 0.2s;
+    z-index: 10;
+  }
+  .reset-btn:hover {
+    background: rgba(217,35,67,0.25);
+    color: rgba(255,180,180,0.9);
+    border-color: rgba(217,35,67,0.5);
+  }
+
+  /* ── Reset confirmation modal ── */
+  #reset-modal {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+  }
+  #reset-modal.open { display: flex; }
+  .reset-modal-box {
+    background: #0d1a35;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 1.2vw;
+    padding: 2.5vw 3vw 2vw;
+    max-width: 38vw;
+    text-align: center;
+    box-shadow: 0 0.5vw 3vw rgba(0,0,0,0.7);
+  }
+  .reset-modal-box h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.6vw;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 0.8vw;
+  }
+  .reset-modal-box p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1vw;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.5;
+    margin-bottom: 1.8vw;
+  }
+  .reset-modal-btns {
+    display: flex;
+    gap: 1vw;
+    justify-content: center;
+  }
+  .reset-modal-btns button {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1vw;
+    padding: 0.5vw 2vw;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .reset-modal-btns button:hover { transform: scale(0.95); }
+  .btn-yes {
+    background: #d92343;
+    color: #fff;
+    box-shadow: 0 0.2vw 0.8vw rgba(217,35,67,0.4);
+  }
+  .btn-no {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.3) !important;
+  }
+
+  /* ── Music toggle ── */
+  .music-btn {
+    position: absolute;
+    bottom: 2.5%; right: 1.5%;
+    width: 3.8vw; height: 3.8vw;
+    max-width: 52px; max-height: 52px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 10;
+  }
+  .music-btn:hover { background: rgba(255,255,255,0.28); }
+  .music-btn svg { width: 50%; height: 50%; fill: white; }
+  .music-btn.muted { opacity: 0.45; }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <!-- 1. All About Mars -->
+  <div class="stop" id="stop-all-about-mars" style="left:8%; top:32%"
+       onclick="goLesson('all-about-mars')" data-audio="all about mars.mp3">
+    <div class="stop-circle" style="background-image:url('/mars-circle.png')"></div>
+    <div class="stop-label">All About Mars</div>
+  </div>
+
+  <!-- 2. Mars Rovers -->
+  <div class="stop" id="stop-mars-rovers" style="left:23%; top:35%"
+       onclick="goLesson('mars-rovers')" data-audio="mars rovers.mp3">
+    <div class="stop-circle" style="background-image:url('/mars-rover-circle.png')"></div>
+    <div class="stop-label">Mars Rovers</div>
+  </div>
+
+  <!-- 3. Build a Rover -->
+  <div class="stop" id="stop-build-a-rover" style="left:36%; top:42%"
+       onclick="goLesson('build-a-rover')" data-audio="build a rover.mp3">
+    <div class="stop-circle" style="background-image:url('/build-a-rover-circle.png')"></div>
+    <div class="stop-label">Build a Rover</div>
+  </div>
+
+  <!-- 4. Mars's Moons -->
+  <div class="stop" id="stop-marss-moons" style="left:48%; top:51%"
+       onclick="goLesson('marss-moons')" data-audio="mars moons.mp3">
+    <div class="stop-circle" style="background-image:url('/mars-moon-circle.png')"></div>
+    <div class="stop-label">Mars's Moons</div>
+  </div>
+
+  <!-- 5. Design a Moon -->
+  <div class="stop" id="stop-design-a-moon" style="left:63%; top:57%"
+       onclick="goLesson('design-a-moon')" data-audio="design a moon.mp3">
+    <div class="stop-circle" style="background-image:url('/design-a-moon-circle.png')"></div>
+    <div class="stop-label">Design a Moon</div>
+  </div>
+
+  <!-- 6. Quiz -->
+  <div class="stop" id="stop-quiz" style="left:76.5%; top:58%"
+       onclick="goLesson('quiz')" data-audio="quiz.mp3">
+    <div class="stop-circle quiz-bg">?</div>
+    <div class="stop-label">Quiz</div>
+  </div>
+
+  <!-- 7. Get Your Badge! -->
+  <div class="stop" id="stop-badge" style="left:90%; top:51%"
+       onclick="goLesson('badge')" data-audio="get your badge.mp3">
+    <div class="stop-circle" style="background-image:url('/badge-circle.png')"></div>
+    <div class="stop-label">Get Your Badge!</div>
+  </div>
+
+  <!-- Reset button -->
+  <button class="reset-btn" onclick="openResetModal()">↺ Reset Map</button>
+
+  <!-- Reset confirmation modal -->
+  <div id="reset-modal">
+    <div class="reset-modal-box">
+      <h2>⚠️ Reset the Map?</h2>
+      <p>This will erase all progress and lock every lesson.<br>You'll have to start from the beginning.<br><br>Are you sure?</p>
+      <div class="reset-modal-btns">
+        <button class="btn-yes" onclick="confirmReset()">Yes, Reset</button>
+        <button class="btn-no" onclick="closeResetModal()">No, Keep Playing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music toggle -->
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Toggle music">
+    <svg id="music-icon" viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
+  </button>
+
+  <audio id="bg-music" src="/puzzle-bg-music.mp3" loop></audio>
+
+</div>
+
+<script>
+  // ── Lesson definitions ──
+  const LESSONS = [
+    { id: 'all-about-mars', url: 'https://view.genially.com/69b41bc290484ccdbdd58a43', unlockAfter: null },
+    { id: 'mars-rovers',    url: 'https://view.genially.com/69b41d1f49561c5da74e14ca', unlockAfter: 'all-about-mars' },
+    { id: 'build-a-rover',  url: '/build-a-rover.html',                                 unlockAfter: 'mars-rovers' },
+    { id: 'marss-moons',    url: 'https://view.genially.com/69b41e63611634c566df4741', unlockAfter: 'build-a-rover' },
+    { id: 'design-a-moon',  url: '/design-a-moon.html',                                 unlockAfter: 'marss-moons' },
+    { id: 'quiz',           url: 'https://view.genially.com/69b41ef449561c5da74f5c90', unlockAfter: 'design-a-moon' },
+    { id: 'badge',          url: 'https://view.genially.com/69b41f7141fe907f00bf7e0d', unlockAfter: 'quiz' },
+  ];
+
+  // ── Progress (localStorage → Supabase later) ──
+  function getCompleted() {
+    try { return JSON.parse(localStorage.getItem('mars_completed') || '[]'); }
+    catch { return []; }
+  }
+  function isCompleted(id) { return getCompleted().includes(id); }
+  function isUnlocked(lesson) {
+    if (!lesson.unlockAfter) return true;
+    return isCompleted(lesson.unlockAfter);
+  }
+
+  // ── Render map states ──
+  function renderMap() {
+    LESSONS.forEach(lesson => {
+      const el = document.getElementById('stop-' + lesson.id);
+      if (!el) return;
+      const circle = el.querySelector('.stop-circle');
+
+      el.querySelector('.lock-badge')?.remove();
+      el.classList.remove('active', 'completed', 'locked');
+
+      if (isCompleted(lesson.id)) {
+        el.classList.add('completed');
+
+      } else if (isUnlocked(lesson)) {
+        el.classList.add('active');
+
+      } else {
+        el.classList.add('locked');
+        el.onclick = null;
+        // greyscale quiz circle too
+        if (circle.classList.contains('quiz-bg')) circle.classList.add('locked-img');
+        const badge = document.createElement('div');
+        badge.className = 'lock-badge';
+        badge.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
+        circle.appendChild(badge);
+      }
+    });
+  }
+
+  // ── Unlock animation (triggered by ?just-completed=id in URL) ──
+  function playUnlockAnimation() {
+    const params = new URLSearchParams(window.location.search);
+    const justCompleted = params.get('just-completed');
+    if (!justCompleted) return;
+
+    // Find which lesson just got unlocked
+    const newlyUnlocked = LESSONS.find(l => l.unlockAfter === justCompleted);
+    if (!newlyUnlocked) return;
+
+    const el = document.getElementById('stop-' + newlyUnlocked.id);
+    if (!el) return;
+
+    // Small delay so the map renders first
+    setTimeout(() => {
+      el.classList.add('unlocking');
+      // Remove unlocking class after animation finishes
+      setTimeout(() => el.classList.remove('unlocking'), 1200);
+    }, 300);
+  }
+
+  // ── Navigate to lesson ──
+  function goLesson(id) {
+    const lesson = LESSONS.find(l => l.id === id);
+    if (!lesson) return;
+    if (!isCompleted(id) && !isUnlocked(lesson)) return;
+    window.location.href = lesson.url;
+  }
+
+  // ── Music ──
+  const bgMusic   = document.getElementById('bg-music');
+  const musicBtn  = document.getElementById('music-btn');
+  const musicIcon = document.getElementById('music-icon');
+  let musicOn = false;
+
+  bgMusic.volume = 0.35;
+  bgMusic.play().then(() => { musicOn = true; }).catch(() => {
+    document.addEventListener('click', () => {
+      if (!musicOn) { bgMusic.play(); musicOn = true; }
+    }, { once: true });
+  });
+
+  function toggleMusic() {
+    if (musicOn) {
+      bgMusic.pause(); musicOn = false;
+      musicBtn.classList.add('muted');
+      musicIcon.innerHTML = '<path d="M16.5 12A4.5 4.5 0 0 0 14 7.97v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+    } else {
+      bgMusic.play(); musicOn = true;
+      musicBtn.classList.remove('muted');
+      musicIcon.innerHTML = '<path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>';
+    }
+  }
+
+  // ── Hover audio ──
+  let hoverAudio = null;
+  document.querySelectorAll('.stop[data-audio]').forEach(stop => {
+    stop.addEventListener('mouseenter', () => {
+      const src = stop.dataset.audio;
+      if (!src) return;
+      if (hoverAudio) { hoverAudio.pause(); hoverAudio.currentTime = 0; }
+      hoverAudio = new Audio('/' + src);
+      hoverAudio.volume = 0.9;
+      hoverAudio.play().catch(() => {});
+    });
+    stop.addEventListener('mouseleave', () => {
+      if (hoverAudio) { hoverAudio.pause(); hoverAudio.currentTime = 0; }
+    });
+  });
+
+  // ── Shooting stars ──
+  function spawnShootingStar() {
+    const stage = document.getElementById('stage');
+    const star = document.createElement('div');
+    star.className = 'shooting-star';
+    // Random start: anywhere across top 70% width, top 55% height
+    star.style.left = (Math.random() * 75) + '%';
+    star.style.top  = (Math.random() * 55) + '%';
+    const angle = 18 + Math.random() * 18; // 18–36° downward angle
+    const dur   = (0.55 + Math.random() * 0.5).toFixed(2);
+    star.style.setProperty('--angle', angle + 'deg');
+    star.style.animation = `shoot ${dur}s ease-out forwards`;
+    // Vary length slightly
+    star.style.width = (5 + Math.random() * 5).toFixed(1) + 'vw';
+    stage.appendChild(star);
+    setTimeout(() => star.remove(), parseFloat(dur) * 1000 + 100);
+  }
+
+  function scheduleNextStar() {
+    const delay = 1800 + Math.random() * 4200; // every 1.8–6s
+    setTimeout(() => { spawnShootingStar(); scheduleNextStar(); }, delay);
+  }
+  scheduleNextStar();
+
+  // ── Reset ──
+  function openResetModal()  { document.getElementById('reset-modal').classList.add('open'); }
+  function closeResetModal() { document.getElementById('reset-modal').classList.remove('open'); }
+  function confirmReset() {
+    localStorage.removeItem('mars_completed');
+    closeResetModal();
+    renderMap();
+  }
+
+  // ── Init ──
+  renderMap();
+  playUnlockAnimation();
+</script>
+
+</body>
+</html>

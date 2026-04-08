@@ -1,0 +1,2246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>All About Mars – Homeschool Connective</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1afafe;
+    --red: #c92b43;
+    --coral: #ed7c5a;
+    --black: #0a0a1a;
+    --white: #ffffff;
+    --gold: #f5c518;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', sans-serif;
+    background: #0a0a1a;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .screen {
+    position: fixed; inset: 0;
+    display: none;
+    flex-direction: column;
+    background: url('/space-bg.png') center center / cover no-repeat;
+    overflow: hidden;
+  }
+  .screen.active { display: flex; }
+
+  /* Stars layer */
+  .stars-layer {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--dur, 2s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.4); }
+  }
+  .shooting-star {
+    position: absolute;
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, white, transparent);
+    border-radius: 2px;
+    animation: shoot 1.2s linear forwards;
+  }
+  @keyframes shoot {
+    0% { opacity: 1; transform: translateX(0) translateY(0); }
+    100% { opacity: 0; transform: translateX(200px) translateY(80px); }
+  }
+
+  /* Confetti canvas */
+  #confetti-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* YouTube Modal */
+  #yt-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #yt-modal.open { display: flex; }
+  #yt-inner {
+    position: relative;
+    width: 100%; max-width: 700px;
+    border: 3px solid var(--teal);
+    border-radius: 12px;
+    overflow: hidden;
+    background: black;
+  }
+  #yt-inner iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: block;
+  }
+  #yt-close {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--red); color: white;
+    border: none; border-radius: 50%;
+    width: 32px; height: 32px;
+    font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; z-index: 10;
+  }
+
+  /* Info Modal */
+  #info-modal {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #info-modal.open { display: flex; }
+  #info-inner {
+    position: relative;
+    width: 100%; max-width: 500px;
+    border: 3px solid var(--teal);
+    border-radius: 16px;
+    background: #0d1a2a;
+    padding: 30px 24px 24px;
+    color: white;
+  }
+  #info-title {
+    font-size: 1.5rem; font-weight: 900;
+    color: var(--teal); margin-bottom: 12px;
+  }
+  #info-body {
+    font-size: 1rem; line-height: 1.6; color: white;
+  }
+  #info-close {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--red); color: white;
+    border: none; border-radius: 50%;
+    width: 32px; height: 32px;
+    font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900;
+  }
+
+  /* Slide transition rocket */
+  #slide-rocket {
+    position: fixed;
+    top: 50%; left: -80px;
+    font-size: 2.5rem;
+    pointer-events: none;
+    z-index: 5000;
+    transform: translateY(-50%);
+    display: none;
+  }
+  @keyframes rocketFly {
+    0% { left: -80px; opacity: 1; }
+    100% { left: calc(100vw + 80px); opacity: 1; }
+  }
+
+  /* ===================== COVER SCREEN ===================== */
+  #screen-cover {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .cover-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 20px;
+    padding: 20px;
+  }
+  .cover-mars {
+    width: min(260px, 55vw);
+    animation: marsFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(201,43,67,0.5));
+    cursor: default;
+  }
+  @keyframes marsFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+  }
+  .cover-title {
+    font-size: clamp(2.2rem, 8vw, 4rem);
+    font-weight: 900; color: white;
+    text-shadow: 0 0 20px rgba(255,255,255,0.3);
+    letter-spacing: -0.5px;
+  }
+  .cover-credit {
+    font-size: 0.75rem; color: rgba(255,255,255,0.5);
+    position: absolute; bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 2; white-space: nowrap;
+  }
+  .btn-coral {
+    background: var(--coral); color: white;
+    border: none; border-radius: 50px;
+    padding: 14px 44px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem; font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(237,124,90,0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-coral:hover { transform: scale(1.05); box-shadow: 0 6px 28px rgba(237,124,90,0.7); }
+  .btn-coral:active { transform: scale(0.97); }
+
+  .cover-rocket-arc {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden;
+  }
+  .arc-rocket {
+    position: absolute; font-size: 2rem;
+    animation: arcFly 8s ease-in-out infinite;
+    top: 60%;
+  }
+  @keyframes arcFly {
+    0% { left: -60px; transform: translateY(0) rotate(-10deg); opacity: 0.6; }
+    30% { transform: translateY(-80px) rotate(-5deg); opacity: 0.9; }
+    70% { transform: translateY(-40px) rotate(5deg); opacity: 0.9; }
+    100% { left: calc(100% + 60px); transform: translateY(0) rotate(10deg); opacity: 0.6; }
+  }
+
+  /* ===================== MAP SCREEN ===================== */
+  #screen-map {
+    overflow: hidden;
+  }
+  .map-back-btn {
+    position: absolute; top: 16px; left: 16px;
+    z-index: 10;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: white; border-radius: 50px;
+    padding: 8px 16px; font-size: 0.9rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; cursor: pointer;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 6px;
+    transition: background 0.2s;
+  }
+  .map-back-btn:hover { background: rgba(255,255,255,0.25); }
+
+  .map-instruction {
+    position: absolute; top: 14px; right: 16px;
+    z-index: 10;
+    color: #ffe600; font-size: 0.8rem; font-weight: 700;
+    max-width: 200px; text-align: right;
+    line-height: 1.3;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  }
+
+  .map-title {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    z-index: 10; color: white; font-weight: 900;
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    white-space: nowrap;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  .map-path-container {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .map-svg {
+    width: 100%; height: 100%;
+    position: absolute; inset: 0;
+  }
+
+  .map-rockets-layer {
+    position: absolute; inset: 0;
+    pointer-events: none;
+  }
+
+  .map-rocket-btn {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    pointer-events: all;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    background: none; border: none;
+    z-index: 5;
+    transition: transform 0.15s;
+  }
+  .map-rocket-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+  .map-rocket-icon {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center;
+  }
+  .map-rocket-icon .flame {
+    font-size: 0.8em;
+    animation: flicker 0.4s ease-in-out infinite alternate;
+    line-height: 0.8;
+    display: none;
+  }
+  @keyframes flicker {
+    0% { transform: scaleY(1) scaleX(1); opacity: 0.9; }
+    100% { transform: scaleY(1.3) scaleX(0.85); opacity: 1; }
+  }
+  .map-rocket-label {
+    color: white; font-size: clamp(0.55rem, 1.8vw, 0.75rem);
+    font-weight: 700; text-align: center;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    max-width: 80px; line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .rocket-locked .map-rocket-icon .emoji { filter: grayscale(1) brightness(0.5); }
+  .rocket-locked .map-rocket-label { color: rgba(255,255,255,0.4); }
+  @keyframes wiggle {
+    0% { transform: rotate(0); }
+    20% { transform: rotate(-12deg); }
+    40% { transform: rotate(12deg); }
+    60% { transform: rotate(-8deg); }
+    80% { transform: rotate(8deg); }
+    100% { transform: rotate(0); }
+  }
+  .rocket-locked.wiggling .map-rocket-icon .emoji {
+    animation: wiggle 0.5s ease;
+  }
+  .rocket-active .map-rocket-icon .flame { display: block; }
+  .rocket-completed .map-rocket-icon .flame { display: block; }
+  .rocket-completed .map-rocket-icon .emoji { filter: hue-rotate(0deg) saturate(2); }
+
+  .lock-tooltip {
+    position: fixed;
+    background: rgba(20,20,20,0.9);
+    color: var(--teal); border: 1px solid var(--teal);
+    border-radius: 8px; padding: 6px 12px;
+    font-size: 0.8rem; font-weight: 700;
+    z-index: 200; pointer-events: none;
+    white-space: nowrap;
+    animation: fadeInUp 0.2s ease;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===================== SECTION SCREENS ===================== */
+  .section-screen {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section-header {
+    position: relative; z-index: 5;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(0,0,0,0.4);
+    flex-shrink: 0;
+  }
+
+  .back-btn {
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: white; border-radius: 50px;
+    padding: 6px 14px; font-size: 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+  .section-title-header {
+    color: white; font-weight: 900;
+    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+    text-align: center; flex: 1; padding: 0 10px;
+  }
+
+  .progress-bar-wrap {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .progress-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .progress-dot.done { background: var(--coral); }
+  .progress-dot.current { background: var(--teal); }
+
+  .slide-container {
+    position: relative; z-index: 2;
+    flex: 1; overflow-y: auto;
+    padding: 16px;
+    display: flex; flex-direction: column;
+  }
+
+  .slide { display: none; flex: 1; flex-direction: column; gap: 14px; }
+  .slide.active { display: flex; }
+
+  .slide-title {
+    font-size: clamp(1.3rem, 5vw, 2rem);
+    font-weight: 900; color: var(--teal);
+    text-shadow: 0 0 12px rgba(26,250,254,0.3);
+  }
+
+  .slide-body {
+    font-size: clamp(0.9rem, 2.8vw, 1.1rem);
+    color: white; line-height: 1.65;
+    font-weight: 600;
+  }
+
+  .slide-layout {
+    display: flex; gap: 16px; align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .slide-layout .text-col {
+    flex: 1; min-width: 200px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .slide-layout .img-col {
+    flex: 0 0 auto;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .slide-layout .img-col img {
+    max-width: min(220px, 40vw);
+    max-height: 220px; object-fit: contain;
+    border-radius: 8px;
+  }
+  .slide-layout.img-left { flex-direction: row-reverse; flex-wrap: wrap-reverse; }
+
+  .slide-img-full {
+    max-width: 100%; max-height: 240px;
+    object-fit: contain; border-radius: 8px;
+    display: block; margin: 0 auto;
+  }
+  .slide-img-pair {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .slide-img-pair img {
+    max-width: min(180px, 40vw);
+    max-height: 180px; object-fit: contain;
+    border-radius: 8px;
+  }
+
+  /* Teal pill / video block */
+  .teal-pill {
+    display: inline-block;
+    background: rgba(26,250,254,0.12);
+    border: 1.5px solid var(--teal);
+    border-radius: 50px;
+    padding: 5px 14px;
+    color: var(--teal); font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .video-block {
+    background: rgba(26,250,254,0.08);
+    border: 1.5px solid var(--teal);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .video-block-label {
+    color: var(--teal); font-weight: 700; font-size: 0.9rem;
+  }
+  .video-btn-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .play-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--red); color: white;
+    border: none; border-radius: 50px;
+    padding: 8px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 10px rgba(201,43,67,0.4);
+  }
+  .play-btn:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(201,43,67,0.6); }
+  .play-btn .play-icon { font-size: 1rem; }
+
+  .play-btn-big {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--red); color: white;
+    border: none; border-radius: 16px;
+    padding: 16px 28px; margin: 20px auto;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem; font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(201,43,67,0.5);
+  }
+  .play-btn-big .play-icon-big { font-size: 1.8rem; }
+  .play-btn-big:hover { transform: scale(1.05); }
+
+  .teal-text { color: var(--teal); font-weight: 700; }
+  .yellow-text { color: #ffe600; font-weight: 700; }
+
+  /* Clickable mars with arrow */
+  .clickable-mars {
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .clickable-mars:hover { transform: scale(1.06); }
+  .bounce-arrow {
+    font-size: 1.5rem;
+    animation: bounce 0.8s ease-in-out infinite alternate;
+    color: var(--teal); text-align: center;
+  }
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-10px); }
+  }
+
+  /* Continue button */
+  .continue-wrap {
+    display: flex; justify-content: flex-end;
+    padding: 12px 0 4px;
+    flex-shrink: 0;
+  }
+  .btn-continue {
+    background: var(--coral); color: white;
+    border: none; border-radius: 50px;
+    padding: 12px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 3px 14px rgba(237,124,90,0.5);
+    transition: transform 0.15s, box-shadow 0.15s;
+    flex-shrink: 0;
+  }
+  .btn-continue:hover { transform: scale(1.05); }
+  .btn-continue:disabled {
+    opacity: 0.4; cursor: not-allowed; transform: none;
+  }
+
+  /* Section complete overlay */
+  #section-complete-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+  #section-complete-overlay.show { display: flex; }
+  .complete-card {
+    background: linear-gradient(135deg, #0d2a1f, #051520);
+    border: 3px solid var(--teal);
+    border-radius: 20px;
+    padding: 36px 40px;
+    text-align: center;
+    color: white;
+    max-width: 360px;
+  }
+  .complete-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+  .complete-title {
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--teal); margin-bottom: 8px;
+  }
+  .complete-subtitle { font-size: 1rem; color: rgba(255,255,255,0.8); }
+
+  /* ===================== SECTION 3 — ROVER DESIGNER ===================== */
+  #screen-section3 {
+    overflow: hidden;
+  }
+  .rover-designer {
+    flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    padding: 12px 16px;
+    position: relative; z-index: 2;
+  }
+  .rover-preview {
+    background: rgba(0,0,0,0.5);
+    border: 2px solid var(--teal);
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+    min-height: 100px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+  }
+  .rover-display {
+    font-size: clamp(2rem, 8vw, 3rem);
+    letter-spacing: 4px;
+    min-height: 3rem;
+    transition: all 0.3s;
+  }
+  .rover-display-label {
+    color: var(--teal); font-size: 0.8rem; font-weight: 700;
+  }
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .part-category {
+    background: rgba(0,0,0,0.4);
+    border: 1.5px solid rgba(26,250,254,0.3);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .part-category-title {
+    color: var(--teal); font-size: 0.75rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .part-options {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .part-option {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 0.8rem; color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .part-option.selected {
+    background: rgba(26,250,254,0.2);
+    border-color: var(--teal);
+  }
+  .part-option .part-emoji { font-size: 1.2rem; }
+  .mars-strip {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: url('/mars-with-background.png') bottom center / cover no-repeat;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .btn-launch {
+    background: linear-gradient(135deg, var(--teal), #0a8080);
+    color: black; border: none; border-radius: 50px;
+    padding: 14px 36px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem; font-weight: 900;
+    cursor: pointer;
+    display: none;
+    margin: 0 auto;
+    transition: transform 0.15s;
+    box-shadow: 0 4px 20px rgba(26,250,254,0.4);
+  }
+  .btn-launch.visible { display: block; }
+  .btn-launch:hover { transform: scale(1.05); }
+
+  @keyframes roverDrive {
+    0% { transform: translateX(-100vw); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateX(100vw); opacity: 0; }
+  }
+  .rover-driving {
+    position: fixed; top: 60%; left: 0;
+    font-size: 3rem; z-index: 600;
+    pointer-events: none;
+    animation: roverDrive 2s ease-in-out forwards;
+  }
+
+  /* ===================== SECTION 4 — MOONS ===================== */
+  #screen-section4 {
+    overflow: hidden;
+  }
+  .moons-content {
+    flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 20px;
+    padding: 16px;
+    position: relative; z-index: 2;
+  }
+  .moons-cards {
+    display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;
+  }
+  .moon-card {
+    background: #0d0d0d;
+    border: 3px solid var(--red);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
+    width: min(170px, 40vw);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .moon-card:hover { transform: scale(1.04); box-shadow: 0 0 20px rgba(201,43,67,0.4); }
+  .moon-card.viewed::after {
+    content: '✓';
+    position: absolute; top: -10px; right: -10px;
+    background: var(--teal); color: black;
+    width: 24px; height: 24px; border-radius: 50%;
+    font-size: 0.9rem; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .moon-card img {
+    width: 100%; max-height: 120px; object-fit: contain;
+    border-radius: 8px;
+  }
+  .moon-label {
+    color: white; font-weight: 800; font-size: 1rem;
+  }
+
+  /* ===================== SECTION 5 — MOON DESIGNER ===================== */
+  #screen-section5 { overflow: hidden; }
+  .moon-designer {
+    flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 16px;
+    padding: 16px;
+    position: relative; z-index: 2;
+  }
+  .moon-canvas-wrap {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  #moon-canvas {
+    border-radius: 50%;
+    cursor: crosshair;
+    box-shadow: 0 0 30px rgba(26,250,254,0.3);
+    touch-action: none;
+  }
+  .color-swatches {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  }
+  .swatch {
+    width: 36px; height: 36px; border-radius: 50%;
+    cursor: pointer; border: 3px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .swatch.active { border-color: white; transform: scale(1.2); }
+  .crater-sizes {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .crater-size-btn {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white; border-radius: 8px;
+    padding: 6px 12px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .crater-size-btn.active {
+    background: rgba(26,250,254,0.2);
+    border-color: var(--teal);
+  }
+  .moon-name-input {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(26,250,254,0.5);
+    border-radius: 12px;
+    padding: 10px 18px;
+    color: white; font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    text-align: center; width: min(300px, 80vw);
+    outline: none;
+  }
+  .moon-name-input::placeholder { color: rgba(255,255,255,0.4); }
+  .moon-name-input:focus { border-color: var(--teal); }
+  .btn-moon-ready {
+    background: linear-gradient(135deg, var(--gold), #e09600);
+    color: black; border: none; border-radius: 50px;
+    padding: 14px 36px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem; font-weight: 900;
+    cursor: pointer; display: none;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(245,197,24,0.5);
+    transition: transform 0.15s;
+  }
+  .btn-moon-ready.visible { display: block; }
+  .btn-moon-ready:hover { transform: scale(1.05); }
+
+  /* ===================== QUIZ SCREEN ===================== */
+  #screen-quiz {
+    overflow: hidden;
+  }
+  .quiz-content {
+    position: relative; z-index: 2;
+    flex: 1; display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .quiz-cover {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 24px; padding: 20px;
+  }
+  .quiz-title-big {
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    font-weight: 900; color: var(--teal);
+    text-shadow: 0 0 30px rgba(26,250,254,0.5);
+    letter-spacing: 3px;
+    text-align: center;
+  }
+  .quiz-locked-msg {
+    color: rgba(255,255,255,0.7);
+    font-size: 1rem; font-weight: 700;
+    text-align: center; max-width: 300px;
+    background: rgba(201,43,67,0.15);
+    border: 1.5px solid var(--red);
+    border-radius: 12px;
+    padding: 12px 20px;
+  }
+
+  /* sci-fi corner borders */
+  .quiz-corner {
+    position: absolute; width: 40px; height: 40px;
+    border-color: var(--teal); border-style: solid; border-width: 0;
+  }
+  .quiz-corner.tl { top: 8px; left: 8px; border-top-width: 3px; border-left-width: 3px; }
+  .quiz-corner.tr { top: 8px; right: 8px; border-top-width: 3px; border-right-width: 3px; }
+  .quiz-corner.bl { bottom: 8px; left: 8px; border-bottom-width: 3px; border-left-width: 3px; }
+  .quiz-corner.br { bottom: 8px; right: 8px; border-bottom-width: 3px; border-right-width: 3px; }
+
+  .quiz-question-area {
+    flex: 1; display: flex; flex-direction: column;
+    padding: 16px;
+    overflow-y: auto;
+    gap: 16px;
+  }
+  .quiz-q-text {
+    color: white; font-size: clamp(1rem, 3.5vw, 1.3rem);
+    font-weight: 800; text-align: center;
+    line-height: 1.4;
+  }
+  .quiz-options {
+    display: flex; flex-direction: column; gap: 10px;
+    max-width: 500px; margin: 0 auto; width: 100%;
+  }
+  .quiz-option {
+    background: rgba(255,255,255,0.07);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px; padding: 12px 18px;
+    color: white; font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    cursor: pointer; text-align: left;
+    transition: background 0.15s, border-color 0.15s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .quiz-option:hover:not(:disabled) {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.4);
+  }
+  .quiz-option.correct {
+    background: rgba(26,250,254,0.2);
+    border-color: var(--teal);
+  }
+  .quiz-option.wrong {
+    background: rgba(201,43,67,0.2);
+    border-color: var(--red);
+  }
+  .quiz-option img {
+    width: 60px; height: 60px; object-fit: contain;
+    border-radius: 8px;
+  }
+  .quiz-progress-dots {
+    display: flex; justify-content: center; gap: 6px;
+    padding: 10px;
+    flex-shrink: 0;
+  }
+  .quiz-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.3s;
+  }
+  .quiz-dot.answered { background: var(--teal); }
+  .quiz-dot.wrong-answered { background: var(--red); }
+
+  .quiz-complete-screen {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 20px; padding: 20px;
+    text-align: center;
+  }
+  .quiz-complete-title {
+    font-size: clamp(1.8rem, 7vw, 3rem);
+    font-weight: 900; color: var(--teal);
+    text-shadow: 0 0 20px rgba(26,250,254,0.5);
+  }
+  .quiz-score {
+    font-size: 1.3rem; color: white; font-weight: 700;
+  }
+
+  /* ===================== BADGE SCREEN ===================== */
+  #screen-badge {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  .badge-title {
+    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    color: white; font-weight: 800;
+    max-width: 340px;
+    line-height: 1.4;
+  }
+  .badge-wrapper {
+    position: relative;
+    width: min(200px, 55vw); height: min(200px, 55vw);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .badge-starburst {
+    position: absolute; inset: 0;
+    animation: badgeSpin 8s linear infinite;
+  }
+  @keyframes badgeSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .badge-starburst svg { width: 100%; height: 100%; }
+  .badge-planet {
+    position: relative; z-index: 2;
+    width: 55%; height: 55%; object-fit: contain;
+    animation: badgeSpin 12s linear infinite reverse;
+    border-radius: 50%;
+  }
+  .badge-congrats {
+    color: var(--gold); font-size: clamp(1rem, 3.5vw, 1.2rem);
+    font-weight: 800; max-width: 320px;
+    line-height: 1.5;
+  }
+  .btn-back-start {
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: white; border-radius: 50px;
+    padding: 12px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-back-start:hover { background: rgba(255,255,255,0.22); }
+
+  /* fly-back overlay */
+  #fly-back-overlay {
+    position: fixed; inset: 0;
+    z-index: 800;
+    pointer-events: none;
+    display: none;
+  }
+  #fly-back-overlay.active { display: block; }
+  #fly-back-rocket {
+    position: absolute;
+    font-size: 3rem;
+    top: 50%; left: -80px;
+    transform: translateY(-50%);
+  }
+  @keyframes flyBackAnim {
+    0% { left: -80px; }
+    100% { left: calc(100vw + 80px); }
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 500px) {
+    .slide-layout { flex-direction: column; }
+    .slide-layout .img-col img { max-width: 100%; max-height: 180px; }
+    .moons-cards { gap: 12px; }
+    .moon-card { width: min(145px, 44vw); }
+  }
+  @media (orientation: landscape) and (max-height: 500px) {
+    .slide-container { padding: 8px 12px; }
+    .slide { gap: 8px; }
+    .slide-title { font-size: 1.1rem; }
+    .slide-body { font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+<div id="slide-rocket">🚀</div>
+
+<!-- YouTube Modal -->
+<div id="yt-modal">
+  <div id="yt-inner">
+    <button id="yt-close" onclick="closeYT()">✕</button>
+    <iframe id="yt-frame" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- Info Modal -->
+<div id="info-modal">
+  <div id="info-inner">
+    <button id="info-close" onclick="closeInfoModal()">✕</button>
+    <div id="info-title"></div>
+    <div id="info-body"></div>
+  </div>
+</div>
+
+<!-- Section Complete Overlay -->
+<div id="section-complete-overlay">
+  <div class="complete-card">
+    <div class="complete-emoji">🎉</div>
+    <div class="complete-title">Section Complete!</div>
+    <div class="complete-subtitle">Returning to the map…</div>
+  </div>
+</div>
+
+<!-- Fly-back overlay -->
+<div id="fly-back-overlay">
+  <div id="fly-back-rocket">🚀</div>
+</div>
+
+<!-- Lock tooltip -->
+<div id="lock-tooltip" class="lock-tooltip" style="display:none;">🔒 Complete earlier sections first!</div>
+
+<!-- ==================== COVER SCREEN ==================== -->
+<div id="screen-cover" class="screen active">
+  <div class="stars-layer" id="stars-cover"></div>
+  <div class="cover-rocket-arc"><div class="arc-rocket">🚀</div></div>
+  <div class="cover-content" style="position:relative;z-index:2;">
+    <img src="/mars-with-background.png" alt="Mars" class="cover-mars">
+    <div class="cover-title">All About Mars</div>
+    <button class="btn-coral" onclick="goToMap()">START</button>
+  </div>
+  <div class="cover-credit">Image Credit: NASA</div>
+</div>
+
+<!-- ==================== MAP SCREEN ==================== -->
+<div id="screen-map" class="screen">
+  <div class="stars-layer" id="stars-map"></div>
+  <a href="/learn" class="map-back-btn">← Back</a>
+  <div class="map-title">All About Mars</div>
+  <div class="map-instruction">Click on the colorful rocket<br>to open the lesson.</div>
+
+  <svg class="map-svg" viewBox="0 0 400 500" preserveAspectRatio="none">
+    <defs>
+      <pattern id="dashPat" patternUnits="userSpaceOnUse" width="20" height="1">
+        <line x1="0" y1="0" x2="12" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round"/>
+      </pattern>
+    </defs>
+    <path id="map-path" d="M 60 450 Q 130 380 180 320 Q 230 260 250 200 Q 270 140 310 80 Q 330 55 360 40"
+      fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3" stroke-dasharray="8,10"/>
+  </svg>
+
+  <div class="map-rockets-layer" id="map-rockets-layer"></div>
+</div>
+
+<!-- ==================== SECTION 1 ==================== -->
+<div id="screen-section1" class="screen section-screen">
+  <div class="stars-layer" id="stars-s1"></div>
+  <div class="section-header">
+    <button class="back-btn" onclick="goToMap()">← Map</button>
+    <div class="section-title-header">All About Mars</div>
+    <div class="progress-bar-wrap" id="s1-progress"></div>
+  </div>
+  <div class="slide-container" id="s1-slides">
+
+    <!-- Slide 1 -->
+    <div class="slide active" data-slide="1">
+      <div class="slide-layout">
+        <div class="text-col">
+          <div class="slide-title">Mars</div>
+          <div class="slide-body">Mars is the fourth planet from the Sun, and it appears red because of the iron in its rocks, soil, and dust.</div>
+          <div class="video-block">
+            <div class="video-block-label">Watch these videos:</div>
+            <div class="video-btn-row">
+              <button class="play-btn" onclick="openYT('V4_c4DUseLU')"><span class="play-icon">▶</span> The Red Planet</button>
+              <button class="play-btn" onclick="openYT('aXhqNUx2EsE')"><span class="play-icon">▶</span> Is Mars Really Red?</button>
+            </div>
+          </div>
+        </div>
+        <div class="img-col">
+          <img src="/mars.png" alt="Mars">
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide" data-slide="2">
+      <div class="slide-title">How big is Mars?</div>
+      <div class="slide-body">Mars is about half the size of Earth.</div>
+      <div class="slide-img-pair">
+        <img src="/mars-earth-size-comparison.png" alt="Mars Earth Size Comparison">
+        <img src="/mars-size.gif" alt="Mars Size">
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide" data-slide="3">
+      <div class="slide-layout">
+        <div class="text-col">
+          <div class="slide-title">Olympus Mons</div>
+          <div class="slide-body">Olympus Mons is not only the tallest volcano on Mars, it's the tallest volcano in the entire solar system!</div>
+          <div class="video-block">
+            <div class="video-block-label">Watch this video:</div>
+            <div class="video-btn-row">
+              <button class="play-btn" onclick="openYT('Cww3yVQpcjY')"><span class="play-icon">▶</span> How Did Mars Get Such Enormous Mountains?</button>
+            </div>
+          </div>
+        </div>
+        <div class="img-col">
+          <img src="/olympus-mons.png" alt="Olympus Mons">
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide" data-slide="4">
+      <div class="slide-layout">
+        <div class="text-col">
+          <div class="slide-title">How long is one day on Mars?</div>
+          <div class="slide-body">One day on Mars is 24 hours, 37 minutes, and 22 seconds. This means it takes Mars 24 hours, 37 minutes, and 22 seconds to complete one full spin. On Earth, it takes 23 hours, 56 minutes, and 4 seconds to complete one full spin.</div>
+        </div>
+        <div class="img-col">
+          <img src="/mars-rotation.gif" alt="Mars Rotation">
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide" data-slide="5">
+      <div class="slide-layout">
+        <div class="text-col">
+          <div class="slide-title">How long is one year on Mars?</div>
+          <div class="slide-body">One year on Mars is 687 Earth days. This means it takes Mars 687 Earth days to orbit the Sun one time. On Earth, one year is 365.25 days.</div>
+        </div>
+        <div class="img-col">
+          <img src="/mars-distance.gif" alt="Mars Distance">
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide" data-slide="6">
+      <div class="slide-layout">
+        <div class="text-col">
+          <div class="slide-title">How cold is Mars? How far?</div>
+          <div class="slide-body">The average temperature on the surface of Mars is about -81°F to -85°F. On Earth, the average surface temperature is 59°F. Do you want to see what the weather on Mars is right now? Click on Mars!</div>
+          <div class="teal-text">Mars is about 1.5 AU from the Sun.</div>
+        </div>
+        <div class="img-col" style="position:relative;">
+          <img src="/mars.png" alt="Mars" class="clickable-mars" onclick="window.open('https://mars.nasa.gov/atmosphere/weather/','_blank')">
+          <div class="bounce-arrow">👆</div>
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="finishSection1()">Continue →</button>
+      </div>
+    </div>
+
+  </div><!-- end s1-slides -->
+</div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<div id="screen-section2" class="screen section-screen">
+  <div class="stars-layer" id="stars-s2"></div>
+  <div class="section-header">
+    <button class="back-btn" onclick="goToMap()">← Map</button>
+    <div class="section-title-header">Mars Rovers</div>
+    <div class="progress-bar-wrap" id="s2-progress"></div>
+  </div>
+  <div class="slide-container" id="s2-slides">
+
+    <!-- Slide 1 -->
+    <div class="slide active" data-slide="1">
+      <div class="slide-layout img-left">
+        <div class="img-col">
+          <img src="/rover-spirit.jpg" alt="Rover Spirit">
+          <div class="teal-text" style="font-size:0.8rem;text-align:center;max-width:180px;">This rover's name is Spirit. It landed on Mars in 2004.</div>
+        </div>
+        <div class="text-col">
+          <div class="slide-body">We haven't sent humans to Mars yet, but we explore the planet using rovers. Exploring Mars with rovers allows us to learn about the planet's environment.</div>
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide" data-slide="2">
+      <div class="slide-layout img-left">
+        <div class="img-col">
+          <img src="/rover-curiosity.webp" alt="Rover Curiosity">
+          <div class="teal-text" style="font-size:0.8rem;text-align:center;max-width:180px;">This is Curiosity, exploring Mars.</div>
+        </div>
+        <div class="text-col">
+          <div class="slide-body">Rovers like Curiosity and Perseverance are equipped with cameras, scientific instruments, and robotic arms. They travel across Mars, analyzing rocks and soil, taking pictures, and conducting experiments.</div>
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide" data-slide="3">
+      <div class="slide-layout img-left">
+        <div class="img-col">
+          <img src="/rover-perseverence.webp" alt="Rover Perseverance">
+          <div class="teal-text" style="font-size:0.8rem;text-align:center;max-width:180px;">This is Perseverance. It landed on Mars in 2021 and is still exploring today.</div>
+        </div>
+        <div class="text-col">
+          <div class="slide-body">These rovers send data back to Earth, helping scientists study Mars's geology, climate, and potential for past life. This robotic exploration is crucial for planning future human missions to Mars.</div>
+        </div>
+      </div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide" data-slide="4">
+      <div class="slide-body" style="text-align:center;">NASA has sent five rovers to Mars so far, and a Mars helicopter. This illustration is etched onto a metal plate on the Perseverance rover!</div>
+      <img src="/mars-rovers_metal-plate.jpg" alt="Mars Rovers Metal Plate" class="slide-img-full" style="max-height:260px;">
+      <div class="yellow-text" style="text-align:center;font-size:0.95rem;">What do you think of the rovers' names? How do they reflect the adventures of exploring Mars?</div>
+      <div style="text-align:center;color:rgba(255,255,255,0.5);font-size:0.78rem;">Sojourner • Spirit • Opportunity • Curiosity • Perseverance • Mars Helicopter</div>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide" data-slide="5">
+      <div class="slide-body" style="text-align:center;">Watch this video to learn how to get to Mars.</div>
+      <button class="play-btn-big" onclick="openYT('gYJsMBabjVY')">
+        <span class="play-icon-big">▶</span> How to Get to Mars
+      </button>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide" data-slide="6">
+      <div class="slide-body" style="text-align:center;">Watch this video to learn about how to land on Mars.</div>
+      <button class="play-btn-big" onclick="openYT('cA8ar8vwpTs')">
+        <span class="play-icon-big">▶</span> How Do You Land on Mars?
+      </button>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="nextSlide(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="slide" data-slide="7">
+      <div class="slide-body" style="text-align:center;">Watch this video to learn about how rovers drive on Mars.</div>
+      <button class="play-btn-big" onclick="openYT('e6vzjNkDB5k')">
+        <span class="play-icon-big">▶</span> How Do Rovers Drive on Mars?
+      </button>
+      <div class="continue-wrap">
+        <button class="btn-continue" onclick="finishSection2()">Continue →</button>
+      </div>
+    </div>
+
+  </div><!-- end s2-slides -->
+</div>
+
+<!-- ==================== SECTION 3 — ROVER DESIGNER ==================== -->
+<div id="screen-section3" class="screen section-screen">
+  <div class="stars-layer" id="stars-s3"></div>
+  <div class="section-header">
+    <button class="back-btn" onclick="goToMap()">← Map</button>
+    <div class="section-title-header">Design a Mars Rover</div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="rover-designer" id="rover-designer">
+    <div class="rover-preview">
+      <div class="rover-display-label">Your Rover Preview</div>
+      <div class="rover-display" id="rover-display">?</div>
+      <div id="rover-status" style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Select all 5 categories to build your rover</div>
+    </div>
+
+    <div class="parts-grid" id="parts-grid"></div>
+
+    <button class="btn-launch" id="btn-launch" onclick="launchRover()">Launch Your Rover! 🚀</button>
+    <button class="btn-coral" id="btn-rover-continue" style="display:none;margin:0 auto;" onclick="completeSection(3)">Continue to Map →</button>
+  </div>
+  <div class="mars-strip"></div>
+</div>
+
+<!-- ==================== SECTION 4 — MOONS ==================== -->
+<div id="screen-section4" class="screen section-screen">
+  <div class="stars-layer" id="stars-s4"></div>
+  <div class="section-header">
+    <button class="back-btn" onclick="goToMap()">← Map</button>
+    <div class="section-title-header">Mars's Moons</div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="moons-content">
+    <div class="slide-title" style="text-align:center;">Mars's Moons</div>
+    <div class="slide-body" style="text-align:center;">Mars has two moons.</div>
+    <div class="teal-text" style="text-align:center;">Click on each moon below to learn more.</div>
+    <div class="moons-cards">
+      <div class="moon-card" id="phobos-card" onclick="openMoonInfo('phobos')">
+        <img src="/phobos.webp" alt="Phobos">
+        <div class="moon-label">Phobos</div>
+      </div>
+      <div class="moon-card" id="deimos-card" onclick="openMoonInfo('deimos')">
+        <img src="/Deimos.jpg" alt="Deimos">
+        <div class="moon-label">Deimos</div>
+      </div>
+    </div>
+    <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;text-align:center;" id="moons-hint">Open both moons to continue.</div>
+    <div class="continue-wrap" style="justify-content:center;">
+      <button class="btn-continue" id="moons-continue-btn" disabled onclick="completeSection(4)">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SECTION 5 — MOON DESIGNER ==================== -->
+<div id="screen-section5" class="screen section-screen">
+  <div class="stars-layer" id="stars-s5"></div>
+  <div class="section-header">
+    <button class="back-btn" onclick="goToMap()">← Map</button>
+    <div class="section-title-header">Design a Mars Moon</div>
+    <div style="width:80px"></div>
+  </div>
+  <div class="moon-designer">
+    <div class="moon-canvas-wrap">
+      <canvas id="moon-canvas" width="200" height="200"></canvas>
+    </div>
+    <div class="color-swatches" id="color-swatches">
+      <div class="swatch active" style="background:#aaaaaa;" data-color="#aaaaaa" onclick="selectColor(this,'#aaaaaa')"></div>
+      <div class="swatch" style="background:#7ab3c8;" data-color="#7ab3c8" onclick="selectColor(this,'#7ab3c8')"></div>
+      <div class="swatch" style="background:#b05a40;" data-color="#b05a40" onclick="selectColor(this,'#b05a40')"></div>
+      <div class="swatch" style="background:#c8a87a;" data-color="#c8a87a" onclick="selectColor(this,'#c8a87a')"></div>
+    </div>
+    <div class="crater-sizes">
+      <span style="color:rgba(255,255,255,0.7);font-size:0.85rem;font-weight:700;">Crater size:</span>
+      <button class="crater-size-btn active" data-size="small" onclick="selectCraterSize(this,'small')">Small</button>
+      <button class="crater-size-btn" data-size="medium" onclick="selectCraterSize(this,'medium')">Medium</button>
+      <button class="crater-size-btn" data-size="large" onclick="selectCraterSize(this,'large')">Large</button>
+    </div>
+    <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;text-align:center;">Click or tap the moon to add craters!</div>
+    <input type="text" class="moon-name-input" id="moon-name-input" placeholder="Name your moon!" oninput="checkMoonReady()">
+    <button class="btn-moon-ready" id="btn-moon-ready" onclick="moonReady()">My Moon is Ready! 🌕</button>
+    <button class="btn-coral" id="btn-moon-continue" style="display:none;margin:0 auto;" onclick="completeSection(5)">Continue to Map →</button>
+    <div id="moon-celebrate" style="display:none;text-align:center;color:var(--teal);font-weight:800;font-size:1rem;">Your moon is now orbiting Mars! 🪐</div>
+  </div>
+</div>
+
+<!-- ==================== QUIZ SCREEN ==================== -->
+<div id="screen-quiz" class="screen">
+  <div class="stars-layer" id="stars-quiz"></div>
+  <div class="quiz-corner tl"></div>
+  <div class="quiz-corner tr"></div>
+  <div class="quiz-corner bl"></div>
+  <div class="quiz-corner br"></div>
+
+  <div class="quiz-content">
+    <!-- Quiz cover -->
+    <div class="quiz-cover" id="quiz-cover">
+      <div class="quiz-title-big">MARS QUIZ</div>
+      <div id="quiz-locked-msg" class="quiz-locked-msg" style="display:none;">Complete sections 1–4 to unlock the quiz!</div>
+      <button class="back-btn" onclick="goToMap()" style="position:absolute;top:16px;left:16px;">← Map</button>
+      <button class="btn-coral" id="quiz-start-btn" onclick="startQuiz()">START</button>
+    </div>
+
+    <!-- Quiz question area -->
+    <div id="quiz-question-area" class="quiz-question-area" style="display:none;">
+      <button class="back-btn" onclick="goToMap()" style="margin-bottom:8px;">← Map</button>
+      <div class="quiz-q-text" id="quiz-q-text"></div>
+      <div class="quiz-options" id="quiz-options"></div>
+    </div>
+
+    <!-- Quiz complete -->
+    <div id="quiz-complete" class="quiz-complete-screen" style="display:none;">
+      <div class="quiz-complete-title">QUIZ COMPLETED! 🎉</div>
+      <div class="quiz-score" id="quiz-score-text"></div>
+      <button class="btn-coral" onclick="finishQuiz()">Continue →</button>
+    </div>
+
+    <div class="quiz-progress-dots" id="quiz-dots" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- ==================== BADGE SCREEN ==================== -->
+<div id="screen-badge" class="screen">
+  <div class="stars-layer" id="stars-badge"></div>
+  <div class="badge-title">Congratulations! You have earned your Mars badge!</div>
+  <div class="badge-wrapper">
+    <div class="badge-starburst">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="100,5 118,70 185,70 130,110 150,175 100,138 50,175 70,110 15,70 82,70" fill="#f5c518" opacity="0.9"/>
+        <polygon points="100,20 113,75 168,75 124,105 140,160 100,130 60,160 76,105 32,75 87,75" fill="#e09600" opacity="0.6"/>
+        <!-- Extra spikes -->
+        <polygon points="100,2 103,18 100,5 97,18" fill="#f5c518"/>
+        <polygon points="198,100 182,103 195,100 182,97" fill="#f5c518"/>
+        <polygon points="100,198 97,182 100,195 103,182" fill="#f5c518"/>
+        <polygon points="2,100 18,97 5,100 18,103" fill="#f5c518"/>
+        <polygon points="172,28 162,42 170,30 158,38" fill="#f5c518"/>
+        <polygon points="28,28 38,42 30,30 42,38" fill="#f5c518"/>
+        <polygon points="172,172 158,162 170,170 162,158" fill="#f5c518"/>
+        <polygon points="28,172 42,162 30,170 38,158" fill="#f5c518"/>
+        <circle cx="100" cy="100" r="56" fill="#1a1a3a" stroke="#f5c518" stroke-width="3"/>
+      </svg>
+    </div>
+    <img src="/mars.png" alt="Mars" class="badge-planet">
+  </div>
+  <div class="badge-congrats">You completed the All About Mars lesson!<br>You are a Mars expert! 🚀</div>
+  <button class="btn-back-start" onclick="goToCover()">Back to Start</button>
+</div>
+
+<script>
+// =====================================================================
+// STATE
+// =====================================================================
+const STORAGE_KEY = 'mars-lesson-progress';
+let completedSections = [];
+let s1CurrentSlide = 1, s1Total = 6;
+let s2CurrentSlide = 1, s2Total = 7;
+let moonsViewed = { phobos: false, deimos: false };
+let moonCraterCount = 0;
+let moonColor = '#aaaaaa';
+let moonCraterSize = 'small';
+let roverChoices = {};
+let quizCurrentQ = 0;
+let quizScore = 0;
+let quizAnswered = [];
+
+function loadProgress() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) completedSections = JSON.parse(saved);
+  } catch(e) { completedSections = []; }
+}
+function saveProgress() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedSections)); } catch(e) {}
+}
+function markCompleted(n) {
+  if (!completedSections.includes(n)) completedSections.push(n);
+  saveProgress();
+}
+function isCompleted(n) { return completedSections.includes(n); }
+
+// =====================================================================
+// SCREEN MANAGEMENT
+// =====================================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('active');
+    initStarsFor(id);
+  }
+}
+
+function goToCover() { showScreen('screen-cover'); }
+
+function goToMap() {
+  showScreen('screen-map');
+  renderMap();
+}
+
+// =====================================================================
+// STARS
+// =====================================================================
+const starsInitialized = {};
+function initStarsFor(screenId) {
+  if (starsInitialized[screenId]) return;
+  starsInitialized[screenId] = true;
+  const layerId = 'stars-' + screenId.replace('screen-','');
+  const layer = document.getElementById(layerId);
+  if (!layer) return;
+  initStars(layer);
+}
+function initStars(layer) {
+  for (let i = 0; i < 60; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    const size = Math.random() * 2.5 + 1;
+    star.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%; top:${Math.random()*100}%;
+      --dur:${(Math.random()*2+1.5).toFixed(1)}s;
+      --delay:${(Math.random()*3).toFixed(1)}s;
+    `;
+    layer.appendChild(star);
+  }
+  scheduleShootingStar(layer);
+}
+function scheduleShootingStar(layer) {
+  setTimeout(() => {
+    const ss = document.createElement('div');
+    ss.className = 'shooting-star';
+    ss.style.left = (Math.random() * 60) + '%';
+    ss.style.top = (Math.random() * 40 + 5) + '%';
+    layer.appendChild(ss);
+    setTimeout(() => { ss.remove(); scheduleShootingStar(layer); }, 1400);
+  }, Math.random() * 5000 + 3000);
+}
+
+// =====================================================================
+// MAP
+// =====================================================================
+const MAP_SECTIONS = [
+  { n: 1, label: 'All About\nMars', x: 15, y: 89 },
+  { n: 2, label: 'Mars\nRovers',   x: 28, y: 74 },
+  { n: 3, label: 'Design a\nRover', x: 44, y: 60 },
+  { n: 4, label: "Mars's\nMoons",  x: 58, y: 46 },
+  { n: 5, label: 'Design a\nMoon', x: 71, y: 33 },
+  { n: 6, label: 'Quiz',           x: 83, y: 20 },
+  { n: 7, label: 'Badge!',         x: 93, y: 10 },
+];
+
+function renderMap() {
+  const layer = document.getElementById('map-rockets-layer');
+  layer.innerHTML = '';
+
+  MAP_SECTIONS.forEach((sec, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'map-rocket-btn';
+    btn.style.left = sec.x + '%';
+    btn.style.top = sec.y + '%';
+
+    const prev = idx === 0 ? true : isCompleted(MAP_SECTIONS[idx-1].n);
+    const done = isCompleted(sec.n);
+    // Quiz (n=6) locked until sections 1-4 done
+    const quizLocked = sec.n === 6 && ![1,2,3,4].every(n => isCompleted(n));
+    // Badge locked until quiz done
+    const badgeLocked = sec.n === 7 && !isCompleted(6);
+
+    let state;
+    if (done) state = 'completed';
+    else if (quizLocked || badgeLocked) state = 'locked';
+    else if (prev) state = 'active';
+    else state = 'locked';
+
+    btn.classList.add('rocket-' + state);
+
+    let rocketColor = '';
+    if (state === 'active') rocketColor = 'filter:hue-rotate(0deg) saturate(3) brightness(1.3)';
+    if (state === 'completed') rocketColor = 'filter:hue-rotate(150deg) saturate(2) brightness(1.2)';
+
+    const flameColor = state === 'completed' ? '🔥' : '🔥';
+    const labelLines = sec.label.split('\n');
+
+    btn.innerHTML = `
+      <div class="map-rocket-icon">
+        <div class="flame">${flameColor}</div>
+        <div class="emoji" style="${rocketColor}">🚀</div>
+      </div>
+      <div class="map-rocket-label">${labelLines.join('<br>')}</div>
+    `;
+
+    if (state === 'completed') {
+      btn.innerHTML += `<div style="font-size:0.7rem;color:var(--coral);font-weight:900;">✓ Done</div>`;
+    }
+
+    btn.addEventListener('click', () => handleMapClick(sec, state, btn));
+    layer.appendChild(btn);
+  });
+}
+
+function handleMapClick(sec, state, btn) {
+  if (state === 'locked') {
+    btn.classList.add('wiggling');
+    btn.addEventListener('animationend', () => btn.classList.remove('wiggling'), { once: true });
+    showLockTooltip(btn);
+    return;
+  }
+  openSection(sec.n);
+}
+
+function showLockTooltip(btn) {
+  const tt = document.getElementById('lock-tooltip');
+  const rect = btn.getBoundingClientRect();
+  tt.style.left = Math.min(rect.left, window.innerWidth - 260) + 'px';
+  tt.style.top = (rect.top - 40) + 'px';
+  tt.style.display = 'block';
+  setTimeout(() => tt.style.display = 'none', 1800);
+}
+
+function openSection(n) {
+  if (n === 1) { resetSection1(); showScreen('screen-section1'); }
+  else if (n === 2) { resetSection2(); showScreen('screen-section2'); }
+  else if (n === 3) { showScreen('screen-section3'); }
+  else if (n === 4) { showScreen('screen-section4'); }
+  else if (n === 5) { showScreen('screen-section5'); initMoonCanvas(); }
+  else if (n === 6) { showScreen('screen-quiz'); renderQuizCover(); }
+  else if (n === 7) { showBadge(); }
+}
+
+// =====================================================================
+// SLIDE ROCKET TRANSITION
+// =====================================================================
+function slideRocket(callback) {
+  const r = document.getElementById('slide-rocket');
+  r.style.display = 'block';
+  r.style.animation = 'none';
+  r.offsetHeight; // reflow
+  r.style.animation = 'rocketFly 0.55s ease-in forwards';
+  setTimeout(() => {
+    r.style.display = 'none';
+    r.style.animation = '';
+    if (callback) callback();
+  }, 560);
+}
+
+// =====================================================================
+// FLY BACK TO MAP
+// =====================================================================
+function flyBackToMap(n) {
+  const overlay = document.getElementById('fly-back-overlay');
+  const rocket = document.getElementById('fly-back-rocket');
+  overlay.classList.add('active');
+  rocket.style.animation = 'none';
+  rocket.offsetHeight;
+  rocket.style.animation = 'flyBackAnim 1.2s ease-in-out forwards';
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    rocket.style.animation = '';
+    goToMap();
+  }, 1250);
+}
+
+// =====================================================================
+// SECTION COMPLETE
+// =====================================================================
+function completeSection(n) {
+  markCompleted(n);
+  launchConfetti();
+  const overlay = document.getElementById('section-complete-overlay');
+  overlay.classList.add('show');
+  playBeep(880, 0.3, 'square', 0.4);
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    flyBackToMap(n);
+  }, 1800);
+}
+
+// =====================================================================
+// SECTION 1
+// =====================================================================
+function resetSection1() {
+  s1CurrentSlide = 1;
+  renderSlides('s1-slides', s1CurrentSlide, s1Total);
+  renderProgressDots('s1-progress', s1CurrentSlide, s1Total);
+}
+function finishSection1() {
+  slideRocket(() => completeSection(1));
+}
+function nextSlide(sectionNum) {
+  slideRocket(() => {
+    if (sectionNum === 1) {
+      s1CurrentSlide++;
+      renderSlides('s1-slides', s1CurrentSlide, s1Total);
+      renderProgressDots('s1-progress', s1CurrentSlide, s1Total);
+    } else if (sectionNum === 2) {
+      s2CurrentSlide++;
+      renderSlides('s2-slides', s2CurrentSlide, s2Total);
+      renderProgressDots('s2-progress', s2CurrentSlide, s2Total);
+    }
+  });
+}
+function finishSection2() {
+  slideRocket(() => completeSection(2));
+}
+
+function renderSlides(containerId, current, total) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('.slide').forEach((slide, idx) => {
+    slide.classList.toggle('active', idx + 1 === current);
+  });
+  // Scroll to top
+  container.scrollTop = 0;
+}
+function renderProgressDots(barId, current, total) {
+  const bar = document.getElementById(barId);
+  bar.innerHTML = '';
+  for (let i = 1; i <= total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'progress-dot' + (i < current ? ' done' : i === current ? ' current' : '');
+    bar.appendChild(dot);
+  }
+}
+
+// =====================================================================
+// SECTION 2
+// =====================================================================
+function resetSection2() {
+  s2CurrentSlide = 1;
+  renderSlides('s2-slides', s2CurrentSlide, s2Total);
+  renderProgressDots('s2-progress', s2CurrentSlide, s2Total);
+}
+
+// =====================================================================
+// SECTION 3 — ROVER DESIGNER
+// =====================================================================
+const ROVER_PARTS = [
+  { category: 'wheels',  label: 'Wheels',  options: [{ emoji: '⚙️', name: 'Round' }, { emoji: '🔩', name: 'Ridged' }, { emoji: '🛞', name: 'Treads' }] },
+  { category: 'camera',  label: 'Camera',  options: [{ emoji: '📷', name: 'Single' }, { emoji: '🔭', name: 'Multi' }, { emoji: '📸', name: 'Panoramic' }] },
+  { category: 'power',   label: 'Power',   options: [{ emoji: '🌞', name: 'Solar' }, { emoji: '🔋', name: 'RTG' }] },
+  { category: 'tools',   label: 'Tools',   options: [{ emoji: '🦾', name: 'Arm' }, { emoji: '⛏️', name: 'Drill' }, { emoji: '🧪', name: 'Collector' }] },
+  { category: 'antenna', label: 'Antenna', options: [{ emoji: '📡', name: 'Dish' }, { emoji: '📶', name: 'Rod' }] },
+];
+
+function initRoverDesigner() {
+  roverChoices = {};
+  const grid = document.getElementById('parts-grid');
+  grid.innerHTML = '';
+  ROVER_PARTS.forEach(cat => {
+    const catDiv = document.createElement('div');
+    catDiv.className = 'part-category';
+    catDiv.innerHTML = `<div class="part-category-title">${cat.label}</div>`;
+    const opts = document.createElement('div');
+    opts.className = 'part-options';
+    cat.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'part-option';
+      btn.innerHTML = `<span class="part-emoji">${opt.emoji}</span>${opt.name}`;
+      btn.addEventListener('click', () => {
+        catDiv.querySelectorAll('.part-option').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        roverChoices[cat.category] = opt.emoji;
+        updateRoverDisplay();
+      });
+      opts.appendChild(btn);
+    });
+    catDiv.appendChild(opts);
+    grid.appendChild(catDiv);
+  });
+  document.getElementById('btn-launch').classList.remove('visible');
+  document.getElementById('btn-rover-continue').style.display = 'none';
+  document.getElementById('rover-display').textContent = '?';
+  document.getElementById('rover-status').textContent = 'Select all 5 categories to build your rover';
+}
+
+function updateRoverDisplay() {
+  const keys = ['wheels','camera','power','tools','antenna'];
+  const selected = keys.map(k => roverChoices[k]).filter(Boolean);
+  const display = document.getElementById('rover-display');
+  const status = document.getElementById('rover-status');
+  display.textContent = selected.join(' ') || '?';
+  if (selected.length === 5) {
+    document.getElementById('btn-launch').classList.add('visible');
+    status.textContent = 'Your rover is ready!';
+    status.style.color = 'var(--teal)';
+  } else {
+    status.textContent = `${selected.length}/5 categories selected`;
+    status.style.color = 'rgba(255,255,255,0.5)';
+  }
+}
+
+function launchRover() {
+  const emoji = document.getElementById('rover-display').textContent;
+  document.getElementById('btn-launch').style.display = 'none';
+
+  const driver = document.createElement('div');
+  driver.className = 'rover-driving';
+  driver.textContent = emoji || '🚀';
+  document.body.appendChild(driver);
+
+  playBeep(440, 0.2, 'sine', 1.8);
+
+  setTimeout(() => {
+    driver.remove();
+    document.getElementById('btn-rover-continue').style.display = 'block';
+  }, 2100);
+}
+
+// =====================================================================
+// SECTION 4 — MOONS
+// =====================================================================
+function openMoonInfo(which) {
+  moonsViewed[which] = true;
+  document.getElementById(which + '-card').classList.add('viewed');
+
+  const data = {
+    phobos: {
+      title: 'Phobos',
+      body: 'Phobos is slowly traveling inward towards Mars. It is predicted that in about 50 million years, Phobos will crash into Mars or break apart. Mars has no rings, but when Phobos crashes into Mars (or breaks apart), it could create rings for Mars! Wouldn\'t it be so cool to see Mars with rings?'
+    },
+    deimos: {
+      title: 'Deimos',
+      body: 'Deimos is much smaller than Phobos and has a smoother surface with fewer craters. Deimos is one of the smallest moons in the solar system.'
+    }
+  };
+
+  openInfoModal(data[which].title, data[which].body);
+
+  if (moonsViewed.phobos && moonsViewed.deimos) {
+    document.getElementById('moons-continue-btn').disabled = false;
+    document.getElementById('moons-hint').textContent = 'Both moons explored! You can continue.';
+    document.getElementById('moons-hint').style.color = 'var(--teal)';
+  }
+}
+
+// =====================================================================
+// SECTION 5 — MOON DESIGNER
+// =====================================================================
+let moonCtx, moonCanvas;
+function initMoonCanvas() {
+  moonCanvas = document.getElementById('moon-canvas');
+  const size = Math.min(200, window.innerWidth * 0.55);
+  moonCanvas.width = size;
+  moonCanvas.height = size;
+  moonCtx = moonCanvas.getContext('2d');
+  drawMoonBase();
+  moonCraterCount = 0;
+  document.getElementById('btn-moon-ready').classList.remove('visible');
+  document.getElementById('btn-moon-continue').style.display = 'none';
+  document.getElementById('moon-celebrate').style.display = 'none';
+  document.getElementById('moon-name-input').value = '';
+
+  moonCanvas.addEventListener('click', addCrater);
+  moonCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = moonCanvas.getBoundingClientRect();
+    const x = (touch.clientX - rect.left) * (moonCanvas.width / rect.width);
+    const y = (touch.clientY - rect.top) * (moonCanvas.height / rect.height);
+    addCraterAt(x, y);
+  }, { passive: false });
+}
+
+function drawMoonBase() {
+  const c = moonCanvas.width / 2;
+  moonCtx.clearRect(0, 0, moonCanvas.width, moonCanvas.height);
+  moonCtx.save();
+  moonCtx.beginPath();
+  moonCtx.arc(c, c, c - 2, 0, Math.PI * 2);
+  moonCtx.fillStyle = moonColor;
+  moonCtx.fill();
+  moonCtx.strokeStyle = 'rgba(255,255,255,0.2)';
+  moonCtx.lineWidth = 2;
+  moonCtx.stroke();
+  moonCtx.restore();
+}
+
+function addCrater(e) {
+  const rect = moonCanvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left) * (moonCanvas.width / rect.width);
+  const y = (e.clientY - rect.top) * (moonCanvas.height / rect.height);
+  addCraterAt(x, y);
+}
+
+function addCraterAt(x, y) {
+  const c = moonCanvas.width / 2;
+  const dist = Math.sqrt((x - c) ** 2 + (y - c) ** 2);
+  if (dist >= c - 4) return;
+
+  const sizes = { small: 6, medium: 12, large: 20 };
+  const r = sizes[moonCraterSize];
+
+  moonCtx.save();
+  moonCtx.beginPath();
+  moonCtx.arc(x, y, r, 0, Math.PI * 2);
+  moonCtx.fillStyle = 'rgba(0,0,0,0.35)';
+  moonCtx.fill();
+  moonCtx.beginPath();
+  moonCtx.arc(x - r * 0.3, y - r * 0.3, r * 0.5, 0, Math.PI * 2);
+  moonCtx.fillStyle = 'rgba(255,255,255,0.15)';
+  moonCtx.fill();
+  moonCtx.restore();
+
+  moonCraterCount++;
+  checkMoonReady();
+}
+
+function selectColor(el, color) {
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  moonColor = color;
+  // Redraw base, keep craters lost (simple reset)
+  drawMoonBase();
+  moonCraterCount = 0;
+  checkMoonReady();
+}
+
+function selectCraterSize(el, size) {
+  document.querySelectorAll('.crater-size-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  moonCraterSize = size;
+}
+
+function checkMoonReady() {
+  const name = document.getElementById('moon-name-input').value.trim();
+  const btn = document.getElementById('btn-moon-ready');
+  if (name.length > 0 && moonCraterCount >= 3) {
+    btn.classList.add('visible');
+  } else {
+    btn.classList.remove('visible');
+  }
+}
+
+function moonReady() {
+  launchConfetti();
+  playBeep(660, 0.3, 'sine', 1);
+  document.getElementById('moon-celebrate').style.display = 'block';
+  document.getElementById('btn-moon-ready').style.display = 'none';
+  document.getElementById('btn-moon-continue').style.display = 'block';
+}
+
+// =====================================================================
+// QUIZ
+// =====================================================================
+const QUIZ_QUESTIONS = [
+  {
+    q: 'Mars is the fourth planet from the Sun.',
+    type: 'truefalse',
+    options: ['True', 'False'],
+    answer: 'True'
+  },
+  {
+    q: 'How many moons does Mars have?',
+    type: 'choice',
+    options: ['0', '2', '1'],
+    answer: '2'
+  },
+  {
+    q: 'How far is Mars from the Sun?',
+    type: 'choice',
+    options: ['1 AU', '1.5 AU'],
+    answer: '1.5 AU'
+  },
+  {
+    q: 'Which picture shows Mars?',
+    type: 'image',
+    options: [
+      { label: 'Mercury', img: '/mercury.png' },
+      { label: 'Venus',   img: '/venus.png'   },
+      { label: 'Mars',    img: '/mars.png'    }
+    ],
+    answer: 'Mars'
+  },
+  {
+    q: 'Mars is red because its rocks, soil, and dust contain _____.',
+    type: 'choice',
+    options: ['iron', 'salt', 'calcium'],
+    answer: 'iron'
+  },
+  {
+    q: 'What is the average temperature on the surface of Mars?',
+    type: 'choice',
+    options: ['-180°F', '-25°F', '-85°F'],
+    answer: '-85°F'
+  },
+  {
+    q: 'How long is one year on Mars?',
+    type: 'choice',
+    options: ['687 Earth days', '452 Earth days'],
+    answer: '687 Earth days'
+  },
+  {
+    q: 'How long is one day on Mars?',
+    type: 'choice',
+    options: ['24 hours, 37 minutes, 22 seconds', '20 hours, 50 minutes, 10 seconds'],
+    answer: '24 hours, 37 minutes, 22 seconds'
+  },
+  {
+    q: "What are the names of Mars's moons?",
+    type: 'choice',
+    options: ['Phobos and Deimos', 'Ganymede and Io'],
+    answer: 'Phobos and Deimos'
+  },
+  {
+    q: 'Which moon may crash into Mars and create rings in 50 million years?',
+    type: 'choice',
+    options: ['Deimos', 'Phobos'],
+    answer: 'Phobos'
+  }
+];
+
+function renderQuizCover() {
+  const quizUnlocked = [1,2,3,4].every(n => isCompleted(n));
+  document.getElementById('quiz-cover').style.display = 'flex';
+  document.getElementById('quiz-question-area').style.display = 'none';
+  document.getElementById('quiz-complete').style.display = 'none';
+  document.getElementById('quiz-dots').style.display = 'none';
+
+  const lockedMsg = document.getElementById('quiz-locked-msg');
+  const startBtn = document.getElementById('quiz-start-btn');
+  if (quizUnlocked) {
+    lockedMsg.style.display = 'none';
+    startBtn.style.display = 'block';
+  } else {
+    lockedMsg.style.display = 'block';
+    startBtn.style.display = 'none';
+  }
+}
+
+function startQuiz() {
+  quizCurrentQ = 0;
+  quizScore = 0;
+  quizAnswered = [];
+  document.getElementById('quiz-cover').style.display = 'none';
+  document.getElementById('quiz-question-area').style.display = 'flex';
+  document.getElementById('quiz-dots').style.display = 'flex';
+  renderQuizDots();
+  renderQuizQuestion();
+}
+
+function renderQuizDots() {
+  const dots = document.getElementById('quiz-dots');
+  dots.innerHTML = '';
+  QUIZ_QUESTIONS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'quiz-dot' + (quizAnswered[i] === 'correct' ? ' answered' : quizAnswered[i] === 'wrong' ? ' wrong-answered' : '');
+    dots.appendChild(d);
+  });
+}
+
+function renderQuizQuestion() {
+  const q = QUIZ_QUESTIONS[quizCurrentQ];
+  document.getElementById('quiz-q-text').textContent = (quizCurrentQ + 1) + '. ' + q.q;
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+
+  if (q.type === 'image') {
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.innerHTML = `<img src="${opt.img}" alt="${opt.label}"> ${opt.label}`;
+      btn.addEventListener('click', () => handleQuizAnswer(opt.label, q.answer, opts));
+      opts.appendChild(btn);
+    });
+  } else {
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => handleQuizAnswer(opt, q.answer, opts));
+      opts.appendChild(btn);
+    });
+  }
+}
+
+function handleQuizAnswer(chosen, correct, optsEl) {
+  const isCorrect = chosen === correct;
+  optsEl.querySelectorAll('.quiz-option').forEach(btn => {
+    const text = btn.querySelector('img') ? btn.textContent.trim() : btn.textContent;
+    if (text === correct) btn.classList.add('correct');
+    else if (text === chosen && !isCorrect) btn.classList.add('wrong');
+    btn.disabled = true;
+  });
+
+  if (isCorrect) {
+    quizScore++;
+    quizAnswered[quizCurrentQ] = 'correct';
+    playBeep(880, 0.15, 'sine', 0.3);
+  } else {
+    quizAnswered[quizCurrentQ] = 'wrong';
+    playBeep(200, 0.2, 'sawtooth', 0.3);
+  }
+  renderQuizDots();
+
+  setTimeout(() => {
+    quizCurrentQ++;
+    if (quizCurrentQ >= QUIZ_QUESTIONS.length) {
+      showQuizComplete();
+    } else {
+      renderQuizQuestion();
+    }
+  }, 900);
+}
+
+function showQuizComplete() {
+  document.getElementById('quiz-question-area').style.display = 'none';
+  document.getElementById('quiz-dots').style.display = 'none';
+  document.getElementById('quiz-complete').style.display = 'flex';
+  document.getElementById('quiz-score-text').textContent = `You got ${quizScore} out of ${QUIZ_QUESTIONS.length} correct!`;
+  launchConfetti();
+  playFanfare();
+}
+
+function finishQuiz() {
+  completeSection(6);
+}
+
+// =====================================================================
+// BADGE
+// =====================================================================
+function showBadge() {
+  showScreen('screen-badge');
+  launchConfetti();
+  playFanfare();
+}
+
+// =====================================================================
+// YOUTUBE MODAL
+// =====================================================================
+function openYT(id) {
+  const modal = document.getElementById('yt-modal');
+  const frame = document.getElementById('yt-frame');
+  frame.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+  modal.classList.add('open');
+}
+function closeYT() {
+  document.getElementById('yt-modal').classList.remove('open');
+  document.getElementById('yt-frame').src = '';
+}
+
+// =====================================================================
+// INFO MODAL
+// =====================================================================
+function openInfoModal(title, body) {
+  document.getElementById('info-title').textContent = title;
+  document.getElementById('info-body').textContent = body;
+  document.getElementById('info-modal').classList.add('open');
+}
+function closeInfoModal() {
+  document.getElementById('info-modal').classList.remove('open');
+}
+
+// =====================================================================
+// CONFETTI
+// =====================================================================
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const colors = ['#1afafe','#ed7c5a','#f5c518','#c92b43','#ffffff','#55b6ca','#ff79c6'];
+  const pieces = [];
+
+  for (let i = 0; i < 160; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -10 - Math.random() * 200,
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 4 + 2,
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.2,
+      opacity: 1
+    });
+  }
+
+  let frame;
+  let elapsed = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotV;
+      if (elapsed > 120) p.opacity -= 0.008;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    elapsed++;
+    if (elapsed < 220) frame = requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  if (frame) cancelAnimationFrame(frame);
+  draw();
+}
+
+// =====================================================================
+// AUDIO
+// =====================================================================
+let audioCtx;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playBeep(freq, vol, type, duration) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
+function playFanfare() {
+  const notes = [523, 659, 784, 1047];
+  notes.forEach((freq, i) => {
+    setTimeout(() => playBeep(freq, 0.25, 'sine', 0.4), i * 150);
+  });
+}
+
+// =====================================================================
+// SWIPE SUPPORT
+// =====================================================================
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (diff > 60) {
+    const s1 = document.getElementById('screen-section1');
+    const s2 = document.getElementById('screen-section2');
+    if (s1.classList.contains('active')) {
+      if (s1CurrentSlide < s1Total) nextSlide(1);
+      else finishSection1();
+    } else if (s2.classList.contains('active')) {
+      if (s2CurrentSlide < s2Total) nextSlide(2);
+      else finishSection2();
+    }
+  }
+}, { passive: true });
+
+// =====================================================================
+// INIT
+// =====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadProgress();
+  initStars(document.getElementById('stars-cover'));
+  initRoverDesigner();
+
+  // Reset moons viewed state on section 4 open
+  document.getElementById('screen-section4').addEventListener('transitionend', () => {
+    moonsViewed = { phobos: false, deimos: false };
+  });
+});
+
+// Also handle screen-section3 entering
+const origShowScreen = showScreen;
+window.showScreen = function(id) {
+  origShowScreen(id);
+  if (id === 'screen-section3') initRoverDesigner();
+  if (id === 'screen-section4') {
+    moonsViewed = { phobos: false, deimos: false };
+    document.getElementById('phobos-card').classList.remove('viewed');
+    document.getElementById('deimos-card').classList.remove('viewed');
+    document.getElementById('moons-continue-btn').disabled = true;
+    document.getElementById('moons-hint').textContent = 'Open both moons to continue.';
+    document.getElementById('moons-hint').style.color = 'rgba(255,255,255,0.5)';
+  }
+};
+</script>
+</body>
+</html>

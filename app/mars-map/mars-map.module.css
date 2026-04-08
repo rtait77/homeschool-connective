@@ -1,0 +1,229 @@
+/* ── 16:9 stage — z-index 100 covers the sticky navbar (z-50) ── */
+.stage {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 56.25vw;
+  max-height: 100vh;
+  max-width: 177.78vh;
+  background: url('/mars-lesson-map-blank.jpg') center center / cover no-repeat;
+  z-index: 100;
+}
+
+/* ── All dynamically-applied classes use :global so JS classList calls work ── */
+:global {
+  .stop {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    overflow: visible;
+  }
+
+  .stop-circle {
+    position: relative;
+    width: 9vw; height: 9vw;
+    max-width: 125px; max-height: 125px;
+    border-radius: 50%;
+    background-color: #1e2d4a;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 3px solid rgba(255,255,255,0.2);
+    transition: transform 0.25s, box-shadow 0.25s, filter 0.4s, border-color 0.4s;
+    overflow: hidden;
+  }
+
+  .quiz-bg {
+    background: linear-gradient(135deg, #2a9db5, #55b6ca);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 4.5vw;
+    color: white;
+    overflow: visible;
+  }
+  .quiz-bg.locked-img { filter: grayscale(1) brightness(0.6); }
+
+  .stop.locked .stop-circle {
+    filter: grayscale(1) brightness(0.82);
+    border-color: rgba(255,255,255,0.15);
+    cursor: default;
+  }
+  .stop.locked { cursor: default !important; }
+
+  .stop.active .stop-circle,
+  .stop.completed .stop-circle {
+    box-shadow: 0 0 1.5vw rgba(255,210,60,0.75), 0 0 3vw rgba(255,160,0,0.3);
+    border-color: rgba(255,210,60,0.8);
+  }
+  .stop.active:hover .stop-circle,
+  .stop.completed:hover .stop-circle { transform: scale(1.12); }
+
+  .lock-badge {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42%; height: 42%;
+    background: rgba(5,12,35,0.75);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid rgba(255,255,255,0.45);
+    z-index: 5;
+    pointer-events: none;
+  }
+  .lock-badge svg { width: 55%; height: 55%; fill: white; }
+
+  @keyframes lockShake {
+    0%   { transform: translate(-50%,-50%) rotate(0deg) scale(1);    opacity: 1; }
+    20%  { transform: translate(-50%,-50%) rotate(-18deg) scale(1.1); }
+    40%  { transform: translate(-50%,-50%) rotate(14deg) scale(1.1);  }
+    60%  { transform: translate(-50%,-50%) rotate(-10deg) scale(1.05);}
+    80%  { transform: translate(-50%,-50%) rotate(6deg) scale(0.8);   opacity: 0.6; }
+    100% { transform: translate(-50%,-50%) rotate(0deg) scale(0);     opacity: 0; }
+  }
+  @keyframes circleReveal {
+    0%   { transform: scale(1);    box-shadow: none; filter: grayscale(1) brightness(0.6); }
+    40%  { transform: scale(1.18); }
+    70%  { transform: scale(0.95); }
+    100% { transform: scale(1);    box-shadow: 0 0 1.5vw rgba(255,210,60,0.75), 0 0 3vw rgba(255,160,0,0.3); filter: grayscale(0) brightness(1); }
+  }
+  .stop.unlocking .lock-badge  { animation: lockShake   0.55s ease-in  forwards; }
+  .stop.unlocking .stop-circle { animation: circleReveal 0.7s 0.35s ease-out forwards; }
+
+  .stop-label {
+    margin-top: 2.4vw;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1.2vw;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    line-height: 1.2;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: transform 0.2s;
+  }
+  .stop:hover .stop-label { transform: scale(0.92); }
+
+  .shooting-star {
+    position: absolute;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.35) 40%, rgba(255,255,255,0.95) 100%);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+  }
+  @keyframes shoot {
+    0%   { opacity: 0;   transform: rotate(var(--angle)) translateX(0); }
+    12%  { opacity: 1; }
+    85%  { opacity: 0.7; }
+    100% { opacity: 0;   transform: rotate(var(--angle)) translateX(38vw); }
+  }
+}
+
+/* ── Module-scoped UI ── */
+.resetBtn {
+  position: absolute;
+  bottom: 2.5%; left: 1.5%;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85vw;
+  font-weight: 800;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 99px;
+  padding: 0.35vw 0.9vw;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.2s, color 0.2s;
+  z-index: 10;
+}
+.resetBtn:hover {
+  background: rgba(217,35,67,0.25);
+  color: rgba(255,180,180,0.9);
+  border-color: rgba(217,35,67,0.5);
+}
+
+.resetModal {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.resetModalBox {
+  background: #0d1a35;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 1.2vw;
+  padding: 2.5vw 3vw 2vw;
+  max-width: 38vw;
+  text-align: center;
+  box-shadow: 0 0.5vw 3vw rgba(0,0,0,0.7);
+}
+.resetModalBox h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.6vw;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.8vw;
+}
+.resetModalBox p {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1vw;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  margin-bottom: 1.8vw;
+}
+.resetModalBtns {
+  display: flex;
+  gap: 1vw;
+  justify-content: center;
+}
+.resetModalBtns button {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 1vw;
+  padding: 0.5vw 2vw;
+  border-radius: 99px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.resetModalBtns button:hover { transform: scale(0.95); }
+.btnYes {
+  background: #d92343;
+  color: #fff;
+  box-shadow: 0 0.2vw 0.8vw rgba(217,35,67,0.4);
+}
+.btnNo {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.3) !important;
+}
+
+.musicBtn {
+  position: absolute;
+  bottom: 2.5%; right: 1.5%;
+  width: 3.8vw; height: 3.8vw;
+  max-width: 52px; max-height: 52px;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  z-index: 10;
+}
+.musicBtn:hover { background: rgba(255,255,255,0.28); }
+.musicBtn svg { width: 50%; height: 50%; fill: white; }
+.muted { opacity: 0.45; }

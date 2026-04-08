@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homeschool Connective — Consultation Intake Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #f5f1e9; color: #1c1c1c; }
+
+header {
+  background: #fff;
+  text-align: center;
+  padding: 24px 20px 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+header img { height: 46px; display: block; margin: 0 auto 8px; }
+header p { font-size: 0.93rem; color: #666; font-weight: 600; }
+
+.layout {
+  display: flex;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 28px 20px 80px;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 230px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 24px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 14px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+.sidebar-title {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #bbb;
+  margin-bottom: 12px;
+  padding: 0 6px;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.14s;
+  margin-bottom: 2px;
+}
+.sidebar-item:hover { background: #f5f1e9; }
+.status-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid #d0ccc4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 900;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  color: transparent;
+}
+.status-dot.inprogress { border-color: #55b6ca; background: #eaf7fb; }
+.status-dot.complete { border-color: #3dbb7e; background: #3dbb7e; color: #fff; }
+.sidebar-label {
+  font-size: 0.87rem;
+  font-weight: 700;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+.sidebar-divider { height: 1px; background: #f0ece3; margin: 8px 6px; }
+
+/* ── Mobile progress ── */
+.mobile-progress {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 10px 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-pills { display: inline-flex; gap: 6px; align-items: center; }
+.mpill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 100px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: #f5f1e9;
+  color: #999;
+  border: 1.5px solid #e8e4db;
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+.mpill:hover { background: #eaf7fb; border-color: #55b6ca; color: #238FA4; }
+.mpill.inprogress { border-color: #55b6ca; color: #238FA4; }
+.mpill.complete { border-color: #3dbb7e; color: #2a9b65; background: #edfaf4; }
+.mdot { width: 7px; height: 7px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+.mpill.inprogress .mdot { background: #55b6ca; }
+.mpill.complete .mdot { background: #3dbb7e; }
+
+/* ── Main content ── */
+.content { flex: 1; min-width: 0; }
+
+/* ── Section card ── */
+.quiz-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  border-top: 6px solid #ed7c5a;
+  scroll-margin-top: 28px;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+.section-header-text h2 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #238FA4;
+  margin-bottom: 5px;
+}
+.section-header-text .subtitle {
+  font-size: 0.88rem;
+  color: #888;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── Child entry rows (Before We Begin) ── */
+.child-entry-row {
+  background: #f5f1e9;
+  border: 1.5px solid #d8f0f6;
+  border-radius: 12px;
+  padding: 16px 20px 18px;
+  margin-bottom: 12px;
+}
+.child-entry-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.child-entry-row-label {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #238FA4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Questions ── */
+.question { margin-bottom: 30px; }
+.q-label {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1c1c1c;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+.q-note {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #bbb;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+.part-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #238FA4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 18px 0 8px;
+}
+
+/* ── Options ── */
+.options { display: flex; flex-direction: column; gap: 5px; }
+.options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 13px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.91rem;
+  font-weight: 600;
+  line-height: 1.45;
+  border: 1.5px solid #d8f0f6;
+  transition: background 0.12s, border-color 0.12s;
+}
+.options label:hover { background: #eaf7fb; border-color: #55b6ca; }
+.options label:has(input:checked) { background: #eaf7fb; border-color: #55b6ca; }
+.options input[type="checkbox"],
+.options input[type="radio"] {
+  margin-top: 2px;
+  accent-color: #ed7c5a;
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+}
+
+/* ── Text inputs ── */
+.field-group { margin-bottom: 18px; }
+.field-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #777;
+  margin-bottom: 5px;
+}
+.field-group input,
+.field-group textarea {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid #d8f0f6;
+  border-radius: 10px;
+  font-size: 0.91rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  background: #fff;
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+.field-group input:focus,
+.field-group textarea:focus { outline: none; border-color: #55b6ca; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 0; }
+.input-row .field-group { margin-bottom: 0; }
+
+/* ── Conditional followup ── */
+.followup {
+  display: none;
+  margin-top: 10px;
+  padding: 14px 16px;
+  background: #f5f1e9;
+  border-radius: 10px;
+  border-left: 3px solid #55b6ca;
+}
+.followup.show { display: block; }
+.followup-label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #238FA4;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+/* ── Section footer ── */
+.section-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 1px solid #f0ece3;
+}
+.mark-btn {
+  padding: 10px 22px;
+  background: #fff;
+  border: 2px solid #3dbb7e;
+  border-radius: 100px;
+  color: #2a9b65;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mark-btn:hover { background: #edfaf4; }
+.mark-btn.done { background: #3dbb7e; color: #fff; }
+.mark-btn.done:hover { background: #2da86e; }
+
+/* ── Add child ── */
+.add-child-btn {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 10px 22px;
+  background: #fff;
+  border: 2px solid #55b6ca;
+  border-radius: 100px;
+  color: #238FA4;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.add-child-btn:hover { background: #eaf7fb; }
+.add-child-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Remove child ── */
+.remove-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 0.83rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.14s;
+}
+.remove-btn:hover { color: #ed7c5a; background: #fff0eb; }
+
+/* ── Submit ── */
+.submit-btn {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto 32px;
+  padding: 16px;
+  background: #ed7c5a;
+  color: #fff;
+  font-size: 1.08rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+.submit-btn:hover { background: #238FA4; transform: scale(1.01); }
+.submit-btn:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+/* ── Thank you ── */
+.thankyou-box {
+  display: none;
+  background: #fff;
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  border-top: 6px solid #3dbb7e;
+  margin-bottom: 40px;
+}
+.thankyou-box img { height: 56px; margin: 0 auto 18px; display: block; }
+.thankyou-box h2 { font-size: 1.7rem; font-weight: 900; color: #238FA4; margin-bottom: 12px; }
+.thankyou-box p { font-size: 0.97rem; font-weight: 600; color: #666; line-height: 1.7; max-width: 460px; margin: 0 auto; }
+
+/* ── Responsive ── */
+@media (max-width: 760px) {
+  .sidebar { display: none; }
+  .mobile-progress { display: block; }
+  .layout { padding: 16px 14px 60px; }
+  .quiz-section { padding: 22px 18px; border-radius: 12px; }
+  .section-header-text h2 { font-size: 1.15rem; }
+  .input-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/consulting-logo.png" alt="Homeschool Connective Consulting" style="height:90px;">
+  <p style="font-size:0.85rem; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:#bbb; margin-top:8px; position:relative; left:-15px;">Intake Form</p>
+</header>
+
+<div class="mobile-progress" id="mobileProgress">
+  <div class="mobile-pills" id="mobilePills"></div>
+</div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-title">Your Sections</div>
+    <div id="sidebarItems"></div>
+  </nav>
+
+  <main class="content">
+
+    <!-- ══ BEFORE WE BEGIN ══ -->
+    <section class="quiz-section" id="section-intro">
+      <div class="section-header">
+        <div class="section-header-text">
+          <h2>Before We Begin</h2>
+          <p class="subtitle">There are no wrong answers here. Mel works with families on everything from finding the right curriculum to navigating learning differences, rebuilding confidence, and figuring out what homeschool can actually look like for your family.</p>
+        </div>
+      </div>
+
+      <div class="input-row" style="margin-bottom:28px">
+        <div class="field-group">
+          <label for="parentName">Your Name *</label>
+          <input type="text" id="parentName" placeholder="Jane Smith" oninput="onSection('intro')">
+        </div>
+        <div class="field-group">
+          <label for="parentEmail">Your Email *</label>
+          <input type="email" id="parentEmail" placeholder="jane@email.com" oninput="onSection('intro')">
+        </div>
+      </div>
+
+      <div class="input-row" style="margin-bottom:28px">
+        <div class="field-group">
+          <label for="parentState">What state are you homeschooling in? *</label>
+          <input type="text" id="parentState" placeholder="e.g. Texas" oninput="onSection('intro')">
+        </div>
+      </div>
+
+      <div id="childEntries"></div>
+
+      <button class="add-child-btn" id="addChildBtn" onclick="addChild()">+ Add Another Child</button>
+
+      <div class="section-footer">
+        <button class="mark-btn" id="mark-intro" onclick="markDone('intro')">Mark as Complete ✓</button>
+      </div>
+    </section>
+
+    <!-- ══ PARENT INFO ══ -->
+    <section class="quiz-section" id="section-parent">
+      <div class="section-header">
+        <div class="section-header-text">
+          <h2>About You</h2>
+          <p class="subtitle">Tell Mel about yourself and your homeschool before your consultation.</p>
+        </div>
+      </div>
+
+      <!-- P-Q1: Why homeschooling -->
+      <div class="question">
+        <div class="q-label">1. Why are you homeschooling?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> My child has learning differences or special needs that school wasn't meeting</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> We want more flexibility in our schedule and lifestyle</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> We had a bad experience with traditional school</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> Academic reasons — we want more rigour or a different approach</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> Religious or values-based reasons</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> My child has anxiety, social struggles, or was not thriving in school</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> We want to travel or live an unconventional lifestyle</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> We were always planning to homeschool</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> We started during COVID and never went back</label>
+          <label><input type="checkbox" name="pq1" onchange="onSection('parent')"> My child asked to be homeschooled</label>
+          <label><input type="checkbox" name="pq1" id="pq1_other" onchange="onSection('parent'); toggle('pq1_other_fu', this.checked)"> Other</label>
+        </div>
+        <div class="followup" id="pq1_other_fu">
+          <div class="followup-label">Please share:</div>
+          <div class="field-group" style="margin:0">
+            <input type="text" id="pq1_other_text" placeholder="Tell us more..." oninput="onSection('parent')">
+          </div>
+        </div>
+      </div>
+
+      <!-- P-Q2: Experience -->
+      <div class="question">
+        <div class="q-label">2. How long have you been homeschooling?</div>
+        <div class="q-note">Choose one</div>
+        <div class="options">
+          <label><input type="radio" name="pq2_exp" id="pq2_exp_new" onchange="onSection('parent'); checkExpSection()"> We haven't started yet — we're planning ahead</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> Less than 6 months</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 6 months to 1 year</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 1–2 years</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> 3–5 years</label>
+          <label><input type="radio" name="pq2_exp" onchange="onSection('parent'); checkExpSection()"> More than 5 years</label>
+        </div>
+
+        <!-- P-Q2 conditional: already homeschooling — experience + goal -->
+        <div class="followup" id="pq2_already_fu">
+          <div class="question">
+            <div class="q-label">How would you describe your current homeschool experience?</div>
+            <div class="q-note">Choose one</div>
+            <div class="options">
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Completely lost — I don't know where to start</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're trying, but it feels chaotic and inconsistent</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We have some things working, but need help in certain areas</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> Things are going okay, but I want to level up</label>
+              <label><input type="radio" name="pq2_curexp" onchange="onSection('parent')"> We're doing well — I just need accountability and new ideas</label>
+              <label><input type="checkbox" id="pq2_curexp_other_cb" onchange="toggle('pq2_curexp_other_box', this.checked); onSection('parent')"> Other</label>
+            </div>
+            <div id="pq2_curexp_other_box" class="followup">
+              <div class="field-group">
+                <label>Tell us more</label>
+                <input type="text" id="pq2_curexp_other" placeholder="Describe your experience..." oninput="onSection('parent')">
+              </div>
+            </div>
+          </div>
+          <div class="question">
+            <div class="q-label">What is your #1 goal for your homeschool right now?</div>
+            <div class="field-group" style="margin-top:12px;margin-bottom:0">
+              <textarea id="pq2_goal" rows="3" placeholder="e.g. get my child reading independently, find a curriculum that finally sticks..." oninput="onSection('parent')"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- P-Q2 conditional: just starting — feelings -->
+        <div class="followup" id="pq2_new_fu">
+          <div class="question">
+            <div class="q-label">How are you feeling about beginning homeschooling?</div>
+            <div class="q-note">Pick all that apply</div>
+            <div class="options">
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Excited — I can't wait to get started</label>
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Scared or nervous</label>
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Uncertain — not sure what to expect</label>
+              <label><input type="checkbox" name="pq2_feeling" onchange="onSection('parent')"> Totally lost — I don't know where to begin</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="part-label">Have you used a formal curriculum before?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq2_curr" onchange="onSection('parent'); checkCurrFu()"> No — we're just getting started</label>
+          <label><input type="checkbox" name="pq2_curr" onchange="onSection('parent'); checkCurrFu()"> Yes — and it worked well for us</label>
+          <label><input type="checkbox" name="pq2_curr" id="pq2_bad" onchange="onSection('parent'); checkCurrFu()"> Yes — and it didn't work well for us</label>
+          <label><input type="checkbox" name="pq2_curr" id="pq2_tried" onchange="onSection('parent'); checkCurrFu()"> We've tried a few things and are still figuring it out</label>
+        </div>
+        <div class="followup" id="pq2_curr_fu">
+          <div class="followup-label">Tell us more:</div>
+          <div class="field-group">
+            <label>What happened?</label>
+            <input type="text" id="pq2_happened" placeholder="What went wrong or what didn't fit..." oninput="onSection('parent')">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label>What curriculum did you try?</label>
+            <input type="text" id="pq2_currtried" placeholder="e.g. All About Reading, Math-U-See..." oninput="onSection('parent')">
+          </div>
+        </div>
+      </div>
+
+      <!-- Biggest challenge — always shown -->
+      <div class="question">
+        <div class="q-label">What feels like your biggest challenge right now?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Math</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Reading / Language Arts</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Science</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> History / Social Studies</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Writing</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> Scheduling and consistency</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> My child's motivation</label>
+          <label><input type="checkbox" name="pq2_challenge" onchange="onSection('parent')"> My own confidence as a teacher</label>
+          <label><input type="checkbox" id="pq2_challenge_other_cb" onchange="toggle('pq2_challenge_other_box', this.checked); onSection('parent')"> Other</label>
+        </div>
+        <div id="pq2_challenge_other_box" class="followup">
+          <div class="field-group">
+            <label>What else?</label>
+            <input type="text" id="pq2_challenge_other" placeholder="Describe your challenge..." oninput="onSection('parent')">
+          </div>
+        </div>
+      </div>
+
+      <!-- P-Q3: Schedule -->
+      <div class="question">
+        <div class="q-label">3. Schedule and availability</div>
+        <div class="q-note" style="color:#ed7c5a;font-style:italic;margin-bottom:16px">If you haven't started homeschooling yet, answer based on what you anticipate doing.</div>
+        <div class="part-label">How many days per week do you typically do structured learning?</div>
+        <div class="q-note">Choose one</div>
+        <div class="options">
+          <label><input type="radio" name="pq3_days" onchange="onSection('parent')"> 2–3 days per week</label>
+          <label><input type="radio" name="pq3_days" onchange="onSection('parent')"> 4 days per week</label>
+          <label><input type="radio" name="pq3_days" onchange="onSection('parent')"> 5 days per week</label>
+          <label><input type="radio" name="pq3_days" onchange="onSection('parent')"> It varies a lot week to week</label>
+        </div>
+        <div class="part-label">On school days, how many hours are you realistically available?</div>
+        <div class="q-note">Choose one</div>
+        <div class="options">
+          <label><input type="radio" name="pq3_hrs" onchange="onSection('parent')"> Less than 1 hour</label>
+          <label><input type="radio" name="pq3_hrs" onchange="onSection('parent')"> 1–2 hours</label>
+          <label><input type="radio" name="pq3_hrs" onchange="onSection('parent')"> 2–3 hours</label>
+          <label><input type="radio" name="pq3_hrs" onchange="onSection('parent')"> 3–4 hours</label>
+          <label><input type="radio" name="pq3_hrs" onchange="onSection('parent')"> 4+ hours</label>
+        </div>
+        <div class="part-label">How many children are you homeschooling at the same time?</div>
+        <div class="q-note">Choose one</div>
+        <div class="options">
+          <label><input type="radio" name="pq3_num" onchange="onSection('parent')"> Just one</label>
+          <label><input type="radio" name="pq3_num" onchange="onSection('parent')"> Two</label>
+          <label><input type="radio" name="pq3_num" onchange="onSection('parent')"> Three</label>
+          <label><input type="radio" name="pq3_num" onchange="onSection('parent')"> Four or more</label>
+        </div>
+        <div class="part-label">Other demands during school hours</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq3_demands" onchange="onSection('parent')"> I work part-time during school hours</label>
+          <label><input type="checkbox" name="pq3_demands" onchange="onSection('parent')"> I work full-time — homeschooling happens around my work schedule</label>
+          <label><input type="checkbox" name="pq3_demands" onchange="onSection('parent')"> I have a baby or toddler at home</label>
+          <label><input type="checkbox" name="pq3_demands" onchange="onSection('parent')"> I have significant caregiving responsibilities for another family member</label>
+          <label><input type="checkbox" name="pq3_demands" onchange="onSection('parent')"> My time is mostly free during school hours</label>
+        </div>
+      </div>
+
+      <!-- P-Q4: Ideal day -->
+      <div class="question">
+        <div class="q-label">4. When you imagine your ideal homeschool day, what does it look like?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq4" onchange="onSection('parent')"> A structured schedule — same subjects, same order, every day</label>
+          <label><input type="checkbox" name="pq4" onchange="onSection('parent')"> A loose rhythm — a general flow but flexible day to day</label>
+          <label><input type="checkbox" name="pq4" onchange="onSection('parent')"> Child-led — we follow what they're interested in that day</label>
+          <label><input type="checkbox" name="pq4" onchange="onSection('parent')"> A mix of structured core subjects plus free exploration time</label>
+          <label><input type="checkbox" name="pq4" onchange="onSection('parent')"> We do school in short bursts throughout the day rather than one block</label>
+          <label><input type="checkbox" name="pq4" onchange="onSection('parent')"> We do intense school days some days and take other days off completely</label>
+        </div>
+      </div>
+
+      <!-- P-Q5: How you teach -->
+      <div class="question">
+        <div class="q-label">5. How do you naturally prefer to teach?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> Sitting down and teaching directly — explaining, questioning, discussing</label>
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> Setting up activities and materials and stepping back</label>
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> Reading aloud together and discussing</label>
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> Finding experiences — field trips, documentaries, real-world projects</label>
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> I prefer to let the curriculum or a video do the teaching and I support</label>
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> I love incorporating creativity, art, music, or storytelling into how we learn</label>
+          <label><input type="checkbox" name="pq5" onchange="onSection('parent')"> I'm still figuring out what kind of teacher I am</label>
+        </div>
+      </div>
+
+      <!-- P-Q6: Screens -->
+      <div class="question">
+        <div class="q-label">6. How do you feel about screens and technology as part of your homeschool?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> I'm fully on board — video lessons and apps are great tools</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> Online games are a learning tool I'm comfortable using</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> I prefer minimal screens — I want physical books and hands-on work</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> I'm open to it but want to be selective</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> I use screens as a reward, not a learning tool</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> My child would do everything on a screen if I let them — I need a balance</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> Screen-based curriculum is a practical necessity for us given my schedule</label>
+          <label><input type="checkbox" name="pq6" onchange="onSection('parent')"> I prefer a mix — some screen-based learning alongside physical books and hands-on activities</label>
+        </div>
+      </div>
+
+      <!-- P-Q7: Progress -->
+      <div class="question">
+        <div class="q-label">7. How do you feel about your child's progress being measured?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq7" onchange="onSection('parent')"> I need clear grade levels and scope-and-sequence — I need to know we're on track</label>
+          <label><input type="checkbox" name="pq7" onchange="onSection('parent')"> I care more about mastery than grade level — they move when they're ready</label>
+          <label><input type="checkbox" name="pq7" onchange="onSection('parent')"> Testing and grades make me anxious — I prefer portfolio or narrative assessment</label>
+          <label><input type="checkbox" name="pq7" onchange="onSection('parent')"> My state requires testing or record-keeping and I need curriculum that helps with that</label>
+          <label><input type="checkbox" name="pq7" onchange="onSection('parent')"> I trust the process — I'm not focused on measuring progress formally</label>
+        </div>
+      </div>
+
+      <!-- P-Q8: Prep -->
+      <div class="question">
+        <div class="q-label">8. How much preparation and planning are you willing and able to do?</div>
+        <div class="q-note">Choose one</div>
+        <div class="options">
+          <label><input type="radio" name="pq8" onchange="onSection('parent')"> I need something I can open and use with minimal prep — done for me</label>
+          <label><input type="radio" name="pq8" onchange="onSection('parent')"> I'm happy to do some planning — maybe an hour a week</label>
+          <label><input type="radio" name="pq8" onchange="onSection('parent')"> I enjoy planning and can invest significant time in designing our school</label>
+          <label><input type="radio" name="pq8" onchange="onSection('parent')"> I want a spine or framework I can build around with my own additions</label>
+        </div>
+      </div>
+
+      <!-- P-Q9: Environment -->
+      <div class="question">
+        <div class="q-label">9. What does your child's learning environment look like?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> A dedicated school room or space</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> Kitchen table or shared living space</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> Wherever they feel like that day — we move around</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> Outdoors as much as possible</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> We travel and school on the road</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> It's noisy and busy — younger siblings, pets, distractions</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> It's generally quiet and calm</label>
+          <label><input type="checkbox" name="pq9" onchange="onSection('parent')"> We have a specific lifestyle — homesteading, travel, family business, ministry — that learning naturally happens inside</label>
+        </div>
+      </div>
+
+      <!-- P-Q10: Co-op -->
+      <div class="question">
+        <div class="q-label">10. Are you part of a homeschool co-op or community?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq10" onchange="onSection('parent')"> Yes — we attend regularly and it's important to us</label>
+          <label><input type="checkbox" name="pq10" onchange="onSection('parent')"> Yes — but it's occasional, not central to our homeschool</label>
+          <label><input type="checkbox" name="pq10" onchange="onSection('parent')"> No — but we're looking for one</label>
+          <label><input type="checkbox" name="pq10" onchange="onSection('parent')"> No — we prefer to homeschool independently</label>
+          <label><input type="checkbox" name="pq10" onchange="onSection('parent')"> We use online classes or communities instead of in-person co-ops</label>
+        </div>
+      </div>
+
+      <!-- P-Q11: Personality -->
+      <div class="question">
+        <div class="q-label">11. How would you describe yourself as a person?</div>
+        <div class="q-note">Pick all that apply</div>
+        <div class="options">
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I'm a planner — I like structure and knowing what comes next</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I'm a go-with-the-flow type — rigidity stresses me out</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I get excited about new ideas but struggle with follow-through</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I'm consistent and persistent — I finish what I start</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I get overwhelmed easily when there's too much on my plate</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I have my own learning differences or challenges that affect how I teach</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I have anxiety that sometimes affects our homeschool</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I learn best the same way my child does — we're very similar</label>
+          <label><input type="checkbox" name="pq11" onchange="onSection('parent')"> I learn very differently from my child — we sometimes clash</label>
+        </div>
+      </div>
+
+      <!-- Success 6 months -->
+      <div class="question">
+        <div class="q-label">What would "homeschool success" look like for your family 6 months from now?</div>
+        <div class="field-group" style="margin-top:12px;margin-bottom:0">
+          <textarea id="pq_success" rows="3" placeholder="Describe what success would look like..." oninput="onSection('parent')"></textarea>
+        </div>
+      </div>
+
+      <!-- How did you hear -->
+      <div class="question">
+        <div class="q-label">How did you hear about Homeschool Connective?</div>
+        <div class="field-group" style="margin-top:12px;margin-bottom:0">
+          <input type="text" id="pq_heard" placeholder="e.g. Instagram, a friend, Google..." oninput="onSection('parent')">
+        </div>
+      </div>
+
+      <!-- P-Q12: Open text -->
+      <div class="question" style="margin-bottom:0">
+        <div class="q-label">12. Is there anything else you'd like Mel to know about you?</div>
+        <div class="field-group" style="margin-top:12px;margin-bottom:0">
+          <textarea id="pq12" rows="5" placeholder="Share anything else that feels relevant — no detail is too small..." oninput="onSection('parent')"></textarea>
+        </div>
+      </div>
+
+      <div class="section-footer">
+        <button class="mark-btn" id="mark-parent" onclick="markDone('parent')">Mark as Complete ✓</button>
+      </div>
+    </section>
+
+    <!-- Child quiz sections injected here -->
+    <div id="childContainer"></div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">Send to Mel →</button>
+
+    <div class="thankyou-box" id="thankyouBox">
+      <img src="/Logo_Homeschool Connective_Hearts.png" alt="">
+      <h2 id="thankyouHeading">Thank you!</h2>
+      <p>Your answers are on their way to Mel. She'll be in touch within 3–5 business days with personalized recommendations for your family. Keep an eye on your inbox!</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let children = []; // [{ id, num, name }]
+let nextNum = 1;
+const status = { intro: 'empty', parent: 'empty' };
+
+// ── NAV RENDER ─────────────────────────────────────────────────────────────
+function renderNav() {
+  const sections = [
+    { id: 'intro',  label: 'Before We Begin' },
+    { id: 'parent', label: 'About You' },
+    ...children.map((c, i) => ({ id: c.id, label: c.name || `Child ${i + 1}` }))
+  ];
+
+  document.getElementById('sidebarItems').innerHTML = sections.map((s, i) => `
+    ${i > 0 ? '<div class="sidebar-divider"></div>' : ''}
+    <div class="sidebar-item" onclick="goto('${s.id}')">
+      <div class="status-dot ${status[s.id] || ''}">${status[s.id] === 'complete' ? '✓' : ''}</div>
+      <span class="sidebar-label">${s.label}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('mobilePills').innerHTML = sections.map(s => `
+    <div class="mpill ${status[s.id] || ''}" onclick="goto('${s.id}')">
+      <div class="mdot"></div>${s.label}
+    </div>
+  `).join('');
+}
+
+function goto(id) {
+  document.getElementById('section-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── STATUS ─────────────────────────────────────────────────────────────────
+function onSection(id) {
+  if (status[id] !== 'complete') { status[id] = 'inprogress'; renderNav(); }
+}
+
+function markDone(id) {
+  const btn = document.getElementById('mark-' + id);
+  if (status[id] === 'complete') {
+    // Unmark
+    status[id] = 'inprogress';
+    if (btn) { btn.textContent = 'Mark as Complete ✓'; btn.classList.remove('done'); }
+  } else {
+    // Mark complete
+    status[id] = 'complete';
+    if (btn) { btn.textContent = 'Completed ✓ — click to unmark'; btn.classList.add('done'); }
+  }
+  renderNav();
+}
+
+// ── CONDITIONALS ───────────────────────────────────────────────────────────
+function toggle(id, show) {
+  document.getElementById(id)?.classList.toggle('show', !!show);
+}
+
+function checkExpSection() {
+  const notStarted = document.getElementById('pq2_exp_new')?.checked;
+  const anySelected = !!document.querySelector('input[name="pq2_exp"]:checked');
+  toggle('pq2_already_fu', anySelected && !notStarted);
+  toggle('pq2_new_fu', !!notStarted);
+}
+
+function checkCurrFu() {
+  toggle('pq2_curr_fu', !!(document.getElementById('pq2_bad')?.checked || document.getElementById('pq2_tried')?.checked));
+}
+
+function checkReadFu(cid) {
+  toggle(cid + '_q4fu', !!document.getElementById(cid + '_q4_struggle')?.checked);
+}
+
+function checkFocusFu(cid) {
+  toggle(cid + '_q10fu', !!(document.getElementById(cid + '_q10_short')?.checked || document.getElementById(cid + '_q10_depends')?.checked));
+}
+
+// ── ADD / REMOVE CHILD ─────────────────────────────────────────────────────
+function addChild() {
+  if (children.length >= 6) return;
+  const num = nextNum++;
+  const cid = 'c' + num;
+  children.push({ id: cid, num, name: '' });
+  status[cid] = 'empty';
+
+  // Add entry row in "Before We Begin"
+  const canRemove = children.length > 1;
+  document.getElementById('childEntries').insertAdjacentHTML('beforeend', `
+    <div class="child-entry-row" id="entry-${cid}">
+      <div class="child-entry-row-header">
+        <span class="child-entry-row-label" id="entry-label-${cid}">Child ${children.length}</span>
+        ${canRemove ? `<button class="remove-btn" onclick="removeChild('${cid}')">✕ Remove</button>` : ''}
+      </div>
+      <div class="input-row">
+        <div class="field-group">
+          <label>Child's First Name *</label>
+          <input type="text" id="${cid}_name" placeholder="First name" oninput="onSection('intro'); updateName('${cid}')">
+        </div>
+        <div class="field-group">
+          <label>Age</label>
+          <input type="text" id="${cid}_age" placeholder="e.g. 7" oninput="onSection('intro')">
+        </div>
+      </div>
+    </div>
+  `);
+
+  // Add quiz section
+  document.getElementById('childContainer').insertAdjacentHTML('beforeend', buildChild(cid, num));
+
+  renderNav();
+  updateAddBtn();
+  relabelEntries();
+}
+
+function removeChild(cid) {
+  children = children.filter(c => c.id !== cid);
+  delete status[cid];
+  document.getElementById('entry-' + cid)?.remove();
+  document.getElementById('section-' + cid)?.remove();
+  relabelEntries();
+  renderNav();
+  updateAddBtn();
+}
+
+function updateAddBtn() {
+  const btn = document.getElementById('addChildBtn');
+  btn.disabled = children.length >= 6;
+  btn.textContent = children.length >= 6 ? 'Maximum 6 children reached' : '+ Add Another Child';
+}
+
+function relabelEntries() {
+  children.forEach((c, i) => {
+    const label = document.getElementById('entry-label-' + c.id);
+    if (label) label.textContent = `Child ${i + 1}`;
+  });
+}
+
+function updateName(cid) {
+  const child = children.find(c => c.id === cid);
+  const input = document.getElementById(cid + '_name');
+  if (!child || !input) return;
+  child.name = input.value.trim();
+  // Update section heading and all "your child" name spans
+  const h = document.getElementById(cid + '_heading');
+  if (h) h.textContent = child.name || `Child ${children.indexOf(child) + 1}`;
+  document.querySelectorAll(`.${cid}-name`).forEach(el => {
+    el.textContent = child.name || 'your child';
+  });
+  renderNav();
+}
+
+// ── CHILD SECTION BUILDER ──────────────────────────────────────────────────
+function buildChild(cid, num) {
+  const html = `
+<section class="quiz-section" id="section-${cid}">
+  <div class="section-header">
+    <div class="section-header-text">
+      <h2 id="${cid}_heading">Child ${num}</h2>
+      <p class="subtitle">Answer based on what you observe about this child. There are no wrong answers.</p>
+    </div>
+  </div>
+
+  <!-- Q1: Regulation -->
+  <div class="question">
+    <div class="q-label">1. How does your child typically calm down when overwhelmed or dysregulated?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need to move — run, jump, pace, or do something physical</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need quiet and low stimulation — a calm space, dim light, no noise</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need to talk it through with someone</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need to be left alone</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need something to squeeze, chew, or fidget with</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need a complete change of activity — something totally different</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They need to touch or handle materials while learning — manipulatives, blocks, or textures help</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They get deeply absorbed in things they choose and really dislike being interrupted</label>
+      <label><input type="checkbox" name="${cid}_q1" onchange="onSection('${cid}')"> They don't get overwhelmed often — they regulate pretty easily</label>
+    </div>
+  </div>
+
+  <!-- Q2: Frustration -->
+  <div class="question">
+    <div class="q-label">2. When your child gets frustrated during learning —</div>
+    <div class="part-label">Part A: What do they naturally do?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Shuts down completely — refuses, cries, or walks away</label>
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Gets upset but pushes through if I stay with them</label>
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Gets physical — slams things, tenses up, or acts out</label>
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Becomes anxious — worried about being wrong, not just frustrated</label>
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Quietly gives up without making a fuss</label>
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Takes a break on their own and comes back to it</label>
+      <label><input type="checkbox" name="${cid}_q2a" onchange="onSection('${cid}')"> Digs in harder — frustration actually motivates them</label>
+    </div>
+    <div class="part-label">Part B: What do you as the parent/guardian try to do?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Stay close and coach them through it</label>
+      <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Give them space and let them come back when ready</label>
+      <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Redirect to something completely different</label>
+      <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Offer movement or a sensory break</label>
+      <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Simplify the task or break it into smaller steps</label>
+      <label><input type="checkbox" name="${cid}_q2b" onchange="onSection('${cid}')"> Put it away for the day entirely</label>
+    </div>
+    <div class="part-label">Part C: Does what you try actually work?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q2c" onchange="onSection('${cid}')"> Yes, pretty consistently</label>
+      <label><input type="radio" name="${cid}_q2c" onchange="onSection('${cid}')"> Sometimes — it depends on the day</label>
+      <label><input type="radio" name="${cid}_q2c" onchange="onSection('${cid}')"> Rarely — we haven't found what works yet</label>
+      <label><input type="radio" name="${cid}_q2c" onchange="onSection('${cid}')"> It varies a lot depending on the situation</label>
+    </div>
+  </div>
+
+  <!-- Q3: New vs hard -->
+  <div class="question">
+    <div class="q-label">3. New tasks vs. hard tasks —</div>
+    <div class="part-label">Part A: When your child encounters something NEW:</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q3a" onchange="onSection('${cid}')"> Jumps in immediately — excited and curious</label>
+      <label><input type="checkbox" name="${cid}_q3a" onchange="onSection('${cid}')"> Watches or observes first before trying</label>
+      <label><input type="checkbox" name="${cid}_q3a" onchange="onSection('${cid}')"> Asks a lot of questions before they'll start</label>
+      <label><input type="checkbox" name="${cid}_q3a" onchange="onSection('${cid}')"> Resists or refuses until they feel safe enough</label>
+      <label><input type="checkbox" name="${cid}_q3a" onchange="onSection('${cid}')"> Gets anxious — worries about doing it wrong</label>
+      <label><input type="checkbox" name="${cid}_q3a" onchange="onSection('${cid}')"> Depends entirely on whether it interests them</label>
+    </div>
+    <div class="part-label">Part B: When your child encounters something HARD:</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q3b" onchange="onSection('${cid}')"> Persists if it's something they care about</label>
+      <label><input type="checkbox" name="${cid}_q3b" onchange="onSection('${cid}')"> Avoids it even if it's something they want to achieve</label>
+      <label><input type="checkbox" name="${cid}_q3b" onchange="onSection('${cid}')"> Needs someone alongside them to keep going</label>
+      <label><input type="checkbox" name="${cid}_q3b" onchange="onSection('${cid}')"> Pushes through independently once they start</label>
+      <label><input type="checkbox" name="${cid}_q3b" onchange="onSection('${cid}')"> Gives up quickly regardless of interest</label>
+      <label><input type="checkbox" name="${cid}_q3b" onchange="onSection('${cid}')"> Has big goals but struggles to do the work required to get there</label>
+    </div>
+  </div>
+
+  <!-- Q4: Read-aloud -->
+  <div class="question">
+    <div class="q-label">4. When your child is being read aloud to — even if they seem distracted:</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They absorb almost everything, even when they look like they're not listening</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They catch it if the topic interests them, but zone out otherwise</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They need to be sitting still and focused to take anything in</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They retain it better if their hands are busy at the same time</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They want to stop and discuss as you go</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They drift and can't recall much afterwards</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> They draw or doodle while listening — it actually helps them focus and retain</label>
+      <label><input type="checkbox" name="${cid}_q5" onchange="onSection('${cid}')"> Reading aloud together is one of our favorite things — they really come alive</label>
+    </div>
+  </div>
+
+  <!-- Q6: Videos/screens -->
+  <div class="question">
+    <div class="q-label">5. How does your child engage with videos and screens as a learning tool?</div>
+    <div class="part-label">Part A: Video engagement</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> They retain information well from videos — it sticks</label>
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> Videos feel more like entertainment — they enjoy it but don't absorb much</label>
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> They prefer to speed videos up — slow-paced content loses them</label>
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> They need to slow videos down or pause frequently to process</label>
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> They ask questions and want to discuss what they watched</label>
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> They zone out during videos, even ones they chose</label>
+      <label><input type="checkbox" name="${cid}_q6a" onchange="onSection('${cid}')"> We limit screens significantly — this isn't really an option for us</label>
+    </div>
+    <div class="part-label">Part B: How does your child use screens day-to-day?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens for entertainment — YouTube, shows, games</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens for schoolwork</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens to watch educational videos</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens to play educational games</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They gravitate to screens to decompress or regulate — it's a calming tool for them</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They use screens creatively — making things, building, coding</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> They're not particularly drawn to screens — they prefer other activities</label>
+      <label><input type="checkbox" name="${cid}_q6b" onchange="onSection('${cid}')"> Screen time is limited or restricted in our home</label>
+    </div>
+  </div>
+
+  <!-- Q7: Games -->
+  <div class="question">
+    <div class="q-label">6. Does your child learn well through games?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — board games or card games</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — strategy or puzzle video games (e.g. chess-style, logic puzzles)</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — adventure or narrative video games</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — creative or building games (e.g. Minecraft, Roblox)</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> Yes — escape room or mystery-style games</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> They love memorizing facts, chants, songs, or repetitive patterns — it energizes them</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> They enjoy games for fun but learning doesn't really stick through games for this child</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> They don't enjoy board games or card games</label>
+      <label><input type="checkbox" name="${cid}_q7" onchange="onSection('${cid}')"> They don't enjoy video games</label>
+    </div>
+  </div>
+
+  <!-- Q8: Reading & Writing -->
+  <div class="question">
+    <div class="q-label">7. Reading &amp; Writing —</div>
+    <div class="part-label">Part A: Where is your child with reading?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Not yet reading — working on letters and sounds</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Beginning to read — sounding out short words</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading simple books with some effort</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading independently at or around grade level</label>
+      <label><input type="radio" name="${cid}_q8_read" onchange="onSection('${cid}')"> Reading above grade level or voraciously</label>
+    </div>
+    <div class="followup" style="display:block">
+      <div class="followup-label">How do you feel about your child's reading skills?</div>
+      <div class="options">
+        <label><input type="radio" name="${cid}_q8read_feel" onchange="onSection('${cid}')"> They are good</label>
+        <label><input type="radio" name="${cid}_q8read_feel" onchange="onSection('${cid}')"> They need to improve</label>
+      </div>
+    </div>
+    <div class="part-label">Part B: Where is your child in their writing journey?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Not yet writing — working on pencil grip and pre-writing shapes</label>
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing individual letters</label>
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing short words or simple phrases</label>
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing full sentences</label>
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing paragraphs</label>
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing multi-paragraph pieces or short essays</label>
+      <label><input type="radio" name="${cid}_q8a" onchange="onSection('${cid}')"> Writing longer pieces, stories, or structured essays</label>
+    </div>
+    <div class="followup" style="display:block">
+      <div class="followup-label">How do you feel about your child's writing skills?</div>
+      <div class="options">
+        <label><input type="radio" name="${cid}_q9write_feel" onchange="onSection('${cid}')"> They are good</label>
+        <label><input type="radio" name="${cid}_q9write_feel" onchange="onSection('${cid}')"> They need to improve</label>
+      </div>
+    </div>
+    <div class="part-label">Part C: How does your child experience the physical act of writing?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> They have a lot to say but their handwriting can't keep up with their ideas — this causes real frustration</label>
+      <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> They have ideas but freeze when it comes to getting them onto paper</label>
+      <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> The physical act of writing is slow, painful, or messy despite real effort</label>
+      <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> They strongly prefer typing over handwriting</label>
+      <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> Handwriting is fine — it's not a barrier for them</label>
+      <label><input type="checkbox" name="${cid}_q8b" onchange="onSection('${cid}')"> Writing is not yet developmentally expected for this child's age</label>
+    </div>
+    <div class="part-label">Part D: What kinds of writing does your child engage with?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> Creative writing — stories, imaginative pieces</label>
+      <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> Factual or informational writing</label>
+      <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> Journaling or personal writing</label>
+      <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> Poetry or rhyming text — they enjoy it or gravitate toward it</label>
+      <label><input type="checkbox" name="${cid}_q8c" onchange="onSection('${cid}')"> They avoid writing in any form</label>
+    </div>
+    <div class="part-label">Part E: Where is your child with spelling?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Not yet working on spelling formally</label>
+      <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Learning basic phonetic spelling — sounding words out</label>
+      <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Spelling common words correctly but inconsistent with harder words</label>
+      <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Spelling is a significant struggle — words spelled differently every time</label>
+      <label><input type="radio" name="${cid}_q8d" onchange="onSection('${cid}')"> Spelling is strong and mostly accurate</label>
+    </div>
+    <div class="followup" style="display:block">
+      <div class="followup-label">How do you feel about your child's spelling skills?</div>
+      <div class="options">
+        <label><input type="radio" name="${cid}_q8d_feel" onchange="onSection('${cid}')"> They are good</label>
+        <label><input type="radio" name="${cid}_q8d_feel" onchange="onSection('${cid}')"> They need to improve</label>
+      </div>
+    </div>
+    <div class="part-label">Part F: Where is your child with grammar?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Not yet working on grammar formally</label>
+      <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Beginning to understand basic sentence structure</label>
+      <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Working on punctuation and capitalization</label>
+      <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Understanding parts of speech (nouns, verbs, adjectives)</label>
+      <label><input type="radio" name="${cid}_q8e" onchange="onSection('${cid}')"> Working on more complex grammar — clauses, tenses, agreement</label>
+    </div>
+    <div class="followup" style="display:block">
+      <div class="followup-label">How do you feel about your child's grammar skills?</div>
+      <div class="options">
+        <label><input type="radio" name="${cid}_q8e_feel" onchange="onSection('${cid}')"> They are good</label>
+        <label><input type="radio" name="${cid}_q8e_feel" onchange="onSection('${cid}')"> They need to improve</label>
+      </div>
+    </div>
+    <div class="part-label">Part G: Grammar areas of struggle</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Punctuation and capitalization</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Sentence structure — run-ons or fragments</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Parts of speech</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Phrases and clauses</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> Labeling sentence parts</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> We're not sure yet — haven't gotten there</label>
+      <label><input type="checkbox" name="${cid}_q8f" onchange="onSection('${cid}')"> No significant struggles</label>
+      <label><input type="checkbox" name="${cid}_q8f" id="${cid}_q8f_other" onchange="onSection('${cid}'); toggle('${cid}_q8f_other_fu', this.checked)"> Other</label>
+    </div>
+    <div class="followup" id="${cid}_q8f_other_fu">
+      <div class="followup-label">Please describe:</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q8f_other_text" placeholder="Describe the grammar struggle..." oninput="onSection('${cid}')">
+      </div>
+    </div>
+  </div>
+
+  <!-- Q8: Demonstrate understanding -->
+  <div class="question">
+    <div class="q-label">8. How does your child best demonstrate they've understood something?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Explaining it back in their own words — verbally</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Drawing, building, or creating something connected to it</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Answering questions verbally</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Writing it down</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Acting it out or turning it into a game</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Going off and finding more information on their own</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Teaching it to someone else (or a pet!)</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Humming, singing, or putting things to a beat or rhythm</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Talking out loud to themselves while they work through it</label>
+      <label><input type="checkbox" name="${cid}_q9" onchange="onSection('${cid}')"> Debating or defending their ideas — they love being challenged to explain their thinking</label>
+    </div>
+  </div>
+
+  <!-- Q10: Focus span -->
+  <div class="question">
+    <div class="q-label">9. How long can your child realistically focus on something they didn't choose?</div>
+    <div class="q-note">Choose one</div>
+    <div class="options">
+      <label><input type="radio" name="${cid}_q10" id="${cid}_q10_short" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> 5 minutes or less</label>
+      <label><input type="radio" name="${cid}_q10" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> Around 10–15 minutes with some redirection</label>
+      <label><input type="radio" name="${cid}_q10" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> Around 20–30 minutes if I'm engaged with them</label>
+      <label><input type="radio" name="${cid}_q10" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> 30+ minutes — they sustain focus well</label>
+      <label><input type="radio" name="${cid}_q10" id="${cid}_q10_depends" onchange="onSection('${cid}'); checkFocusFu('${cid}')"> Completely depends on the topic — night and day difference</label>
+    </div>
+    <div class="followup" id="${cid}_q10fu">
+      <div class="followup-label">Does your child have areas of very intense or obsessive interest?</div>
+      <div class="options">
+        <label><input type="radio" name="${cid}_q10b" onchange="onSection('${cid}')"> Yes — one or two things they are completely fixated on</label>
+        <label><input type="radio" name="${cid}_q10b" onchange="onSection('${cid}')"> Somewhat — some topics grab them much more than others</label>
+        <label><input type="radio" name="${cid}_q10b" onchange="onSection('${cid}')"> Not really — interests are fairly broad and even</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q11: Interests -->
+  <div class="question">
+    <div class="q-label">10. What topics or subjects does your child love — and what do they avoid?</div>
+    <div class="part-label">They gravitate toward:</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Science and how things work</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Animals and nature</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> History and stories from the past</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Math and numbers and patterns</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Art, music, or creative making</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Reading and stories</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Building and engineering</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Space and the universe</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> People, relationships, and emotions</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Sports, movement, and the body</label>
+      <label><input type="checkbox" name="${cid}_q11love" onchange="onSection('${cid}')"> Technology and computers</label>
+      <label><input type="checkbox" id="${cid}_q11love_other_cb" name="${cid}_q11love" onchange="toggle('${cid}_q11love_other_box', this.checked); onSection('${cid}')"> Other</label>
+    </div>
+    <div id="${cid}_q11love_other_box" class="followup">
+      <div class="field-group">
+        <label>What are they into?</label>
+        <input type="text" id="${cid}_q11love_other" placeholder="e.g. dinosaurs, trains, ancient Egypt..." oninput="onSection('${cid}')">
+      </div>
+    </div>
+    <div class="part-label">They tend to avoid or dread:</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Science and how things work</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Animals and nature</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> History and stories from the past</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Math and numbers and patterns</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Art, music, or creative making</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Reading and stories</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Writing</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Building and engineering</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Space and the universe</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> People, relationships, and emotions</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Sports, movement, and the body</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" onchange="onSection('${cid}')"> Technology and computers</label>
+      <label><input type="checkbox" name="${cid}_q11avoid" id="${cid}_q11avoid_other" onchange="onSection('${cid}'); toggle('${cid}_q11avoid_other_fu', this.checked)"> Other</label>
+    </div>
+    <div class="followup" id="${cid}_q11avoid_other_fu">
+      <div class="followup-label">Please describe:</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q11avoid_other_text" placeholder="What do they tend to avoid?" oninput="onSection('${cid}')">
+      </div>
+    </div>
+  </div>
+
+  <!-- Q12: What else -->
+  <div class="question" style="margin-bottom:0">
+    <div class="q-label">11. What else would you like Mel to know about your child?</div>
+    <div class="q-note">Pick all that apply</div>
+    <div class="options">
+      <label><input type="checkbox" name="${cid}_q12" onchange="onSection('${cid}')"> Is currently in speech, OT, or another therapy</label>
+      <label><input type="checkbox" name="${cid}_q12" id="${cid}_q12_diag" onchange="onSection('${cid}'); toggle('${cid}_q12fu', this.checked)"> Has been formally assessed or diagnosed</label>
+      <label><input type="checkbox" name="${cid}_q12" id="${cid}_q12_other" onchange="onSection('${cid}'); toggle('${cid}_q12_other_fu', this.checked)"> Other</label>
+    </div>
+    <div class="followup" id="${cid}_q12_other_fu">
+      <div class="followup-label">Please describe:</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q12_other_text" placeholder="Anything else Mel should know..." oninput="onSection('${cid}')">
+      </div>
+    </div>
+    <div class="followup" id="${cid}_q12fu">
+      <div class="followup-label">Would you like to share the diagnosis? (optional)</div>
+      <div class="field-group" style="margin:0">
+        <input type="text" id="${cid}_q12_diagtext" placeholder="e.g. ADHD, dyslexia, autism, SPD..." oninput="onSection('${cid}')">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-footer">
+    <button class="mark-btn" id="mark-${cid}" onclick="markDone('${cid}')">Mark as Complete ✓</button>
+  </div>
+</section>`;
+  return html.replace(/your child/g, `<span class="${cid}-name">your child</span>`);
+}
+
+// ── EMAIL BODY ─────────────────────────────────────────────────────────────
+function checked(name) {
+  const els = [...document.querySelectorAll(`input[name="${name}"]:checked`)];
+  return els.length ? els.map(el => el.closest('label').textContent.trim()).join('\n  • ') : '(none selected)';
+}
+function radio(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.closest('label').textContent.trim() : '(not answered)';
+}
+function txt(id) {
+  return (document.getElementById(id)?.value || '').trim() || '(blank)';
+}
+
+function buildEmail() {
+  const name = txt('parentName');
+  const email = txt('parentEmail');
+  let body = `NEW CONSULTATION QUIZ SUBMISSION
+════════════════════════════════════
+Parent/Guardian: ${name}
+Email: ${email}
+
+════════════════════════════════════
+ABOUT THE PARENT/GUARDIAN
+════════════════════════════════════
+
+Q1. Why homeschooling:
+  • ${checked('pq1')}${document.getElementById('pq1_other')?.checked ? '\n  Other: ' + txt('pq1_other_text') : ''}
+
+Q2. How long homeschooling: ${radio('pq2_exp')}
+
+${document.getElementById('pq2_exp_new')?.checked ? `How they're feeling about starting:
+  • ${checked('pq2_feeling')}` : `Current experience: ${radio('pq2_curexp')}${document.getElementById('pq2_curexp_other_cb')?.checked ? '\n  Other: ' + txt('pq2_curexp_other') : ''}
+
+#1 goal right now: ${txt('pq2_goal')}`}
+
+Biggest challenge right now:
+  • ${checked('pq2_challenge')}${document.getElementById('pq2_challenge_other_cb')?.checked ? '\n  Other: ' + txt('pq2_challenge_other') : ''}
+
+Q2. Curriculum experience:
+  • ${checked('pq2_curr')}
+  What happened: ${txt('pq2_happened')}
+  Curriculum tried: ${txt('pq2_currtried')}
+
+Q3. Days per week: ${radio('pq3_days')}
+Q3. Hours per day: ${radio('pq3_hrs')}
+Q3. Number of children: ${radio('pq3_num')}
+Q3. Other demands:
+  • ${checked('pq3_demands')}
+
+Q4. Ideal homeschool day:
+  • ${checked('pq4')}
+
+Q5. How they prefer to teach:
+  • ${checked('pq5')}
+
+Q6. Screens/technology:
+  • ${checked('pq6')}
+
+Q7. Progress measurement:
+  • ${checked('pq7')}
+
+Q8. Prep/planning: ${radio('pq8')}
+
+Q9. Learning environment:
+  • ${checked('pq9')}
+
+Q10. Co-op/community:
+  • ${checked('pq10')}
+
+Q11. Personality:
+  • ${checked('pq11')}
+
+What "success" looks like in 6 months: ${txt('pq_success')}
+
+How they heard about Homeschool Connective: ${txt('pq_heard')}
+
+Q12. Anything else for Mel:
+  ${txt('pq12')}
+
+`;
+
+  children.forEach((c, i) => {
+    const cid = c.id;
+    const childName = txt(cid + '_name');
+    const childAge = txt(cid + '_age');
+    body += `════════════════════════════════════
+CHILD ${i + 1}: ${childName} (Age: ${childAge})
+════════════════════════════════════
+
+Q1. How they calm down when overwhelmed:
+  • ${checked(cid + '_q1')}
+
+Q2a. When frustrated — child does:
+  • ${checked(cid + '_q2a')}
+
+Q2b. When frustrated — parent/guardian does:
+  • ${checked(cid + '_q2b')}
+
+Q2c. Does it work? ${radio(cid + '_q2c')}
+
+Q3a. When encountering NEW things:
+  • ${checked(cid + '_q3a')}
+
+Q3b. When encountering HARD things:
+  • ${checked(cid + '_q3b')}
+
+Q4. Reading level: ${radio(cid + '_q4')}
+Q4. Reading struggle details:
+  • ${checked(cid + '_q4b')}
+
+Q5. Read-aloud retention:
+  • ${checked(cid + '_q5')}
+
+Q6a. Video engagement:
+  • ${checked(cid + '_q6a')}
+
+Q6b. Screen use at home:
+  • ${checked(cid + '_q6b')}
+
+Q7. Games:
+  • ${checked(cid + '_q7')}
+
+Q8a. Reading level: ${radio(cid + '_q8_read')}
+Q8b. Writing stage: ${radio(cid + '_q8a')}
+
+Q8b. Physical writing experience:
+  • ${checked(cid + '_q8b')}
+
+Q8c. Types of writing engaged with:
+  • ${checked(cid + '_q8c')}
+
+Q8d. Spelling: ${radio(cid + '_q8d')}
+Q8e. Grammar: ${radio(cid + '_q8e')}
+
+Q8f. Grammar struggles:
+  • ${checked(cid + '_q8f')}
+  Other: ${txt(cid + '_q8f_other_text')}
+
+Q9. How they demonstrate understanding:
+  • ${checked(cid + '_q9')}
+
+Q10. Focus span: ${radio(cid + '_q10')}
+Q10. Intense interests: ${radio(cid + '_q10b')}
+
+Q11. Loves (subjects):
+  • ${checked(cid + '_q11love')}
+  Specific obsession: ${txt(cid + '_q11love_other')}
+
+Q11. Avoids (subjects):
+  • ${checked(cid + '_q11avoid')}
+  Other: ${txt(cid + '_q11avoid_other_text')}
+
+Q12. What else Mel should know:
+  • ${checked(cid + '_q12')}
+  Diagnosis (if shared): ${txt(cid + '_q12_diagtext')}
+  Other: ${txt(cid + '_q12_other_text')}
+
+`;
+  });
+  return body;
+}
+
+// ── SUBMIT ─────────────────────────────────────────────────────────────────
+async function submitForm() {
+  const name = document.getElementById('parentName').value.trim();
+  const email = document.getElementById('parentEmail').value.trim();
+
+  if (!name || !email) {
+    alert('Please enter your name and email address before submitting.');
+    return;
+  }
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  if (children.length === 0) {
+    alert('Please add at least one child before submitting.');
+    return;
+  }
+  for (const c of children) {
+    if (!document.getElementById(c.id + '_name')?.value.trim()) {
+      alert('Please enter a name for each child.');
+      document.getElementById(c.id + '_name')?.focus();
+      return;
+    }
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: 'e9fa8d0f-0004-4b87-bdf7-5403329c59cb',
+        subject: `Consultation Intake Form — ${name}`,
+        from_name: name,
+        replyto: email,
+        to: 'consulting@homeschoolconnective.com',
+        message: buildEmail(),
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      btn.style.display = 'none';
+      document.getElementById('thankyouHeading').textContent = `Thank you, ${name}!`;
+      const box = document.getElementById('thankyouBox');
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      throw new Error('failed');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send to Mel →';
+    alert('Something went wrong. Please try again, or email consulting@homeschoolconnective.com directly.');
+  }
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+addChild();
+renderNav();
+</script>
+</body>
+</html>

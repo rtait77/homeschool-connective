@@ -1,0 +1,55 @@
+#!/bin/bash
+# gemini-clean: Run Gemini CLI with a prompt and return clean output
+# Usage: gemini-clean "your prompt here"
+# Usage with file context: gemini-clean "review this code" --file path/to/file.ts
+# Usage with model override: gemini-clean "prompt" --model gemini-2.5-pro
+
+set -eo pipefail
+
+# Source API key if not already in environment
+if [[ -z "$GEMINI_API_KEY" && -f "$HOME/.claude/.env" ]]; then
+  export $(grep '^GEMINI_API_KEY=' "$HOME/.claude/.env" | xargs)
+fi
+
+PROMPT=""
+FILES=()
+MODEL="${GEMINI_MODEL:-gemini-2.5-pro}"
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --file|-f)
+      FILES+=("$2")
+      shift 2
+      ;;
+    --model|-m)
+      MODEL="$2"
+      shift 2
+      ;;
+    *)
+      if [[ -z "$PROMPT" ]]; then
+        PROMPT="$1"
+      fi
+      shift
+      ;;
+  esac
+done
+
+# Build the full prompt
+FULL_PROMPT="$PROMPT"
+
+# Append file contents if specified
+for file in "${FILES[@]}"; do
+  if [[ -f "$file" ]]; then
+    FULL_PROMPT="$FULL_PROMPT
+
+--- File: $file ---
+$(cat "$file")
+--- End: $file ---"
+  else
+    echo "Warning: File not found: $file" >&2
+  fi
+done
+
+# Run Gemini CLI in headless mode (-p flag), strip ANSI codes
+gemini -p "$FULL_PROMPT" -m "$MODEL" 2>/dev/null | sed 's/\x1b\[[0-9;]*m//g'
