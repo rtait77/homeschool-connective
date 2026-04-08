@@ -15,7 +15,6 @@ type QuizAnswers = {
   screens: string
   resourceTypes: string[]
   religiousPref: string
-  childNeeds: string
   subjects: string[]
 }
 
@@ -144,14 +143,7 @@ function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: strin
   // Q8: Religious preference
   const religiousPref = answers.religiousPref || 'either'
 
-  // Q9: What child needs most
-  if (answers.childNeeds === 'catch_up') { tags.add('step_by_step'); tags.add('mastery_based'); tags.add('structured') }
-  if (answers.childNeeds === 'on_track') { tags.add('structured'); tags.add('comprehensive') }
-  if (answers.childNeeds === 'challenge') { tags.add('gifted'); tags.add('rigorous'); tags.add('enrichment') }
-  if (answers.childNeeds === 'engage') { tags.add('game_based'); tags.add('engaging'); tags.add('interest_led'); tags.add('hands_on') }
-  if (answers.childNeeds === 'explore') { tags.add('interest_led'); tags.add('child_led'); tags.add('creative'); tags.add('project_based') }
-
-  // Q10: Subjects
+  // Q9: Subjects
   for (const subj of answers.subjects) {
     if (subj === 'math') tags.add('math')
     if (subj === 'reading') { tags.add('reading'); tags.add('language_arts'); tags.add('phonics') }
@@ -217,12 +209,6 @@ function generateProfile(answers: QuizAnswers): string {
   if (painPoints.length > 0) {
     parts.push(`They\'d especially benefit from ${painPoints.slice(0, 2).join(' and ')}.`)
   }
-
-  // Child needs
-  if (answers.childNeeds === 'catch_up') parts.push('Right now, the priority is closing gaps — structured, step-by-step resources will help them build confidence.')
-  if (answers.childNeeds === 'challenge') parts.push('They\'re ready to be challenged — look for resources that go deeper and move faster.')
-  if (answers.childNeeds === 'engage') parts.push('The key right now is re-engaging them — fun, interest-driven resources will help reignite their spark.')
-  if (answers.childNeeds === 'explore') parts.push('They\'re in an exploration phase — following their interests will keep the love of learning alive.')
 
   return parts.join(' ')
 }
