@@ -29,14 +29,25 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const admin = await getAdmin()
-  const { data, error } = await admin
-    .from('resources')
-    .select('id, name, subjects, grade_levels, price_range, requires_screen, time_per_lesson, parent_prep, religious_pref, match_tags, url, description, approved, resource_type')
-    .order('name', { ascending: true })
-    .range(0, 4999)
+  const fields = 'id, name, subjects, grade_levels, price_range, requires_screen, time_per_lesson, parent_prep, religious_pref, match_tags, url, description, approved, resource_type'
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ resources: data ?? [] })
+  // Supabase caps at 1000 rows per request, so paginate
+  const all: any[] = []
+  let from = 0
+  const pageSize = 1000
+  while (true) {
+    const { data, error } = await admin
+      .from('resources')
+      .select(fields)
+      .order('name', { ascending: true })
+      .range(from, from + pageSize - 1)
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+    all.push(...(data ?? []))
+    if (!data || data.length < pageSize) break
+    from += pageSize
+  }
+
+  return NextResponse.json({ resources: all })
 }
 
 // POST /api/admin/resources — create a resource
