@@ -230,11 +230,6 @@ function scoreResource(
     if (tags.has(t)) score += 1
   }
 
-  // Grade match bonus
-  const hasGrade = grades.some(g => rTags.includes(g))
-  if (hasGrade) score += 3
-  else score -= 5 // wrong grade = big penalty
-
   // Subject match bonus
   for (const subj of subjects) {
     if (rTags.includes(subj)) score += 2
@@ -289,14 +284,18 @@ export async function POST(req: NextRequest) {
       if (mapped) mapped.forEach(t => allowedSubjectTags.add(t))
     }
 
-    // Score and rank — only include resources that match at least one selected subject
+    // Score and rank — only include resources that match grade AND at least one selected subject
     const scored = (resources as Resource[])
       .map(r => ({ ...r, score: scoreResource(r, tags, grades, screenMode, religiousPref, preferredTypes, answers.subjects) }))
       .filter(r => {
         if (r.score <= 0) return false
-        // Resource must match at least one of the selected subjects
         const rTags = r.match_tags || []
-        return rTags.some(t => allowedSubjectTags.has(t))
+        // Resource must match at least one of the selected subjects
+        if (!rTags.some(t => allowedSubjectTags.has(t))) return false
+        // Resource must match the age/grade band (hard filter)
+        const hasGradeTag = rTags.some(t => grades.includes(t))
+        if (!hasGradeTag) return false
+        return true
       })
       .sort((a, b) => b.score - a.score)
 
