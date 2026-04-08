@@ -25,6 +25,7 @@ type ChildData = {
   avoidsSubjects: string[]; avoidsOther: string
   levelFlexibility: string
   readingPreference: string[]; bookFormat: string[]; independenceLevel: string
+  freeTimeActivities: string[]; freeTimeOther: string
   extraInfo: string[]; diagnosis: string; extraOther: string
   coreSubjects: string[]
   mathTopics: string[]; mathTopicsOther: string
@@ -55,6 +56,8 @@ type IntakeForm = {
   coopParticipation: string[]
   parentPersonality: string[]
   religiousPreference: string
+  educationValues: string[]
+  biggestWorries: string[]
   successVision: string; howHeard: string; parentNotes: string
 }
 
@@ -77,6 +80,7 @@ const EMPTY_CHILD: ChildData = {
   avoidsSubjects: [], avoidsOther: '',
   levelFlexibility: '',
   readingPreference: [], bookFormat: [], independenceLevel: '',
+  freeTimeActivities: [], freeTimeOther: '',
   extraInfo: [], diagnosis: '', extraOther: '',
   coreSubjects: [],
   mathTopics: [], mathTopicsOther: '',
@@ -107,6 +111,8 @@ const EMPTY: IntakeForm = {
   coopParticipation: [],
   parentPersonality: [],
   religiousPreference: '',
+  educationValues: [],
+  biggestWorries: [],
   successVision: '', howHeard: '', parentNotes: '',
 }
 
@@ -819,6 +825,41 @@ function SectionParent({
         />
       </QBlock>
 
+      <QBlock num={13} label="What does your family value most in education?" note="Pick your top 3">
+        <CheckList
+          options={[
+            'Academic rigor — I want my child challenged and well-prepared',
+            'Character development — kindness, integrity, responsibility',
+            'Creativity and self-expression',
+            'Independence and self-direction — learning to learn',
+            'Faith formation — education grounded in our beliefs',
+            'Real-world skills — practical knowledge they can use',
+            'Social skills and emotional growth',
+            'Joy and love of learning — I want them to be curious, not burned out',
+          ]}
+          values={form.educationValues}
+          onChange={v => toggleCheck('educationValues', v)}
+        />
+      </QBlock>
+
+      <QBlock num={14} label="What worries you most about homeschooling right now?" note="Pick all that apply">
+        <CheckList
+          options={[
+            "I'm worried about gaps in their education",
+            "I'm worried about socialization",
+            "I'm not sure I'm qualified to teach everything",
+            "I worry they're falling behind their peers",
+            "I'm heading toward burnout",
+            "I worry about college readiness and transcripts",
+            "I don't know if what we're doing is enough",
+            "I'm worried about a specific learning challenge or diagnosis",
+            "Honestly, I'm feeling good — I just want to keep improving",
+          ]}
+          values={form.biggestWorries}
+          onChange={v => toggleCheck('biggestWorries', v)}
+        />
+      </QBlock>
+
       <Field label='What would "homeschool success" look like for your family 6 months from now?'>
         <textarea rows={3} value={form.successVision} onChange={e => set('successVision', e.target.value)} placeholder="Describe what success would look like..." className={textareaCls} />
       </Field>
@@ -827,7 +868,7 @@ function SectionParent({
         <input type="text" value={form.howHeard} onChange={e => set('howHeard', e.target.value)} placeholder="e.g. Instagram, a friend, Google..." className={inputCls} />
       </Field>
 
-      <Field label="12. Is there anything else you'd like Mel to know about you?">
+      <Field label="Is there anything else you'd like Mel to know about you?">
         <textarea rows={5} value={form.parentNotes} onChange={e => set('parentNotes', e.target.value)} placeholder="Share anything else that feels relevant — no detail is too small..." className={textareaCls} />
       </Field>
     </>
@@ -1293,11 +1334,45 @@ function SectionChild({
         />
       </QBlock>
 
-      <QBlock num={15} label={`What else would you like Mel to know about ${n}?`} note="Pick all that apply">
+      <QBlock num={15} label={`When ${n} is NOT doing school, what do they naturally gravitate toward?`} note="Pick all that apply">
+        <CheckList
+          options={[
+            'Playing outside — running, climbing, exploring',
+            'Reading on their own',
+            'Drawing, painting, or making art',
+            'Building with LEGO, blocks, or construction toys',
+            'Playing video games',
+            'Watching YouTube or shows',
+            'Playing with siblings or friends',
+            'Sports or physical activities',
+            'Imaginative play — pretending, role-playing, creating worlds',
+            'Cooking or baking',
+            'Taking things apart or figuring out how things work',
+            'Nothing in particular — they seem bored or restless a lot',
+            'Other',
+          ]}
+          values={child.freeTimeActivities}
+          onChange={v => toggleChildCheck('freeTimeActivities', v)}
+        />
+        {child.freeTimeActivities.includes('Other') && (
+          <div className="mt-3">
+            <Field label="What else do they do?">
+              <input type="text" value={child.freeTimeOther} onChange={e => setChildField('freeTimeOther', e.target.value)} placeholder="e.g. music, animals, coding..." className={inputCls} />
+            </Field>
+          </div>
+        )}
+      </QBlock>
+
+      <QBlock num={16} label={`What else would you like Mel to know about ${n}?`} note="Pick all that apply">
         <CheckList
           options={[
             'Is currently in speech, OT, or another therapy',
             'Has been formally assessed or diagnosed',
+            'Has experienced bullying or school trauma',
+            'Is twice-exceptional (gifted + learning difference)',
+            'Has significant anxiety around academics',
+            'Is coming out of a bad school experience and needs to decompress/deschool',
+            'Has a physical disability that affects learning',
             'Other',
           ]}
           values={child.extraInfo}
@@ -1319,7 +1394,7 @@ function SectionChild({
         )}
       </QBlock>
 
-      <QBlock num={16} label={`Would you like to see recommendations for ${n} in any of these core subjects?`} note="Pick all that apply — then select specific topics">
+      <QBlock num={17} label={`Would you like to see recommendations for ${n} in any of these core subjects?`} note="Pick all that apply — then select specific topics">
         <div className="space-y-2 mt-1">
 
           {/* Math */}
@@ -1450,7 +1525,7 @@ function SectionChild({
         </div>
       </QBlock>
 
-      <QBlock num={17} label={`Which of the following skills does ${n} need extra practice in?`} note="Pick all that apply">
+      <QBlock num={18} label={`Which of the following skills does ${n} need extra practice in?`} note="Pick all that apply">
         <CheckList
           options={['Gross Motor Skills','Fine Motor Skills','Memory','Critical Thinking','Attention & Focus','Visual-Spatial Awareness','Logic, If/Then','Problem Solving','Processing Speed','Other']}
           values={child.skillsPractice}
