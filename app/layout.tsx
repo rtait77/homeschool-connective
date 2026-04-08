@@ -1,21 +1,13 @@
 import type { Metadata, Viewport } from 'next'
-import { Figtree, Nunito } from 'next/font/google'
+import { Nunito } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
-import Navbar from '@/components/layout/navbar-preview'
+import Navbar from '@/components/layout/navbar'
 import Footer from '@/components/layout/footer'
-import PageViewTracker from '@/components/page-view-tracker'
-
-const figtree = Figtree({
-  subsets: ['latin'],
-  variable: '--font-sans',
-})
 
 const nunito = Nunito({
   subsets: ['latin'],
-  variable: '--font-display',
-  weight: ['400', '600', '700', '800', '900'],
-  style: ['normal', 'italic'],
+  variable: '--font-sans',
 })
 
 export const viewport: Viewport = {
@@ -26,9 +18,6 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Homeschool Connective',
   description: 'Interactive, game-based learning for homeschoolers and educators.',
-  other: {
-    'p:domain_verify': 'a1b25de4b984e1ae8e57d694224fadac',
-  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -47,8 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${figtree.variable} ${nunito.variable} antialiased`}>
-        <PageViewTracker />
+      <body className={`${nunito.variable} antialiased`}>
         <Navbar />
         <main>{children}</main>
         <Footer />

@@ -5,12 +5,12 @@ export default function Page() {
   return (
     <div className="max-w-[780px] mx-auto px-6 py-12">
       <Link href="/tips" className="text-sm font-bold text-[#238FA4] hover:underline">← Back to Homeschool Tips</Link>
-      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">October 21, 2025</p>
+      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">November 11, 2025</p>
       <h1 className="text-3xl font-extrabold mb-2">Why Play is Important</h1>
       <p className="text-lg text-[#5c5c5c] mb-8">Play's Essential Function in Homeschooling: Fostering Development and Education</p>
 
-      <div className="w-full mb-8 rounded-xl overflow-hidden">
-        <Image src="/blog-play-banner.avif" alt="Why Play is Important" width={1200} height={400} className="w-full h-auto" />
+      <div className="relative w-full h-64 mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-play-banner.avif" alt="Why Play is Important" fill className="object-cover" />
       </div>
 
       <p className="mb-6 leading-relaxed">Homeschooling provides a distinctive and adaptable educational path, enabling parents to customize their child's learning to fit their unique needs and passions. In this customized learning adventure, play stands out as a crucial element, playing a significant role in a child's growth and education. Let's explore the importance of integrating play into homeschooling and its benefits for enhancing the learning experience.</p>
@@ -59,7 +59,7 @@ export default function Page() {
       <p className="mb-4 leading-relaxed">Play inherently promotes intrinsic motivation. When children are engaged in play, they are driven by their interests and curiosity. This self-motivation can spill over into their academic work, making them more eager to learn and explore new topics. Incorporating elements of play into lessons can make learning more enjoyable and less of a chore.</p>
 
       <h3 className="font-extrabold mb-2">2. Personalized Learning</h3>
-      <p className="mb-8 leading-relaxed">Homeschooling allows for personalized learning plans, and play can be tailored to suit each child's interests and <Link href="/tips/learning-styles" className="text-[#238FA4] font-bold hover:underline">learning style</Link>. Whether it's through educational games, interactive simulations, or creative projects, play can make learning more relevant and meaningful. This personalized approach can help children grasp complex concepts more effectively.</p>
+      <p className="mb-8 leading-relaxed">Homeschooling allows for personalized learning plans, and play can be tailored to suit each child's interests and learning style. Whether it's through educational games, interactive simulations, or creative projects, play can make learning more relevant and meaningful. This personalized approach can help children grasp complex concepts more effectively.</p>
 
       <img src="/blog-play-pattern-blocks.avif" alt="Child playing with pattern blocks" className="w-[70%] mx-auto block rounded-xl mb-8" />
 
@@ -69,7 +69,7 @@ export default function Page() {
       <p className="mb-4 leading-relaxed">Integrate short play breaks between lessons to give children time to unwind and recharge. These breaks can include physical activities, creative play, or simple games.</p>
 
       <h3 className="font-extrabold mb-2">2. Use Educational Games</h3>
-      <p className="mb-4 leading-relaxed">Incorporate <Link href="/learn" className="text-[#238FA4] font-bold hover:underline">educational games</Link> that align with your child's curriculum. These can make learning more interactive and fun, reinforcing academic concepts in an engaging way.</p>
+      <p className="mb-4 leading-relaxed">Incorporate educational games that align with your child's curriculum. These can make learning more interactive and fun, reinforcing academic concepts in an engaging way.</p>
 
       <h3 className="font-extrabold mb-2">3. Encourage Outdoor Play</h3>
       <p className="mb-4 leading-relaxed">Take advantage of the flexibility homeschooling offers by incorporating outdoor play. Nature walks, gardening, and outdoor sports can provide valuable learning experiences and promote physical health.</p>

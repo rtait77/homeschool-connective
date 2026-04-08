@@ -37,14 +37,11 @@ export async function GET() {
 
     const users = authUsers.map(u => {
       const profile = profileMap.get(u.id)
-      const rawStatus = profile?.subscription_status ?? 'unknown'
-      const trialEnd = profile?.trial_end ? new Date(profile.trial_end) : null
-      const trialExpired = rawStatus === 'trialing' && trialEnd && trialEnd <= new Date()
       return {
         id: u.id,
         email: u.email ?? '',
         joined: u.created_at,
-        subscription_status: trialExpired ? 'expired' : rawStatus,
+        subscription_status: profile?.subscription_status ?? 'unknown',
         trial_end: profile?.trial_end ?? null,
         stripe_customer_id: profile?.stripe_customer_id ?? null,
       }

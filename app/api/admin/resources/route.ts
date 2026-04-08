@@ -33,6 +33,7 @@ export async function GET() {
     .from('resources')
     .select('id, name, subjects, grade_levels, price_range, requires_screen, time_per_lesson, parent_prep, religious_pref, match_tags, url, description, approved, resource_type')
     .order('name', { ascending: true })
+    .range(0, 4999)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ resources: data ?? [] })

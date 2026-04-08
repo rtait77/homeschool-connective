@@ -1,29 +1,35 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(true)
+  const router = useRouter()
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      window.location.href = data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn'
+      router.push(data.user?.email === 'support@homeschoolconnective.com' ? '/admin' : '/learn')
     }
   }
 
@@ -78,7 +84,7 @@ export default function LoginPage() {
         </button>
 
         <p className="text-center text-xs text-[#5c5c5c]">
-          Don&apos;t have an account? <Link href="/pricing" className="text-[#238FA4] font-bold hover:underline">See plans</Link>
+          Don't have an account? <Link href="/signup" className="text-[#238FA4] font-bold hover:underline">Start free trial</Link>
         </p>
       </form>
     </div>

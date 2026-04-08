@@ -6,11 +6,11 @@ import { usePathname } from 'next/navigation'
 
 export default function Footer() {
   const pathname = usePathname()
-  const showNewsletter = pathname === '/' || pathname === '/tips' || pathname === '/preview-home'
+  const showNewsletter = pathname === '/' || pathname === '/tips'
 
   return (
     <>
-    <section id="newsletter" className="bg-[#3d3d3d] py-14 px-6 text-center" style={{ display: showNewsletter ? '' : 'none' }}>
+    <section className="bg-[#3d3d3d] py-14 px-6 text-center" style={{ display: showNewsletter ? '' : 'none' }}>
       <div className="max-w-2xl mx-auto">
         <div className="sender-form-field" data-sender-form-id="bkR0lK"></div>
       </div>

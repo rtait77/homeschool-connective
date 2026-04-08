@@ -29,31 +29,17 @@ export async function GET(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user) {
-    // Check existing subscription — don't overwrite active/trialing status with a fresh trial
-    const { data: existing } = await supabase
+    const trialEnd = new Date()
+    trialEnd.setDate(trialEnd.getDate() + 7)
+
+    await supabase
       .from('profiles')
-      .select('subscription_status')
+      .update({
+        trial_end: trialEnd.toISOString(),
+        subscription_status: 'trialing',
+      })
       .eq('id', user.id)
-      .single()
-
-    const updates: Record<string, unknown> = {}
-
-    if (!existing?.subscription_status) {
-      // New user with no profile yet — start their trial
-      const trialEnd = new Date()
-      trialEnd.setDate(trialEnd.getDate() + 7)
-      updates.trial_end = trialEnd.toISOString()
-      updates.subscription_status = 'trialing'
-    }
-
-    if (user.user_metadata?.first_name) {
-      updates.first_name = user.user_metadata.first_name
-    }
-
-    if (Object.keys(updates).length > 0) {
-      await supabase.from('profiles').update(updates).eq('id', user.id)
-    }
   }
 
-  return NextResponse.redirect(new URL('/auth/confirm', req.url))
+  return NextResponse.redirect(new URL('/learn', req.url))
 }

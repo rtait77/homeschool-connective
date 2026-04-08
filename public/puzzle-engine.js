@@ -191,9 +191,8 @@
 
     const backBtn = document.createElement('a');
     backBtn.id = 'backBtn';
-    const fromHome = new URLSearchParams(window.location.search).get('back') === 'home';
-    backBtn.href = fromHome ? '/' : '/learn';
-    backBtn.textContent = fromHome ? '← Back to Home' : '← Back to Games';
+    backBtn.href = '/learn';
+    backBtn.textContent = '← Back to Games';
     backBtn.addEventListener('click', e => { if (history.length > 1) { e.preventDefault(); history.back(); } });
     header.appendChild(backBtn);
 

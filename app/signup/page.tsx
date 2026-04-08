@@ -5,7 +5,6 @@ import { createBrowserClient } from '@supabase/ssr'
 import Link from 'next/link'
 
 export default function SignupPage() {
-  const [firstName, setFirstName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -29,7 +28,6 @@ export default function SignupPage() {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: { first_name: firstName.trim() },
       },
     })
 
@@ -59,17 +57,6 @@ export default function SignupPage() {
       </div>
 
       <form onSubmit={handleSignup} className="bg-white rounded-2xl p-8 flex flex-col gap-4" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.08)' }}>
-        <div>
-          <label className="block text-sm font-bold mb-1">First Name</label>
-          <input
-            type="text"
-            required
-            value={firstName}
-            onChange={e => setFirstName(e.target.value)}
-            className="w-full border border-[#ddd8cc] rounded-lg px-4 py-3 text-base md:text-sm focus:outline-none focus:border-[#55b6ca]"
-            placeholder="Your first name"
-          />
-        </div>
         <div>
           <label className="block text-sm font-bold mb-1">Email</label>
           <input

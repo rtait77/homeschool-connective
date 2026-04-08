@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createBrowserClient } from '@supabase/ssr'
 
 const games = [
   {
@@ -12,7 +12,7 @@ const games = [
     thumb: '/thumb-sss.png',
     url: 'https://view.genially.com/68b468a36df9dbd6433fe511',
     topic: 'solar-system',
-    freeLabel: 'Free Demo',
+    mini: false,
     types: ['easy'],
     keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'facts', 'drag'],
   },
@@ -22,7 +22,7 @@ const games = [
     thumb: '/ordering-the-planets-thumbnail.png',
     url: 'https://view.genially.com/68164fbb7306f160f7843510',
     topic: 'solar-system',
-    freeLabel: 'Free',
+    mini: false,
     types: ['easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'order', 'distance', 'sun'],
   },
@@ -32,7 +32,7 @@ const games = [
     thumb: '/thumb-sun-easy.png',
     url: '/puzzle-sun-shape-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -42,7 +42,7 @@ const games = [
     thumb: '/the-sun-with-background.png',
     url: '/puzzle-sun-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -52,7 +52,7 @@ const games = [
     thumb: '/the-sun-with-background.png',
     url: '/puzzle-sun-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -63,7 +63,7 @@ const games = [
     thumb: '/mercury-with-background.png',
     url: '/puzzle-mercury-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -73,7 +73,7 @@ const games = [
     thumb: '/mercury-with-background.png',
     url: '/puzzle-mercury-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -83,7 +83,7 @@ const games = [
     thumb: '/mercury-with-background.png',
     url: '/puzzle-mercury-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -94,7 +94,7 @@ const games = [
     thumb: '/venus-with-background.png',
     url: '/puzzle-venus-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -104,7 +104,7 @@ const games = [
     thumb: '/venus-with-background.png',
     url: '/puzzle-venus-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -114,7 +114,7 @@ const games = [
     thumb: '/venus-with-background.png',
     url: '/puzzle-venus-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -125,7 +125,7 @@ const games = [
     thumb: '/earth-with-background.png',
     url: '/puzzle-earth-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -135,7 +135,7 @@ const games = [
     thumb: '/earth-with-background.png',
     url: '/puzzle-earth-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -145,7 +145,7 @@ const games = [
     thumb: '/earth-with-background.png',
     url: '/puzzle-earth-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -156,7 +156,7 @@ const games = [
     thumb: '/moon-with-background.png',
     url: '/puzzle-moon-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -166,7 +166,7 @@ const games = [
     thumb: '/moon-with-background.png',
     url: '/puzzle-moon-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -176,7 +176,7 @@ const games = [
     thumb: '/moon-with-background.png',
     url: '/puzzle-moon-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -187,7 +187,7 @@ const games = [
     thumb: '/mars-with-background.png',
     url: '/puzzle-mars-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -197,7 +197,7 @@ const games = [
     thumb: '/mars-with-background.png',
     url: '/puzzle-mars-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -207,7 +207,7 @@ const games = [
     thumb: '/mars-with-background.png',
     url: '/puzzle-mars-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -218,7 +218,7 @@ const games = [
     thumb: '/vesta-with-background.png',
     url: '/puzzle-vesta-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -228,7 +228,7 @@ const games = [
     thumb: '/vesta-with-background.png',
     url: '/puzzle-vesta-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -238,7 +238,7 @@ const games = [
     thumb: '/vesta-with-background.png',
     url: '/puzzle-vesta-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -249,7 +249,7 @@ const games = [
     thumb: '/jupiter-with-background.png',
     url: '/puzzle-jupiter-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -259,7 +259,7 @@ const games = [
     thumb: '/jupiter-with-background.png',
     url: '/puzzle-jupiter-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -269,7 +269,7 @@ const games = [
     thumb: '/jupiter-with-background.png',
     url: '/puzzle-jupiter-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -280,7 +280,7 @@ const games = [
     thumb: '/saturn-with-background.png',
     url: '/puzzle-saturn-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -290,7 +290,7 @@ const games = [
     thumb: '/saturn-with-background.png',
     url: '/puzzle-saturn-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -300,7 +300,7 @@ const games = [
     thumb: '/saturn-with-background.png',
     url: '/puzzle-saturn-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -311,7 +311,7 @@ const games = [
     thumb: '/uranus-with-background.png',
     url: '/puzzle-uranus-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -321,7 +321,7 @@ const games = [
     thumb: '/uranus-with-background.png',
     url: '/puzzle-uranus-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -331,7 +331,7 @@ const games = [
     thumb: '/uranus-with-background.png',
     url: '/puzzle-uranus-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -342,7 +342,7 @@ const games = [
     thumb: '/neptune-with-background.png',
     url: '/puzzle-neptune-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -352,7 +352,7 @@ const games = [
     thumb: '/neptune-with-background.png',
     url: '/puzzle-neptune-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -362,7 +362,7 @@ const games = [
     thumb: '/neptune-with-background.png',
     url: '/puzzle-neptune-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -373,7 +373,7 @@ const games = [
     thumb: '/arrokoth-with-background.png',
     url: '/puzzle-arrokoth-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -383,7 +383,7 @@ const games = [
     thumb: '/arrokoth-with-background.png',
     url: '/puzzle-arrokoth-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -393,7 +393,7 @@ const games = [
     thumb: '/arrokoth-with-background.png',
     url: '/puzzle-arrokoth-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['puzzle'],
     newTab: false,
   },
@@ -403,7 +403,7 @@ const games = [
     thumb: '/thumb-find-pair-inner.png',
     url: '/matching-inner-planets.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['matching'],
     keywords: ['mercury', 'venus', 'earth', 'mars'],
     newTab: false,
@@ -414,7 +414,7 @@ const games = [
     thumb: '/thumb-find-pair-outer.png',
     url: '/matching-outer-planets.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['matching'],
     keywords: ['jupiter', 'saturn', 'uranus', 'neptune'],
     newTab: false,
@@ -425,7 +425,7 @@ const games = [
     thumb: '/dwarf-planets-matching-game-thumbnail.png',
     url: '/matching-dwarf-planets.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['matching'],
     keywords: ['pluto', 'eris', 'ceres', 'makemake', 'haumea'],
     newTab: false,
@@ -436,7 +436,7 @@ const games = [
     thumb: '/word-sort-planet-types-thumbnail.png',
     url: '/word-sort-planet-types.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'haumea', 'eris', 'makemake', 'ceres', 'rocky', 'gas giant', 'ice giant', 'dwarf'],
     newTab: false,
@@ -447,7 +447,7 @@ const games = [
     thumb: '/word-sort-moons-no-moons-thumbnail.png',
     url: '/word-sort-moons.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'moon', 'moons'],
     newTab: false,
@@ -458,7 +458,7 @@ const games = [
     thumb: '/word-sort-rings-no-rings-thumbnail.png',
     url: '/word-sort-rings.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'rings'],
     newTab: false,
@@ -469,7 +469,7 @@ const games = [
     thumb: '/word-sort-atmosphere-no-atmosphere-thumbnail.png',
     url: '/word-sort-atmosphere.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-sort'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'atmosphere'],
     newTab: false,
@@ -480,7 +480,7 @@ const games = [
     thumb: '/word-sort-jupiter-saturn-moons-thumbnail.png',
     url: '/word-sort-jupiter-saturn-moons.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-sort'],
     keywords: ['io', 'europa', 'ganymede', 'callisto', 'titan', 'enceladus', 'mimas', 'rhea', 'dione', 'tethys'],
     newTab: false,
@@ -491,7 +491,7 @@ const games = [
     thumb: '/space-hangman-easy-thumbnail.png',
     url: '/hangman-space-easy.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['hangman', 'easy'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'ceres', 'eris', 'makemake', 'haumea', 'sun', 'moon', 'rocket', 'asteroid', 'comet', 'planets', 'dwarf planets'],
     newTab: false,
@@ -502,7 +502,7 @@ const games = [
     thumb: '/space-hangman-medium-thumbnail.png',
     url: '/hangman-space-medium.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['hangman', 'medium'],
     keywords: ['planets', 'moons', 'spacecraft', 'missions', 'voyager', 'cassini', 'curiosity', 'perseverance', 'asteroids', 'comets', 'solar system', 'astronaut', 'rover'],
     newTab: false,
@@ -513,7 +513,7 @@ const games = [
     thumb: '/space-hangman-hard-thumbnail.png',
     url: '/hangman-space-hard.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['hangman', 'hard'],
     keywords: ['planets', 'moons', 'spacecraft', 'missions', 'voyager', 'cassini', 'curiosity', 'perseverance', 'asteroids', 'comets', 'solar system', 'astronaut', 'rover'],
     newTab: false,
@@ -524,7 +524,7 @@ const games = [
     thumb: '/planets-word-search-thumbnail.png',
     url: '/word-search-planets.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-search'],
     keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'],
     newTab: false,
@@ -535,7 +535,7 @@ const games = [
     thumb: '/word-search-dwarf-planets-thumbnail.png',
     url: '/word-search-dwarf-planets.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-search'],
     keywords: ['pluto', 'eris', 'makemake', 'ceres', 'haumea'],
     newTab: false,
@@ -546,7 +546,7 @@ const games = [
     thumb: '/word-search-inner-solar-system-thumbnail.png',
     url: '/word-search-inner-solar-system.html',
     topic: 'solar-system',
-
+    mini: true,
     types: ['word-search'],
     keywords: ['sun', 'mercury', 'venus', 'earth', 'mars', 'moon', 'asteroid', 'comet', 'vesta'],
     newTab: false,
@@ -555,162 +555,12 @@ const games = [
     title: 'Mission to Mars',
     desc: 'Explore the Red Planet — learn about Mars, its moons, and the rovers that have explored it. Features voiceover narration, a gamified quiz, and a rover puzzle.',
     thumb: '/thumb-lesson-mars.png',
-    thumbPos: 'left center',
-    url: 'https://view.genially.com/69b4244b49561c5da75382ae',
+    url: 'https://view.genially.com/699e69be43a96797318311da',
     topic: 'solar-system',
-
+    mini: false,
     types: ['lesson', 'medium'],
     keywords: ['mars', 'phobos', 'deimos', 'rover', 'curiosity', 'perseverance', 'red planet', 'nasa'],
-    newTab: false,
   },
-  // Asteroid Blast games
-  {
-    title: 'Blast the Planets',
-    desc: 'Asteroids are flying across space! Blast only the real planets — all 8 of them — before they escape. Don\'t shoot the wrong ones or you\'ll lose a life!',
-    thumb: '/asteroid-thumbnail-planets.jpg',
-    url: '/asteroid-blast-planets',
-    topic: 'solar-system',
-
-    types: ['arcade', 'medium'],
-    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'planets', 'blast', 'action', 'asteroid'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Planets – Easy',
-    desc: 'The easy version! Blast all 8 planets as they float slowly across space. 5 lives and no penalty for missing — just don\'t shoot the wrong ones!',
-    thumb: '/asteroid-thumbnail-planets.jpg',
-    url: '/asteroid-blast-planets-easy',
-    topic: 'solar-system',
-
-    types: ['arcade', 'easy'],
-    keywords: ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'planets', 'blast', 'action', 'asteroid', 'easy'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Gas/Ice Giants',
-    desc: 'Jupiter and Saturn are gas giants — but did you know Uranus and Neptune are ice giants? Blast all four outer planets as they fly across space!',
-    thumb: '/asteroid-thumbnail-gas-ice-giants.jpg',
-    url: '/asteroid-blast-gas-giants',
-    topic: 'solar-system',
-
-    types: ['arcade', 'medium'],
-    keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'gas giants', 'ice giants', 'outer planets', 'blast', 'action', 'asteroid'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Gas/Ice Giants – Easy',
-    desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast Jupiter, Saturn, Uranus, and Neptune — gas and ice giants!',
-    thumb: '/asteroid-thumbnail-gas-ice-giants.jpg',
-    url: '/asteroid-blast-gas-giants-easy',
-    topic: 'solar-system',
-
-    types: ['arcade', 'easy'],
-    keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'gas giants', 'ice giants', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Inner Planets',
-    desc: 'Can you tell the inner planets from the outer ones? Blast Mercury, Venus, Earth, and Mars before they fly off the screen!',
-    thumb: '/asteroid-thumbnail-inner-planets.jpg',
-    url: '/asteroid-blast-inner-planets',
-    topic: 'solar-system',
-
-    types: ['arcade', 'medium'],
-    keywords: ['mercury', 'venus', 'earth', 'mars', 'inner planets', 'rocky planets', 'blast', 'action', 'asteroid'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Inner Planets – Easy',
-    desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast Mercury, Venus, Earth, and Mars — the four inner planets!',
-    thumb: '/asteroid-thumbnail-inner-planets.jpg',
-    url: '/asteroid-blast-inner-planets-easy',
-    topic: 'solar-system',
-
-    types: ['arcade', 'easy'],
-    keywords: ['mercury', 'venus', 'earth', 'mars', 'inner planets', 'rocky planets', 'blast', 'action', 'asteroid', 'easy'],
-    newTab: false,
-  },
-  {
-    title: 'Blast Things with Rings',
-    desc: 'Did you know ALL four outer planets have rings? Blast Jupiter, Saturn, Uranus, and Neptune — the ringed planets — before they escape!',
-    thumb: '/asteroid-thumbnail-rings.jpg',
-    url: '/asteroid-blast-rings',
-    topic: 'solar-system',
-
-    types: ['arcade', 'medium'],
-    keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid'],
-    newTab: false,
-  },
-  {
-    title: 'Blast Things with Rings – Easy',
-    desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast all four ringed planets — Jupiter, Saturn, Uranus, and Neptune!',
-    thumb: '/asteroid-thumbnail-rings.jpg',
-    url: '/asteroid-blast-rings-easy',
-    topic: 'solar-system',
-
-    types: ['arcade', 'easy'],
-    keywords: ['jupiter', 'saturn', 'uranus', 'neptune', 'rings', 'outer planets', 'blast', 'action', 'asteroid', 'easy'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Dwarf Planets',
-    desc: 'Can you tell a dwarf planet from a real one? Blast Pluto, Eris, Haumea, Makemake, and Ceres before they escape!',
-    thumb: '/asteroid-thumbnail-dwarf-planets.jpg',
-    url: '/asteroid-blast-dwarf-planets',
-    topic: 'solar-system',
-
-    types: ['arcade', 'medium'],
-    keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid'],
-    newTab: false,
-  },
-  {
-    title: 'Blast the Dwarf Planets – Easy',
-    desc: 'The easy version! Slowly floating asteroids, 5 lives, no miss penalty. Blast all 5 dwarf planets — Pluto, Eris, Haumea, Makemake, and Ceres!',
-    thumb: '/asteroid-thumbnail-dwarf-planets.jpg',
-    url: '/asteroid-blast-dwarf-planets-easy',
-    topic: 'solar-system',
-
-    types: ['arcade', 'easy'],
-    keywords: ['pluto', 'eris', 'ceres', 'haumea', 'makemake', 'dwarf planets', 'blast', 'action', 'asteroid', 'easy'],
-    newTab: false,
-  },
-  // Printables
-  { title: 'Solar System Flashcards 1', thumb: '/website-pdf-flashcards-1.png', url: '/website-pdf-flashcards-1.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Solar System Flashcards 2', thumb: '/website-pdf-solar-system-flashcards-2.png', url: '/website-pdf-solar-system-flashcards-2.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Solar System Vocabulary Cards', thumb: '/website-pdf-vocab-cards.png', url: '/website-pdf-vocab-cards.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Create a Solar System', thumb: '/website-pdf-create-a-solar-system.png', url: '/website-pdf-create-a-solar-system.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Leap Year Calendar', thumb: '/website-pdf-leap-year-calendar.png', url: '/website-pdf-leap-year-calendar.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Rotation vs Revolution', thumb: '/website-pdf-rotation-vs-revolution.png', url: '/website-pdf-rotation-vs-revolution.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Layers of the Sun', thumb: '/website-pdf-layers-sun-coloring.png', url: '/website-pdf-layers-sun-coloring.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'A Day on Mercury', thumb: '/website-pdf-mercury-journal.png', url: '/website-pdf-mercury-journal.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'An Outfit for Venus', thumb: '/website-pdf-outfit-for-venus.png', url: '/website-pdf-outfit-for-venus.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Earth Puzzles', thumb: '/website-pdf-earth-puzzles.png', url: '/website-pdf-earth-puzzles.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Asteroid Crash', thumb: '/website-pdf-asteroid-crash.png', url: '/website-pdf-asteroid-crash.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Red Spot Weather Report', thumb: '/website-pdf-red-spot-weather-report.png', url: '/website-pdf-red-spot-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: "A Day in Saturn's Rings", thumb: '/website-pdf-saturn-journal.png', url: '/website-pdf-saturn-journal.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Side Spinning Planet', thumb: '/website-pdf-side-spinning-planet.png', url: '/website-pdf-side-spinning-planet.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Neptune Weather Report', thumb: '/website-pdf-neptune-weather-report.png', url: '/website-pdf-neptune-weather-report.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Decorate Arrokoth', thumb: '/website-pdf-decorate-arrokoth.png', url: '/website-pdf-decorate-arrokoth.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Dwarf Planet Location Match', thumb: '/website-pdf-dwarf-planet-location-match.png', url: '/website-pdf-dwarf-planet-location-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Planet Spelling', thumb: '/website-pdf-planet-spelling.png', url: '/website-pdf-planet-spelling.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Planet Sort', thumb: '/website-pdf-planet-sort.png', url: '/website-pdf-planet-sort.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'The Best Planet', thumb: '/website-pdf-best-planet-letter.png', url: '/website-pdf-best-planet-letter.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Solar System Word Search', thumb: '/website-pdf-solar-system-word-search.png', url: '/website-pdf-solar-system-word-search.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Planet Multiplication', thumb: '/website-pdf-planet-multiplication.png', url: '/website-pdf-planet-multiplication.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Planet/Moon Match', thumb: '/website-pdf-planet-moon-match.png', url: '/website-pdf-planet-moon-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Ordering the Planets', thumb: '/website-pdf-ordering-the-planets.png', url: '/website-pdf-ordering-the-planets.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Create a Spacecraft', thumb: '/website-pdf-create-a-spacecraft.png', url: '/website-pdf-create-a-spacecraft.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Solar System Creative Writing', thumb: '/website-pdf-creative-writing.png', url: '/website-pdf-creative-writing.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Planet Research', thumb: '/website-pdf-planet-research.png', url: '/website-pdf-planet-research.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'New Scattered Disk Object', thumb: '/website-pdf-sd-object.png', url: '/website-pdf-sd-object.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Voyager 1 Discovery', thumb: '/website-pdf-voyager-1-discovery.png', url: '/website-pdf-voyager-1-discovery.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'New Planet in the Oort Cloud', thumb: '/website-pdf-new-planet-oort-cloud.png', url: '/website-pdf-new-planet-oort-cloud.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: "What's on That Comet?", thumb: '/website-pdf-whats-on-that-comet.png', url: '/website-pdf-whats-on-that-comet.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Planet/AU Match', thumb: '/website-pdf-planet-au-match.png', url: '/website-pdf-planet-au-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Light-Year Match', thumb: '/website-pdf-light-year-match.png', url: '/website-pdf-light-year-match.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Looking Through a Telescope', thumb: '/website-pdf-look-through-telescope.png', url: '/website-pdf-look-through-telescope.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'International Space Station Coloring', thumb: '/website-pdf-space-station-coloring.png', url: '/website-pdf-space-station-coloring.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
-  { title: 'Space Bingo', thumb: '/website-pdf-space-bingo.png', url: '/website-pdf-space-bingo.pdf', topic: 'solar-system', mini: true, types: ['printable'], newTab: true, hasPdf: true },
 ]
 
 const topics = [
@@ -720,13 +570,13 @@ const topics = [
 
 const gameTypes = [
   { id: '', label: 'All Types' },
-  { id: 'arcade', label: 'Arcade' },
+  { id: 'mini', label: 'Mini Games' },
+  { id: 'lesson', label: 'Lessons' },
   { id: 'puzzle', label: 'Puzzles' },
   { id: 'word-search', label: 'Word Search' },
   { id: 'matching', label: 'Matching' },
   { id: 'word-sort', label: 'Word Sort' },
   { id: 'hangman', label: 'Hangman' },
-  { id: 'lesson', label: 'Lessons' },
 ]
 
 const difficulties = [
@@ -739,13 +589,14 @@ const difficulties = [
 
 export default function GamesPage() {
   const [topic, setTopic] = useState('all')
-  const [activeCategory, setActiveCategory] = useState('')
+  const [topicOpen, setTopicOpen] = useState(false)
+  const [gameTypeOpen, setGameTypeOpen] = useState(false)
+  const [difficultyOpen, setDifficultyOpen] = useState(false)
   const [activeGameType, setActiveGameType] = useState('')
   const [activeDifficulty, setActiveDifficulty] = useState('')
   const [search, setSearch] = useState('')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
-  const [trialExpired, setTrialExpired] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
   const [page, setPage] = useState(1)
@@ -755,7 +606,10 @@ export default function GamesPage() {
     setPage(n)
   }
 
-  const supabase = createClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   useEffect(() => {
     async function checkAccess() {
@@ -782,7 +636,6 @@ export default function GamesPage() {
       const trialActive = trialEnd && trialEnd > new Date()
 
       setHasAccess(status === 'active' || !!trialActive)
-      if (!trialActive && status !== 'active' && trialEnd) setTrialExpired(true)
       setAuthChecked(true)
 
       const { data: favData } = await supabase
@@ -805,35 +658,18 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeCategory, activeGameType, activeDifficulty, search])
-
-  function handleCategoryClick(cat: string) {
-    if (activeCategory === cat) {
-      setActiveCategory('')
-    } else {
-      setActiveCategory(cat)
-      if (cat !== 'games') {
-        setActiveGameType('')
-        setActiveDifficulty('')
-      }
-    }
-  }
+  useEffect(() => { setPage(1) }, [topic, activeGameType, activeDifficulty, search])
 
   const filtered = games.filter(g => {
-    if (g.types.includes('printable') && !hasAccess) return false
     if (topic !== 'all' && g.topic !== topic) return false
-    if (activeCategory === 'lessons') {
-      if (!g.types.includes('lesson')) return false
-    } else if (activeCategory === 'printables') {
-      if (!g.types.includes('printable')) return false
-    } else if (activeCategory === 'games') {
-      if (g.types.includes('lesson') || g.types.includes('printable')) return false
-      if (activeGameType && !g.types.includes(activeGameType)) return false
-      if (activeDifficulty) {
-        const titleLower = g.title.toLowerCase()
-        const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
-        if (!diffMatch) return false
-      }
+    if (activeGameType) {
+      const typeMatch = (activeGameType === 'mini' && g.mini) || g.types.includes(activeGameType)
+      if (!typeMatch) return false
+    }
+    if (activeDifficulty) {
+      const titleLower = g.title.toLowerCase()
+      const diffMatch = g.types.includes(activeDifficulty) || titleLower.includes(activeDifficulty)
+      if (!diffMatch) return false
     }
     if (search.trim()) {
       const haystack = [
@@ -842,6 +678,7 @@ export default function GamesPage() {
         g.topic,
         ...g.types,
         ...((g as any).keywords ?? []),
+        g.mini ? 'mini' : '',
       ].join(' ').toLowerCase()
       const queryWords = search.trim().toLowerCase().split(/\s+/)
       const matched = queryWords.every(qw => haystack.includes(qw))
@@ -852,37 +689,25 @@ export default function GamesPage() {
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
   const paginated = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+  const fullGames = paginated.filter(g => !g.mini && !g.types.includes('lesson'))
+  const miniGames = paginated.filter(g => g.mini)
+  const lessons = paginated.filter(g => g.types.includes('lesson'))
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 py-14">
       <h1 className="text-3xl font-extrabold mb-2">Learn</h1>
-      <p className="text-[#5c5c5c] mb-1">Browse our games and lessons. New content added regularly!</p>
-      <p className="text-sm text-[#5c5c5c] mb-8">All content is secular and designed for Grades K–3.</p>
+      <p className="text-[#5c5c5c] mb-8">Browse our games and lessons. New content added regularly!</p>
 
       {/* Paywall banner */}
       {authChecked && !hasAccess && (
         <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          {trialExpired ? (
-            <>
-              <div>
-                <p className="font-extrabold text-lg mb-1">Your free trial has ended</p>
-                <p className="text-sm text-[#5c5c5c]">Subscribe to keep playing — from $5/month.</p>
-              </div>
-              <Link href="/pricing" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
-                Subscribe Now
-              </Link>
-            </>
-          ) : (
-            <>
-              <div>
-                <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games and lessons</p>
-                <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
-              </div>
-              <Link href="/pricing" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
-                Start Free Trial
-              </Link>
-            </>
-          )}
+          <div>
+            <p className="font-extrabold text-lg mb-1">Start your free 7-day trial to access all games and lessons</p>
+            <p className="text-sm text-[#5c5c5c]">No credit card required. Full access. Cancel anytime.</p>
+          </div>
+          <Link href="/signup" className="flex-shrink-0 bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition whitespace-nowrap">
+            Start 7 Day Free Trial
+          </Link>
         </div>
       )}
 
@@ -899,75 +724,118 @@ export default function GamesPage() {
       </div>
 
       {/* Filters */}
-      <div className="mb-8 space-y-3">
+      <div className="flex flex-wrap items-center gap-3 mb-10">
 
-        {/* Row 1: Topic */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Topic</span>
-          <FilterChip label="Solar System" icon="🚀" active={topic === 'solar-system'} onClick={() => setTopic(topic === 'solar-system' ? 'all' : 'solar-system')} />
+        {/* Topic dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => { setTopicOpen(o => !o); setGameTypeOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${topic !== 'all' ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+          >
+            {topics.find(t => t.id === topic)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {topicOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
+              {topics.map(t => (
+                <button key={t.id} onClick={() => { setTopic(t.id); setTopicOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${topic === t.id ? 'text-[#55b6ca]' : ''}`}
+                >{t.label}</button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Row 2: Category */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Type</span>
-          <FilterChip label="Games" icon="🎮" active={activeCategory === 'games'} onClick={() => handleCategoryClick('games')} />
-          <FilterChip label="Lessons" icon="📖" active={activeCategory === 'lessons'} onClick={() => handleCategoryClick('lessons')} />
-          <FilterChip label="Printables" icon="🖨️" active={activeCategory === 'printables'} onClick={() => handleCategoryClick('printables')} />
+        {/* Game Type dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => { setGameTypeOpen(o => !o); setTopicOpen(false); setDifficultyOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeGameType ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+          >
+            {gameTypes.find(t => t.id === activeGameType)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {gameTypeOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[170px]">
+              {gameTypes.map(t => (
+                <button key={t.id} onClick={() => { setActiveGameType(t.id); setGameTypeOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeGameType === t.id ? 'text-[#55b6ca]' : ''}`}
+                >{t.label}</button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Row 3: Game type (Games only) */}
-        {activeCategory === 'games' && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Game Type</span>
-            <FilterChip label="Arcade" icon="⚡" active={activeGameType === 'arcade'} onClick={() => setActiveGameType(t => t === 'arcade' ? '' : 'arcade')} />
-            <FilterChip label="Puzzles" icon="🧩" active={activeGameType === 'puzzle'} onClick={() => setActiveGameType(t => t === 'puzzle' ? '' : 'puzzle')} />
-            <FilterChip label="Word Search" icon="🔍" active={activeGameType === 'word-search'} onClick={() => setActiveGameType(t => t === 'word-search' ? '' : 'word-search')} />
-            <FilterChip label="Matching" icon="🃏" active={activeGameType === 'matching'} onClick={() => setActiveGameType(t => t === 'matching' ? '' : 'matching')} />
-            <FilterChip label="Word Sort" icon="🔤" active={activeGameType === 'word-sort'} onClick={() => setActiveGameType(t => t === 'word-sort' ? '' : 'word-sort')} />
-            <FilterChip label="Hangman" icon="✏️" active={activeGameType === 'hangman'} onClick={() => setActiveGameType(t => t === 'hangman' ? '' : 'hangman')} />
-          </div>
-        )}
-
-        {/* Row 4: Difficulty (Games only) */}
-        {activeCategory === 'games' && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#a09890] shrink-0 w-full sm:w-auto">Difficulty</span>
-            <FilterChip label="Easy" dots={1} dotBg="#4caf7d" active={activeDifficulty === 'easy'} onClick={() => setActiveDifficulty(d => d === 'easy' ? '' : 'easy')} />
-            <FilterChip label="Medium" dots={2} dotBg="#f5a623" active={activeDifficulty === 'medium'} onClick={() => setActiveDifficulty(d => d === 'medium' ? '' : 'medium')} />
-            <FilterChip label="Hard" dots={3} dotBg="#e05252" active={activeDifficulty === 'hard'} onClick={() => setActiveDifficulty(d => d === 'hard' ? '' : 'hard')} />
-          </div>
-        )}
+        {/* Difficulty dropdown */}
+        <div className="relative">
+          <button
+            onClick={() => { setDifficultyOpen(o => !o); setTopicOpen(false); setGameTypeOpen(false) }}
+            className={`flex items-center gap-2 font-bold text-sm px-4 py-2.5 rounded-lg border-2 bg-white transition-all cursor-pointer ${activeDifficulty ? 'border-[#55b6ca] text-[#55b6ca]' : 'border-[#ddd8cc] hover:border-[#55b6ca]'}`}
+          >
+            {difficulties.find(d => d.id === activeDifficulty)?.label}
+            <span className="text-xs">▾</span>
+          </button>
+          {difficultyOpen && (
+            <div className="absolute top-full left-0 mt-1 bg-white border border-[#ddd8cc] rounded-lg shadow-lg z-10 min-w-[150px]">
+              {difficulties.map(d => (
+                <button key={d.id} onClick={() => { setActiveDifficulty(d.id); setDifficultyOpen(false) }}
+                  className={`w-full text-left px-4 py-2.5 text-sm font-bold hover:bg-[#f5f1e9] transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer ${activeDifficulty === d.id ? 'text-[#55b6ca]' : ''}`}
+                >{d.label}</button>
+              ))}
+            </div>
+          )}
+        </div>
 
       </div>
 
       {/* Results counter */}
       {filtered.length > 0 && (
         <p className="text-sm text-[#5c5c5c] mb-6">
-          {(search.trim() || activeCategory || activeGameType || activeDifficulty || topic !== 'all')
+          {(search.trim() || activeGameType || activeDifficulty || topic !== 'all')
             ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> games</>
             : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{games.length}</span> games</>
           }
         </p>
       )}
 
-      {/* Games grid */}
-      {paginated.length > 0 && (
-        <div className={`grid gap-4 ${activeCategory === 'printables' ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}`}>
-          {paginated.map(game => (
-            <GameCard key={game.title} game={game} hasAccess={hasAccess} trialExpired={trialExpired} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+      {/* Full games */}
+      {fullGames.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+          {fullGames.map(game => (
+            <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
           ))}
         </div>
       )}
 
-      {filtered.length === 0 && activeCategory === 'printables' && !hasAccess && authChecked && (
-        <div className="bg-[#f5f1e9] border-2 border-[#ddd8cc] rounded-2xl p-8 text-center">
-          <p className="text-2xl mb-3">🖨️</p>
-          <p className="font-extrabold text-lg mb-2">Printables are included with subscription</p>
-          <p className="text-sm text-[#5c5c5c] mb-5">Get access to all printable worksheets and activities with any plan.</p>
-          <Link href="/pricing" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition">See Plans →</Link>
-        </div>
+      {/* Mini games */}
+      {miniGames.length > 0 && (
+        <>
+          {fullGames.length > 0 && (
+            <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mb-4">Mini Games</p>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {miniGames.map(game => (
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+            ))}
+          </div>
+        </>
       )}
-      {filtered.length === 0 && activeCategory !== 'printables' && (
+
+      {/* Lessons */}
+      {lessons.length > 0 && (
+        <>
+          {(fullGames.length > 0 || miniGames.length > 0) && (
+            <p className="text-sm font-extrabold text-[#5c5c5c] uppercase tracking-widest mb-4 mt-10">Lessons</p>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {lessons.map(game => (
+              <GameCard key={game.title} game={game} hasAccess={hasAccess} userId={userId} isFavorited={favorites.includes(game.title)} onToggleFavorite={() => toggleFavorite(game.title)} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {filtered.length === 0 && (
         <p className="text-[#5c5c5c] text-sm py-12 text-center">No games match your search. Try different keywords or clear your filters!</p>
       )}
 
@@ -1008,59 +876,15 @@ export default function GamesPage() {
       <div className="mt-12 bg-white rounded-[14px] p-8 text-center border-2 border-dashed border-[#ddd8cc]">
         <p className="text-2xl mb-2">🌊 🪸 🐠</p>
         <h2 className="text-lg font-extrabold mb-2">More Topics Coming Soon</h2>
-        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in discussion.</p>
+        <p className="text-[#5c5c5c] text-sm">Ocean Animals and more are in the works.</p>
       </div>
     </div>
   )
 }
 
-function FilterChip({ label, icon, dots, dotBg, active, onClick }: { label: string, icon?: string, dots?: number, dotBg?: string, active: boolean, onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2.5 rounded-full border-2 font-bold text-sm transition-all cursor-pointer ${
-        active
-          ? 'bg-[#ed7c5a] border-[#ed7c5a] text-white'
-          : 'bg-white border-[#e2ddd5] text-[#1c1c1c] hover:border-[#ed7c5a]'
-      }`}
-    >
-      {dots ? (
-        <span className="flex gap-0.5 items-center">
-          {Array.from({ length: dots }).map((_, i) => (
-            <span key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: active ? 'white' : dotBg }} />
-          ))}
-        </span>
-      ) : icon ? (
-        <span className="text-base leading-none">{icon}</span>
-      ) : null}
-      <span>{label}</span>
-    </button>
-  )
-}
-
-function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, trialExpired: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
-  const isPrintable = game.types.includes('printable')
-
-  if (isPrintable) {
-    return (
-      <div className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-        <div className="relative w-full bg-white" style={{ aspectRatio: '8.5/11' }}>
-          <Image src={game.thumb} alt={game.title} fill className="object-contain" />
-        </div>
-        <div className="p-3 bg-[#f5f1e9] flex flex-col gap-1">
-          <p className="text-xs font-bold leading-snug">{game.title}</p>
-          {(game as any).hasPdf
-            ? <a href={game.url} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline">Get PDF →</a>
-            : <span className="text-xs text-[#a09890]">Coming soon</span>
-          }
-        </div>
-      </div>
-    )
-  }
-
-  const isFree = !!(game as any).freeLabel
-  const href = isFree ? game.url : hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
-  const external = (isFree || hasAccess) && game.newTab !== false
+function GameCard({ game, hasAccess, userId, isFavorited, onToggleFavorite }: { game: typeof games[0], hasAccess: boolean, userId: string | null, isFavorited: boolean, onToggleFavorite: () => void }) {
+  const href = hasAccess ? game.url : '/signup'
+  const external = hasAccess && game.newTab !== false
 
   return (
     <a
@@ -1070,10 +894,10 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
       style={{ boxShadow: '0 3px 18px rgba(0,0,0,0.11)' }}
     >
       <div className="relative h-44 w-full bg-[#e8e4dc]">
-        <Image src={game.thumb} alt={game.title} fill className="object-cover" style={(game as any).thumbPos ? { objectPosition: (game as any).thumbPos } : {}} />
-        {isFree && !hasAccess && (
-          <span className="absolute top-3 left-3 bg-[#ed7c5a] text-white text-xs font-bold px-2.5 py-1 rounded-full">
-            {(game as any).freeLabel}
+        <Image src={game.thumb} alt={game.title} fill className="object-cover" />
+        {game.mini && (
+          <span className="absolute top-3 left-3 bg-[#55b6ca] text-white text-xs font-bold px-2.5 py-1 rounded-full">
+            Mini
           </span>
         )}
         {userId && (
@@ -1094,28 +918,10 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
         )}
       </div>
       <div className="p-5 flex flex-col flex-1">
-        {(() => {
-          const t = game.title.toLowerCase()
-          const level = game.types.includes('easy') || t.includes('– easy') ? 'easy'
-            : game.types.includes('medium') || t.includes('– medium') ? 'medium'
-            : game.types.includes('hard') || t.includes('– hard') ? 'hard'
-            : null
-          const dots = level === 'easy' ? 1 : level === 'medium' ? 2 : level === 'hard' ? 3 : null
-          const dotColor = level === 'easy' ? '#4caf7d' : level === 'medium' ? '#f5a623' : '#e05252'
-          return dots ? (
-            <div className="flex gap-1 mb-2">
-              {Array.from({ length: dots }).map((_, i) => (
-                <span key={i} className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: dotColor }} />
-              ))}
-            </div>
-          ) : null
-        })()}
         <p className="font-extrabold text-base mb-2">{game.title}</p>
-        <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>
-        {isFree && !hasAccess ? (
-          <p className="mt-3 text-sm font-bold text-[#ed7c5a]">Play →</p>
-        ) : !hasAccess && (
-          <p className="mt-3 text-sm font-bold text-[#55b6ca]">{trialExpired ? 'Subscribe to play →' : 'Start free trial →'}</p>
+        {!game.mini && <p className="text-sm text-[#5c5c5c] flex-1">{game.desc}</p>}
+        {!hasAccess && (
+          <p className="mt-3 text-sm font-bold text-[#55b6ca]">Start free trial →</p>
         )}
       </div>
     </a>
