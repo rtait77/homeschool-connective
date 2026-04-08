@@ -436,7 +436,7 @@ export default function QuizPage() {
             {/* Resource Recommendations */}
             <div style={{ marginBottom: 28 }}>
               <h3 style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#238FA4', marginBottom: 16 }}>
-                3 Resources We&apos;d Recommend
+                Resources We&apos;d Recommend
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {result.resources.map(r => (

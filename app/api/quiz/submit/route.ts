@@ -299,42 +299,47 @@ export async function POST(req: NextRequest) {
       })
       .sort((a, b) => b.score - a.score)
 
-    // Pick top 3: one per resource type AND spread across subjects
+    // Helper: which selected subjects does a resource cover?
+    function resourceSubjects(r: typeof scored[0]): string[] {
+      const rTags = r.match_tags || []
+      return answers.subjects.filter(s => {
+        const mapped = subjectTagMap[s]
+        return mapped ? rTags.some(t => mapped.includes(t)) : false
+      })
+    }
+
+    // Pick one resource per resource_type, spreading across subjects
     const picks: typeof scored = []
     const usedTypes = new Set<string>()
     const usedSubjects = new Set<string>()
+    const selectedSubjects = answers.subjects
 
-    // First pass: try to get one per type AND one per subject
+    // First pass: one per type, prioritizing uncovered subjects
     for (const r of scored) {
-      if (picks.length >= 3) break
       if (usedTypes.has(r.resource_type)) continue
-      // Check which selected subjects this resource covers
-      const rTags = r.match_tags || []
-      const coveredSubj = answers.subjects.filter(s => rTags.includes(s === 'writing' ? 'writing' : s === 'reading' ? 'reading' : s))
-      // Prefer resources that cover a subject we haven't shown yet
+      const coveredSubj = resourceSubjects(r)
       const coversNew = coveredSubj.some(s => !usedSubjects.has(s))
-      if (picks.length >= 1 && !coversNew && picks.length < 2) continue
+      // Prefer resources that cover a subject we haven't shown yet
+      if (picks.length >= 1 && !coversNew) continue
       picks.push(r)
       usedTypes.add(r.resource_type)
       coveredSubj.forEach(s => usedSubjects.add(s))
     }
 
-    // Second pass: fill remaining slots with different types (relax subject constraint)
-    if (picks.length < 3) {
-      for (const r of scored) {
-        if (picks.length >= 3) break
-        if (picks.some(p => p.id === r.id)) continue
-        if (usedTypes.has(r.resource_type)) continue
-        picks.push(r)
-        usedTypes.add(r.resource_type)
-      }
+    // Second pass: fill more types even if subject already covered
+    for (const r of scored) {
+      if (usedTypes.has(r.resource_type)) continue
+      if (picks.some(p => p.id === r.id)) continue
+      picks.push(r)
+      usedTypes.add(r.resource_type)
     }
 
-    // Third pass: if still not enough, just fill with best remaining
-    if (picks.length < 3) {
+    // If we have fewer than 5, add more from already-used types (best remaining)
+    if (picks.length < 5) {
       for (const r of scored) {
-        if (picks.length >= 3) break
-        if (!picks.some(p => p.id === r.id)) picks.push(r)
+        if (picks.length >= 5) break
+        if (picks.some(p => p.id === r.id)) continue
+        picks.push(r)
       }
     }
 
