@@ -199,15 +199,15 @@ function generateProfile(answers: QuizAnswers): string {
   else if (answers.screens === 'mix') parts[0] += ' with a balanced mix of screen and offline time'
   parts[0] += '.'
 
-  // Parent involvement
+  // Parent involvement (parent's preference, not child's)
   if (answers.involvement === 'teach_myself') {
-    parts.push('They work best when you\'re actively teaching and discussing together.')
+    parts.push('You prefer to be hands-on with teaching, so resources that support direct instruction and discussion will fit your style.')
   } else if (answers.involvement === 'guide_done_for_me') {
-    parts.push('They do well when a parent is nearby guiding, but the material does most of the heavy lifting.')
+    parts.push('You want something mostly done-for-you, so open-and-go resources that need minimal prep are the way to go.')
   } else if (answers.involvement === 'independent') {
-    parts.push('They\'re ready for more independent work — resources that let them move at their own pace will be a great fit.')
+    parts.push('You need your child to work independently, so self-paced resources they can do on their own are key.')
   } else if (answers.involvement === 'someone_else') {
-    parts.push('Video lessons and online classes where someone else does the teaching would be a strong fit.')
+    parts.push('You\'d rather have someone else do the teaching, so video lessons and online classes are a great fit for your family.')
   }
 
   // Pain point acknowledgment
