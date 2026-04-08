@@ -297,17 +297,38 @@ export async function POST(req: NextRequest) {
       .filter(r => r.score > 0)
       .sort((a, b) => b.score - a.score)
 
-    // Pick top 3, trying to diversify resource types
+    // Pick top 3: one per resource type AND spread across subjects
     const picks: typeof scored = []
     const usedTypes = new Set<string>()
+    const usedSubjects = new Set<string>()
+
+    // First pass: try to get one per type AND one per subject
     for (const r of scored) {
       if (picks.length >= 3) break
-      // Prefer variety in resource types
-      if (picks.length >= 1 && usedTypes.has(r.resource_type) && scored.indexOf(r) < 20) continue
+      if (usedTypes.has(r.resource_type)) continue
+      // Check which selected subjects this resource covers
+      const rTags = r.match_tags || []
+      const coveredSubj = answers.subjects.filter(s => rTags.includes(s === 'writing' ? 'writing' : s === 'reading' ? 'reading' : s))
+      // Prefer resources that cover a subject we haven't shown yet
+      const coversNew = coveredSubj.some(s => !usedSubjects.has(s))
+      if (picks.length >= 1 && !coversNew && picks.length < 2) continue
       picks.push(r)
       usedTypes.add(r.resource_type)
+      coveredSubj.forEach(s => usedSubjects.add(s))
     }
-    // Fill remaining if diversity filtering was too aggressive
+
+    // Second pass: fill remaining slots with different types (relax subject constraint)
+    if (picks.length < 3) {
+      for (const r of scored) {
+        if (picks.length >= 3) break
+        if (picks.some(p => p.id === r.id)) continue
+        if (usedTypes.has(r.resource_type)) continue
+        picks.push(r)
+        usedTypes.add(r.resource_type)
+      }
+    }
+
+    // Third pass: if still not enough, just fill with best remaining
     if (picks.length < 3) {
       for (const r of scored) {
         if (picks.length >= 3) break
