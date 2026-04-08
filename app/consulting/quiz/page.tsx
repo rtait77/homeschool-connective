@@ -10,9 +10,8 @@ type QuizAnswers = {
   timeAvailable: string
   involvement: string
   screens: string
+  religiousPref: string
   subjects: string[]
-  firstName: string
-  email: string
 }
 
 type QuizResult = {
@@ -23,7 +22,7 @@ type QuizResult = {
 
 const INITIAL: QuizAnswers = {
   age: '', toughDay: [], engagement: [], timeAvailable: '',
-  involvement: '', screens: '', subjects: [], firstName: '', email: '',
+  involvement: '', screens: '', religiousPref: '', subjects: [],
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -95,13 +94,12 @@ function CheckCard({ label, value, checked, onToggle }: {
 
 /* ─── Main Quiz ─── */
 export default function QuizPage() {
-  const [step, setStep] = useState(0) // 0=intro, 1-7=questions, 8=email, 9=results
+  const [step, setStep] = useState(0) // 0=intro, 1-8=questions, 9=results
   const [answers, setAnswers] = useState<QuizAnswers>({ ...INITIAL })
   const [result, setResult] = useState<QuizResult | null>(null)
   const [loading, setLoading] = useState(false)
-  const [skippedEmail, setSkippedEmail] = useState(false)
 
-  const totalSteps = 7
+  const totalSteps = 8
 
   function setRadio(field: keyof QuizAnswers, value: string) {
     setAnswers(a => ({ ...a, [field]: value }))
@@ -122,8 +120,8 @@ export default function QuizPage() {
       case 4: return answers.timeAvailable !== ''
       case 5: return answers.involvement !== ''
       case 6: return answers.screens !== ''
-      case 7: return answers.subjects.length > 0
-      case 8: return skippedEmail || (answers.firstName.trim() !== '' && answers.email.trim() !== '')
+      case 7: return answers.religiousPref !== ''
+      case 8: return answers.subjects.length > 0
       default: return true
     }
   }
@@ -138,7 +136,7 @@ export default function QuizPage() {
       })
       const data = await res.json()
       setResult(data)
-      setStep(9)
+      setStep(10)
     } catch {
       alert('Something went wrong — please try again.')
     } finally {
@@ -148,7 +146,6 @@ export default function QuizPage() {
 
   function next() {
     if (step === 8) { submitQuiz(); return }
-    if (step === 7) { setStep(8); return }
     setStep(s => s + 1)
   }
 
@@ -165,13 +162,13 @@ export default function QuizPage() {
         <div style={{ position: 'sticky', top: 0, zIndex: 20, backgroundColor: '#f5f1e9', padding: '16px 24px 0' }}>
           <div style={{ maxWidth: 600, margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: '0.75rem', fontWeight: 700, color: '#999' }}>
-              <span>{step <= 7 ? `Question ${step} of ${totalSteps}` : 'Almost done!'}</span>
-              <span>{Math.round(((step <= 7 ? step : 7) / totalSteps) * 100)}%</span>
+              <span>Question {step} of {totalSteps}</span>
+              <span>{Math.round((step / totalSteps) * 100)}%</span>
             </div>
             <div style={{ height: 6, borderRadius: 3, backgroundColor: '#e2ddd5', overflow: 'hidden' }}>
               <div style={{
                 height: '100%', borderRadius: 3, backgroundColor: '#ed7c5a',
-                width: `${((step <= 7 ? step : 7) / totalSteps) * 100}%`,
+                width: `${(step / totalSteps) * 100}%`,
                 transition: 'width 0.4s ease',
               }} />
             </div>
@@ -192,7 +189,7 @@ export default function QuizPage() {
               Find Your Homeschool Fit
             </h1>
             <p style={{ fontSize: '1.05rem', color: '#5c5c5c', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 12px' }}>
-              Answer 7 quick questions and we&apos;ll match your child with resources from our database of 1,100+ homeschool tools — books, games, curricula, apps, and more.
+              Answer 8 quick questions and we&apos;ll match your child with resources from our database of 1,100+ homeschool tools — books, games, curricula, apps, and more.
             </p>
             <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: 40 }}>
               Takes about 2 minutes. No account needed.
@@ -212,7 +209,7 @@ export default function QuizPage() {
             <div style={{ marginTop: 56, display: 'flex', justifyContent: 'center', gap: 32, flexWrap: 'wrap' }}>
               {[
                 { num: '1,100+', label: 'Resources' },
-                { num: '7', label: 'Questions' },
+                { num: '8', label: 'Questions' },
                 { num: '2 min', label: 'To complete' },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: 'center' }}>
@@ -325,16 +322,32 @@ export default function QuizPage() {
           </QuestionWrapper>
         )}
 
-        {/* ═══ Q7: Subjects ═══ */}
+        {/* ═══ Q7: Religious Preference ═══ */}
         {step === 7 && (
-          <QuestionWrapper title="What subjects are you most looking for help with?" subtitle="Pick up to 3" onNext={next} onBack={back} canAdvance={canAdvance()} step={step}>
+          <QuestionWrapper title="Do you have a preference for secular or faith-based resources?" onNext={next} onBack={back} canAdvance={canAdvance()} step={step}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { v: 'secular', l: 'Secular only — no religious content' },
+                { v: 'christian', l: 'Christian / faith-based' },
+                { v: 'either', l: 'Either is fine — just show me the best fit' },
+              ].map(o => (
+                <RadioCard key={o.v} label={o.l} value={o.v} selected={answers.religiousPref === o.v} onSelect={v => setRadio('religiousPref', v)} />
+              ))}
+            </div>
+          </QuestionWrapper>
+        )}
+
+        {/* ═══ Q8: Subjects ═══ */}
+        {step === 8 && (
+          <QuestionWrapper title="What subjects are you most looking for help with?" subtitle="Pick up to 3" onNext={next} onBack={back} canAdvance={canAdvance()} step={step} loading={loading}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { v: 'math', l: 'Math' },
                 { v: 'reading', l: 'Reading / Language Arts' },
+                { v: 'writing', l: 'Writing / Grammar' },
                 { v: 'science', l: 'Science' },
                 { v: 'history', l: 'History / Social Studies' },
-                { v: 'writing', l: 'Writing' },
+                { v: 'geography', l: 'Geography' },
                 { v: 'foreign_language', l: 'Foreign Language' },
                 { v: 'everything', l: 'We need help with everything' },
               ].map(o => (
@@ -357,63 +370,8 @@ export default function QuizPage() {
           </QuestionWrapper>
         )}
 
-        {/* ═══ Email Capture ═══ */}
-        {step === 8 && (
-          <div>
-            <button onClick={back} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#238FA4', fontWeight: 700, fontSize: '0.85rem', marginBottom: 24, padding: 0 }}>
-              ← Back
-            </button>
-            <h2 style={{ fontSize: 'clamp(1.4rem, 4vw, 1.8rem)', fontWeight: 800, color: '#1c1c1c', lineHeight: 1.25, marginBottom: 8 }}>
-              Almost done!
-            </h2>
-            <p style={{ fontSize: '0.95rem', color: '#5c5c5c', lineHeight: 1.6, marginBottom: 32 }}>
-              Where should we send your personalized results?
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#383838', marginBottom: 6 }}>First name</label>
-                <input
-                  type="text" value={answers.firstName}
-                  onChange={e => setAnswers(a => ({ ...a, firstName: e.target.value }))}
-                  placeholder="Your first name"
-                  style={{ width: '100%', padding: '14px 16px', borderRadius: 10, border: '2px solid #e2ddd5', fontSize: '0.95rem', fontFamily: 'Nunito, sans-serif', outline: 'none', boxSizing: 'border-box' }}
-                  onFocus={e => (e.currentTarget.style.borderColor = '#55b6ca')}
-                  onBlur={e => (e.currentTarget.style.borderColor = '#e2ddd5')}
-                />
-              </div>
-              <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, color: '#383838', marginBottom: 6 }}>Email address</label>
-                <input
-                  type="email" value={answers.email}
-                  onChange={e => setAnswers(a => ({ ...a, email: e.target.value }))}
-                  placeholder="you@example.com"
-                  style={{ width: '100%', padding: '14px 16px', borderRadius: 10, border: '2px solid #e2ddd5', fontSize: '0.95rem', fontFamily: 'Nunito, sans-serif', outline: 'none', boxSizing: 'border-box' }}
-                  onFocus={e => (e.currentTarget.style.borderColor = '#55b6ca')}
-                  onBlur={e => (e.currentTarget.style.borderColor = '#e2ddd5')}
-                />
-              </div>
-              <p style={{ fontSize: '0.78rem', color: '#999', margin: 0 }}>
-                We&apos;ll also send you a few free homeschool tips. Unsubscribe anytime.
-              </p>
-            </div>
-            <button onClick={next} disabled={loading || !canAdvance()} style={{
-              width: '100%', marginTop: 24, backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800,
-              fontSize: '1rem', padding: '16px', borderRadius: 12, border: 'none', cursor: loading || !canAdvance() ? 'default' : 'pointer',
-              opacity: loading || !canAdvance() ? 0.5 : 1, transition: 'opacity 0.15s',
-            }}>
-              {loading ? 'Getting your results...' : 'See My Results →'}
-            </button>
-            {!skippedEmail && (
-              <button onClick={() => { setSkippedEmail(true); submitQuiz() }} disabled={loading}
-                style={{ display: 'block', margin: '16px auto 0', background: 'none', border: 'none', cursor: 'pointer', color: '#999', fontSize: '0.82rem', fontWeight: 600, textDecoration: 'underline' }}>
-                Skip for now
-              </button>
-            )}
-          </div>
-        )}
-
         {/* ═══ Results ═══ */}
-        {step === 9 && result && (
+        {step === 10 && result && (
           <div>
             {/* Confetti-lite: decorative dots */}
             <div style={{ textAlign: 'center', marginBottom: 8 }}>
@@ -481,11 +439,11 @@ export default function QuizPage() {
                 We found {result.totalMatches}+ resources that match your child&apos;s profile.
               </p>
               <p style={{ fontSize: '0.82rem', fontWeight: 600, opacity: 0.85, marginBottom: 0 }}>
-                Want the full picture?
+                This quiz is just the beginning.
               </p>
               <div style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.2)', margin: '20px 0' }} />
               <p style={{ fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95, marginBottom: 24 }}>
-                Melanie works 1-on-1 with homeschool families to build a complete, personalized curriculum plan. She reviews every detail — learning style, challenges, interests, schedule — and hand-picks resources your child will actually love.
+                Sign up with Mel to access our in-depth intake form — the one our team built to match your family with even more resources. She&apos;ll review your answers, hand-pick 20–50+ recommendations, and be available by email for 3 months of homeschool support.
               </p>
               <a href="/consulting" style={{
                 display: 'inline-block', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800,
@@ -495,21 +453,21 @@ export default function QuizPage() {
                 onMouseEnter={e => (e.currentTarget.style.opacity = '0.9')}
                 onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
               >
-                Book a Consulting Session →
+                Work with Mel →
               </a>
             </div>
 
             {/* Section 4: What consulting includes */}
             <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
               <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#383838', marginBottom: 16 }}>
-                What you get with a consulting session:
+                What you get when you work with Mel:
               </h3>
               <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[
-                  'A deep intake form covering every child in your family',
-                  'A personalized resource report with 20–50+ matched resources',
+                  'Our in-depth intake form covering every child in your family',
+                  'A personalized resource report with 20–50+ hand-picked matches',
                   'Your child\'s learning style and your teaching style breakdown',
-                  '3 months of email support with Melanie',
+                  '3 months of email support with Mel',
                 ].map((item, i) => (
                   <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                     <span style={{ color: '#55b6ca', fontWeight: 800, fontSize: '1.1rem', lineHeight: 1, marginTop: 2, flexShrink: 0 }}>&#10003;</span>
@@ -521,7 +479,7 @@ export default function QuizPage() {
 
             {/* Retake */}
             <div style={{ textAlign: 'center', marginTop: 32 }}>
-              <button onClick={() => { setStep(0); setAnswers({ ...INITIAL }); setResult(null); setSkippedEmail(false) }}
+              <button onClick={() => { setStep(0); setAnswers({ ...INITIAL }); setResult(null) }}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#238FA4', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'underline' }}>
                 Retake the quiz
               </button>
@@ -530,7 +488,7 @@ export default function QuizPage() {
         )}
 
         {/* Loading state */}
-        {step === 9 && !result && loading && (
+        {step === 10 && !result && loading && (
           <div style={{ textAlign: 'center', paddingTop: 80 }}>
             <div style={{ width: 40, height: 40, border: '4px solid #e2ddd5', borderTopColor: '#ed7c5a', borderRadius: '50%', margin: '0 auto 20px', animation: 'spin 0.8s linear infinite' }} />
             <p style={{ color: '#5c5c5c', fontWeight: 600 }}>Finding your perfect matches...</p>
@@ -546,10 +504,12 @@ export default function QuizPage() {
 }
 
 /* ─── Question Wrapper ─── */
-function QuestionWrapper({ title, subtitle, children, onNext, onBack, canAdvance, step }: {
+function QuestionWrapper({ title, subtitle, children, onNext, onBack, canAdvance, step, loading }: {
   title: string; subtitle?: string; children: React.ReactNode
-  onNext: () => void; onBack: () => void; canAdvance: boolean; step: number
+  onNext: () => void; onBack: () => void; canAdvance: boolean; step: number; loading?: boolean
 }) {
+  const isLast = step === 8
+  const disabled = !canAdvance || !!loading
   return (
     <div>
       {step > 1 && (
@@ -562,15 +522,15 @@ function QuestionWrapper({ title, subtitle, children, onNext, onBack, canAdvance
       </h2>
       {subtitle && <p style={{ fontSize: '0.88rem', color: '#999', marginBottom: 24, fontWeight: 600 }}>{subtitle}</p>}
       {children}
-      <button onClick={onNext} disabled={!canAdvance} style={{
+      <button onClick={onNext} disabled={disabled} style={{
         width: '100%', marginTop: 28, backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800,
-        fontSize: '1rem', padding: '16px', borderRadius: 12, border: 'none', cursor: canAdvance ? 'pointer' : 'default',
-        opacity: canAdvance ? 1 : 0.4, transition: 'opacity 0.15s',
+        fontSize: '1rem', padding: '16px', borderRadius: 12, border: 'none', cursor: disabled ? 'default' : 'pointer',
+        opacity: disabled ? 0.4 : 1, transition: 'opacity 0.15s',
       }}
-        onMouseEnter={e => { if (canAdvance) e.currentTarget.style.opacity = '0.9' }}
-        onMouseLeave={e => { if (canAdvance) e.currentTarget.style.opacity = '1' }}
+        onMouseEnter={e => { if (!disabled) e.currentTarget.style.opacity = '0.9' }}
+        onMouseLeave={e => { if (!disabled) e.currentTarget.style.opacity = '1' }}
       >
-        {step === 7 ? 'Next →' : 'Next →'}
+        {loading ? 'Finding your matches...' : isLast ? 'See My Results →' : 'Next →'}
       </button>
     </div>
   )

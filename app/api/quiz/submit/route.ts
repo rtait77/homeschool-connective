@@ -13,9 +13,8 @@ type QuizAnswers = {
   timeAvailable: string
   involvement: string
   screens: string
+  religiousPref: string
   subjects: string[]
-  firstName?: string
-  email?: string
 }
 
 type Resource = {
@@ -27,6 +26,7 @@ type Resource = {
   match_tags: string[]
   grade_levels: string[]
   requires_screen: string
+  religious_pref: string
   subjects: string[]
 }
 
@@ -80,7 +80,7 @@ function ageToLabel(age: string): string {
   }
 }
 
-function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: string } {
+function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: string; religiousPref: string } {
   const tags = new Set<string>()
 
   // Q2: Tough day
@@ -122,21 +122,25 @@ function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: strin
   if (answers.screens === 'mix') { screenMode = 'screen_optional' }
   if (answers.screens === 'minimal') { screenMode = 'no_screen'; tags.add('no_screen'); tags.add('hands_on'); tags.add('book') }
 
-  // Q7: Subjects
+  // Q7: Religious preference
+  const religiousPref = answers.religiousPref || 'either'
+
+  // Q8: Subjects
   for (const subj of answers.subjects) {
     if (subj === 'math') tags.add('math')
     if (subj === 'reading') { tags.add('reading'); tags.add('language_arts'); tags.add('phonics') }
     if (subj === 'science') tags.add('science')
     if (subj === 'history') { tags.add('history'); tags.add('social_studies') }
     if (subj === 'writing') { tags.add('writing'); tags.add('grammar') }
+    if (subj === 'geography') { tags.add('geography'); tags.add('map_skills') }
     if (subj === 'foreign_language') tags.add('foreign_language')
     if (subj === 'everything') {
       tags.add('math'); tags.add('reading'); tags.add('science')
-      tags.add('history'); tags.add('writing')
+      tags.add('history'); tags.add('writing'); tags.add('geography')
     }
   }
 
-  return { tags, screenMode }
+  return { tags, screenMode, religiousPref }
 }
 
 function generateProfile(answers: QuizAnswers): string {
@@ -200,6 +204,7 @@ function scoreResource(
   tags: Set<string>,
   grades: string[],
   screenMode: string,
+  religiousPref: string,
   subjects: string[]
 ): number {
   const rTags = resource.match_tags || []
@@ -223,6 +228,11 @@ function scoreResource(
   // Screen filter
   if (screenMode === 'no_screen' && resource.requires_screen === 'yes') score -= 10
 
+  // Religious preference filter
+  const rp = resource.religious_pref || 'neutral'
+  if (religiousPref === 'secular' && (rp === 'christian' || rp === 'christian_lite')) score -= 15
+  if (religiousPref === 'christian' && rp === 'christian') score += 3
+
   return score
 }
 
@@ -230,21 +240,21 @@ export async function POST(req: NextRequest) {
   try {
     const answers: QuizAnswers = await req.json()
 
-    const { tags, screenMode } = buildTags(answers)
+    const { tags, screenMode, religiousPref } = buildTags(answers)
     const grades = ageToGrades(answers.age)
     const profile = generateProfile(answers)
 
     // Fetch resources
     const { data: resources, error } = await supabase
       .from('resources')
-      .select('id, name, description, url, resource_type, match_tags, grade_levels, requires_screen, subjects')
+      .select('id, name, description, url, resource_type, match_tags, grade_levels, requires_screen, religious_pref, subjects')
       .eq('approved', true)
 
     if (error) throw error
 
     // Score and rank
     const scored = (resources as Resource[])
-      .map(r => ({ ...r, score: scoreResource(r, tags, grades, screenMode, answers.subjects) }))
+      .map(r => ({ ...r, score: scoreResource(r, tags, grades, screenMode, religiousPref, answers.subjects) }))
       .filter(r => r.score > 0)
       .sort((a, b) => b.score - a.score)
 
@@ -268,19 +278,15 @@ export async function POST(req: NextRequest) {
 
     const totalMatches = scored.filter(r => r.score >= 3).length
 
-    // Save to quiz_submissions if email provided
-    if (answers.email && answers.firstName) {
-      await supabase.from('quiz_submissions').insert({
-        email: answers.email,
-        first_name: answers.firstName,
-        responses: answers,
-        results: {
-          profile,
-          resources: picks.map(r => ({ id: r.id, name: r.name })),
-          totalMatches,
-        },
-      }).then(() => {}) // fire and forget — don't block on save errors
-    }
+    // Save quiz submission (anonymous — no email collected)
+    await supabase.from('quiz_submissions').insert({
+      responses: answers,
+      results: {
+        profile,
+        resources: picks.map(r => ({ id: r.id, name: r.name })),
+        totalMatches,
+      },
+    }).then(() => {}) // fire and forget
 
     return NextResponse.json({
       profile,
