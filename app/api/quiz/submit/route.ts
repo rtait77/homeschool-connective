@@ -160,10 +160,6 @@ function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: strin
     if (subj === 'writing') { tags.add('writing'); tags.add('grammar') }
     if (subj === 'geography') { tags.add('geography'); tags.add('map_skills') }
     if (subj === 'foreign_language') tags.add('foreign_language')
-    if (subj === 'everything') {
-      tags.add('math'); tags.add('reading'); tags.add('science')
-      tags.add('history'); tags.add('writing'); tags.add('geography')
-    }
   }
 
   return { tags, screenMode, religiousPref, preferredTypes }
@@ -291,10 +287,31 @@ export async function POST(req: NextRequest) {
 
     if (error) throw error
 
-    // Score and rank
+    // Map quiz subject values to the tags used in match_tags
+    const subjectTagMap: Record<string, string[]> = {
+      math: ['math'],
+      reading: ['reading', 'language_arts', 'phonics'],
+      writing: ['writing', 'grammar'],
+      science: ['science', 'life_science', 'earth_science', 'chemistry', 'physics', 'biology', 'astronomy'],
+      history: ['history', 'social_studies', 'us_history', 'world_history', 'civics'],
+      geography: ['geography', 'map_skills'],
+      foreign_language: ['foreign_language', 'spanish', 'french', 'latin', 'mandarin', 'japanese', 'asl'],
+    }
+    const allowedSubjectTags = new Set<string>()
+    for (const subj of answers.subjects) {
+      const mapped = subjectTagMap[subj]
+      if (mapped) mapped.forEach(t => allowedSubjectTags.add(t))
+    }
+
+    // Score and rank — only include resources that match at least one selected subject
     const scored = (resources as Resource[])
       .map(r => ({ ...r, score: scoreResource(r, tags, grades, screenMode, religiousPref, preferredTypes, answers.subjects) }))
-      .filter(r => r.score > 0)
+      .filter(r => {
+        if (r.score <= 0) return false
+        // Resource must match at least one of the selected subjects
+        const rTags = r.match_tags || []
+        return rTags.some(t => allowedSubjectTags.has(t))
+      })
       .sort((a, b) => b.score - a.score)
 
     // Pick top 3: one per resource type AND spread across subjects

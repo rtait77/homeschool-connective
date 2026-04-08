@@ -379,7 +379,7 @@ export default function QuizPage() {
 
         {/* ═══ Q10: Subjects ═══ */}
         {step === 10 && (
-          <QuestionWrapper title="What subjects are you most looking for help with?" subtitle="Pick up to 3" onNext={next} onBack={back} canAdvance={canAdvance()} step={step} loading={loading}>
+          <QuestionWrapper title="What subjects would you like to see results for?" subtitle="Pick as many as you want" onNext={next} onBack={back} canAdvance={canAdvance()} step={step} loading={loading}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
                 { v: 'math', l: 'Math' },
@@ -389,21 +389,10 @@ export default function QuizPage() {
                 { v: 'history', l: 'History / Social Studies' },
                 { v: 'geography', l: 'Geography' },
                 { v: 'foreign_language', l: 'Foreign Language' },
-                { v: 'everything', l: 'We need help with everything' },
               ].map(o => (
                 <CheckCard key={o.v} label={o.l} value={o.v}
                   checked={answers.subjects.includes(o.v)}
-                  onToggle={v => {
-                    if (v === 'everything') {
-                      setAnswers(a => ({ ...a, subjects: a.subjects.includes('everything') ? [] : ['everything'] }))
-                    } else {
-                      setAnswers(a => {
-                        const without = a.subjects.filter(s => s !== 'everything')
-                        const toggled = without.includes(v) ? without.filter(s => s !== v) : [...without, v]
-                        return { ...a, subjects: toggled.length > 3 ? toggled.slice(-3) : toggled }
-                      })
-                    }
-                  }}
+                  onToggle={v => toggleCheck('subjects', v)}
                 />
               ))}
             </div>
