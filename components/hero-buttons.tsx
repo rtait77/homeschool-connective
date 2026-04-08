@@ -36,8 +36,8 @@ export default function HeroButtons() {
           Start Learning →
         </Link>
       ) : (
-        <Link href="/signup" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
-          Start 7 Day Free Trial
+        <Link href="/pricing" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#ed7c5a] text-white border-2 border-[#ed7c5a] hover:bg-white hover:text-[#ed7c5a] transition-all">
+          Start Free Trial
         </Link>
       )}
       <Link href="/about" className="inline-flex items-center font-bold text-sm px-6 py-3 rounded-lg bg-[#55b6ca] text-white border-2 border-[#55b6ca] hover:bg-white hover:text-[#238FA4] transition-all">

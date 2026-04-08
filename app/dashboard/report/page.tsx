@@ -121,7 +121,14 @@ export default function ClientReportPage() {
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f5f1e9', fontFamily: 'Nunito, sans-serif' }}>
-<div style={{ maxWidth: 680, margin: '0 auto', padding: '48px 20px' }}>
+      <style>{`
+        @media print {
+          nav, header, footer, .no-print { display: none !important; }
+          body { background: white !important; }
+          @page { margin: 1.5cm; }
+        }
+      `}</style>
+      <div style={{ maxWidth: 680, margin: '0 auto', padding: '48px 20px' }}>
 
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -132,14 +139,14 @@ export default function ClientReportPage() {
             From Mel at Homeschool Connective
             {report?.sent_at && ` · ${new Date(report.sent_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}
           </p>
-          <a
-            href="/api/consulting/download-report"
-            download="homeschool-recommendations.pdf"
+          <button
+            onClick={() => window.print()}
             className="no-print"
-            style={{ display: 'inline-block', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, textDecoration: 'none' }}
+            style={{ display: 'inline-block', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 700, fontSize: '0.85rem', padding: '0.5rem 1.25rem', borderRadius: 999, border: 'none', cursor: 'pointer' }}
           >
-            ⬇ Download PDF
-          </a>
+            🖨 Print / Save as PDF
+          </button>
+          <p className="no-print" style={{ fontSize: '0.75rem', color: '#999', marginTop: 8 }}>In the print dialog, set the destination to &ldquo;Save as PDF&rdquo;</p>
         </div>
 
         {/* Results at a Glance */}
@@ -149,7 +156,6 @@ export default function ClientReportPage() {
               Your Results at a Glance
             </p>
 
-            {/* Learning Styles */}
             {styleProfile.learningStyles.length > 0 && (
               <div style={{ marginBottom: 24 }}>
                 <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>
@@ -171,12 +177,10 @@ export default function ClientReportPage() {
               </div>
             )}
 
-            {/* Divider */}
             {styleProfile.learningStyles.length > 0 && styleProfile.methods.length > 0 && (
               <div style={{ borderTop: '1px solid #f0ece4', margin: '0 0 24px' }} />
             )}
 
-            {/* Homeschooling Methods */}
             {styleProfile.methods.length > 0 && (
               <div style={{ marginBottom: 24 }}>
                 <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>
@@ -198,12 +202,10 @@ export default function ClientReportPage() {
               </div>
             )}
 
-            {/* Divider */}
             {styleProfile.methods.length > 0 && styleProfile.teachingStyle && (
               <div style={{ borderTop: '1px solid #f0ece4', margin: '0 0 24px' }} />
             )}
 
-            {/* Teaching Style */}
             {styleProfile.teachingStyle && (
               <div>
                 <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#55b6ca', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px' }}>
@@ -223,14 +225,13 @@ export default function ClientReportPage() {
           </div>
         )}
 
-        {/* Custom intro */}
         {report?.custom_intro && (
           <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '24px 28px', marginBottom: 28, border: '1px solid #e8e0d5', boxShadow: '0 1px 6px rgba(0,0,0,0.06)' }}>
             <p style={{ fontSize: '1rem', lineHeight: 1.75, color: '#1c1c1c', margin: 0, whiteSpace: 'pre-line' }}>{report.custom_intro}</p>
           </div>
         )}
 
-        {/* Report items — grouped by primary person */}
+        {/* Report items */}
         {(() => {
           const hasAssignments = items.some(i => (i.for_people ?? []).length > 0)
           const groups: Record<string, ReportItem[]> = {}

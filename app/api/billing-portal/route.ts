@@ -25,13 +25,29 @@ export async function POST() {
     .eq('id', user.id)
     .single()
 
-  if (!profile?.stripe_customer_id) {
-    return NextResponse.json({ error: 'No billing account found' }, { status: 400 })
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+  let customerId = profile?.stripe_customer_id as string | undefined
+
+  // Fallback: look up by email in Stripe if not stored in profile
+  if (!customerId && user.email) {
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 })
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id
+      // Persist it so future calls are instant
+      await admin
+        .from('profiles')
+        .update({ stripe_customer_id: customerId })
+        .eq('id', user.id)
+    }
   }
 
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+  if (!customerId) {
+    return NextResponse.json({ error: 'No billing account found. Please contact support.' }, { status: 400 })
+  }
+
   const session = await stripe.billingPortal.sessions.create({
-    customer: profile.stripe_customer_id,
+    customer: customerId,
     return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`,
   })
 

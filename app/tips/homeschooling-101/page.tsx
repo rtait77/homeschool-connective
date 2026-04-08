@@ -5,11 +5,11 @@ export default function Page() {
   return (
     <div className="max-w-[780px] mx-auto px-6 py-12">
       <Link href="/tips" className="text-sm font-bold text-[#238FA4] hover:underline">← Back to Homeschool Tips</Link>
-      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">November 11, 2025</p>
+      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">March 17, 2025</p>
       <h1 className="text-3xl font-extrabold mb-8">Homeschooling 101</h1>
 
-      <div className="relative w-full h-64 mb-8 rounded-xl overflow-hidden">
-        <Image src="/blog-101-banner.avif" alt="Homeschooling 101" fill className="object-cover" />
+      <div className="w-full mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-101-banner.avif" alt="Homeschooling 101" width={1200} height={400} className="w-full h-auto" />
       </div>
 
       <h2 className="text-2xl font-extrabold text-center mb-1">How to Homeschool</h2>
@@ -25,7 +25,7 @@ export default function Page() {
       <p className="mb-8 leading-relaxed">A crucial element for thriving in homeschooling is becoming part of a homeschooling community. This could be an online group on platforms like Facebook that provides encouragement and support, or a local network that offers chances for field trips, cooperative learning, classes, and social events. Local homeschoolers are a treasure trove of knowledge about homeschool regulations, and reaching out to them early can help ease the worries of those just starting out with homeschooling.</p>
 
       <h3 className="font-extrabold text-lg mb-2">Step 3: Homeschooling Methods</h3>
-      <p className="mb-8 leading-relaxed">One of the best things about homeschooling is that you don't have to recreate school at home. You have the freedom to allow your children to learn in ways that aren't possible in an institutional setting, so learn more about what might work best for your family. There are many homeschooling methods. As you explore, consider a period of deschooling for both you and your children before diving into homeschooling, particularly if your child has been attending public school.</p>
+      <p className="mb-8 leading-relaxed">One of the best things about homeschooling is that you don't have to recreate school at home. You have the freedom to allow your children to learn in ways that aren't possible in an institutional setting, so learn more about what might work best for your family. There are many <Link href="/tips/homeschooling-methods" className="text-[#238FA4] font-bold hover:underline">homeschooling methods</Link>. As you explore, consider a period of <Link href="/tips/deschooling" className="text-[#238FA4] font-bold hover:underline">deschooling</Link> for both you and your children before diving into homeschooling, particularly if your child has been attending public school.</p>
 
       <h3 className="font-extrabold text-lg mb-2">Step 4: Learning Styles</h3>
       <p className="mb-8 leading-relaxed">We are all unique, which means we each have different learning styles. Kinesthetic, visual, auditory, and tactile are just some of the methods through which we learn. Our blog on <Link href="/tips/learning-styles" className="text-[#238FA4] font-bold hover:underline">Learning Styles</Link> offers in-depth insights and includes a complimentary PDF with a quiz to determine your child's learning style.</p>

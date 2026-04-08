@@ -5,11 +5,11 @@ export default function Page() {
   return (
     <div className="max-w-[780px] mx-auto px-6 py-12">
       <Link href="/tips" className="text-sm font-bold text-[#238FA4] hover:underline">← Back to Homeschool Tips</Link>
-      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">November 11, 2025</p>
+      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">April 28, 2025</p>
       <h1 className="text-3xl font-extrabold mb-8">Deschooling</h1>
 
-      <div className="relative w-full h-64 mb-8 rounded-xl overflow-hidden">
-        <Image src="/blog-deschooling-banner.avif" alt="Deschooling" fill className="object-cover" />
+      <div className="w-full mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-deschooling-banner.avif" alt="Deschooling" width={1200} height={400} className="w-full h-auto" />
       </div>
 
       <h2 className="text-xl font-extrabold mb-4">What is Deschooling?</h2>
@@ -36,7 +36,7 @@ export default function Page() {
         <li className="leading-relaxed">Incorporate physical education activities into their day to keep them active and healthy.</li>
         <li className="leading-relaxed">Have discussions about homeschool curriculum, schedules, and preferences, encouraging their input.</li>
         <li className="leading-relaxed">Research local classes, elective options, and dual enrollment opportunities at community colleges.</li>
-        <li className="leading-relaxed">Explore virtual field trips and online resources, such as games and books to supplement learning experiences.</li>
+        <li className="leading-relaxed">Explore virtual field trips and online resources, such as <Link href="/learn" className="text-[#238FA4] font-bold hover:underline">learning games</Link> and books to supplement learning experiences.</li>
         <li className="leading-relaxed">Plan outings for entertainment and adventure, such as visiting the library, movie theater, mini-golf course, or trying activities like laser tag or geocaching.</li>
       </ul>
 
@@ -52,7 +52,7 @@ export default function Page() {
         <li className="leading-relaxed">Natural curiosity sparks further exploration in children.</li>
         <li className="leading-relaxed">Parents and children connect over educational tasks, easing any initial awkwardness.</li>
         <li className="leading-relaxed">The value of supplemental activities like learning games, books, and field trips become evident.</li>
-        <li className="leading-relaxed">Parents understand homeschooling laws and have chosen a homeschool method and curriculum aligned with those laws.</li>
+        <li className="leading-relaxed">Parents understand homeschooling laws and have chosen a <Link href="/tips/homeschooling-methods" className="text-[#238FA4] font-bold hover:underline">homeschool method</Link> and curriculum aligned with those laws.</li>
       </ul>
       <p className="mb-8 font-bold">If these signs resonate with your experience, congratulations on your homeschooling journey!</p>
 

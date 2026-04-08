@@ -1,9 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Nunito, DM_Sans } from 'next/font/google'
+import NavbarPreview from '@/components/layout/navbar-preview'
 import { createClient } from '@supabase/supabase-js'
-
-export const dynamic = 'force-dynamic'
 
 const nunito = Nunito({
   subsets: ['latin'],
@@ -158,6 +157,8 @@ export default async function PreviewHomePage() {
       `}} />
 
       <div className="ph-page">
+        <NavbarPreview />
+
         {/* Hero */}
         <section style={{ background: '#f5f1e9', paddingBottom: '0' }}>
           <div className="hero-wrap">
@@ -170,7 +171,7 @@ export default async function PreviewHomePage() {
                 Plus, ongoing homeschool support for parents.
               </p>
               <div className="hero-ctas">
-                <a href="/learn" className="hero-btn-primary">Play &amp; Learn</a>
+                <a href="/signup" className="hero-btn-primary">Play &amp; Learn</a>
                 <a href="/consulting" className="hero-btn-secondary">Get Homeschool Help →</a>
               </div>
             </div>
@@ -222,7 +223,7 @@ export default async function PreviewHomePage() {
               </a>
 
               {/* Ordering the Planets */}
-              <a href="https://view.genially.com/68164fbb7306f160f7843510"
+              <a href="https://view.genially.com/68164fbb7306f160f7843510" target="_blank" rel="noopener noreferrer"
                 className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
                 <div className="relative flex-1 min-h-[200px] w-full bg-[#e8e4dc]">
                   <Image src="/ordering-the-planets-thumbnail.png" alt="Ordering the Planets" fill className="object-cover" />
@@ -235,7 +236,7 @@ export default async function PreviewHomePage() {
               </a>
 
               {/* Solar System Sizzle */}
-              <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e"
+              <a href="https://view.genially.com/69b83b3bc0b7be2f9910da3e" target="_blank" rel="noopener noreferrer"
                 className="bg-white rounded-[16px] overflow-hidden flex flex-col hover:shadow-lg transition-shadow" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.09)' }}>
                 <div className="relative flex-1 min-h-[200px] w-full bg-[#e8e4dc]">
                   <Image src="/thumb-sss.png" alt="Solar System Sizzle" fill className="object-cover" />
@@ -332,11 +333,11 @@ export default async function PreviewHomePage() {
               </p>
               {resourceCount && (
                 <p className="text-sm text-[#5c5c5c] mb-6" style={{ fontFamily: 'var(--font-body)' }}>
-                  <span className="text-2xl font-extrabold text-[#238FA4]">{resourceCount}</span>{' '}
+                  <span className="text-2xl font-extrabold text-[#ed7c5a]">{resourceCount}</span>{' '}
                   curated resources in our database (secular and Christian) ...and growing
                 </p>
               )}
-              <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#238FA4] text-white hover:opacity-90 transition">
+              <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
                 Learn More →
               </Link>
             </div>
@@ -365,12 +366,12 @@ export default async function PreviewHomePage() {
                 { title: 'Earth Puzzles', file: 'website-pdf-earth-puzzles.pdf', thumb: '/website-pdf-earth-puzzles.png' },
               ].map(({ title, file, thumb }) => (
                 <div key={title} className="bg-white rounded-[14px] overflow-hidden flex flex-col" style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-                  <div className="relative w-full bg-white" style={{ aspectRatio: '8.5/11' }}>
+                  <div className="relative w-full" style={{ aspectRatio: '8.5/11' }}>
                     <Image src={thumb} alt={title} fill className="object-contain" />
                   </div>
-                  <div className="p-3 bg-[#f5f1e9] flex flex-col gap-1">
+                  <div className="p-3 bg-[#f5f1e9] flex items-center justify-between">
                     <p className="text-xs font-bold leading-snug">{title}</p>
-                    <a href={`/${file}`} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline">Get PDF →</a>
+                    <a href={`/${file}`} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-[#ed7c5a] hover:underline whitespace-nowrap ml-2">Get PDF →</a>
                   </div>
                 </div>
               ))}

@@ -5,11 +5,11 @@ export default function Page() {
   return (
     <div className="max-w-[780px] mx-auto px-6 py-12">
       <Link href="/tips" className="text-sm font-bold text-[#238FA4] hover:underline">← Back to Homeschool Tips</Link>
-      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">November 11, 2025</p>
+      <p className="text-sm text-[#5c5c5c] mt-6 mb-2">August 5, 2025</p>
       <h1 className="text-3xl font-extrabold mb-8">Learning Styles</h1>
 
-      <div className="relative w-full h-64 mb-8 rounded-xl overflow-hidden">
-        <Image src="/blog-ls-banner.avif" alt="Learning Styles" fill className="object-cover" />
+      <div className="w-full mb-8 rounded-xl overflow-hidden">
+        <Image src="/blog-ls-banner.avif" alt="Learning Styles" width={1200} height={400} className="w-full h-auto" />
       </div>
 
       <p className="mb-4 leading-relaxed">Ah, the wild world of homeschooling! Back when I started, the idea of learning styles was as mysterious to me as finding socks in the dryer. My son and I were flying by the seat of our pants! 🤣 It wasn't until I found myself teaching in a homeschool co-op years later that I stumbled upon the revelation that we all dance to different educational beats!</p>

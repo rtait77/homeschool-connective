@@ -16,7 +16,7 @@
 
 **After every change:** Provide a short summary of what changed and a checklist of what to test in the browser.
 
-**Context discipline:** Always read CLAUDE.md and memory before starting work. Never suggest tools or services that are already in the stack (e.g. Sender.net is the email provider — already integrated, do not suggest alternatives). If unsure whether something exists, check the codebase first.
+**Context discipline:** Always read CLAUDE.md and memory before starting work. Never suggest tools or services that are already in the stack. If unsure whether something exists, check the codebase first.
 
 ## What This Is
 
@@ -34,7 +34,8 @@ Game-based learning platform for homeschoolers. **Live at homeschoolconnective.c
 | Payments | Stripe (Checkout + webhooks) |
 | Styling | Tailwind CSS v4 |
 | Hosting | Vercel |
-| Email | Sender.net (newsletter + trial reminders) |
+| Email (newsletters + trial reminders) | Sender.net |
+| Email (transactional — purchase confirmations, welcome emails) | Resend |
 
 ## Commands
 
@@ -67,7 +68,7 @@ stripe listen --forward-to localhost:3000/api/webhook
 ```
 /api/start-trial  — Creates trial record in Supabase
 /api/checkout     — Creates Stripe Checkout session
-/api/webhook      — Stripe webhook (subscription.created/updated/deleted)
+/api/webhook      — Stripe webhook (subscription.created/updated/deleted + consulting checkout.session.completed)
 /api/cron         — Sends trial reminder emails (Vercel cron, daily 10am UTC)
 /auth/callback    — Supabase auth callback
 ```
@@ -96,3 +97,112 @@ Access logic: user has access if `subscription_status = 'active'` OR `trial_end 
 - `@/` path alias for all imports
 - kebab-case filenames
 - No `any` types — define proper TypeScript interfaces
+
+## Consulting Recommendation Database
+
+### Resources Table (Supabase)
+283+ resources in `public.resources`. Key fields:
+- `name`, `url`, `description`, `price_range`
+- `subjects[]`, `grade_levels[]`, `learning_styles[]`, `good_for[]`
+- `match_tags[]` — ALL tags go here: structural tags + topic/keyword tags
+- `religious_pref`: `secular` | `christian` | `christian_lite` | `neutral`
+- `approved`: always `true` on insert
+- `category`: always `''` on insert (NOT NULL)
+
+### match_tags Strategy
+`match_tags` holds BOTH structural tags (subjects, grade levels, features) AND topic/keyword tags (e.g. `dinosaurs`, `ancient_egypt`, `baking`, `origami`). This lets Mel search by any keyword. Add rich topic tags every time a resource is inserted.
+
+### Intake Form → Tag Mappings (Q16 + Q17)
+Full mapping in memory file `project_consulting_tags.md`. Summary:
+- Q16 Math topics → tags like `math`, `algebra`, `geometry`, `calculus`, `pre_algebra`, `statistics`, `personal_finance`
+- Q16 Science topics → `life_science`, `earth_science`, `astronomy`, `biology`, `chemistry`, `physics`, `marine_biology`, etc.
+- Q16 History/SS → `us_history`, `world_history`, `civics`, `economics`, `map_skills`, `geography`, etc.
+- Q16 ELA → `phonics`, `reading`, `spelling`, `handwriting`, `grammar`, `writing`, `literature`, `vocabulary`, etc.
+- Q16 Foreign Language → `spanish`, `french`, `latin`, `mandarin`, `japanese`, `asl`, etc.
+- Q17 Skills → `gross_motor`, `fine_motor`, `memory`, `critical_thinking`, `focus`, `adhd`, `visual_spatial`, `logic`, `problem_solving`, `processing_speed`
+
+### Write-in Keyword Scanning (to build)
+Recommendation engine should extract keywords from write-in fields (`intenseInterests`, `lovesOther`, `primaryGoal`, `parentNotes`, topic Others) and match against `match_tags`.
+
+### Inserting Resources
+```bash
+SUPA_URL="https://vbeieznywomwthngenyt.supabase.co/rest/v1/resources"
+SUPA_KEY="[service_role_key from .env.local]"
+curl -s -X POST "$SUPA_URL" \
+  -H "apikey: $SUPA_KEY" -H "Authorization: Bearer $SUPA_KEY" \
+  -H "Content-Type: application/json" -H "Prefer: return=representation" \
+  -d '{...}' | jq '{id: .[0].id, name: .[0].name}'
+```
+**Always research every resource before inserting — even if you have prior knowledge.**
+
+## Resources Database (Supabase `resources` table)
+
+**Current count:** ~375 resources (as of 2026-04-03)
+
+### Schema — CRITICAL insert requirements
+- `category` column is NOT NULL — always include `"category": ""` (empty string)
+- `requires_screen` — always include, default `"no"`
+- `approved` — always include, default `true`
+- Valid `resource_type` enum values: `app`, `board_game`, `book`, `curriculum`, `online_classes`, `online_game`, `online_lessons`, `online_school`, `subscription_box`, `toy`, `unit_study`, `video`, `website`, `workbook`
+- "activity_kit" and "game" are NOT valid — map to `subscription_box` or `toy`/`board_game`
+- For URL query strings with spaces: use `urllib.parse.quote("text", safe='')` before embedding
+
+### Insert function pattern (Python, no external libs)
+```python
+import urllib.request, json
+
+SUPABASE_URL = "https://vbeieznywomwthngenyt.supabase.co"
+SERVICE_KEY = "<service_role_key>"
+
+def insert(r):
+    r.setdefault("category", "")
+    r.setdefault("requires_screen", "no")
+    r.setdefault("approved", True)
+    body = json.dumps(r).encode()
+    req = urllib.request.Request(
+        f"{SUPABASE_URL}/rest/v1/resources", data=body, method='POST',
+        headers={"apikey": SERVICE_KEY, "Authorization": f"Bearer {SERVICE_KEY}",
+                 "Content-Type": "application/json", "Prefer": "return=minimal"})
+    with urllib.request.urlopen(req) as resp: return resp.status
+```
+
+### match_tags — how they work
+All tags live in `match_tags[]` array — structural (grade levels, subjects) AND topic keywords all in the same array.
+Standard grade tags: `preschool`, `early_elementary`, `elementary`, `middle`, `high_school`
+Grade-level sync and subject sub-topic sync were completed 2026-04-03 (254 + 137 resources updated).
+
+### Denison Math — single entry covers all levels
+One "Denison Math" resource covers grades 7–12 with tags: `math`, `pre_algebra`, `algebra`, `middle`, `high_school`.
+Do NOT add separate Denison Pre-Algebra or Denison Algebra entries.
+
+### Research before insert — always
+Every resource must be researched via agent/web before inserting. Verify URLs point to correct product pages (not blog posts, not UK stores for US sites).
+
+## Session 2026-04-04 — Major DB Expansion
+
+**Current resource count: ~643** (was ~375 at start of session)
+
+### Batches added this session
+- Batch 4 (50): Geography books, animal/nature books, Nat Geo readers, Soundprints, DK, Barefoot Books
+- Batch 5 (50): Usborne Extreme Planet series, Lifesize series, math books, grammar/vocabulary, ThinkFun games, Usborne 100 Things to Know series
+- Batch 6 (34): Evolution/natural history books, Ancient Egypt/Mesopotamia/China, biography series (Extraordinary Life of, I Am, Who Was)
+- Batch 7 (29): US History books, I Can Read History series, Be Naturally Curious curriculum, Dare to Compare Math, cursive workbook, Barefoot/Shakespeare literature
+- Batch 8 (28): Usborne Illustrated Originals, Classic Starts, Junior Classics for Young Readers, Usborne Graphic Novels, Usborne Storybook Reading Library
+- Batch 9 (74): 41 SimplyFun board games, major board games (Ticket to Ride, Azul, Pandemic, Scrabble, etc.), Usborne Lots of Things to Know series
+- Final 3: Times Tales, National Geographic Explore VR (Oculus), GeoGuessr
+
+### Critical schema fix discovered 2026-04-04
+`grade_levels` is a Postgres ARRAY column — MUST pass as a JSON list: `["K–3"]`, never a plain string.
+`requires_subscription` does NOT exist in schema — omit it entirely.
+
+### Consulting Dashboard — FULLY BUILT ✅
+Phase 1 AND Phase 2 are both complete including:
+- Generate Recommendations button (tag-based match against resources DB)
+- Add to Report on each match
+- Report builder (editable sections, reorder/remove)
+- Send Report → emails from consulting@homeschoolconnective.com
+- Supabase tables: reports, report_items — already exist
+Do NOT suggest building any of this.
+
+### SimplyFun games note
+41 SimplyFun physical board games are in the DB, all with simplyfun.com product URLs and "SimplyFun" prefix in the name. They cover math, reading, science, logic, spelling, geography, and more for grades PreK–8.

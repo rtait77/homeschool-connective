@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
+import { DashboardSidebar } from '@/components/dashboard/sidebar'
 
 type Game = {
   title: string
@@ -70,6 +71,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState('')
   const [status, setStatus] = useState('')
   const [trialEnd, setTrialEnd] = useState<Date | null>(null)
   const [favorites, setFavorites] = useState<string[]>([])
@@ -77,6 +79,16 @@ export default function DashboardPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [hasStripe, setHasStripe] = useState(false)
+  const [consulting, setConsulting] = useState<{
+    ends_at: string
+    intake_completed: boolean
+    intake_status: string
+  } | null>(null)
+  const [reportReady, setReportReady] = useState(false)
+  const [emailMelOpen, setEmailMelOpen] = useState(false)
+  const [emailMelMessage, setEmailMelMessage] = useState('')
+  const [emailMelSending, setEmailMelSending] = useState(false)
+  const [emailMelSent, setEmailMelSent] = useState(false)
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -84,31 +96,59 @@ export default function DashboardPage() {
   )
 
   useEffect(() => {
-    async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
+    async function load(user: any) {
       if (!user) { router.push('/login'); return }
+      if (user.email === 'support@homeschoolconnective.com') { router.push('/admin'); return }
+      try {
+        setEmail(user.email ?? '')
 
-      setEmail(user.email ?? '')
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('trial_end, subscription_status, stripe_customer_id, first_name')
+          .eq('id', user.id)
+          .single()
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('trial_end, subscription_status, stripe_customer_id')
-        .eq('id', user.id)
-        .single()
+        setStatus(profile?.subscription_status ?? '')
+        setTrialEnd(profile?.trial_end ? new Date(profile.trial_end) : null)
+        setHasStripe(!!profile?.stripe_customer_id)
+        setFirstName(profile?.first_name ?? '')
 
-      setStatus(profile?.subscription_status ?? '')
-      setTrialEnd(profile?.trial_end ? new Date(profile.trial_end) : null)
-      setHasStripe(!!profile?.stripe_customer_id)
+        const { data: favData } = await supabase
+          .from('favorites')
+          .select('game_title')
+          .eq('user_id', user.id)
 
-      const { data: favData } = await supabase
-        .from('favorites')
-        .select('game_title')
-        .eq('user_id', user.id)
+        setFavorites(favData?.map(f => f.game_title) ?? [])
 
-      setFavorites(favData?.map(f => f.game_title) ?? [])
-      setLoading(false)
+        const { data: consultingRecord } = await supabase
+          .from('consulting_customers')
+          .select('ends_at, intake_completed')
+          .eq('user_id', user.id)
+          .single()
+        if (consultingRecord) {
+          setConsulting({
+            ends_at: consultingRecord.ends_at,
+            intake_completed: consultingRecord.intake_completed,
+            intake_status: consultingRecord.intake_completed ? 'submitted' : 'draft',
+          })
+          fetch('/api/consulting/client-report')
+            .then(r => r.json())
+            .then(d => { if (d.report?.status === 'sent') setReportReady(true) })
+            .catch(() => {})
+        }
+      } catch {
+        // silently continue — show dashboard with empty state
+      } finally {
+        setLoading(false)
+      }
     }
-    load()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN') {
+        load(session?.user ?? null)
+        subscription.unsubscribe()
+      }
+    })
+    return () => subscription.unsubscribe()
   }, [])
 
   async function toggleFavorite(title: string) {
@@ -144,9 +184,34 @@ export default function DashboardPage() {
     }
   }
 
+  async function sendEmailToMel(e: React.FormEvent) {
+    e.preventDefault()
+    setEmailMelSending(true)
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'e9fa8d0f-0004-4b87-bdf7-5403329c59cb',
+          to: 'consulting@homeschoolconnective.com',
+          from_name: firstName,
+          reply_to: email,
+          subject: `Consulting question from ${firstName} (${email})`,
+          message: emailMelMessage,
+        }),
+      })
+      setEmailMelSent(true)
+      setEmailMelMessage('')
+    } catch {
+      alert('Something went wrong. Please email consulting@homeschoolconnective.com directly.')
+    } finally {
+      setEmailMelSending(false)
+    }
+  }
+
   if (loading) return <div className="max-w-[1100px] mx-auto px-6 py-14 text-[#5c5c5c]">Loading...</div>
 
-  const firstName = email.split('@')[0]
+  const displayName = firstName || email.split('@')[0]
   const favoriteGames = allGames.filter(g => favorites.includes(g.title))
 
   const daysLeft = trialEnd ? Math.ceil((trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null
@@ -154,22 +219,28 @@ export default function DashboardPage() {
   const isActive = status === 'active'
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 py-14">
+    <div className="max-w-[1200px] mx-auto px-6 py-14">
+      <div className="flex gap-10">
+        <DashboardSidebar isAdmin={email === 'support@homeschoolconnective.com'} />
+        <div className="flex-1 min-w-0">
 
       {/* Welcome */}
       <div className="mb-10">
-        <h1 className="text-3xl font-extrabold mb-2">Welcome back, {firstName}!</h1>
+        <h1 className="text-3xl font-extrabold mb-2">Welcome back, {displayName}!</h1>
         <div className="flex items-center gap-3 flex-wrap">
           {isActive && (
             <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>
           )}
           {isTrialing && (
             <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">
-              {daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial
+              {daysLeft} day{daysLeft === 1 ? '' : 's'} left in free trial
             </span>
           )}
-          {isTrialing && (
-            <Link href="/pricing" className="text-sm font-bold text-[#238FA4] hover:underline">
+          {!isActive && !isTrialing && trialEnd && (
+            <span className="text-sm font-bold bg-[#fff0f0] text-[#cc4444] px-3 py-1 rounded-full">Trial ended</span>
+          )}
+          {!isActive && !isTrialing && trialEnd && (
+            <Link href="/pricing" className="text-sm font-bold text-[#ed7c5a] hover:underline">
               Subscribe to keep access →
             </Link>
           )}
@@ -195,91 +266,109 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Your Account */}
-      <div className="mb-12">
-        <h2 className="text-xl font-extrabold mb-4">Your Account</h2>
-        <div className="bg-white rounded-2xl p-6 border border-[#e2ddd5] flex flex-col gap-5" style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
-
-          {/* Account info */}
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div>
-              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Email</p>
-              <p className="font-semibold text-sm">{email}</p>
-            </div>
-            <div>
-              <p className="text-xs text-[#5c5c5c] font-bold uppercase tracking-wide mb-0.5">Plan</p>
-              {isActive && <span className="text-sm font-bold bg-[#55b6ca] text-white px-3 py-1 rounded-full">Active Subscriber</span>}
-              {isTrialing && <span className="text-sm font-bold bg-[#f5f1e9] text-[#ed7c5a] border border-[#ed7c5a] px-3 py-1 rounded-full">{daysLeft} day{daysLeft === 1 ? '' : 's'} left in trial</span>}
-              {!isActive && !isTrialing && <span className="text-sm text-[#5c5c5c]">No active plan</span>}
+      {/* Consulting section — only shown if they purchased consulting */}
+      {consulting?.ends_at && (
+        <div className="mb-12">
+          <h2 className="text-xl font-extrabold mb-4">One-on-One Consulting with Mel</h2>
+          <div className={`rounded-2xl p-6 border ${consulting.intake_completed ? 'bg-white border-[#e2ddd5]' : 'bg-[#fff9f7] border-[#ed7c5a]'}`} style={{ boxShadow: '0 2px 14px rgba(0,0,0,0.06)' }}>
+            <div className="flex items-start justify-between flex-wrap gap-4">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3 flex-wrap">
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    reportReady
+                      ? 'bg-[#5bb87a] text-white'
+                      : consulting.intake_completed
+                      ? 'bg-[#d1f5ea] text-[#1a7a52]'
+                      : 'bg-[#ed7c5a] text-white'
+                  }`}>
+                    {reportReady ? 'Your report is ready!' : consulting.intake_completed ? 'Intake submitted — Mel is reviewing' : 'Action needed — complete your intake form'}
+                  </span>
+                  {(() => {
+                    const daysLeft = Math.ceil((new Date(consulting.ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                    return daysLeft > 0 ? (
+                      <span className="text-xs font-semibold text-[#5c5c5c]">{daysLeft} days left in your 3-month window</span>
+                    ) : (
+                      <span className="text-xs font-semibold text-[#991b1b]">3-month window has ended</span>
+                    )
+                  })()}
+                </div>
+                {!consulting.intake_completed ? (
+                  <p className="text-sm text-[#5c5c5c]">Mel is waiting on your intake form before she can get started. It saves as you go — pick it up anytime.</p>
+                ) : reportReady ? (
+                  <div>
+                    <p className="text-sm text-[#5c5c5c] mb-3">Your personalized curriculum report from Mel is ready!</p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <Link href="/dashboard/report" className="inline-block bg-[#5bb87a] text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:opacity-90 transition">
+                        View My Report →
+                      </Link>
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+                        Email Mel
+                      </button>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review my intake answers →</Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-sm text-[#5c5c5c] mb-3">Mel has your answers and will be in touch within 3–5 business days.</p>
+                    <div className="flex items-center gap-4 flex-wrap">
+                      <button onClick={() => { setEmailMelOpen(true); setEmailMelSent(false) }} className="text-sm font-bold px-5 py-2.5 rounded-xl bg-[#ed7c5a] text-white hover:opacity-90 transition">
+                        Email Mel
+                      </button>
+                      <Link href="/dashboard/intake" className="text-sm font-bold text-[#55b6ca] hover:underline">Review your submitted answers →</Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+              {!consulting.intake_completed && (
+                <Link href="/dashboard/intake" className="inline-block bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition whitespace-nowrap">
+                  Complete Intake Form →
+                </Link>
+              )}
             </div>
           </div>
+        </div>
+      )}
 
-          <hr className="border-[#e2ddd5]" />
-
-          {/* Billing portal */}
-          {hasStripe ? (
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <p className="font-bold text-sm mb-0.5">Billing & Subscription</p>
-                <p className="text-xs text-[#5c5c5c]">Update your payment method, view invoices, or cancel your subscription.</p>
+      {/* Email Mel modal */}
+      {emailMelOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }} onClick={() => setEmailMelOpen(false)}>
+          <div className="bg-white rounded-2xl p-8 w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+            {emailMelSent ? (
+              <div className="text-center py-4">
+                <p className="text-2xl mb-3">✅</p>
+                <p className="font-extrabold text-lg mb-2">Message sent!</p>
+                <p className="text-sm text-[#5c5c5c] mb-6">Mel will get back to you within 3–5 business days at <span className="font-bold">{email}</span>.</p>
+                <button onClick={() => setEmailMelOpen(false)} className="bg-[#ed7c5a] text-white font-bold px-6 py-2.5 rounded-xl text-sm hover:opacity-90 transition">Done</button>
               </div>
-              <button
-                onClick={openBillingPortal}
-                disabled={billingLoading}
-                className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#55b6ca] text-[#55b6ca] hover:bg-[#55b6ca] hover:text-white transition disabled:opacity-50 whitespace-nowrap"
-              >
-                {billingLoading ? 'Loading...' : 'Manage Billing'}
-              </button>
-            </div>
-          ) : isTrialing ? (
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <p className="font-bold text-sm mb-0.5">Subscribe</p>
-                <p className="text-xs text-[#5c5c5c]">Keep access after your trial ends.</p>
-              </div>
-              <Link href="/pricing" className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#ed7c5a] text-[#ed7c5a] hover:bg-[#ed7c5a] hover:text-white transition whitespace-nowrap">
-                View Plans
-              </Link>
-            </div>
-          ) : null}
-
-          <hr className="border-[#e2ddd5]" />
-
-          {/* Delete account */}
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <p className="font-bold text-sm mb-0.5">Delete Account</p>
-              <p className="text-xs text-[#5c5c5c]">Permanently delete your account and all your data. This cannot be undone.</p>
-            </div>
-            {!deleteConfirm ? (
-              <button
-                onClick={() => setDeleteConfirm(true)}
-                className="text-sm font-bold px-5 py-2.5 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-red-400 hover:text-red-500 transition whitespace-nowrap"
-              >
-                Delete Account
-              </button>
             ) : (
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="text-xs text-red-500 font-bold">Are you sure?</p>
-                <button
-                  onClick={deleteAccount}
-                  disabled={deleteLoading}
-                  className="text-sm font-bold px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition disabled:opacity-50"
-                >
-                  {deleteLoading ? 'Deleting...' : 'Yes, delete'}
-                </button>
-                <button
-                  onClick={() => setDeleteConfirm(false)}
-                  className="text-sm font-bold px-4 py-2 rounded-lg border-2 border-[#ddd8cc] text-[#5c5c5c] hover:border-[#1c1c1c] transition"
-                >
-                  Cancel
-                </button>
-              </div>
+              <>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-extrabold text-lg">Email Mel</h3>
+                  <button onClick={() => setEmailMelOpen(false)} className="text-[#5c5c5c] hover:text-[#1c1c1c] text-xl leading-none">×</button>
+                </div>
+                <p className="text-sm text-[#5c5c5c] mb-5">Your message will be sent from <span className="font-bold">{email}</span> so Mel can reply directly to you.</p>
+                <form onSubmit={sendEmailToMel} className="flex flex-col gap-4">
+                  <textarea
+                    value={emailMelMessage}
+                    onChange={e => setEmailMelMessage(e.target.value)}
+                    placeholder="What's on your mind?"
+                    rows={6}
+                    required
+                    className="w-full border border-[#e2ddd5] rounded-xl p-4 text-sm text-[#383838] resize-none focus:outline-none focus:border-[#55b6ca]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={emailMelSending || !emailMelMessage.trim()}
+                    className="bg-[#ed7c5a] text-white font-bold px-6 py-3 rounded-xl text-sm hover:opacity-90 transition disabled:opacity-40"
+                  >
+                    {emailMelSending ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              </>
             )}
           </div>
-
         </div>
-      </div>
+      )}
 
       {/* New Games */}
       <div>
@@ -294,6 +383,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
+        </div>
+      </div>
     </div>
   )
 }

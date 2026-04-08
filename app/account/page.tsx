@@ -252,7 +252,7 @@ export default function AccountPage() {
 
       const { data: prof } = await supabase
         .from('profiles')
-        .select('subscription_status, trial_end, stripe_customer_id, first_name')
+        .select('subscription_status, trial_end, stripe_customer_id, first_name, current_period_end')
         .eq('id', user.id)
         .single()
       setProfile(prof)
@@ -280,7 +280,10 @@ export default function AccountPage() {
     : subStatus === 'expired' ? 'Trial Ended'
     : 'No Subscription'
 
-  const subDetail = subStatus === 'active' ? 'Games & Lessons subscription'
+  const renewalDateStr = profile?.current_period_end
+    ? new Date(profile.current_period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : null
+  const subDetail = subStatus === 'active' ? (renewalDateStr ? `Renews ${renewalDateStr}` : 'Games & Lessons subscription')
     : subStatus === 'trialing' ? `Trial ends ${new Date(profile?.trial_end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
     : subStatus === 'expired' ? 'Your free trial has ended'
     : null
