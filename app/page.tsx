@@ -180,7 +180,7 @@ export default async function PreviewHomePage() {
                 Our matching engine searches 1,100+ curated resources to find the perfect fit for your family — based on your child&apos;s learning style, your schedule, and what actually works.
               </p>
               <div>
-                <a href="/consulting/quiz" className="hero-btn-secondary">Find Your Homeschool Fit →</a>
+                <a href="/consulting/quiz" style={{ display: 'inline-flex', alignItems: 'center', fontWeight: 800, fontSize: '0.95rem', padding: '14px 28px', borderRadius: '14px', backgroundColor: '#238FA4', color: '#fff', textDecoration: 'none', transition: 'opacity 0.2s' }}>Find Your Homeschool Fit →</a>
                 <p style={{ fontSize: '0.75rem', color: '#999', marginTop: '6px' }}>Free. 2 minutes. No account needed.</p>
               </div>
             </div>
