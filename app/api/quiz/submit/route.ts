@@ -13,7 +13,9 @@ type QuizAnswers = {
   timeAvailable: string
   involvement: string
   screens: string
+  resourceTypes: string[]
   religiousPref: string
+  childNeeds: string
   subjects: string[]
 }
 
@@ -80,7 +82,17 @@ function ageToLabel(age: string): string {
   }
 }
 
-function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: string; religiousPref: string } {
+// Map quiz resource type choices to DB resource_type values
+const RESOURCE_TYPE_MAP: Record<string, string[]> = {
+  books: ['book', 'workbook'],
+  games: ['board_game', 'toy'],
+  curriculum: ['curriculum', 'unit_study'],
+  apps: ['app', 'online_game'],
+  videos: ['online_lessons', 'online_classes', 'video', 'online_school'],
+  hands_on: ['subscription_box', 'toy'],
+}
+
+function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: string; religiousPref: string; preferredTypes: Set<string> } {
   const tags = new Set<string>()
 
   // Q2: Tough day
@@ -122,10 +134,24 @@ function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: strin
   if (answers.screens === 'mix') { screenMode = 'screen_optional' }
   if (answers.screens === 'minimal') { screenMode = 'no_screen'; tags.add('no_screen'); tags.add('hands_on'); tags.add('book') }
 
-  // Q7: Religious preference
+  // Q7: Resource types → build preferred types set
+  const preferredTypes = new Set<string>()
+  for (const rt of (answers.resourceTypes || [])) {
+    const mapped = RESOURCE_TYPE_MAP[rt]
+    if (mapped) mapped.forEach(t => preferredTypes.add(t))
+  }
+
+  // Q8: Religious preference
   const religiousPref = answers.religiousPref || 'either'
 
-  // Q8: Subjects
+  // Q9: What child needs most
+  if (answers.childNeeds === 'catch_up') { tags.add('step_by_step'); tags.add('mastery_based'); tags.add('structured') }
+  if (answers.childNeeds === 'on_track') { tags.add('structured'); tags.add('comprehensive') }
+  if (answers.childNeeds === 'challenge') { tags.add('gifted'); tags.add('rigorous'); tags.add('enrichment') }
+  if (answers.childNeeds === 'engage') { tags.add('game_based'); tags.add('engaging'); tags.add('interest_led'); tags.add('hands_on') }
+  if (answers.childNeeds === 'explore') { tags.add('interest_led'); tags.add('child_led'); tags.add('creative'); tags.add('project_based') }
+
+  // Q10: Subjects
   for (const subj of answers.subjects) {
     if (subj === 'math') tags.add('math')
     if (subj === 'reading') { tags.add('reading'); tags.add('language_arts'); tags.add('phonics') }
@@ -140,7 +166,7 @@ function buildTags(answers: QuizAnswers): { tags: Set<string>; screenMode: strin
     }
   }
 
-  return { tags, screenMode, religiousPref }
+  return { tags, screenMode, religiousPref, preferredTypes }
 }
 
 function generateProfile(answers: QuizAnswers): string {
@@ -196,6 +222,12 @@ function generateProfile(answers: QuizAnswers): string {
     parts.push(`They\'d especially benefit from ${painPoints.slice(0, 2).join(' and ')}.`)
   }
 
+  // Child needs
+  if (answers.childNeeds === 'catch_up') parts.push('Right now, the priority is closing gaps — structured, step-by-step resources will help them build confidence.')
+  if (answers.childNeeds === 'challenge') parts.push('They\'re ready to be challenged — look for resources that go deeper and move faster.')
+  if (answers.childNeeds === 'engage') parts.push('The key right now is re-engaging them — fun, interest-driven resources will help reignite their spark.')
+  if (answers.childNeeds === 'explore') parts.push('They\'re in an exploration phase — following their interests will keep the love of learning alive.')
+
   return parts.join(' ')
 }
 
@@ -205,6 +237,7 @@ function scoreResource(
   grades: string[],
   screenMode: string,
   religiousPref: string,
+  preferredTypes: Set<string>,
   subjects: string[]
 ): number {
   const rTags = resource.match_tags || []
@@ -225,6 +258,12 @@ function scoreResource(
     if (rTags.includes(subj)) score += 2
   }
 
+  // Resource type preference — boost preferred types, penalize others
+  if (preferredTypes.size > 0) {
+    if (preferredTypes.has(resource.resource_type)) score += 4
+    else score -= 3
+  }
+
   // Screen filter
   if (screenMode === 'no_screen' && resource.requires_screen === 'yes') score -= 10
 
@@ -240,7 +279,7 @@ export async function POST(req: NextRequest) {
   try {
     const answers: QuizAnswers = await req.json()
 
-    const { tags, screenMode, religiousPref } = buildTags(answers)
+    const { tags, screenMode, religiousPref, preferredTypes } = buildTags(answers)
     const grades = ageToGrades(answers.age)
     const profile = generateProfile(answers)
 
@@ -254,7 +293,7 @@ export async function POST(req: NextRequest) {
 
     // Score and rank
     const scored = (resources as Resource[])
-      .map(r => ({ ...r, score: scoreResource(r, tags, grades, screenMode, religiousPref, answers.subjects) }))
+      .map(r => ({ ...r, score: scoreResource(r, tags, grades, screenMode, religiousPref, preferredTypes, answers.subjects) }))
       .filter(r => r.score > 0)
       .sort((a, b) => b.score - a.score)
 
@@ -276,7 +315,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const totalMatches = scored.filter(r => r.score >= 3).length
+    // Only count resources with a meaningful match (top half of max score)
+    const topScore = scored.length > 0 ? scored[0].score : 0
+    const threshold = Math.max(topScore * 0.5, 5)
+    const totalMatches = scored.filter(r => r.score >= threshold).length
 
     // Save quiz submission (anonymous — no email collected)
     await supabase.from('quiz_submissions').insert({

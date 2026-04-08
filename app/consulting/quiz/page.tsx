@@ -10,7 +10,9 @@ type QuizAnswers = {
   timeAvailable: string
   involvement: string
   screens: string
+  resourceTypes: string[]
   religiousPref: string
+  childNeeds: string
   subjects: string[]
 }
 
@@ -22,7 +24,8 @@ type QuizResult = {
 
 const INITIAL: QuizAnswers = {
   age: '', toughDay: [], engagement: [], timeAvailable: '',
-  involvement: '', screens: '', religiousPref: '', subjects: [],
+  involvement: '', screens: '', resourceTypes: [], religiousPref: '',
+  childNeeds: '', subjects: [],
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -99,7 +102,7 @@ export default function QuizPage() {
   const [result, setResult] = useState<QuizResult | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const totalSteps = 8
+  const totalSteps = 10
 
   function setRadio(field: keyof QuizAnswers, value: string) {
     setAnswers(a => ({ ...a, [field]: value }))
@@ -120,8 +123,10 @@ export default function QuizPage() {
       case 4: return answers.timeAvailable !== ''
       case 5: return answers.involvement !== ''
       case 6: return answers.screens !== ''
-      case 7: return answers.religiousPref !== ''
-      case 8: return answers.subjects.length > 0
+      case 7: return answers.resourceTypes.length > 0
+      case 8: return answers.religiousPref !== ''
+      case 9: return answers.childNeeds !== ''
+      case 10: return answers.subjects.length > 0
       default: return true
     }
   }
@@ -136,7 +141,7 @@ export default function QuizPage() {
       })
       const data = await res.json()
       setResult(data)
-      setStep(10)
+      setStep(11)
     } catch {
       alert('Something went wrong — please try again.')
     } finally {
@@ -145,7 +150,7 @@ export default function QuizPage() {
   }
 
   function next() {
-    if (step === 8) { submitQuiz(); return }
+    if (step === 10) { submitQuiz(); return }
     setStep(s => s + 1)
   }
 
@@ -158,7 +163,7 @@ export default function QuizPage() {
     <div style={{ fontFamily: 'Nunito, sans-serif', minHeight: '100vh', backgroundColor: '#f5f1e9' }}>
 
       {/* ── Progress Bar (visible during questions) ── */}
-      {step >= 1 && step <= 8 && (
+      {step >= 1 && step <= 10 && (
         <div style={{ position: 'sticky', top: 0, zIndex: 20, backgroundColor: '#f5f1e9', padding: '16px 24px 0' }}>
           <div style={{ maxWidth: 600, margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: '0.75rem', fontWeight: 700, color: '#999' }}>
@@ -189,7 +194,7 @@ export default function QuizPage() {
               Find Your Homeschool Fit
             </h1>
             <p style={{ fontSize: '1.05rem', color: '#5c5c5c', lineHeight: 1.7, maxWidth: 480, margin: '0 auto 12px' }}>
-              Answer 8 quick questions and we&apos;ll match your child with resources from our database of 1,100+ homeschool tools — books, games, curricula, apps, and more.
+              Answer 10 quick questions and we&apos;ll match your child with resources from our database of 1,100+ homeschool tools — books, games, curricula, apps, and more.
             </p>
             <p style={{ fontSize: '0.85rem', color: '#999', marginBottom: 40 }}>
               Takes about 2 minutes. No account needed.
@@ -209,7 +214,7 @@ export default function QuizPage() {
             <div style={{ marginTop: 56, display: 'flex', justifyContent: 'center', gap: 32, flexWrap: 'wrap' }}>
               {[
                 { num: '1,100+', label: 'Resources' },
-                { num: '8', label: 'Questions' },
+                { num: '10', label: 'Questions' },
                 { num: '2 min', label: 'To complete' },
               ].map(s => (
                 <div key={s.label} style={{ textAlign: 'center' }}>
@@ -322,8 +327,26 @@ export default function QuizPage() {
           </QuestionWrapper>
         )}
 
-        {/* ═══ Q7: Religious Preference ═══ */}
+        {/* ═══ Q7: Resource Types ═══ */}
         {step === 7 && (
+          <QuestionWrapper title="What kinds of resources appeal to you most?" subtitle="Pick all that apply" onNext={next} onBack={back} canAdvance={canAdvance()} step={step}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { v: 'books', l: 'Books and workbooks' },
+                { v: 'games', l: 'Board games and card games' },
+                { v: 'curriculum', l: 'A full curriculum or program' },
+                { v: 'apps', l: 'Apps and online games' },
+                { v: 'videos', l: 'Video lessons or online classes' },
+                { v: 'hands_on', l: 'Hands-on kits and projects' },
+              ].map(o => (
+                <CheckCard key={o.v} label={o.l} value={o.v} checked={answers.resourceTypes.includes(o.v)} onToggle={v => toggleCheck('resourceTypes', v)} />
+              ))}
+            </div>
+          </QuestionWrapper>
+        )}
+
+        {/* ═══ Q8: Religious Preference ═══ */}
+        {step === 8 && (
           <QuestionWrapper title="Do you have a preference for secular or faith-based resources?" onNext={next} onBack={back} canAdvance={canAdvance()} step={step}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
@@ -337,8 +360,25 @@ export default function QuizPage() {
           </QuestionWrapper>
         )}
 
-        {/* ═══ Q8: Subjects ═══ */}
-        {step === 8 && (
+        {/* ═══ Q9: What child needs most ═══ */}
+        {step === 9 && (
+          <QuestionWrapper title="What does your child need most right now?" onNext={next} onBack={back} canAdvance={canAdvance()} step={step}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { v: 'catch_up', l: 'Catch up — they\'re behind and need to close gaps' },
+                { v: 'on_track', l: 'Stay on track — we just need solid, reliable resources' },
+                { v: 'challenge', l: 'Be challenged — they\'re ahead and need more depth' },
+                { v: 'engage', l: 'Get engaged — they\'re capable but checked out' },
+                { v: 'explore', l: 'Explore interests — less about grade level, more about curiosity' },
+              ].map(o => (
+                <RadioCard key={o.v} label={o.l} value={o.v} selected={answers.childNeeds === o.v} onSelect={v => setRadio('childNeeds', v)} />
+              ))}
+            </div>
+          </QuestionWrapper>
+        )}
+
+        {/* ═══ Q10: Subjects ═══ */}
+        {step === 10 && (
           <QuestionWrapper title="What subjects are you most looking for help with?" subtitle="Pick up to 3" onNext={next} onBack={back} canAdvance={canAdvance()} step={step} loading={loading}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
@@ -371,18 +411,37 @@ export default function QuizPage() {
         )}
 
         {/* ═══ Results ═══ */}
-        {step === 10 && result && (
+        {step === 11 && result && (
           <div>
-            {/* Confetti-lite: decorative dots */}
+            {/* Confetti-lite */}
             <div style={{ textAlign: 'center', marginBottom: 8 }}>
               <span style={{ fontSize: '2rem' }}>&#10024;</span>
             </div>
 
-            <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', lineHeight: 1.25, marginBottom: 40 }}>
+            <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 800, color: '#1c1c1c', textAlign: 'center', lineHeight: 1.25, marginBottom: 24 }}>
               Your Results
             </h2>
 
-            {/* Section 1: Learning Profile */}
+            {/* Top Mel banner */}
+            <div style={{ backgroundColor: '#fff', borderRadius: 14, padding: '20px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', marginBottom: 28, display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+              <div style={{ flex: 1, minWidth: 200 }}>
+                <p style={{ fontSize: '0.92rem', fontWeight: 700, color: '#383838', margin: '0 0 4px', lineHeight: 1.5 }}>
+                  Want better-matched results? Work with Mel to take the full quiz our team built — it goes deeper into your child&apos;s learning style, your teaching style, and what&apos;s actually working (and not working) at home.
+                </p>
+              </div>
+              <a href="/consulting" style={{
+                display: 'inline-block', backgroundColor: '#238FA4', color: '#fff', fontWeight: 800,
+                fontSize: '0.82rem', padding: '10px 22px', borderRadius: 8, textDecoration: 'none', whiteSpace: 'nowrap',
+                transition: 'opacity 0.15s', flexShrink: 0,
+              }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = '0.9')}
+                onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+              >
+                Learn more →
+              </a>
+            </div>
+
+            {/* Learning Profile */}
             <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', marginBottom: 28 }}>
               <h3 style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#238FA4', marginBottom: 14 }}>
                 Your Child&apos;s Learning Profile
@@ -394,7 +453,7 @@ export default function QuizPage() {
               </div>
             </div>
 
-            {/* Section 2: Resource Recommendations */}
+            {/* Resource Recommendations */}
             <div style={{ marginBottom: 28 }}>
               <h3 style={{ fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#238FA4', marginBottom: 16 }}>
                 3 Resources We&apos;d Recommend
@@ -406,7 +465,7 @@ export default function QuizPage() {
                     onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.08)')}
                     onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)')}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: '0.98rem', fontWeight: 800, color: '#1c1c1c' }}>{r.name}</span>
                       <span style={{
                         fontSize: '0.68rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em',
@@ -430,51 +489,27 @@ export default function QuizPage() {
               </div>
             </div>
 
-            {/* Section 3: Upsell */}
+            {/* Bottom Mel box */}
             <div style={{
               background: 'linear-gradient(135deg, #238FA4 0%, #1a7a8d 100%)', borderRadius: 16,
-              padding: '32px 28px', color: '#fff', marginBottom: 28,
+              padding: '28px 24px', color: '#fff', marginBottom: 28,
             }}>
-              <p style={{ fontSize: '1.6rem', fontWeight: 800, lineHeight: 1.3, marginBottom: 8 }}>
-                We found {result.totalMatches}+ resources that match your child&apos;s profile.
+              <p style={{ fontSize: '1.1rem', fontWeight: 800, lineHeight: 1.4, marginBottom: 12 }}>
+                Need homeschool help?
               </p>
-              <p style={{ fontSize: '0.82rem', fontWeight: 600, opacity: 0.85, marginBottom: 0 }}>
-                This quiz is just the beginning.
-              </p>
-              <div style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.2)', margin: '20px 0' }} />
-              <p style={{ fontSize: '0.95rem', lineHeight: 1.7, opacity: 0.95, marginBottom: 24 }}>
-                Sign up with Mel to access our in-depth intake form — the one our team built to match your family with even more resources. She&apos;ll review your answers, hand-pick 20–50+ recommendations, and be available by email for 3 months of homeschool support.
+              <p style={{ fontSize: '0.92rem', lineHeight: 1.7, opacity: 0.95, marginBottom: 20 }}>
+                Mel can answer questions, help you navigate curriculum options, and offer support in all areas of homeschool life.
               </p>
               <a href="/consulting" style={{
                 display: 'inline-block', backgroundColor: '#ed7c5a', color: '#fff', fontWeight: 800,
-                fontSize: '0.95rem', padding: '14px 32px', borderRadius: 10, textDecoration: 'none',
+                fontSize: '0.9rem', padding: '12px 28px', borderRadius: 10, textDecoration: 'none',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.2)', transition: 'opacity 0.15s',
               }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = '0.9')}
                 onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
               >
-                Work with Mel →
+                Learn more →
               </a>
-            </div>
-
-            {/* Section 4: What consulting includes */}
-            <div style={{ backgroundColor: '#fff', borderRadius: 16, padding: '28px 24px', border: '1px solid #e2ddd5', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' }}>
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#383838', marginBottom: 16 }}>
-                What you get when you work with Mel:
-              </h3>
-              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {[
-                  'Our in-depth intake form covering every child in your family',
-                  'A personalized resource report with 20–50+ hand-picked matches',
-                  'Your child\'s learning style and your teaching style breakdown',
-                  '3 months of email support with Mel',
-                ].map((item, i) => (
-                  <li key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <span style={{ color: '#55b6ca', fontWeight: 800, fontSize: '1.1rem', lineHeight: 1, marginTop: 2, flexShrink: 0 }}>&#10003;</span>
-                    <span style={{ fontSize: '0.9rem', color: '#5c5c5c', lineHeight: 1.6 }}>{item}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* Retake */}
@@ -488,7 +523,7 @@ export default function QuizPage() {
         )}
 
         {/* Loading state */}
-        {step === 10 && !result && loading && (
+        {step === 11 && !result && loading && (
           <div style={{ textAlign: 'center', paddingTop: 80 }}>
             <div style={{ width: 40, height: 40, border: '4px solid #e2ddd5', borderTopColor: '#ed7c5a', borderRadius: '50%', margin: '0 auto 20px', animation: 'spin 0.8s linear infinite' }} />
             <p style={{ color: '#5c5c5c', fontWeight: 600 }}>Finding your perfect matches...</p>
@@ -508,7 +543,7 @@ function QuestionWrapper({ title, subtitle, children, onNext, onBack, canAdvance
   title: string; subtitle?: string; children: React.ReactNode
   onNext: () => void; onBack: () => void; canAdvance: boolean; step: number; loading?: boolean
 }) {
-  const isLast = step === 8
+  const isLast = step === 10
   const disabled = !canAdvance || !!loading
   return (
     <div>
