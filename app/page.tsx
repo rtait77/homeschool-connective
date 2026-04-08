@@ -166,12 +166,22 @@ export default async function PreviewHomePage() {
                 Learning That Feels Like{' '}
                 <span className="ph-display-italic" style={{ color: '#ed7c5a' }}>Playing</span>
               </h1>
-              <p style={{ fontSize: '1.125rem', color: '#5c5c5c', marginBottom: '28px', lineHeight: '1.7', fontFamily: 'var(--font-body)' }}>
-                Plus, ongoing homeschool support for parents.
+              <p style={{ fontSize: '0.95rem', color: '#5c5c5c', marginBottom: '12px', lineHeight: '1.6', fontFamily: 'var(--font-body)' }}>
+                Interactive games &amp; lessons for homeschoolers
               </p>
-              <div className="hero-ctas">
+              <div style={{ marginBottom: '32px' }}>
                 <a href="/learn" className="hero-btn-primary">Play &amp; Learn</a>
-                <a href="/consulting" className="hero-btn-secondary">Find Your Homeschool Fit →</a>
+              </div>
+
+              <p style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1c1c1c', marginBottom: '8px', lineHeight: '1.4' }}>
+                Not sure what your child needs?
+              </p>
+              <p style={{ fontSize: '0.95rem', color: '#5c5c5c', marginBottom: '14px', lineHeight: '1.6', fontFamily: 'var(--font-body)' }}>
+                Our matching engine searches 1,100+ curated resources to find the perfect fit for your family — based on your child&apos;s learning style, your schedule, and what actually works.
+              </p>
+              <div>
+                <a href="/consulting/quiz" className="hero-btn-secondary">Find Your Homeschool Fit →</a>
+                <p style={{ fontSize: '0.75rem', color: '#999', marginTop: '6px' }}>Free. 2 minutes. No account needed.</p>
               </div>
             </div>
             <div className="hero-video-col">
@@ -337,7 +347,7 @@ export default async function PreviewHomePage() {
                 </p>
               )}
               <div className="flex flex-wrap gap-3">
-                <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl border-2 border-[#238FA4] text-[#238FA4] hover:bg-[#238FA4] hover:text-white transition">
+                <Link href="/consulting/quiz" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl border-2 border-[#238FA4] text-[#238FA4] hover:bg-[#238FA4] hover:text-white transition">
                   Find Your Fit — Free
                 </Link>
                 <Link href="/consulting" className="inline-flex items-center font-extrabold text-sm px-6 py-3 rounded-xl bg-[#238FA4] text-white hover:opacity-90 transition">
