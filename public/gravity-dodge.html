@@ -293,9 +293,9 @@ const ZONES = [
     gStart: 360, gEnd: 430,
     landmarks: [
       { name: 'Saturn', img: '/saturn.png', size: 120, atG: 380 },
-      { name: 'Titan', img: '/titan.png', size: 32, atG: 384 },
+      { name: 'Mimas', img: '/mimas.png', size: 20, atG: 384 },
       { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 387 },
-      { name: 'Mimas', img: '/mimas.png', size: 20, atG: 390 },
+      { name: 'Titan', img: '/titan.png', size: 32, atG: 390 },
     ],
     hazardRate: 0.02, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
@@ -304,9 +304,9 @@ const ZONES = [
     gStart: 430, gEnd: 500,
     landmarks: [
       { name: 'Uranus', img: '/uranus.png', size: 85, atG: 452 },
-      { name: 'Titania', img: '/titania.png', size: 26, atG: 456 },
-      { name: 'Oberon', img: '/oberon.png', size: 24, atG: 459 },
-      { name: 'Miranda', img: '/miranda.png', size: 20, atG: 462 },
+      { name: 'Miranda', img: '/miranda.png', size: 20, atG: 456 },
+      { name: 'Titania', img: '/titania.png', size: 26, atG: 459 },
+      { name: 'Oberon', img: '/oberon.png', size: 24, atG: 462 },
     ],
     hazardRate: 0.02, hazardSpeed: [3, 5], hazardSize: [26, 46],
   },
@@ -338,10 +338,10 @@ const ZONES = [
     hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
   },
   {
-    id: 'termination-shock', title: 'Termination Shock', sub: 'Entering the boundary of the heliosphere',
+    id: 'termination-shock', title: 'Termination Shock', sub: 'Where the solar wind abruptly slows down',
     gStart: 760, gEnd: 810,
     landmarks: [],
-    barrier: { atG: 785, color: '#4488dd', width: 8 },
+    barrier: { atG: 785, color: '#4488dd', width: 8, arcWidth: 400 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
@@ -355,7 +355,7 @@ const ZONES = [
     id: 'heliopause', title: 'The Heliopause', sub: 'Exiting the heliosphere',
     gStart: 900, gEnd: 940,
     landmarks: [],
-    barrier: { atG: 920, color: '#888888', width: 14 },
+    barrier: { atG: 920, color: '#888888', width: 14, arcWidth: 400 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
@@ -619,19 +619,19 @@ function spawnBarrier(zone) {
 
   const el = document.createElement('div');
   el.className = 'barrier-line';
-  // Curved arc that spans the full height — looks like exiting a bubble
-  const arcW = 200;
-  const arcH = H() * 2;
+  // Wide curved arc — takes up ~half the screen width so it's visible longer
+  const arcW = b.arcWidth || 400;
+  const arcH = H() * 2.5;
   el.style.width = arcW + 'px';
   el.style.height = arcH + 'px';
   el.style.left = W() + 50 + 'px';
   el.style.top = (-arcH / 2 + H() / 2) + 'px';
   el.style.border = `${b.width}px solid ${b.color}`;
   el.style.borderLeft = 'none';
-  el.style.boxShadow = `0 0 ${b.width * 3}px ${b.color}40, inset 0 0 ${b.width * 2}px ${b.color}20`;
+  el.style.boxShadow = `0 0 ${b.width * 4}px ${b.color}60, inset 0 0 ${b.width * 3}px ${b.color}30`;
   el.style.background = 'transparent';
   gameArea.appendChild(el);
-  barriers.push({ el, x: W() + 50, speed: 2, zoneIdx: ZONES.indexOf(zone) });
+  barriers.push({ el, x: W() + 50, speed: 1.5, zoneIdx: ZONES.indexOf(zone) });
 }
 
 // Oort Cloud wall — dense burst of rocks
