@@ -459,7 +459,6 @@ function init() {
   victory = false;
 
   updateLives();
-  document.getElementById('distance').textContent = '0 miles';
   document.getElementById('zone-title').style.opacity = '0';
 
   // Sun — full viewport height, mostly off-screen left
@@ -764,8 +763,7 @@ function loop() {
     sndBoost();
   }
 
-  // HUD
-  document.getElementById('distance').textContent = displayDist();
+  // HUD (distance counter hidden for now)
 
   // Victory check
   if (distance >= TOTAL_DIST) {
