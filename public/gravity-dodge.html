@@ -461,12 +461,15 @@ function init() {
   updateLives();
   document.getElementById('zone-title').style.opacity = '0';
 
-  // Sun — full viewport height, mostly off-screen left
+  // Sun — full viewport height, mostly off-screen left (disable transition for instant reset)
+  sunRef.style.transition = 'none';
   const sunH = H() * 1.2;
   sunRef.style.width = sunH + 'px';
   sunRef.style.height = sunH + 'px';
   sunRef.style.left = (-sunH * 0.65) + 'px';
   sunRef.style.opacity = '1';
+  // Re-enable transition after a frame
+  requestAnimationFrame(() => { sunRef.style.transition = ''; });
 }
 
 function updateLives() {
