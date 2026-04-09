@@ -955,9 +955,12 @@ export default function GamesPage() {
       {filtered.length > 0 && (
         <p className="text-sm text-[#5c5c5c] mb-6">
           {(() => {
-            const label = activeCategory === 'lessons' ? 'lesson' : activeCategory === 'printables' ? 'printable' : 'game';
-            const total = (search.trim() || activeCategory || activeGameType || activeDifficulty || topic !== 'all') ? filtered.length : games.length;
-            return <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{total}</span> {total === 1 ? label : label + 's'}</>;
+            const start = (page - 1) * ITEMS_PER_PAGE + 1;
+            const end = Math.min(page * ITEMS_PER_PAGE, filtered.length);
+            const total = filtered.length;
+            const label = activeCategory === 'lessons' ? 'lesson' : activeCategory === 'printables' ? 'printable' : activeCategory === 'games' ? 'game' : '';
+            const labelText = label ? ' ' + (total === 1 ? label : label + 's') : '';
+            return <><span className="font-bold text-[#1c1c1c]">{start}–{end}</span> of <span className="font-bold text-[#1c1c1c]">{total}</span>{labelText}</>;
           })()}
         </p>
       )}
