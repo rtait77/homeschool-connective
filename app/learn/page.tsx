@@ -1075,7 +1075,7 @@ function GameCard({ game, hasAccess, trialExpired, userId, isFavorited, onToggle
 
   const isFree = !!(game as any).freeLabel
   const href = isFree ? game.url : hasAccess ? game.url : trialExpired ? '/pricing' : '/signup'
-  const external = (isFree || hasAccess) && game.newTab !== false
+  const external = false // all games open in same tab
 
   return (
     <a
