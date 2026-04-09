@@ -248,7 +248,7 @@ const ZONES = [
     hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
-    id: 'earth', title: 'Earth & Moon', sub: '93 million miles from the Sun',
+    id: 'earth', title: 'Earth', sub: '93 million miles from the Sun',
     gStart: 115, gEnd: 165,
     landmarks: [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
@@ -257,7 +257,7 @@ const ZONES = [
     hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
-    id: 'mars', title: 'Mars, Phobos & Deimos', sub: '141.6 million miles from the Sun',
+    id: 'mars', title: 'Mars', sub: '141.6 million miles from the Sun',
     gStart: 165, gEnd: 220,
     landmarks: [
       { name: 'Mars', img: '/mars.png', size: 65, atG: 185 },
@@ -276,7 +276,7 @@ const ZONES = [
     hazardRate: 0.035, hazardSpeed: [2, 4], hazardSize: [18, 45],
   },
   {
-    id: 'jupiter', title: 'Jupiter & Its Moons', sub: '483.8 million miles from the Sun',
+    id: 'jupiter', title: 'Jupiter', sub: '483.8 million miles from the Sun',
     gStart: 290, gEnd: 360,
     landmarks: [
       { name: 'Jupiter', img: '/jupiter.png', size: 110, atG: 310 },
@@ -288,7 +288,7 @@ const ZONES = [
     hazardRate: 0.022, hazardSpeed: [2.5, 4], hazardSize: [25, 42],
   },
   {
-    id: 'saturn', title: 'Saturn & Its Moons', sub: '890.8 million miles from the Sun',
+    id: 'saturn', title: 'Saturn', sub: '890.8 million miles from the Sun',
     gStart: 360, gEnd: 430,
     landmarks: [
       { name: 'Saturn', img: '/saturn.png', size: 120, atG: 380 },
@@ -299,7 +299,7 @@ const ZONES = [
     hazardRate: 0.025, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
-    id: 'uranus', title: 'Uranus & Its Moons', sub: '1.78 billion miles from the Sun',
+    id: 'uranus', title: 'Uranus', sub: '1.78 billion miles from the Sun',
     gStart: 430, gEnd: 500,
     landmarks: [
       { name: 'Uranus', img: '/uranus.png', size: 85, atG: 452 },
@@ -307,16 +307,16 @@ const ZONES = [
       { name: 'Oberon', img: '/oberon.png', size: 24, atG: 480 },
       { name: 'Miranda', img: '/miranda.png', size: 20, atG: 492 },
     ],
-    hazardRate: 0.028, hazardSpeed: [3, 5], hazardSize: [26, 46],
+    hazardRate: 0.02, hazardSpeed: [3, 5], hazardSize: [26, 46],
   },
   {
-    id: 'neptune', title: 'Neptune & Triton', sub: '2.79 billion miles from the Sun',
+    id: 'neptune', title: 'Neptune', sub: '2.79 billion miles from the Sun',
     gStart: 500, gEnd: 565,
     landmarks: [
       { name: 'Neptune', img: '/neptune.png', size: 80, atG: 525 },
       { name: 'Triton', img: '/triton.png', size: 28, atG: 545 },
     ],
-    hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
+    hazardRate: 0.022, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
   },
   {
     id: 'kuiper', title: 'The Kuiper Belt', sub: '3.67 billion miles from the Sun',
@@ -326,7 +326,7 @@ const ZONES = [
       { name: 'Haumea', img: '/haumea.png', size: 30, atG: 620 },
       { name: 'Makemake', img: '/makemake.png', size: 30, atG: 645 },
     ],
-    hazardRate: 0.035, hazardSpeed: [3, 5.5], hazardSize: [20, 50],
+    hazardRate: 0.025, hazardSpeed: [3, 5.5], hazardSize: [20, 50],
   },
   {
     id: 'scattered', title: 'The Scattered Disk', sub: 'Home of Eris',
@@ -334,7 +334,7 @@ const ZONES = [
     landmarks: [
       { name: 'Eris', img: '/eris.png', size: 35, atG: 695 },
     ],
-    hazardRate: 0.032, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
+    hazardRate: 0.022, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
   },
   {
     id: 'termination-shock', title: 'Termination Shock', sub: 'The edge of the solar wind',
@@ -368,7 +368,7 @@ const ZONES = [
     id: 'oort', title: 'The Oort Cloud', sub: 'A shell of icy objects surrounding the solar system',
     gStart: 940, gEnd: 1030,
     landmarks: [],
-    hazardRate: 0.06, hazardSpeed: [4, 7], hazardSize: [18, 50],
+    hazardRate: 0.035, hazardSpeed: [4, 7], hazardSize: [18, 50],
     oortWall: true,
   },
 ];
@@ -532,9 +532,15 @@ function spawnHazard(zone, diffMult) {
   el.style.left = W() + 20 + 'px';
   el.style.top = y + 'px';
 
-  // Use comet svg for kuiper/oort, rock shapes otherwise
-  if (zone.id === 'kuiper' || zone.id === 'oort' || zone.id === 'scattered') {
-    el.innerHTML = '<img src="/comet.png" alt="">';
+  // Use SVG comet with red tail for kuiper/oort/scattered, rocks otherwise
+  if (zone.id === 'kuiper' || zone.id === 'oort' || zone.id === 'scattered' || zone.id === 'interstellar') {
+    el.innerHTML = `<svg viewBox="0 0 60 30" width="${size}" height="${size*0.5}">
+      <ellipse cx="18" cy="15" rx="8" ry="7" fill="#c8c0b8"/>
+      <ellipse cx="16" cy="13" rx="3" ry="2" fill="#ddd" opacity="0.6"/>
+      <path d="M26,12 Q40,8 58,4" stroke="#cc3333" stroke-width="3" fill="none" opacity="0.7"/>
+      <path d="M26,15 Q42,14 60,12" stroke="#dd5544" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M26,18 Q40,20 56,24" stroke="#cc3333" stroke-width="2.5" fill="none" opacity="0.4"/>
+    </svg>`;
   } else {
     // SVG rock
     const hue = zone.id === 'heliosphere' || zone.id === 'interstellar' ? '220' : '30';
@@ -609,7 +615,7 @@ function spawnOortWall() {
   if (oortWallSpawned) return;
   oortWallSpawned = true;
   // Spawn a dense wave of rocks across the screen
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 15; i++) {
     const size = 18 + Math.random() * 35;
     const y = Math.random() * (H() - 60) + 30;
     const spd = 3 + Math.random() * 4;
@@ -621,7 +627,13 @@ function spawnOortWall() {
     el.style.height = size + 'px';
     el.style.left = xOff + 'px';
     el.style.top = y + 'px';
-    el.innerHTML = '<img src="/comet.png" alt="">';
+    el.innerHTML = `<svg viewBox="0 0 60 30" width="${size}" height="${size*0.5}">
+      <ellipse cx="18" cy="15" rx="8" ry="7" fill="#c8c0b8"/>
+      <ellipse cx="16" cy="13" rx="3" ry="2" fill="#ddd" opacity="0.6"/>
+      <path d="M26,12 Q40,8 58,4" stroke="#cc3333" stroke-width="3" fill="none" opacity="0.7"/>
+      <path d="M26,15 Q42,14 60,12" stroke="#dd5544" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M26,18 Q40,20 56,24" stroke="#cc3333" stroke-width="2.5" fill="none" opacity="0.4"/>
+    </svg>`;
     gameArea.appendChild(el);
     hazards.push({ el, x: xOff, y, size, speed: spd, rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 4 });
   }
