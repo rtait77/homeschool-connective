@@ -379,22 +379,24 @@ function W() { return window.innerWidth; }
 function H() { return window.innerHeight; }
 
 // Map game distance to real astronomical distance (million miles)
-// Anchored to landmark positions so the counter matches when you pass each planet
+// Anchored so counter reads correctly when landmarks appear on screen
+// Landmarks spawn at atG but take ~15-20 game units to scroll to the ship,
+// so we offset anchors earlier to account for scroll time
 const REAL_MAP = [
-  { g0: 0, g1: 50, r0: 0, r1: 36 },           // start → Mercury
-  { g0: 50, g1: 92, r0: 36, r1: 67.2 },        // Mercury → Venus
-  { g0: 92, g1: 135, r0: 67.2, r1: 93 },       // Venus → Earth
-  { g0: 135, g1: 185, r0: 93, r1: 141.6 },     // Earth → Mars
-  { g0: 185, g1: 245, r0: 141.6, r1: 257 },    // Mars → Ceres
-  { g0: 245, g1: 310, r0: 257, r1: 483.8 },    // Ceres → Jupiter
-  { g0: 310, g1: 380, r0: 483.8, r1: 890.8 },  // Jupiter → Saturn
-  { g0: 380, g1: 452, r0: 890.8, r1: 1784 },   // Saturn → Uranus
-  { g0: 452, g1: 525, r0: 1784, r1: 2793 },    // Uranus → Neptune
-  { g0: 525, g1: 590, r0: 2793, r1: 3670 },    // Neptune → Pluto
-  { g0: 590, g1: 695, r0: 3670, r1: 6000 },    // Pluto → Eris
-  { g0: 695, g1: 770, r0: 6000, r1: 8700 },    // Eris → Heliosphere
-  { g0: 770, g1: 845, r0: 8700, r1: 11200 },   // Heliosphere → Voyager
-  { g0: 845, g1: 970, r0: 11200, r1: 50000 },  // Voyager → Oort Cloud end
+  { g0: 0, g1: 38, r0: 0, r1: 36 },           // start → Mercury (spawns at 50, appears ~38)
+  { g0: 38, g1: 78, r0: 36, r1: 67.2 },        // Mercury → Venus (spawns at 92, appears ~78)
+  { g0: 78, g1: 120, r0: 67.2, r1: 93 },       // Venus → Earth (spawns at 135, appears ~120)
+  { g0: 120, g1: 170, r0: 93, r1: 141.6 },     // Earth → Mars (spawns at 185, appears ~170)
+  { g0: 170, g1: 230, r0: 141.6, r1: 257 },    // Mars → Ceres
+  { g0: 230, g1: 295, r0: 257, r1: 483.8 },    // Ceres → Jupiter
+  { g0: 295, g1: 365, r0: 483.8, r1: 890.8 },  // Jupiter → Saturn
+  { g0: 365, g1: 436, r0: 890.8, r1: 1784 },   // Saturn → Uranus
+  { g0: 436, g1: 510, r0: 1784, r1: 2793 },    // Uranus → Neptune
+  { g0: 510, g1: 575, r0: 2793, r1: 3670 },    // Neptune → Pluto
+  { g0: 575, g1: 680, r0: 3670, r1: 6000 },    // Pluto → Eris
+  { g0: 680, g1: 755, r0: 6000, r1: 8700 },    // Eris → Heliosphere
+  { g0: 755, g1: 830, r0: 8700, r1: 11200 },   // Heliosphere → Voyager
+  { g0: 830, g1: 970, r0: 11200, r1: 50000 },  // Voyager → Oort Cloud end
 ];
 
 function gameToReal(gd) {
