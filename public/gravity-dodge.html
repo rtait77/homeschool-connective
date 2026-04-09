@@ -376,58 +376,6 @@ function W() { return window.innerWidth; }
 function H() { return window.innerHeight; }
 
 // Map game distance to real astronomical distance (million miles)
-// Distance counter is driven by landmark positions on screen, not game distance.
-// When a landmark passes the ship, we lock the counter to the real distance.
-let realDistOverride = null; // set when a landmark passes the ship
-let lastRealDist = 0;
-const LANDMARK_REAL_DIST = {
-  'Mercury': 36, 'Venus': 67.2, 'Earth': 93, 'Moon': 93.2,
-  'Mars': 141.6, 'Phobos': 142, 'Deimos': 142.5,
-  'Ceres': 257, 'Vesta': 270,
-  'Jupiter': 483.8, 'Io': 484, 'Europa': 484.5, 'Ganymede': 485, 'Callisto': 485.5,
-  'Saturn': 890.8, 'Titan': 891, 'Enceladus': 892, 'Mimas': 893,
-  'Uranus': 1784, 'Titania': 1785, 'Oberon': 1786, 'Miranda': 1787,
-  'Neptune': 2793, 'Triton': 2794,
-  'Pluto': 3670, 'Haumea': 4010, 'Makemake': 4250,
-  'Eris': 6000,
-  'Voyager 1': 11200,
-};
-
-// Simple interpolation between landmark checkpoints for smooth counter
-let distCheckpoints = [{ g: 0, r: 0 }]; // filled as landmarks pass
-
-function calcRealDist() {
-  // Find the two checkpoints we're between
-  for (let i = distCheckpoints.length - 1; i >= 0; i--) {
-    if (distance >= distCheckpoints[i].g) {
-      const cp = distCheckpoints[i];
-      // Interpolate forward from last checkpoint
-      const nextCp = distCheckpoints[i + 1];
-      if (nextCp) {
-        const t = (distance - cp.g) / (nextCp.g - cp.g);
-        return cp.r + t * (nextCp.r - nextCp.r); // shouldn't hit this often
-      }
-      // Past last checkpoint — estimate based on rate from last two
-      if (i > 0) {
-        const prev = distCheckpoints[i - 1];
-        const rate = (cp.r - prev.r) / (cp.g - prev.g);
-        return cp.r + (distance - cp.g) * rate;
-      }
-      // Only one checkpoint — simple ratio
-      if (cp.g > 0) return cp.r * (distance / cp.g);
-      // Estimate early game: ~36M miles over first 50 game units
-      return distance * (36 / 50);
-    }
-  }
-  return 0;
-}
-
-function displayDist() {
-  const rd = calcRealDist();
-  lastRealDist = Math.max(lastRealDist, rd); // never go backward
-  return formatDist(lastRealDist);
-}
-
 function gameToReal(gd) {
   for (const s of REAL_MAP) {
     if (gd <= s.g1) {
