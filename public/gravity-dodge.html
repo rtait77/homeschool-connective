@@ -188,7 +188,7 @@
   <h1>Gravity Dodge</h1>
   <p>Journey from the Sun to the edge of the solar system.<br>Can you make it to interstellar space?</p>
   <button class="btn" id="start-btn">Start</button>
-  <p class="sub">Press SPACE or tap to boost upward &middot; Dodge everything in your path</p>
+  <p class="sub">Arrow keys or WASD to move &middot; Tap to steer on mobile &middot; Dodge everything in your path</p>
 </div>
 
 <div class="overlay-screen" id="game-over-screen" style="display:none;">
@@ -212,144 +212,144 @@
 // ═══════════════════════════════════════════
 // ZONE DEFINITIONS — the full solar system journey
 // ═══════════════════════════════════════════
+// Game uses compressed distances so each zone plays in roughly equal time.
+// Real distances shown in subtitles. Game dist is just for pacing.
 const ZONES = [
   {
     id: 'sun', title: 'Leaving the Sun', sub: 'Beginning your journey outward',
-    distStart: 0, distEnd: 22,
+    gStart: 0, gEnd: 15,
     landmarks: [],
     hazardRate: 0.008, hazardSpeed: [1.2, 2], hazardSize: [18, 30],
   },
   {
-    id: 'mercury', title: 'Mercury', sub: 'Closest planet to the Sun',
-    distStart: 22, distEnd: 36,
-    landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atDist: 30 }],
+    id: 'mercury', title: 'Mercury', sub: '36 million miles from the Sun',
+    gStart: 15, gEnd: 30,
+    landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 25 }],
     hazardRate: 0.012, hazardSpeed: [1.5, 2.5], hazardSize: [20, 35],
   },
   {
     id: 'venus', title: 'Venus', sub: '67.2 million miles from the Sun',
-    distStart: 36, distEnd: 67.2,
-    landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atDist: 62 }],
+    gStart: 30, gEnd: 50,
+    landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 45 }],
     hazardRate: 0.015, hazardSpeed: [1.8, 3], hazardSize: [22, 38],
   },
   {
     id: 'earth', title: 'Earth & Moon', sub: '93 million miles from the Sun',
-    distStart: 67.2, distEnd: 93,
+    gStart: 50, gEnd: 72,
     landmarks: [
-      { name: 'Earth', img: '/earth.png', size: 75, atDist: 88 },
-      { name: 'Moon', img: '/moon.png', size: 30, atDist: 90 },
+      { name: 'Earth', img: '/earth.png', size: 75, atG: 65 },
+      { name: 'Moon', img: '/moon.png', size: 30, atG: 68 },
     ],
     hazardRate: 0.016, hazardSpeed: [2, 3.2], hazardSize: [22, 36],
   },
   {
     id: 'mars', title: 'Mars, Phobos & Deimos', sub: '141.6 million miles from the Sun',
-    distStart: 93, distEnd: 141.6,
+    gStart: 72, gEnd: 95,
     landmarks: [
-      { name: 'Mars', img: '/mars.png', size: 65, atDist: 134 },
-      { name: 'Phobos', img: '/phobos.webp', size: 22, atDist: 137 },
-      { name: 'Deimos', img: '/Deimos.jpg', size: 18, atDist: 139 },
+      { name: 'Mars', img: '/mars.png', size: 65, atG: 85 },
+      { name: 'Phobos', img: '/phobos.webp', size: 22, atG: 89 },
+      { name: 'Deimos', img: '/Deimos.jpg', size: 18, atG: 92 },
     ],
     hazardRate: 0.018, hazardSpeed: [2, 3.5], hazardSize: [24, 40],
   },
   {
     id: 'asteroid-belt', title: 'The Asteroid Belt', sub: 'Between Mars and Jupiter',
-    distStart: 141.6, distEnd: 300,
+    gStart: 95, gEnd: 125,
     landmarks: [
-      { name: 'Ceres', img: '/ceres.png', size: 40, atDist: 220 },
-      { name: 'Vesta', img: '/vesta.png', size: 35, atDist: 260 },
+      { name: 'Ceres', img: '/ceres.png', size: 40, atG: 105 },
+      { name: 'Vesta', img: '/vesta.png', size: 35, atG: 115 },
     ],
     hazardRate: 0.035, hazardSpeed: [2, 4], hazardSize: [18, 45],
   },
   {
     id: 'jupiter', title: 'Jupiter & Its Moons', sub: '483.8 million miles from the Sun',
-    distStart: 300, distEnd: 483.8,
+    gStart: 125, gEnd: 155,
     landmarks: [
-      { name: 'Jupiter', img: '/jupiter.png', size: 110, atDist: 460 },
-      { name: 'Io', img: '/io.png', size: 28, atDist: 468 },
-      { name: 'Europa', img: '/europa.png', size: 26, atDist: 473 },
-      { name: 'Ganymede', img: '/ganymede.png', size: 32, atDist: 478 },
-      { name: 'Callisto', img: '/callisto.png', size: 30, atDist: 482 },
+      { name: 'Jupiter', img: '/jupiter.png', size: 110, atG: 138 },
+      { name: 'Io', img: '/io.png', size: 28, atG: 143 },
+      { name: 'Europa', img: '/europa.png', size: 26, atG: 146 },
+      { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 149 },
+      { name: 'Callisto', img: '/callisto.png', size: 30, atG: 152 },
     ],
     hazardRate: 0.022, hazardSpeed: [2.5, 4], hazardSize: [25, 42],
   },
   {
     id: 'saturn', title: 'Saturn & Its Moons', sub: '890.8 million miles from the Sun',
-    distStart: 483.8, distEnd: 890.8,
+    gStart: 155, gEnd: 185,
     landmarks: [
-      { name: 'Saturn', img: '/saturn.png', size: 120, atDist: 860 },
-      { name: 'Titan', img: '/titan.png', size: 32, atDist: 872 },
-      { name: 'Enceladus', img: '/enceladus.png', size: 22, atDist: 880 },
-      { name: 'Mimas', img: '/mimas.png', size: 20, atDist: 886 },
+      { name: 'Saturn', img: '/saturn.png', size: 120, atG: 168 },
+      { name: 'Titan', img: '/titan.png', size: 32, atG: 174 },
+      { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 179 },
+      { name: 'Mimas', img: '/mimas.png', size: 20, atG: 183 },
     ],
     hazardRate: 0.025, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
     id: 'uranus', title: 'Uranus & Its Moons', sub: '1.78 billion miles from the Sun',
-    distStart: 890.8, distEnd: 1784,
+    gStart: 185, gEnd: 215,
     landmarks: [
-      { name: 'Uranus', img: '/uranus.png', size: 85, atDist: 1750 },
-      { name: 'Titania', img: '/titania.png', size: 26, atDist: 1762 },
-      { name: 'Oberon', img: '/oberon.png', size: 24, atDist: 1770 },
-      { name: 'Miranda', img: '/miranda.png', size: 20, atDist: 1778 },
+      { name: 'Uranus', img: '/uranus.png', size: 85, atG: 198 },
+      { name: 'Titania', img: '/titania.png', size: 26, atG: 204 },
+      { name: 'Oberon', img: '/oberon.png', size: 24, atG: 208 },
+      { name: 'Miranda', img: '/miranda.png', size: 20, atG: 212 },
     ],
     hazardRate: 0.028, hazardSpeed: [3, 5], hazardSize: [26, 46],
   },
   {
     id: 'neptune', title: 'Neptune & Triton', sub: '2.79 billion miles from the Sun',
-    distStart: 1784, distEnd: 2793,
+    gStart: 215, gEnd: 245,
     landmarks: [
-      { name: 'Neptune', img: '/neptune.png', size: 80, atDist: 2760 },
-      { name: 'Triton', img: '/triton.png', size: 28, atDist: 2780 },
+      { name: 'Neptune', img: '/neptune.png', size: 80, atG: 232 },
+      { name: 'Triton', img: '/triton.png', size: 28, atG: 238 },
     ],
     hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
   },
   {
     id: 'kuiper', title: 'The Kuiper Belt', sub: 'Home of the dwarf planets',
-    distStart: 2793, distEnd: 5000,
+    gStart: 245, gEnd: 290,
     landmarks: [
-      { name: 'Pluto', img: '/pluto.png', size: 35, atDist: 3670 },
-      { name: 'Haumea', img: '/haumea.png', size: 30, atDist: 4000 },
-      { name: 'Makemake', img: '/makemake.png', size: 30, atDist: 4300 },
+      { name: 'Pluto', img: '/pluto.png', size: 35, atG: 255 },
+      { name: 'Haumea', img: '/haumea.png', size: 30, atG: 270 },
+      { name: 'Makemake', img: '/makemake.png', size: 30, atG: 282 },
     ],
     hazardRate: 0.035, hazardSpeed: [3, 5.5], hazardSize: [20, 50],
   },
   {
     id: 'scattered', title: 'The Scattered Disk', sub: 'The outermost reach of the Sun\'s gravity',
-    distStart: 5000, distEnd: 6300,
+    gStart: 290, gEnd: 320,
     landmarks: [
-      { name: 'Eris', img: '/eris.png', size: 35, atDist: 5800 },
+      { name: 'Eris', img: '/eris.png', size: 35, atG: 308 },
     ],
     hazardRate: 0.032, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
   },
   {
     id: 'heliosphere', title: 'The Heliosphere', sub: 'Termination Shock \u2192 Heliosheath \u2192 Heliopause',
-    distStart: 6300, distEnd: 8700,
+    gStart: 320, gEnd: 355,
     landmarks: [],
     hazardRate: 0.038, hazardSpeed: [3.5, 6], hazardSize: [24, 52],
   },
   {
     id: 'interstellar', title: 'Interstellar Space', sub: 'Beyond the Sun\'s influence',
-    distStart: 8700, distEnd: 10000,
+    gStart: 355, gEnd: 385,
     landmarks: [
-      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atDist: 9200 },
+      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 370 },
     ],
     hazardRate: 0.03, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
-    id: 'oort', title: 'The Oort Cloud', sub: 'A shell of icy objects surrounding the solar system',
-    distStart: 10000, distEnd: 12000,
+    id: 'oort', title: 'The Oort Cloud', sub: 'A shell of icy objects at the edge of the solar system',
+    gStart: 385, gEnd: 420,
     landmarks: [],
     hazardRate: 0.042, hazardSpeed: [4, 7], hazardSize: [22, 55],
   },
 ];
 
-const TOTAL_DIST = 12000; // million miles (scaled)
+const TOTAL_DIST = 420; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════
 const C = {
-  GRAVITY: 0.3,
-  BOOST: -5.8,
   SHIP_SIZE: 48,
   SHIP_X_PCT: 0.12,
   MAX_LIVES: 3,
@@ -360,7 +360,7 @@ const C = {
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
-let shipY, shipVY, distance, lives, invincibleUntil;
+let shipX, shipY, shipVY, shipVX, distance, lives, invincibleUntil;
 let running = false, gameOver = false, victory = false;
 let currentZoneIdx = -1;
 let hazards = [];      // floating rocks/ice
@@ -412,7 +412,9 @@ function init() {
   landmarks = [];
   spawnedLandmarks.clear();
 
+  shipX = W() * C.SHIP_X_PCT;
   shipY = H() / 2;
+  shipVX = 0;
   shipVY = 0;
   distance = 0;
   lives = C.MAX_LIVES;
@@ -478,7 +480,7 @@ function spawnHazard(zone) {
 // LANDMARKS (planets, moons)
 // ═══════════════════════════════════════════
 function spawnLandmark(lm) {
-  const key = lm.name + lm.atDist;
+  const key = lm.name + lm.atG;
   if (spawnedLandmarks.has(key)) return;
   spawnedLandmarks.add(key);
 
@@ -499,13 +501,10 @@ function spawnLandmark(lm) {
 // ═══════════════════════════════════════════
 // ZONES
 // ═══════════════════════════════════════════
-// Zone is determined by where the FIRST landmark in that zone is.
-// Title shows a few million miles before the first landmark appears.
 function getCurrentZone() {
   for (let i = ZONES.length - 1; i >= 0; i--) {
     const z = ZONES[i];
-    // Trigger zone when we're within 8 million miles of the first landmark (or distStart for zones with no landmarks)
-    const triggerDist = z.landmarks.length > 0 ? z.landmarks[0].atDist - 8 : z.distStart;
+    const triggerDist = z.landmarks.length > 0 ? z.landmarks[0].atG - 5 : z.gStart;
     if (distance >= triggerDist) return i;
   }
   return 0;
@@ -525,11 +524,9 @@ function showZoneTitle(zone) {
 // ═══════════════════════════════════════════
 function checkCollision() {
   if (Date.now() < invincibleUntil) return false;
-  const sx = W() * C.SHIP_X_PCT;
+  const sx = shipX;
   const sy = shipY;
   const sr = C.SHIP_SIZE * 0.32;
-
-  if (sy - sr < 0 || sy + sr > H()) return true;
 
   for (const h of hazards) {
     const hcx = h.x + h.size / 2;
@@ -542,18 +539,37 @@ function checkCollision() {
 }
 
 // ═══════════════════════════════════════════
-// INPUT
+// INPUT — full arrow key + WASD movement
 // ═══════════════════════════════════════════
-function boost() {
-  if (!running || gameOver || victory) return;
-  shipVY = C.BOOST;
-  sndBoost();
-}
+const keys = { up: false, down: false, left: false, right: false };
+const MOVE_SPEED = 5;
+let boostCooldown = 0;
+
 document.addEventListener('keydown', e => {
-  if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); boost(); }
+  if (e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); keys.up = true; }
+  if (e.code === 'ArrowDown' || e.code === 'KeyS') { e.preventDefault(); keys.down = true; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { e.preventDefault(); keys.left = true; }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { e.preventDefault(); keys.right = true; }
+  if (e.code === 'Space') { e.preventDefault(); keys.up = true; }
 });
-document.addEventListener('touchstart', e => { if (running) { e.preventDefault(); boost(); } }, { passive: false });
-document.addEventListener('mousedown', e => { if (running && !e.target.closest('.btn, a')) boost(); });
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') keys.up = false;
+  if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.down = false;
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+});
+
+// Touch: tap top half = up, bottom half = down
+document.addEventListener('touchstart', e => {
+  if (!running) return;
+  e.preventDefault();
+  const y = e.touches[0].clientY;
+  if (y < H() / 2) keys.up = true;
+  else keys.down = true;
+}, { passive: false });
+document.addEventListener('touchend', e => {
+  keys.up = false; keys.down = false; keys.left = false; keys.right = false;
+});
 
 // ═══════════════════════════════════════════
 // GAME LOOP
@@ -563,17 +579,30 @@ function loop() {
 
   // Progress scales: faster as we go further
   const progress = distance / TOTAL_DIST;
-  const speedMult = 1 + progress * 2.5;
+  const speedMult = 1 + progress * 2;
 
-  // Physics
-  shipVY += C.GRAVITY;
+  // Movement from keys
+  if (keys.up) shipVY = -MOVE_SPEED;
+  else if (keys.down) shipVY = MOVE_SPEED;
+  else shipVY *= 0.85; // decelerate
+
+  if (keys.right) shipVX = MOVE_SPEED * 0.7;
+  else if (keys.left) shipVX = -MOVE_SPEED * 0.7;
+  else shipVX *= 0.85;
+
+  shipX += shipVX;
   shipY += shipVY;
 
-  // Distance
+  // Clamp to screen
+  const pad = C.SHIP_SIZE / 2;
+  shipX = Math.max(pad, Math.min(W() - pad, shipX));
+  shipY = Math.max(pad + 60, Math.min(H() - pad, shipY));
+
+  // Distance always advances
   distance += C.DIST_PER_FRAME * speedMult;
 
   // Ship position
-  shipEl.style.left = (W() * C.SHIP_X_PCT - C.SHIP_SIZE / 2) + 'px';
+  shipEl.style.left = (shipX - C.SHIP_SIZE / 2) + 'px';
   shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
 
@@ -609,7 +638,7 @@ function loop() {
   // Spawn landmarks — check all zones, wider window so they don't get skipped
   for (const z of ZONES) {
     for (const lm of z.landmarks) {
-      if (distance >= lm.atDist - 5 && distance <= lm.atDist + 5) {
+      if (distance >= lm.atG - 3 && distance <= lm.atG + 3) {
         spawnLandmark(lm);
       }
     }
@@ -646,7 +675,7 @@ function loop() {
     sndHit();
     if (lives <= 0) { endGame(); return; }
     invincibleUntil = Date.now() + C.INVINCIBLE_MS;
-    shipVY = C.BOOST * 0.4;
+    sndBoost();
   }
 
   // HUD
