@@ -344,7 +344,7 @@ const ZONES = [
   },
 ];
 
-const TOTAL_DIST = 420; // game distance units
+const TOTAL_DIST = 430; // game distance units (Oort Cloud ends at 420, small buffer)
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -412,10 +412,11 @@ function init() {
   landmarks = [];
   spawnedLandmarks.clear();
 
-  shipX = W() * C.SHIP_X_PCT;
+  shipX = W() * 0.35; // Start to the right of the sun
   shipY = H() / 2;
   shipVX = 0;
   shipVY = 0;
+  shownZones = new Set();
   distance = 0;
   lives = C.MAX_LIVES;
   invincibleUntil = 0;
@@ -429,11 +430,11 @@ function init() {
   document.getElementById('zone-label').textContent = '';
   document.getElementById('zone-title').style.opacity = '0';
 
-  // Sun — starts huge, mostly off-screen left
-  sunRef.style.width = '500px';
-  sunRef.style.height = '500px';
-  sunRef.style.left = '-300px';
-  sunRef.style.opacity = '0.9';
+  // Sun — starts huge, partially visible on left edge
+  sunRef.style.width = '600px';
+  sunRef.style.height = '600px';
+  sunRef.style.left = '-200px';
+  sunRef.style.opacity = '1';
 }
 
 function updateLives() {
@@ -479,7 +480,7 @@ function spawnHazard(zone) {
 // ═══════════════════════════════════════════
 // LANDMARKS (planets, moons)
 // ═══════════════════════════════════════════
-function spawnLandmark(lm) {
+function spawnLandmark(lm, zoneIdx) {
   const key = lm.name + lm.atG;
   if (spawnedLandmarks.has(key)) return;
   spawnedLandmarks.add(key);
@@ -489,27 +490,38 @@ function spawnLandmark(lm) {
   el.style.width = lm.size + 'px';
   el.style.height = lm.size + 'px';
   el.style.left = W() + 30 + 'px';
-  // Place in a safe vertical zone (center area, offset randomly)
   const yCenter = H() * 0.3 + Math.random() * H() * 0.4;
   el.style.top = (yCenter - lm.size / 2) + 'px';
 
   el.innerHTML = `<img src="${lm.img}" alt="${lm.name}"><div class="lm-label">${lm.name}</div>`;
   gameArea.appendChild(el);
-  landmarks.push({ el, x: W() + 30, speed: 1.5 });
+  // isFirst: true if this is the first landmark in its zone (triggers zone title)
+  const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
+  landmarks.push({ el, x: W() + 30, speed: 1.5, zoneIdx, isFirst, titleTriggered: false });
 }
 
 // ═══════════════════════════════════════════
 // ZONES
 // ═══════════════════════════════════════════
-// Zone title triggers AFTER the first landmark has spawned and is on screen
-function getCurrentZone() {
-  for (let i = ZONES.length - 1; i >= 0; i--) {
+// Zone changes are now triggered by landmarks passing the ship on screen
+// For zones with no landmarks, trigger at gStart distance
+let shownZones = new Set();
+
+function checkZoneByLandmarks() {
+  // Check if any landmark element has scrolled past the ship
+  for (let i = 0; i < ZONES.length; i++) {
+    if (shownZones.has(i)) continue;
     const z = ZONES[i];
-    // Trigger after the first landmark distance, or at gStart for zones with no landmarks
-    const triggerDist = z.landmarks.length > 0 ? z.landmarks[0].atG + 2 : z.gStart;
-    if (distance >= triggerDist) return i;
+    if (z.landmarks.length === 0) {
+      // No landmarks — trigger by distance
+      if (distance >= z.gStart) {
+        shownZones.add(i);
+        showZoneTitle(z);
+        currentZoneIdx = i;
+      }
+    }
+    // Landmark zones are triggered in the landmark movement loop below
   }
-  return 0;
 }
 
 function showZoneTitle(zone) {
@@ -528,14 +540,14 @@ function checkCollision() {
   if (Date.now() < invincibleUntil) return false;
   const sx = shipX;
   const sy = shipY;
-  const sr = C.SHIP_SIZE * 0.32;
+  const sr = C.SHIP_SIZE * 0.4; // ship collision radius
 
   for (const h of hazards) {
     const hcx = h.x + h.size / 2;
     const hcy = h.y + h.size / 2;
-    const hr = h.size * 0.38;
+    const hr = h.size * 0.42; // hazard collision radius
     const dx = sx - hcx, dy = sy - hcy;
-    if (Math.sqrt(dx * dx + dy * dy) < sr + hr) return true;
+    if (dx * dx + dy * dy < (sr + hr) * (sr + hr)) return true;
   }
   return false;
 }
@@ -608,21 +620,18 @@ function loop() {
   shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
 
-  // Sun shrinks and slides further off-screen as we travel
-  const sunSize = Math.max(12, 500 * (1 - progress * 0.95));
-  const sunLeft = -300 + (progress * -200); // slides further left
+  // Sun slides off-screen and shrinks as we travel outward
+  const sunSize = Math.max(10, 600 * (1 - progress * 0.98));
+  const sunLeft = -200 - (progress * 500); // slides left fast
   sunRef.style.width = sunSize + 'px';
   sunRef.style.height = sunSize + 'px';
   sunRef.style.left = sunLeft + 'px';
-  sunRef.style.opacity = String(Math.max(0.05, 0.9 - progress * 0.85));
+  sunRef.style.opacity = String(Math.max(0.03, 1 - progress * 1.5));
 
-  // Zone check
-  const zi = getCurrentZone();
-  if (zi !== currentZoneIdx) {
-    currentZoneIdx = zi;
-    showZoneTitle(ZONES[zi]);
-  }
-  const zone = ZONES[zi];
+  // Zone check — landmarks trigger zone titles when they pass the ship
+  // For zones without landmarks, check by distance
+  checkZoneByLandmarks();
+  const zone = ZONES[currentZoneIdx] || ZONES[0];
 
   // Zone title fade
   if (zoneTitleTimer > 0) {
@@ -637,11 +646,11 @@ function loop() {
     spawnHazard(zone);
   }
 
-  // Spawn landmarks — check all zones, wider window so they don't get skipped
-  for (const z of ZONES) {
-    for (const lm of z.landmarks) {
+  // Spawn landmarks — check all zones
+  for (let zi = 0; zi < ZONES.length; zi++) {
+    for (const lm of ZONES[zi].landmarks) {
       if (distance >= lm.atG - 3 && distance <= lm.atG + 3) {
-        spawnLandmark(lm);
+        spawnLandmark(lm, zi);
       }
     }
   }
@@ -659,11 +668,22 @@ function loop() {
     }
   }
 
-  // Move landmarks
+  // Move landmarks — trigger zone title when first landmark passes the ship
   for (let i = landmarks.length - 1; i >= 0; i--) {
     const l = landmarks[i];
     l.x -= l.speed * speedMult;
     l.el.style.left = l.x + 'px';
+
+    // Trigger zone title when this landmark passes the ship's X position
+    if (l.isFirst && !l.titleTriggered && l.x < shipX) {
+      l.titleTriggered = true;
+      if (!shownZones.has(l.zoneIdx)) {
+        shownZones.add(l.zoneIdx);
+        showZoneTitle(ZONES[l.zoneIdx]);
+        currentZoneIdx = l.zoneIdx;
+      }
+    }
+
     if (l.x < -200) {
       l.el.remove();
       landmarks.splice(i, 1);
