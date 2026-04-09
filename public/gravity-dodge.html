@@ -376,6 +376,23 @@ function W() { return window.innerWidth; }
 function H() { return window.innerHeight; }
 
 // Map game distance to real astronomical distance (million miles)
+const REAL_MAP = [
+  { g0: 0, g1: 50, r0: 0, r1: 36 },
+  { g0: 50, g1: 92, r0: 36, r1: 67.2 },
+  { g0: 92, g1: 135, r0: 67.2, r1: 93 },
+  { g0: 135, g1: 185, r0: 93, r1: 141.6 },
+  { g0: 185, g1: 245, r0: 141.6, r1: 257 },
+  { g0: 245, g1: 310, r0: 257, r1: 483.8 },
+  { g0: 310, g1: 380, r0: 483.8, r1: 890.8 },
+  { g0: 380, g1: 452, r0: 890.8, r1: 1784 },
+  { g0: 452, g1: 525, r0: 1784, r1: 2793 },
+  { g0: 525, g1: 590, r0: 2793, r1: 3670 },
+  { g0: 590, g1: 695, r0: 3670, r1: 6000 },
+  { g0: 695, g1: 770, r0: 6000, r1: 8700 },
+  { g0: 770, g1: 845, r0: 8700, r1: 11200 },
+  { g0: 845, g1: 970, r0: 11200, r1: 50000 },
+];
+
 function gameToReal(gd) {
   for (const s of REAL_MAP) {
     if (gd <= s.g1) {
