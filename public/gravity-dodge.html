@@ -171,7 +171,7 @@
 
 <div id="hud">
   <div id="hud-left">
-    <a id="back-link" href="/learn">&larr; Back to Games</a>
+    <a id="back-link" href="#" onclick="event.preventDefault(); history.back();">&larr; Back to Games</a>
     <div id="lives-display"></div>
   </div>
 </div>
@@ -193,7 +193,7 @@
   <p id="go-zone"></p>
   <p id="go-dist"></p>
   <button class="btn" id="restart-btn">Play Again</button>
-  <a href="/learn" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
+  <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
 </div>
 
 <div class="overlay-screen victory" id="victory-screen" style="display:none;">
@@ -202,7 +202,7 @@
   <p>You traveled from the Sun to the Oort Cloud and beyond — across the entire solar system!</p>
   <p id="vic-dist"></p>
   <button class="btn" id="replay-btn">Play Again</button>
-  <a href="/learn" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
+  <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
 </div>
 
 <script>
@@ -481,6 +481,10 @@ function init() {
   shipVX = 0;
   shipVY = 0;
   shownZones = new Set();
+
+  // Set ship position immediately so it's visible
+  shipEl.style.left = (shipX - C.SHIP_SIZE / 2) + 'px';
+  shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   distance = 0;
   lives = C.MAX_LIVES;
   invincibleUntil = 0;
@@ -493,10 +497,11 @@ function init() {
   document.getElementById('distance').textContent = '0 miles';
   document.getElementById('zone-title').style.opacity = '0';
 
-  // Sun — starts huge, partially visible on left edge
-  sunRef.style.width = '600px';
-  sunRef.style.height = '600px';
-  sunRef.style.left = '-200px';
+  // Sun — full viewport height, mostly off-screen left
+  const sunH = H() * 1.2;
+  sunRef.style.width = sunH + 'px';
+  sunRef.style.height = sunH + 'px';
+  sunRef.style.left = (-sunH * 0.65) + 'px';
   sunRef.style.opacity = '1';
 }
 
@@ -648,15 +653,20 @@ document.addEventListener('keyup', e => {
   if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
 });
 
-// Touch: tap top half = up, bottom half = down
+// Touch: move ship toward touch point
+let touchTarget = null;
 document.addEventListener('touchstart', e => {
   if (!running) return;
   e.preventDefault();
-  const y = e.touches[0].clientY;
-  if (y < H() / 2) keys.up = true;
-  else keys.down = true;
+  touchTarget = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: false });
+document.addEventListener('touchmove', e => {
+  if (!running) return;
+  e.preventDefault();
+  touchTarget = { x: e.touches[0].clientX, y: e.touches[0].clientY };
 }, { passive: false });
 document.addEventListener('touchend', e => {
+  touchTarget = null;
   keys.up = false; keys.down = false; keys.left = false; keys.right = false;
 });
 
@@ -673,11 +683,22 @@ function loop() {
   // Movement from keys
   if (keys.up) shipVY = -MOVE_SPEED;
   else if (keys.down) shipVY = MOVE_SPEED;
-  else shipVY *= 0.85; // decelerate
+  else if (!touchTarget) shipVY *= 0.85;
 
   if (keys.right) shipVX = MOVE_SPEED * 0.7;
   else if (keys.left) shipVX = -MOVE_SPEED * 0.7;
-  else shipVX *= 0.85;
+  else if (!touchTarget) shipVX *= 0.85;
+
+  // Touch: move toward touch point
+  if (touchTarget) {
+    const dx = touchTarget.x - shipX;
+    const dy = touchTarget.y - shipY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 5) {
+      shipVX = (dx / dist) * MOVE_SPEED;
+      shipVY = (dy / dist) * MOVE_SPEED;
+    }
+  }
 
   shipX += shipVX;
   shipY += shipVY;
@@ -696,13 +717,14 @@ function loop() {
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
 
   // Sun disappears quickly — fully off-screen before Mercury
-  const sunProgress = Math.min(1, distance / 25); // gone by game dist 25 (before Mercury at 50)
-  const sunSize = Math.max(10, 600 * (1 - sunProgress));
-  const sunLeft = -200 - (sunProgress * 600);
+  const sunProgress = Math.min(1, distance / 20);
+  const baseH = H() * 1.2;
+  const sunSize = Math.max(10, baseH * (1 - sunProgress));
+  const sunLeft = (-baseH * 0.65) - (sunProgress * baseH);
   sunRef.style.width = sunSize + 'px';
   sunRef.style.height = sunSize + 'px';
   sunRef.style.left = sunLeft + 'px';
-  sunRef.style.opacity = String(Math.max(0, 1 - sunProgress * 2));
+  sunRef.style.opacity = String(Math.max(0, 1 - sunProgress * 2.5));
 
   // Zone check — landmarks trigger zone titles when they pass the ship
   // For zones without landmarks, check by distance
