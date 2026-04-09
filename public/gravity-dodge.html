@@ -105,12 +105,12 @@
       text-shadow: 0 2px 8px rgba(0,0,0,0.9);
     }
 
-    /* Sun reference */
+    /* Sun reference — starts huge, partially off-screen left */
     #sun-ref {
-      position: absolute; left: -40px; top: 50%;
-      transform: translateY(-50%);
-      z-index: 2; opacity: 0.7;
-      transition: width 2s, height 2s, left 2s, opacity 2s;
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      z-index: 2;
+      transition: width 3s, height 3s, left 3s, opacity 3s;
     }
 
     /* Overlays */
@@ -157,7 +157,7 @@
 
 <div id="game-area">
   <div id="sun-ref">
-    <img src="/the-sun.png" alt="Sun" style="width:100%;height:100%;object-fit:contain;border-radius:50%;">
+    <img src="/the-sun.png" alt="Sun" style="width:100%;height:100%;object-fit:contain;border-radius:50%;filter:brightness(1.1) drop-shadow(0 0 40px rgba(255,200,50,0.5));">
   </div>
 </div>
 
@@ -214,8 +214,14 @@
 // ═══════════════════════════════════════════
 const ZONES = [
   {
+    id: 'sun', title: 'Leaving the Sun', sub: 'Beginning your journey outward',
+    distStart: 0, distEnd: 22,
+    landmarks: [],
+    hazardRate: 0.008, hazardSpeed: [1.2, 2], hazardSize: [18, 30],
+  },
+  {
     id: 'mercury', title: 'Mercury', sub: 'Closest planet to the Sun',
-    distStart: 0, distEnd: 36,
+    distStart: 22, distEnd: 36,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atDist: 30 }],
     hazardRate: 0.012, hazardSpeed: [1.5, 2.5], hazardSize: [20, 35],
   },
@@ -421,11 +427,11 @@ function init() {
   document.getElementById('zone-label').textContent = '';
   document.getElementById('zone-title').style.opacity = '0';
 
-  // Sun reference
-  sunRef.style.width = '120px';
-  sunRef.style.height = '120px';
-  sunRef.style.left = '-40px';
-  sunRef.style.opacity = '0.7';
+  // Sun — starts huge, mostly off-screen left
+  sunRef.style.width = '500px';
+  sunRef.style.height = '500px';
+  sunRef.style.left = '-300px';
+  sunRef.style.opacity = '0.9';
 }
 
 function updateLives() {
@@ -571,11 +577,13 @@ function loop() {
   shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
 
-  // Sun shrinks as we go
-  const sunSize = Math.max(10, 120 * (1 - progress * 0.9));
+  // Sun shrinks and slides further off-screen as we travel
+  const sunSize = Math.max(12, 500 * (1 - progress * 0.95));
+  const sunLeft = -300 + (progress * -200); // slides further left
   sunRef.style.width = sunSize + 'px';
   sunRef.style.height = sunSize + 'px';
-  sunRef.style.opacity = String(Math.max(0.1, 0.7 - progress * 0.6));
+  sunRef.style.left = sunLeft + 'px';
+  sunRef.style.opacity = String(Math.max(0.05, 0.9 - progress * 0.85));
 
   // Zone check
   const zi = getCurrentZone();
