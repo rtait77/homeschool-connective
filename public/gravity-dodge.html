@@ -149,6 +149,21 @@
     /* Victory */
     .victory h1 { color: #55b6ca; }
     .victory .stars { font-size: 48px; margin-bottom: 16px; }
+
+    /* Barrier lines (heliosphere boundaries) */
+    .barrier-line {
+      position: absolute; z-index: 4;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    /* Image credit */
+    #credit {
+      position: fixed; bottom: 6px; right: 10px;
+      font-size: 9px; color: rgba(255,255,255,0.3);
+      z-index: 15; pointer-events: none;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -158,6 +173,8 @@
     <img src="/the-sun.png" alt="Sun" style="width:100%;height:100%;object-fit:contain;border-radius:50%;filter:brightness(1.1) drop-shadow(0 0 40px rgba(255,200,50,0.5));">
   </div>
 </div>
+
+<div id="credit">Image Credit: NASA, Rebecca Tait (Moon)</div>
 
 <div id="ship">
   <svg viewBox="0 0 48 48" width="48" height="48">
@@ -216,28 +233,28 @@ const ZONES = [
     id: 'sun', title: 'Leaving the Sun', sub: 'Beginning your journey outward',
     gStart: 0, gEnd: 30,
     landmarks: [],
-    hazardRate: 0.014, hazardSpeed: [2, 3], hazardSize: [20, 36],
+    hazardRate: 0.02, hazardSpeed: [2.5, 3.5], hazardSize: [20, 38],
   },
   {
     id: 'mercury', title: 'Mercury', sub: '36 million miles from the Sun',
     gStart: 30, gEnd: 70,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
-    hazardRate: 0.016, hazardSpeed: [2, 3.2], hazardSize: [22, 36],
+    hazardRate: 0.025, hazardSpeed: [2.5, 4], hazardSize: [22, 40],
   },
   {
     id: 'venus', title: 'Venus', sub: '67.2 million miles from the Sun',
     gStart: 70, gEnd: 115,
     landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
-    hazardRate: 0.016, hazardSpeed: [2, 3.2], hazardSize: [22, 36],
+    hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
     id: 'earth', title: 'Earth & Moon', sub: '93 million miles from the Sun',
     gStart: 115, gEnd: 165,
     landmarks: [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
-      { name: 'Moon', img: '/moon.png', size: 30, atG: 145 },
+      { name: 'Moon', img: '/full-moon.png', size: 30, atG: 145 },
     ],
-    hazardRate: 0.016, hazardSpeed: [2, 3.2], hazardSize: [22, 36],
+    hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
     id: 'mars', title: 'Mars, Phobos & Deimos', sub: '141.6 million miles from the Sun',
@@ -247,7 +264,7 @@ const ZONES = [
       { name: 'Phobos', img: '/phobos.webp', size: 22, atG: 198 },
       { name: 'Deimos', img: '/Deimos.jpg', size: 18, atG: 208 },
     ],
-    hazardRate: 0.018, hazardSpeed: [2, 3.5], hazardSize: [24, 40],
+    hazardRate: 0.032, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
     id: 'asteroid-belt', title: 'The Asteroid Belt', sub: 'Between Mars and Jupiter',
@@ -302,7 +319,7 @@ const ZONES = [
     hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
   },
   {
-    id: 'kuiper', title: 'The Kuiper Belt', sub: 'Home of the dwarf planets',
+    id: 'kuiper', title: 'The Kuiper Belt', sub: '3.67 billion miles from the Sun',
     gStart: 565, gEnd: 660,
     landmarks: [
       { name: 'Pluto', img: '/pluto.png', size: 35, atG: 590 },
@@ -312,7 +329,7 @@ const ZONES = [
     hazardRate: 0.035, hazardSpeed: [3, 5.5], hazardSize: [20, 50],
   },
   {
-    id: 'scattered', title: 'The Scattered Disk', sub: 'The outermost reach of the Sun\'s gravity',
+    id: 'scattered', title: 'The Scattered Disk', sub: 'Home of Eris',
     gStart: 660, gEnd: 730,
     landmarks: [
       { name: 'Eris', img: '/eris.png', size: 35, atG: 695 },
@@ -320,28 +337,43 @@ const ZONES = [
     hazardRate: 0.032, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
   },
   {
-    id: 'heliosphere', title: 'The Heliosphere', sub: 'Termination Shock \u2192 Heliosheath \u2192 Heliopause',
-    gStart: 730, gEnd: 810,
+    id: 'termination-shock', title: 'Termination Shock', sub: 'The edge of the solar wind',
+    gStart: 730, gEnd: 770,
     landmarks: [],
-    hazardRate: 0.038, hazardSpeed: [3.5, 6], hazardSize: [24, 52],
+    barrier: { atG: 745, color: '#4488dd', width: 8 },
+    hazardRate: 0.025, hazardSpeed: [3, 5], hazardSize: [22, 48],
+  },
+  {
+    id: 'heliosheath', title: 'The Heliosheath', sub: 'Between the solar wind and interstellar space',
+    gStart: 770, gEnd: 830,
+    landmarks: [],
+    hazardRate: 0.03, hazardSpeed: [3.5, 5.5], hazardSize: [24, 50],
+  },
+  {
+    id: 'heliopause', title: 'The Heliopause', sub: 'Leaving the Sun\'s domain',
+    gStart: 830, gEnd: 860,
+    landmarks: [],
+    barrier: { atG: 845, color: '#888888', width: 14 },
+    hazardRate: 0.025, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'interstellar', title: 'Interstellar Space', sub: 'Beyond the Sun\'s influence',
-    gStart: 810, gEnd: 880,
+    gStart: 860, gEnd: 940,
     landmarks: [
-      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 845 },
+      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 890 },
     ],
-    hazardRate: 0.03, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
+    hazardRate: 0.035, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
-    id: 'oort', title: 'The Oort Cloud', sub: 'A shell of icy objects at the edge of the solar system',
-    gStart: 880, gEnd: 960,
+    id: 'oort', title: 'The Oort Cloud', sub: 'A shell of icy objects surrounding the solar system',
+    gStart: 940, gEnd: 1030,
     landmarks: [],
-    hazardRate: 0.042, hazardSpeed: [4, 7], hazardSize: [22, 55],
+    hazardRate: 0.06, hazardSpeed: [4, 7], hazardSize: [18, 50],
+    oortWall: true,
   },
 ];
 
-const TOTAL_DIST = 970; // game distance units
+const TOTAL_DIST = 1040; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -388,9 +420,10 @@ const REAL_MAP = [
   { g0: 452, g1: 525, r0: 1784, r1: 2793 },
   { g0: 525, g1: 590, r0: 2793, r1: 3670 },
   { g0: 590, g1: 695, r0: 3670, r1: 6000 },
-  { g0: 695, g1: 770, r0: 6000, r1: 8700 },
-  { g0: 770, g1: 845, r0: 8700, r1: 11200 },
-  { g0: 845, g1: 970, r0: 11200, r1: 50000 },
+  { g0: 695, g1: 745, r0: 6000, r1: 8700 },
+  { g0: 745, g1: 845, r0: 8700, r1: 11200 },
+  { g0: 845, g1: 890, r0: 11200, r1: 14000 },
+  { g0: 890, g1: 1040, r0: 14000, r1: 50000 },
 ];
 
 function gameToReal(gd) {
@@ -436,10 +469,13 @@ function sndVictory() {
 // ═══════════════════════════════════════════
 function init() {
   // Clear all game objects
-  document.querySelectorAll('.space-obj, .landmark').forEach(el => el.remove());
+  document.querySelectorAll('.space-obj, .landmark, .barrier-line').forEach(el => el.remove());
   hazards = [];
   landmarks = [];
+  barriers = [];
   spawnedLandmarks.clear();
+  spawnedBarriers.clear();
+  oortWallSpawned = false;
 
   shipX = W() * 0.35; // Start to the right of the sun
   shipY = H() / 2;
@@ -498,7 +534,7 @@ function spawnHazard(zone, diffMult) {
 
   // Use comet svg for kuiper/oort, rock shapes otherwise
   if (zone.id === 'kuiper' || zone.id === 'oort' || zone.id === 'scattered') {
-    el.innerHTML = '<img src="/comet.svg" alt="">';
+    el.innerHTML = '<img src="/comet.png" alt="">';
   } else {
     // SVG rock
     const hue = zone.id === 'heliosphere' || zone.id === 'interstellar' ? '220' : '30';
@@ -535,6 +571,60 @@ function spawnLandmark(lm, zoneIdx) {
   const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
   const lmY = yCenter;
   landmarks.push({ el, x: W() + 30, y: lmY, size: lm.size, speed: 1.5, zoneIdx, isFirst, titleTriggered: false });
+}
+
+// ═══════════════════════════════════════════
+// BARRIER LINES (heliosphere boundaries)
+// ═══════════════════════════════════════════
+let barriers = [];
+let spawnedBarriers = new Set();
+
+function spawnBarrier(zone) {
+  const b = zone.barrier;
+  const key = zone.id;
+  if (!b || spawnedBarriers.has(key)) return;
+  spawnedBarriers.add(key);
+
+  const el = document.createElement('div');
+  el.className = 'barrier-line';
+  // Curved arc that spans the full height — looks like exiting a bubble
+  const arcW = 200;
+  const arcH = H() * 2;
+  el.style.width = arcW + 'px';
+  el.style.height = arcH + 'px';
+  el.style.left = W() + 50 + 'px';
+  el.style.top = (-arcH / 2 + H() / 2) + 'px';
+  el.style.border = `${b.width}px solid ${b.color}`;
+  el.style.borderLeft = 'none';
+  el.style.boxShadow = `0 0 ${b.width * 3}px ${b.color}40, inset 0 0 ${b.width * 2}px ${b.color}20`;
+  el.style.background = 'transparent';
+  gameArea.appendChild(el);
+  barriers.push({ el, x: W() + 50, speed: 2, zoneIdx: ZONES.indexOf(zone) });
+}
+
+// Oort Cloud wall — dense burst of rocks
+let oortWallSpawned = false;
+
+function spawnOortWall() {
+  if (oortWallSpawned) return;
+  oortWallSpawned = true;
+  // Spawn a dense wave of rocks across the screen
+  for (let i = 0; i < 25; i++) {
+    const size = 18 + Math.random() * 35;
+    const y = Math.random() * (H() - 60) + 30;
+    const spd = 3 + Math.random() * 4;
+    const xOff = W() + 50 + i * 40 + Math.random() * 30;
+
+    const el = document.createElement('div');
+    el.className = 'space-obj';
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.left = xOff + 'px';
+    el.style.top = y + 'px';
+    el.innerHTML = '<img src="/comet.png" alt="">';
+    gameArea.appendChild(el);
+    hazards.push({ el, x: xOff, y, size, speed: spd, rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 4 });
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -706,10 +796,20 @@ function loop() {
     }
   }
 
-  // Spawn hazards — difficulty ramps after Earth (zone index 3)
-  const diffMult = currentZoneIdx <= 3 ? 1 : 1 + (currentZoneIdx - 3) * 0.15;
-  if (Math.random() < zone.hazardRate * speedMult * 0.4 * diffMult) {
+  // Spawn hazards — difficulty ramps after Earth (zone index 4)
+  const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.18;
+  if (Math.random() < zone.hazardRate * speedMult * 0.6 * diffMult) {
     spawnHazard(zone, diffMult);
+  }
+
+  // Spawn barriers (heliosphere boundary lines)
+  if (zone.barrier && distance >= zone.barrier.atG - 3 && distance <= zone.barrier.atG + 3) {
+    spawnBarrier(zone);
+  }
+
+  // Spawn Oort Cloud wall
+  if (zone.oortWall && distance >= zone.gStart + 10 && !oortWallSpawned) {
+    spawnOortWall();
   }
 
   // Spawn landmarks — check all zones
@@ -753,6 +853,29 @@ function loop() {
     if (l.x < -200) {
       l.el.remove();
       landmarks.splice(i, 1);
+    }
+  }
+
+  // Move barriers
+  for (let i = barriers.length - 1; i >= 0; i--) {
+    const b = barriers[i];
+    b.x -= b.speed * speedMult;
+    b.el.style.left = b.x + 'px';
+
+    // Trigger zone title when barrier passes ship
+    if (!b.titleTriggered && b.x < shipX) {
+      b.titleTriggered = true;
+      const zi = b.zoneIdx;
+      if (!shownZones.has(zi)) {
+        shownZones.add(zi);
+        showZoneTitle(ZONES[zi]);
+        currentZoneIdx = zi;
+      }
+    }
+
+    if (b.x < -300) {
+      b.el.remove();
+      barriers.splice(i, 1);
     }
   }
 
