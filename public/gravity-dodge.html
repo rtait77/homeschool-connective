@@ -331,7 +331,7 @@ const ZONES = [
   },
   {
     id: 'scattered', title: 'The Scattered Disk', sub: 'Home of Eris',
-    gStart: 660, gEnd: 750,
+    gStart: 660, gEnd: 760,
     landmarks: [
       { name: 'Eris', img: '/eris.png', size: 35, atG: 690 },
     ],
@@ -339,43 +339,43 @@ const ZONES = [
   },
   {
     id: 'termination-shock', title: 'Termination Shock', sub: 'Entering the boundary of the heliosphere',
-    gStart: 750, gEnd: 790,
+    gStart: 760, gEnd: 810,
     landmarks: [],
-    barrier: { atG: 770, color: '#4488dd', width: 8 },
+    barrier: { atG: 785, color: '#4488dd', width: 8 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'heliosheath', title: 'The Heliosheath', sub: 'Inside the outer layer of the heliosphere',
-    gStart: 790, gEnd: 880,
+    gStart: 810, gEnd: 900,
     landmarks: [],
     hazardRate: 0.02, hazardSpeed: [3.5, 5.5], hazardSize: [24, 50],
     tint: 'rgba(80, 90, 120, 0.15)',
   },
   {
     id: 'heliopause', title: 'The Heliopause', sub: 'Exiting the heliosphere',
-    gStart: 880, gEnd: 910,
+    gStart: 900, gEnd: 940,
     landmarks: [],
-    barrier: { atG: 890, color: '#888888', width: 14 },
+    barrier: { atG: 920, color: '#888888', width: 14 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'interstellar', title: 'Interstellar Space', sub: 'Beyond the heliosphere',
-    gStart: 910, gEnd: 990,
+    gStart: 940, gEnd: 1020,
     landmarks: [
-      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 940 },
+      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 970 },
     ],
-    hazardRate: 0.025, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
+    hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
     id: 'oort', title: 'The Oort Cloud', sub: '',
-    gStart: 990, gEnd: 1080,
+    gStart: 1020, gEnd: 1110,
     landmarks: [],
     hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [18, 45],
     oortWall: true,
   },
 ];
 
-const TOTAL_DIST = 1090; // game distance units
+const TOTAL_DIST = 1120; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -422,10 +422,10 @@ const REAL_MAP = [
   { g0: 452, g1: 525, r0: 1784, r1: 2793 },
   { g0: 525, g1: 590, r0: 2793, r1: 3670 },
   { g0: 590, g1: 695, r0: 3670, r1: 6000 },
-  { g0: 695, g1: 755, r0: 6000, r1: 8700 },
-  { g0: 755, g1: 860, r0: 8700, r1: 11200 },
-  { g0: 860, g1: 910, r0: 11200, r1: 14000 },
-  { g0: 910, g1: 1060, r0: 14000, r1: 50000 },
+  { g0: 695, g1: 785, r0: 6000, r1: 8700 },
+  { g0: 785, g1: 920, r0: 8700, r1: 11200 },
+  { g0: 920, g1: 970, r0: 11200, r1: 14000 },
+  { g0: 970, g1: 1120, r0: 14000, r1: 50000 },
 ];
 
 function gameToReal(gd) {
@@ -534,7 +534,9 @@ function spawnHazard(zone, diffMult) {
   el.style.left = W() + 20 + 'px';
   el.style.top = y + 'px';
 
-  const isComet = zone.id === 'kuiper' || zone.id === 'oort' || zone.id === 'scattered' || zone.id === 'interstellar';
+  // Outer zones are mostly comets; inner zones get occasional comets; oort gets both
+  const outerComet = zone.id === 'kuiper' || zone.id === 'scattered' || zone.id === 'interstellar';
+  const isComet = outerComet || (zone.id === 'oort' && Math.random() < 0.6) || (!outerComet && zone.id !== 'oort' && Math.random() < 0.08);
   if (isComet) {
     el.innerHTML = `<svg viewBox="0 0 70 30" width="${size}" height="${size*0.43}" style="filter:drop-shadow(4px 0 8px rgba(220,60,40,0.6));">
       <defs><radialGradient id="cg"><stop offset="0%" stop-color="#eee"/><stop offset="100%" stop-color="#999"/></radialGradient></defs>
@@ -651,19 +653,21 @@ function spawnOortWall() {
 let shownZones = new Set();
 
 function checkZoneByLandmarks() {
-  // Check if any landmark element has scrolled past the ship
   for (let i = 0; i < ZONES.length; i++) {
     if (shownZones.has(i)) continue;
     const z = ZONES[i];
-    if (z.landmarks.length === 0) {
-      // No landmarks — trigger by distance
-      if (distance >= z.gStart) {
-        shownZones.add(i);
-        showZoneTitle(z);
-        currentZoneIdx = i;
-      }
+    // Zones with barriers — triggered when barrier passes ship (handled in barrier movement)
+    if (z.barrier) continue;
+    // Zones with landmarks — triggered when landmark passes ship (handled in landmark movement)
+    if (z.landmarks.length > 0) continue;
+    // Zones right after a barrier zone — only trigger after the barrier zone has been shown
+    if (i > 0 && ZONES[i-1].barrier && !shownZones.has(i-1)) continue;
+    // No landmarks, no barrier — trigger by distance
+    if (distance >= z.gStart) {
+      shownZones.add(i);
+      showZoneTitle(z);
+      currentZoneIdx = i;
     }
-    // Landmark zones are triggered in the landmark movement loop below
   }
 }
 
