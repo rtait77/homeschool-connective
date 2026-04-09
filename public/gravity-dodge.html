@@ -491,9 +491,14 @@ function spawnLandmark(lm) {
 // ═══════════════════════════════════════════
 // ZONES
 // ═══════════════════════════════════════════
+// Zone is determined by where the FIRST landmark in that zone is.
+// Title shows a few million miles before the first landmark appears.
 function getCurrentZone() {
   for (let i = ZONES.length - 1; i >= 0; i--) {
-    if (distance >= ZONES[i].distStart) return i;
+    const z = ZONES[i];
+    // Trigger zone when we're within 8 million miles of the first landmark (or distStart for zones with no landmarks)
+    const triggerDist = z.landmarks.length > 0 ? z.landmarks[0].atDist - 8 : z.distStart;
+    if (distance >= triggerDist) return i;
   }
   return 0;
 }
@@ -591,10 +596,12 @@ function loop() {
     spawnHazard(zone);
   }
 
-  // Spawn landmarks
-  for (const lm of zone.landmarks) {
-    if (distance >= lm.atDist - 2 && distance <= lm.atDist + 2) {
-      spawnLandmark(lm);
+  // Spawn landmarks — check all zones, wider window so they don't get skipped
+  for (const z of ZONES) {
+    for (const lm of z.landmarks) {
+      if (distance >= lm.atDist - 5 && distance <= lm.atDist + 5) {
+        spawnLandmark(lm);
+      }
     }
   }
 
