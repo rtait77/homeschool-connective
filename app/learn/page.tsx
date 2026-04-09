@@ -563,6 +563,17 @@ const games = [
     keywords: ['mars', 'phobos', 'deimos', 'rover', 'curiosity', 'perseverance', 'red planet', 'nasa'],
     newTab: false,
   },
+  // Gravity Dodge
+  {
+    title: 'Gravity Dodge',
+    desc: 'Fly through the solar system dodging asteroid fields! Pass real planet milestones with actual distances and facts. How far can you go?',
+    thumb: '/asteroid-thumbnail-planets.jpg',
+    url: '/gravity-dodge',
+    topic: 'solar-system',
+    types: ['arcade', 'medium'],
+    keywords: ['gravity', 'dodge', 'endless', 'arcade', 'planets', 'solar system', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'distances', 'facts'],
+    newTab: false,
+  },
   // Asteroid Blast games
   {
     title: 'Blast the Planets',

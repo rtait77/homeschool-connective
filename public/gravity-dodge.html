@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Gravity Dodge</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a2e; overflow: hidden; font-family: 'Nunito', sans-serif; user-select: none; -webkit-user-select: none; }
+canvas { display: block; }
+#ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+#score { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 18px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+#lives { position: absolute; top: 16px; left: 20px; color: #fff; font-size: 18px; font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+#milestone { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; text-align: center; opacity: 0; transition: opacity 0.5s; pointer-events: none; }
+#milestone img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 8px; }
+#milestone .name { font-size: 28px; font-weight: 900; color: #55b6ca; text-shadow: 0 2px 12px rgba(85,182,202,0.5); }
+#milestone .dist { font-size: 16px; font-weight: 700; color: #ccc; margin: 4px 0; }
+#milestone .fact { font-size: 14px; font-weight: 600; color: #aaa; max-width: 320px; line-height: 1.5; }
+
+#start-screen, #game-over { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(10,10,46,0.92); color: #fff; z-index: 10; }
+#start-screen h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 900; margin-bottom: 8px; }
+#start-screen .sub { font-size: 1rem; color: #aaa; margin-bottom: 32px; font-weight: 600; }
+#game-over h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 900; color: #ed7c5a; margin-bottom: 8px; }
+#game-over .final-score { font-size: 1.1rem; color: #ccc; margin-bottom: 6px; font-weight: 700; }
+#game-over .best-score { font-size: 0.9rem; color: #999; margin-bottom: 24px; font-weight: 600; }
+.btn { background: #ed7c5a; color: #fff; border: none; padding: 14px 40px; border-radius: 10px; font-size: 1.1rem; font-weight: 800; cursor: pointer; pointer-events: all; font-family: 'Nunito', sans-serif; transition: opacity 0.15s; }
+.btn:hover { opacity: 0.9; }
+.controls { font-size: 0.82rem; color: #777; margin-top: 16px; font-weight: 600; }
+#back-link { position: absolute; top: 14px; left: 14px; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.82rem; font-weight: 700; z-index: 20; pointer-events: all; }
+#back-link:hover { color: #fff; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="ui">
+  <a id="back-link" href="/learn">&larr; Back to Games</a>
+  <div id="score">0 mi</div>
+  <div id="lives"></div>
+  <div id="milestone">
+    <img id="ms-img" src="" alt="">
+    <div class="name" id="ms-name"></div>
+    <div class="dist" id="ms-dist"></div>
+    <div class="fact" id="ms-fact"></div>
+  </div>
+</div>
+
+<div id="start-screen">
+  <h1>Gravity Dodge</h1>
+  <p class="sub">Fly through the solar system. How far can you go?</p>
+  <button class="btn" id="start-btn">Start</button>
+  <p class="controls">Press SPACE or tap to boost &middot; Dodge the asteroids</p>
+</div>
+
+<div id="game-over" style="display:none;">
+  <h2>Game Over</h2>
+  <p class="final-score" id="final-score"></p>
+  <p class="best-score" id="best-score"></p>
+  <button class="btn" id="restart-btn">Play Again</button>
+</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+// ── Config ──
+const GRAVITY = 0.35;
+const BOOST = -6.5;
+const SHIP_X_RATIO = 0.15;
+const SHIP_SIZE = 28;
+const STAR_COUNT = 120;
+const INITIAL_SPEED = 3;
+const MAX_SPEED = 9;
+const SPEED_RAMP = 0.0003;
+const GAP_MIN = 140;
+const GAP_MAX = 260;
+const OBSTACLE_WIDTH = 40;
+const OBSTACLE_SPACING = 280;
+const MAX_LIVES = 3;
+const INVINCIBLE_TIME = 1500;
+const MILES_PER_FRAME = 8000;
+
+// ── Planet milestones (real distances from Sun in million miles) ──
+const MILESTONES = [
+  { name: 'Mercury', dist: 36, img: '/mercury.png', fact: 'Mercury is the smallest planet and has no atmosphere to retain heat — temperatures swing from 800\u00b0F to -290\u00b0F.' },
+  { name: 'Venus', dist: 67.2, img: '/venus.png', fact: 'Venus spins backward compared to most planets, and a day on Venus is longer than its year.' },
+  { name: 'Earth', dist: 93, img: '/earth.png', fact: 'Earth is the only known planet with liquid water on its surface and the only one known to support life.' },
+  { name: 'Mars', dist: 141.6, img: '/mars.png', fact: 'Mars has the tallest volcano in the solar system — Olympus Mons, standing about 72,000 feet tall.' },
+  { name: 'Jupiter', dist: 483.8, img: '/jupiter.png', fact: 'Jupiter is so large that more than 1,300 Earths could fit inside it. Its Great Red Spot is a storm that has raged for over 300 years.' },
+  { name: 'Saturn', dist: 890.8, img: '/saturn.png', fact: 'Saturn\'s rings are made mostly of ice and rock. The rings stretch out over 280,000 miles but are only about 30 feet thick.' },
+  { name: 'Uranus', dist: 1784, img: '/uranus.png', fact: 'Uranus rotates on its side, with an axial tilt of about 98 degrees. Scientists believe a massive collision knocked it over.' },
+  { name: 'Neptune', dist: 2793, img: '/neptune.png', fact: 'Neptune has the strongest winds in the solar system, reaching speeds of over 1,200 miles per hour.' },
+];
+
+// ── State ──
+let W, H, shipX, shipY, shipVY, speed, distance, lives, invincibleUntil;
+let obstacles, stars, running, gameOver, nextMilestone, milestoneTimer;
+let bestScore = parseInt(localStorage.getItem('gravityDodgeBest') || '0');
+let planetImages = {};
+
+// Preload planet images
+MILESTONES.forEach(m => {
+  const img = new Image();
+  img.src = m.img;
+  planetImages[m.name] = img;
+});
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  shipX = W * SHIP_X_RATIO;
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ── Stars ──
+function makeStars() {
+  stars = [];
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 1.8 + 0.3, s: Math.random() * 0.8 + 0.2 });
+  }
+}
+
+// ── Obstacles ──
+function spawnObstacle(x) {
+  const gap = GAP_MIN + Math.random() * (GAP_MAX - GAP_MIN);
+  // Scale gap down as speed increases
+  const scaledGap = gap * Math.max(0.7, 1 - (speed - INITIAL_SPEED) / (MAX_SPEED - INITIAL_SPEED) * 0.3);
+  const gapY = Math.random() * (H - scaledGap - 80) + 40;
+  obstacles.push({ x, gapY, gapH: scaledGap, passed: false });
+}
+
+// ── Init ──
+function init() {
+  shipY = H / 2;
+  shipVY = 0;
+  speed = INITIAL_SPEED;
+  distance = 0;
+  lives = MAX_LIVES;
+  invincibleUntil = 0;
+  obstacles = [];
+  nextMilestone = 0;
+  milestoneTimer = 0;
+  gameOver = false;
+  makeStars();
+  updateLives();
+
+  // Seed initial obstacles
+  for (let x = W + 200; x < W + 1600; x += OBSTACLE_SPACING) {
+    spawnObstacle(x);
+  }
+}
+
+function updateLives() {
+  let s = '';
+  for (let i = 0; i < MAX_LIVES; i++) s += i < lives ? '\u2764\ufe0f ' : '\ud83d\udda4 ';
+  document.getElementById('lives').textContent = s;
+}
+
+// ── Drawing ──
+function drawStars() {
+  for (const st of stars) {
+    st.x -= st.s * speed * 0.3;
+    if (st.x < 0) { st.x = W; st.y = Math.random() * H; }
+    ctx.beginPath();
+    ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${0.3 + st.r * 0.3})`;
+    ctx.fill();
+  }
+}
+
+function drawShip(x, y, invincible) {
+  ctx.save();
+  ctx.translate(x, y);
+
+  // Glow when invincible
+  if (invincible) {
+    ctx.shadowColor = '#55b6ca';
+    ctx.shadowBlur = 20;
+    ctx.globalAlpha = 0.6 + Math.sin(Date.now() * 0.01) * 0.4;
+  }
+
+  // Ship body
+  ctx.fillStyle = '#e8e8e8';
+  ctx.beginPath();
+  ctx.moveTo(SHIP_SIZE, 0);
+  ctx.lineTo(-SHIP_SIZE * 0.7, -SHIP_SIZE * 0.5);
+  ctx.lineTo(-SHIP_SIZE * 0.4, 0);
+  ctx.lineTo(-SHIP_SIZE * 0.7, SHIP_SIZE * 0.5);
+  ctx.closePath();
+  ctx.fill();
+
+  // Cockpit
+  ctx.fillStyle = '#55b6ca';
+  ctx.beginPath();
+  ctx.arc(SHIP_SIZE * 0.2, 0, SHIP_SIZE * 0.18, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Thruster flame
+  const flameLen = 8 + Math.random() * 12;
+  ctx.fillStyle = '#ed7c5a';
+  ctx.beginPath();
+  ctx.moveTo(-SHIP_SIZE * 0.4, -SHIP_SIZE * 0.18);
+  ctx.lineTo(-SHIP_SIZE * 0.4 - flameLen, 0);
+  ctx.lineTo(-SHIP_SIZE * 0.4, SHIP_SIZE * 0.18);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawObstacles() {
+  for (const ob of obstacles) {
+    // Top asteroid column
+    const grad1 = ctx.createLinearGradient(ob.x, 0, ob.x + OBSTACLE_WIDTH, 0);
+    grad1.addColorStop(0, '#4a3a2a');
+    grad1.addColorStop(0.5, '#6b5a48');
+    grad1.addColorStop(1, '#4a3a2a');
+    ctx.fillStyle = grad1;
+    ctx.fillRect(ob.x, 0, OBSTACLE_WIDTH, ob.gapY);
+
+    // Bottom asteroid column
+    ctx.fillStyle = grad1;
+    ctx.fillRect(ob.x, ob.gapY + ob.gapH, OBSTACLE_WIDTH, H - ob.gapY - ob.gapH);
+
+    // Rocky edges
+    ctx.fillStyle = '#5a4a38';
+    for (let i = 0; i < 6; i++) {
+      const ry = ob.gapY - 4 + Math.sin(i * 1.5 + ob.x * 0.01) * 8;
+      ctx.beginPath();
+      ctx.arc(ob.x + i * 7 + 3, ry, 5 + Math.sin(i) * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    for (let i = 0; i < 6; i++) {
+      const ry = ob.gapY + ob.gapH + 4 + Math.sin(i * 1.8 + ob.x * 0.01) * 8;
+      ctx.beginPath();
+      ctx.arc(ob.x + i * 7 + 3, ry, 5 + Math.sin(i + 2) * 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+}
+
+// ── Collision ──
+function checkCollision() {
+  if (Date.now() < invincibleUntil) return false;
+
+  // Ceiling / floor
+  if (shipY < SHIP_SIZE * 0.5 || shipY > H - SHIP_SIZE * 0.5) return true;
+
+  // Obstacles
+  for (const ob of obstacles) {
+    if (shipX + SHIP_SIZE * 0.6 > ob.x && shipX - SHIP_SIZE * 0.6 < ob.x + OBSTACLE_WIDTH) {
+      if (shipY - SHIP_SIZE * 0.4 < ob.gapY || shipY + SHIP_SIZE * 0.4 > ob.gapY + ob.gapH) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+// ── Milestones ──
+function checkMilestones() {
+  if (nextMilestone >= MILESTONES.length) return;
+  const ms = MILESTONES[nextMilestone];
+  const distMiles = distance / 1e6; // distance is in miles, milestones in million miles
+  if (distMiles >= ms.dist) {
+    showMilestone(ms);
+    nextMilestone++;
+  }
+}
+
+function showMilestone(ms) {
+  const el = document.getElementById('milestone');
+  document.getElementById('ms-img').src = ms.img;
+  document.getElementById('ms-name').textContent = ms.name;
+  document.getElementById('ms-dist').textContent = formatDist(ms.dist * 1e6) + ' from the Sun';
+  document.getElementById('ms-fact').textContent = ms.fact;
+  el.style.opacity = '1';
+  milestoneTimer = 240; // frames to show
+}
+
+function formatDist(miles) {
+  if (miles >= 1e9) return (miles / 1e9).toFixed(1) + ' billion miles';
+  if (miles >= 1e6) return (miles / 1e6).toFixed(1) + ' million miles';
+  return Math.floor(miles).toLocaleString() + ' miles';
+}
+
+// ── Audio (Web Audio synthesis) ──
+let audioCtx;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playBoost() {
+  try {
+    const a = getAudio();
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(440, a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(880, a.currentTime + 0.08);
+    g.gain.setValueAtTime(0.1, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.1);
+    o.connect(g).connect(a.destination);
+    o.start(); o.stop(a.currentTime + 0.1);
+  } catch(e) {}
+}
+
+function playHit() {
+  try {
+    const a = getAudio();
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(200, a.currentTime);
+    o.frequency.exponentialRampToValueAtTime(60, a.currentTime + 0.2);
+    g.gain.setValueAtTime(0.15, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + 0.25);
+    o.connect(g).connect(a.destination);
+    o.start(); o.stop(a.currentTime + 0.25);
+  } catch(e) {}
+}
+
+function playMilestone() {
+  try {
+    const a = getAudio();
+    [523, 659, 784].forEach((f, i) => {
+      const o = a.createOscillator();
+      const g = a.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0, a.currentTime + i * 0.12);
+      g.gain.linearRampToValueAtTime(0.1, a.currentTime + i * 0.12 + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + i * 0.12 + 0.3);
+      o.connect(g).connect(a.destination);
+      o.start(a.currentTime + i * 0.12); o.stop(a.currentTime + i * 0.12 + 0.3);
+    });
+  } catch(e) {}
+}
+
+// ── Input ──
+let boosting = false;
+
+function boost() {
+  if (!running || gameOver) return;
+  shipVY = BOOST;
+  playBoost();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); boost(); }
+});
+canvas.addEventListener('touchstart', e => { e.preventDefault(); boost(); });
+canvas.addEventListener('mousedown', e => { boost(); });
+
+// ── Game Loop ──
+function update() {
+  if (!running || gameOver) return;
+
+  // Physics
+  shipVY += GRAVITY;
+  shipY += shipVY;
+
+  // Speed ramp
+  speed = Math.min(MAX_SPEED, INITIAL_SPEED + distance * SPEED_RAMP / MILES_PER_FRAME);
+
+  // Distance
+  distance += speed * MILES_PER_FRAME;
+
+  // Move obstacles
+  for (const ob of obstacles) {
+    ob.x -= speed;
+  }
+
+  // Remove off-screen, spawn new
+  if (obstacles.length > 0 && obstacles[0].x + OBSTACLE_WIDTH < 0) {
+    obstacles.shift();
+  }
+  const last = obstacles[obstacles.length - 1];
+  if (!last || last.x < W - OBSTACLE_SPACING + 50) {
+    spawnObstacle(W + 50);
+  }
+
+  // Collision
+  if (checkCollision()) {
+    lives--;
+    updateLives();
+    playHit();
+    if (lives <= 0) {
+      endGame();
+      return;
+    }
+    invincibleUntil = Date.now() + INVINCIBLE_TIME;
+    shipVY = BOOST * 0.5;
+  }
+
+  // Milestones
+  if (milestoneTimer > 0) {
+    milestoneTimer--;
+    if (milestoneTimer <= 30) {
+      document.getElementById('milestone').style.opacity = String(milestoneTimer / 30);
+    }
+    if (milestoneTimer === 200) playMilestone();
+  }
+  checkMilestones();
+
+  // Score display
+  document.getElementById('score').textContent = formatDist(distance);
+}
+
+function draw() {
+  ctx.fillStyle = '#0a0a2e';
+  ctx.fillRect(0, 0, W, H);
+
+  drawStars();
+  drawObstacles();
+
+  const invincible = Date.now() < invincibleUntil;
+  drawShip(shipX, shipY, invincible);
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function endGame() {
+  gameOver = true;
+  running = false;
+
+  if (distance > bestScore) {
+    bestScore = distance;
+    localStorage.setItem('gravityDodgeBest', String(Math.floor(distance)));
+  }
+
+  document.getElementById('final-score').textContent = 'Distance: ' + formatDist(distance);
+  document.getElementById('best-score').textContent = 'Best: ' + formatDist(bestScore);
+  document.getElementById('game-over').style.display = 'flex';
+
+  // Track play end
+  if (window._playId) {
+    const dur = Math.floor((Date.now() - window._playStart) / 1000);
+    fetch('/api/track/play-end', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ playId: window._playId, completed: false, durationSeconds: dur })
+    }).catch(() => {});
+  }
+}
+
+function startGame() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('game-over').style.display = 'none';
+  init();
+  running = true;
+
+  // Track play start
+  window._playStart = Date.now();
+  fetch('/api/track/play-start', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gameTitle: 'Gravity Dodge' })
+  }).then(r => r.json()).then(d => { window._playId = d.playId; }).catch(() => {});
+}
+
+document.getElementById('start-btn').addEventListener('click', startGame);
+document.getElementById('restart-btn').addEventListener('click', startGame);
+
+// Start render loop
+loop();
+</script>
+</body>
+</html>
