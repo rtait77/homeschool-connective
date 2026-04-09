@@ -150,6 +150,20 @@ For each remaining subject:
 2. Re-run gap analysis to see what's actually still missing
 3. Research and add new resources to fill gaps
 
+### April 8 Continued
+- Removed 37 duplicate resources (31 exact + 6 near-dupes)
+- Consolidated series (Who Was, I Am, Extraordinary Life, Where Is) into single entries
+- Added 4 new intake form questions (freeTimeActivities, expanded extraInfo, educationValues, biggestWorries)
+- Defined tag mappings for new questions
+- Fixed admin panel pagination for >1000 resources
+- Multiple URL fixes from Rebecca's vetting
+
 ### Target
 - Database goal: 2,000–5,000 total resources
-- Currently at ~964
+- Currently at ~1,125 (after dedup)
+
+### Still To Do
+- DB retagging for new intake form tags (deschooling, twice_exceptional, gentle_approach, outdoor, cooking, life_skills, character, etc.)
+- Retag existing History/ELA/FL resources with subtopic tags
+- Fill remaining gaps per subtopic
+- Rebecca checking URLs (59 gap-fill + 643 pre-existing)
