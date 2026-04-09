@@ -370,7 +370,7 @@ const ZONES = [
     id: 'oort', title: 'The Oort Cloud', sub: '',
     gStart: 990, gEnd: 1080,
     landmarks: [],
-    hazardRate: 0.03, hazardSpeed: [4, 7], hazardSize: [18, 50],
+    hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [18, 45],
     oortWall: true,
   },
 ];
@@ -619,11 +619,11 @@ function spawnOortWall() {
   if (oortWallSpawned) return;
   oortWallSpawned = true;
   // Spawn a dense wave of rocks across the screen
-  for (let i = 0; i < 15; i++) {
-    const size = 18 + Math.random() * 35;
-    const y = Math.random() * (H() - 60) + 30;
-    const spd = 3 + Math.random() * 4;
-    const xOff = W() + 50 + i * 40 + Math.random() * 30;
+  for (let i = 0; i < 10; i++) {
+    const size = 18 + Math.random() * 30;
+    const y = Math.random() * (H() - 80) + 40;
+    const spd = 3 + Math.random() * 3;
+    const xOff = W() + 50 + i * 70 + Math.random() * 40;
 
     const el = document.createElement('div');
     el.className = 'space-obj';
@@ -821,7 +821,7 @@ function loop() {
   }
 
   // Spawn hazards — difficulty ramps after Earth (zone index 4)
-  const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.18;
+  const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.1;
   if (Math.random() < zone.hazardRate * speedMult * 0.6 * diffMult) {
     spawnHazard(zone, diffMult);
   }
