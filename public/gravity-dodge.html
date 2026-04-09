@@ -29,27 +29,25 @@
     #ship.invincible { animation: blink 0.15s infinite alternate; }
     @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
 
-    /* HUD */
+    /* HUD — no background, just floating elements */
     #hud {
       position: fixed; top: 0; left: 0; right: 0;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 44px 16px 8px;
-      background: rgba(0,0,0,0.3);
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 14px 16px 0;
       z-index: 20;
+      pointer-events: none;
     }
-    #hud-left { display: flex; flex-direction: column; gap: 2px; }
-    #distance {
-      font-size: clamp(13px, 3vw, 20px); font-weight: 900;
-      text-shadow: 0 0 12px #fff, 0 2px 8px rgba(0,0,0,0.8);
+    #hud a { pointer-events: all; }
+    #hud-left { display: flex; flex-direction: column; gap: 4px; }
+    #back-link {
+      color: rgba(255,255,255,0.6); text-decoration: none;
+      font-size: 0.82rem; font-weight: 700;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
     }
+    #back-link:hover { color: #fff; }
     #lives-display {
       font-size: clamp(14px, 2.5vw, 20px);
       filter: drop-shadow(0 0 4px #ff6b6b);
-    }
-    #zone-label {
-      font-size: clamp(12px, 2.5vw, 18px); font-weight: 800;
-      color: #a8f0ff; text-shadow: 0 2px 6px rgba(0,0,0,0.8);
-      text-align: right; max-width: 50%;
     }
 
     /* Zone title announcement — top of screen, below HUD */
@@ -173,10 +171,9 @@
 
 <div id="hud">
   <div id="hud-left">
-    <div id="distance" style="display:none;"></div>
+    <a id="back-link" href="/learn">&larr; Back to Games</a>
     <div id="lives-display"></div>
   </div>
-  <div id="zone-label"></div>
 </div>
 
 <div id="zone-title">
@@ -494,7 +491,6 @@ function init() {
 
   updateLives();
   document.getElementById('distance').textContent = '0 miles';
-  document.getElementById('zone-label').textContent = '';
   document.getElementById('zone-title').style.opacity = '0';
 
   // Sun — starts huge, partially visible on left edge
@@ -565,7 +561,8 @@ function spawnLandmark(lm, zoneIdx) {
   gameArea.appendChild(el);
   // isFirst: true if this is the first landmark in its zone (triggers zone title)
   const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
-  landmarks.push({ el, x: W() + 30, speed: 1.5, zoneIdx, isFirst, titleTriggered: false });
+  const lmY = yCenter;
+  landmarks.push({ el, x: W() + 30, y: lmY, size: lm.size, speed: 1.5, zoneIdx, isFirst, titleTriggered: false });
 }
 
 // ═══════════════════════════════════════════
@@ -596,7 +593,6 @@ function showZoneTitle(zone) {
   document.getElementById('zt-main').textContent = zone.title;
   document.getElementById('zt-sub').textContent = zone.sub;
   document.getElementById('zone-title').style.opacity = '1';
-  document.getElementById('zone-label').textContent = zone.title;
   zoneTitleTimer = 180;
   sndZone();
 }
@@ -608,15 +604,26 @@ function checkCollision() {
   if (Date.now() < invincibleUntil) return false;
   const sx = shipX;
   const sy = shipY;
-  const sr = C.SHIP_SIZE * 0.4; // ship collision radius
+  const sr = C.SHIP_SIZE * 0.4;
 
+  // Check hazards (rocks/comets)
   for (const h of hazards) {
     const hcx = h.x + h.size / 2;
     const hcy = h.y + h.size / 2;
-    const hr = h.size * 0.42; // hazard collision radius
+    const hr = h.size * 0.42;
     const dx = sx - hcx, dy = sy - hcy;
     if (dx * dx + dy * dy < (sr + hr) * (sr + hr)) return true;
   }
+
+  // Check landmarks (planets/moons)
+  for (const l of landmarks) {
+    const lcx = l.x + l.size / 2;
+    const lcy = l.y;
+    const lr = l.size * 0.4;
+    const dx = sx - lcx, dy = sy - lcy;
+    if (dx * dx + dy * dy < (sr + lr) * (sr + lr)) return true;
+  }
+
   return false;
 }
 
@@ -688,13 +695,14 @@ function loop() {
   shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
 
-  // Sun slides off-screen and shrinks as we travel outward
-  const sunSize = Math.max(10, 600 * (1 - progress * 0.98));
-  const sunLeft = -200 - (progress * 500); // slides left fast
+  // Sun disappears quickly — fully off-screen before Mercury
+  const sunProgress = Math.min(1, distance / 25); // gone by game dist 25 (before Mercury at 50)
+  const sunSize = Math.max(10, 600 * (1 - sunProgress));
+  const sunLeft = -200 - (sunProgress * 600);
   sunRef.style.width = sunSize + 'px';
   sunRef.style.height = sunSize + 'px';
   sunRef.style.left = sunLeft + 'px';
-  sunRef.style.opacity = String(Math.max(0.03, 1 - progress * 1.5));
+  sunRef.style.opacity = String(Math.max(0, 1 - sunProgress * 2));
 
   // Zone check — landmarks trigger zone titles when they pass the ship
   // For zones without landmarks, check by distance
