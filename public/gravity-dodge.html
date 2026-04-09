@@ -378,9 +378,41 @@ const sunRef = document.getElementById('sun-ref');
 function W() { return window.innerWidth; }
 function H() { return window.innerHeight; }
 
-function formatDist(m) {
-  if (m >= 1000) return (m / 1000).toFixed(1) + ' billion miles';
-  return m.toFixed(1) + ' million miles';
+// Map game distance to real astronomical distance (million miles)
+const REAL_MAP = [
+  { g0: 0, g1: 30, r0: 0, r1: 36 },
+  { g0: 30, g1: 70, r0: 36, r1: 67.2 },
+  { g0: 70, g1: 115, r0: 67.2, r1: 93 },
+  { g0: 115, g1: 165, r0: 93, r1: 141.6 },
+  { g0: 165, g1: 290, r0: 141.6, r1: 300 },
+  { g0: 290, g1: 360, r0: 300, r1: 483.8 },
+  { g0: 360, g1: 430, r0: 483.8, r1: 890.8 },
+  { g0: 430, g1: 500, r0: 890.8, r1: 1784 },
+  { g0: 500, g1: 565, r0: 1784, r1: 2793 },
+  { g0: 565, g1: 660, r0: 2793, r1: 4500 },
+  { g0: 660, g1: 730, r0: 4500, r1: 6000 },
+  { g0: 730, g1: 810, r0: 6000, r1: 8700 },
+  { g0: 810, g1: 880, r0: 8700, r1: 11200 },
+  { g0: 880, g1: 970, r0: 11200, r1: 50000 },
+];
+
+function gameToReal(gd) {
+  for (const s of REAL_MAP) {
+    if (gd <= s.g1) {
+      const t = Math.max(0, (gd - s.g0) / (s.g1 - s.g0));
+      return s.r0 + t * (s.r1 - s.r0);
+    }
+  }
+  return 50000;
+}
+
+function formatDist(realMiles) {
+  if (realMiles >= 1000) return (realMiles / 1000).toFixed(1) + ' billion miles';
+  return realMiles.toFixed(1) + ' million miles';
+}
+
+function displayDist() {
+  return formatDist(gameToReal(distance));
 }
 
 // ═══════════════════════════════════════════
@@ -446,9 +478,10 @@ function updateLives() {
 // ═══════════════════════════════════════════
 // HAZARDS (floating rocks/ice)
 // ═══════════════════════════════════════════
-function spawnHazard(zone) {
+function spawnHazard(zone, diffMult) {
+  diffMult = diffMult || 1;
   const size = zone.hazardSize[0] + Math.random() * (zone.hazardSize[1] - zone.hazardSize[0]);
-  const spd = zone.hazardSpeed[0] + Math.random() * (zone.hazardSpeed[1] - zone.hazardSpeed[0]);
+  const spd = (zone.hazardSpeed[0] + Math.random() * (zone.hazardSpeed[1] - zone.hazardSpeed[0])) * (1 + (diffMult - 1) * 0.5);
   const y = Math.random() * (H() - size - 100) + 50;
   const rotation = Math.random() * 360;
   const rotSpeed = (Math.random() - 0.5) * 4;
@@ -641,9 +674,10 @@ function loop() {
     }
   }
 
-  // Spawn hazards
-  if (Math.random() < zone.hazardRate * speedMult * 0.5) {
-    spawnHazard(zone);
+  // Spawn hazards — difficulty ramps after Earth (zone index 3)
+  const diffMult = currentZoneIdx <= 3 ? 1 : 1 + (currentZoneIdx - 3) * 0.15;
+  if (Math.random() < zone.hazardRate * speedMult * 0.4 * diffMult) {
+    spawnHazard(zone, diffMult);
   }
 
   // Spawn landmarks — check all zones
@@ -701,7 +735,7 @@ function loop() {
   }
 
   // HUD
-  document.getElementById('distance').textContent = formatDist(distance);
+  document.getElementById('distance').textContent = displayDist();
 
   // Victory check
   if (distance >= TOTAL_DIST) {
@@ -721,7 +755,7 @@ function endGame() {
   saveScore(distance);
   const zone = ZONES[currentZoneIdx] || ZONES[0];
   document.getElementById('go-zone').textContent = 'You reached: ' + zone.title;
-  document.getElementById('go-dist').innerHTML = formatDist(distance) + ' from the Sun' +
+  document.getElementById('go-dist').innerHTML = displayDist() + ' from the Sun' +
     '<br><span style="font-size:0.8em;color:#888;">Personal best: ' + formatDist(getBest()) + '</span>';
   document.getElementById('game-over-screen').style.display = 'flex';
   trackEnd(false);
@@ -731,7 +765,7 @@ function winGame() {
   victory = true; running = false;
   shipEl.classList.remove('invincible');
   saveScore(distance);
-  document.getElementById('vic-dist').innerHTML = 'Total distance: ' + formatDist(distance) +
+  document.getElementById('vic-dist').innerHTML = 'Total distance: ' + displayDist() +
     '<br><span style="font-size:0.8em;color:#a8f0ff;">Personal best: ' + formatDist(getBest()) + '</span>';
   document.getElementById('victory-screen').style.display = 'flex';
   sndVictory();
@@ -779,16 +813,17 @@ function getBest() {
   return Math.max(...scores, 0);
 }
 
-function saveScore(dist) {
-  // Always save to localStorage
-  if (dist > localBest) {
-    localBest = dist;
-    localStorage.setItem('gravityDodgeBest', String(dist));
+function saveScore(gameDist) {
+  const realDist = gameToReal(gameDist);
+  // Always save to localStorage (real miles)
+  if (realDist > localBest) {
+    localBest = realDist;
+    localStorage.setItem('gravityDodgeBest', String(realDist));
   }
-  // Try to save to server
+  // Try to save to server (real miles)
   fetch('/api/track/high-score', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ game_title: 'Gravity Dodge', score: dist })
+    body: JSON.stringify({ game_title: 'Gravity Dodge', score: realDist })
   }).then(r => r.json()).then(d => {
     if (d.highScore != null) personalBest = d.highScore;
   }).catch(() => {});
