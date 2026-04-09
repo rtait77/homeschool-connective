@@ -52,21 +52,21 @@
       text-align: right; max-width: 50%;
     }
 
-    /* Zone title announcement */
+    /* Zone title announcement — top of screen, below HUD */
     #zone-title {
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      position: fixed; top: 90px; left: 50%;
+      transform: translateX(-50%);
       text-align: center; z-index: 15;
       opacity: 0; transition: opacity 0.6s;
       pointer-events: none;
     }
     #zone-title .zt-main {
-      font-size: clamp(22px, 5vw, 42px); font-weight: 900;
+      font-size: clamp(20px, 4.5vw, 36px); font-weight: 900;
       color: #fff;
       text-shadow: 0 2px 16px rgba(85,182,202,0.6), 0 4px 20px rgba(0,0,0,0.8);
     }
     #zone-title .zt-sub {
-      font-size: clamp(12px, 2.5vw, 18px); font-weight: 700;
+      font-size: clamp(11px, 2.2vw, 16px); font-weight: 700;
       color: #a8f0ff; margin-top: 4px;
     }
 
@@ -354,7 +354,7 @@ const C = {
   SHIP_X_PCT: 0.12,
   MAX_LIVES: 3,
   INVINCIBLE_MS: 1500,
-  DIST_PER_FRAME: 0.12, // million miles per frame at speed 1
+  DIST_PER_FRAME: 0.09, // game units per frame at speed 1
 };
 
 // ═══════════════════════════════════════════
@@ -501,10 +501,12 @@ function spawnLandmark(lm) {
 // ═══════════════════════════════════════════
 // ZONES
 // ═══════════════════════════════════════════
+// Zone title triggers AFTER the first landmark has spawned and is on screen
 function getCurrentZone() {
   for (let i = ZONES.length - 1; i >= 0; i--) {
     const z = ZONES[i];
-    const triggerDist = z.landmarks.length > 0 ? z.landmarks[0].atG - 5 : z.gStart;
+    // Trigger after the first landmark distance, or at gStart for zones with no landmarks
+    const triggerDist = z.landmarks.length > 0 ? z.landmarks[0].atG + 2 : z.gStart;
     if (distance >= triggerDist) return i;
   }
   return 0;
@@ -577,9 +579,9 @@ document.addEventListener('touchend', e => {
 function loop() {
   if (!running || gameOver || victory) return;
 
-  // Progress scales: faster as we go further
+  // Progress scales: gradually faster but capped so outer zones don't fly by
   const progress = distance / TOTAL_DIST;
-  const speedMult = 1 + progress * 2;
+  const speedMult = 1 + progress * 1.2;
 
   // Movement from keys
   if (keys.up) shipVY = -MOVE_SPEED;
