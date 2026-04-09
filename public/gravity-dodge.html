@@ -362,6 +362,8 @@ let landmarks = [];    // planet/moon images on screen
 let zoneTitleTimer = 0;
 let spawnedLandmarks = new Set();
 let animId;
+let personalBest = null; // from server (logged-in) or localStorage
+let localBest = parseFloat(localStorage.getItem('gravityDodgeBest') || '0');
 
 const gameArea = document.getElementById('game-area');
 const shipEl = document.getElementById('ship');
@@ -657,9 +659,11 @@ function loop() {
 function endGame() {
   gameOver = true; running = false;
   shipEl.classList.remove('invincible');
+  saveScore(distance);
   const zone = ZONES[currentZoneIdx] || ZONES[0];
   document.getElementById('go-zone').textContent = 'You reached: ' + zone.title;
-  document.getElementById('go-dist').textContent = formatDist(distance) + ' from the Sun';
+  document.getElementById('go-dist').innerHTML = formatDist(distance) + ' from the Sun' +
+    '<br><span style="font-size:0.8em;color:#888;">Personal best: ' + formatDist(getBest()) + '</span>';
   document.getElementById('game-over-screen').style.display = 'flex';
   trackEnd(false);
 }
@@ -667,7 +671,9 @@ function endGame() {
 function winGame() {
   victory = true; running = false;
   shipEl.classList.remove('invincible');
-  document.getElementById('vic-dist').textContent = 'Total distance: ' + formatDist(distance);
+  saveScore(distance);
+  document.getElementById('vic-dist').innerHTML = 'Total distance: ' + formatDist(distance) +
+    '<br><span style="font-size:0.8em;color:#a8f0ff;">Personal best: ' + formatDist(getBest()) + '</span>';
   document.getElementById('victory-screen').style.display = 'flex';
   sndVictory();
   trackEnd(true);
@@ -695,6 +701,38 @@ function startGame() {
   fetch('/api/track/play-start', { method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ gameTitle: 'Gravity Dodge' })
   }).then(r => r.json()).then(d => { window._playId = d.playId; }).catch(() => {});
+}
+
+// Load high score from server (if logged in)
+function loadHighScore() {
+  fetch('/api/track/high-score?game=Gravity%20Dodge')
+    .then(r => r.json())
+    .then(d => {
+      if (d.highScore != null) personalBest = d.highScore;
+    })
+    .catch(() => {});
+}
+loadHighScore();
+
+function getBest() {
+  const scores = [localBest];
+  if (personalBest != null) scores.push(personalBest);
+  return Math.max(...scores, 0);
+}
+
+function saveScore(dist) {
+  // Always save to localStorage
+  if (dist > localBest) {
+    localBest = dist;
+    localStorage.setItem('gravityDodgeBest', String(dist));
+  }
+  // Try to save to server
+  fetch('/api/track/high-score', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ game_title: 'Gravity Dodge', score: dist })
+  }).then(r => r.json()).then(d => {
+    if (d.highScore != null) personalBest = d.highScore;
+  }).catch(() => {});
 }
 
 document.getElementById('start-btn').addEventListener('click', startGame);
