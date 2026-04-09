@@ -234,19 +234,19 @@ const ZONES = [
     id: 'sun', title: 'Leaving the Sun', sub: 'Beginning your journey outward',
     gStart: 0, gEnd: 30,
     landmarks: [],
-    hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
     id: 'mercury', title: 'Mercury', sub: '36 million miles from the Sun',
     gStart: 30, gEnd: 70,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
-    hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
     id: 'venus', title: 'Venus', sub: '67.2 million miles from the Sun',
     gStart: 70, gEnd: 115,
     landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
-    hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
     id: 'earth', title: 'Earth', sub: '93 million miles from the Sun',
@@ -255,7 +255,7 @@ const ZONES = [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
       { name: 'Moon', img: '/full-moon.png', size: 45, atG: 145 },
     ],
-    hazardRate: 0.03, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
     id: 'mars', title: 'Mars', sub: '141.6 million miles from the Sun',
@@ -265,7 +265,7 @@ const ZONES = [
       { name: 'Phobos', img: '/phobos.webp', size: 22, atG: 198 },
       { name: 'Deimos', img: '/Deimos.jpg', size: 18, atG: 208 },
     ],
-    hazardRate: 0.032, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
+    hazardRate: 0.024, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
     id: 'asteroid-belt', title: 'The Asteroid Belt', sub: 'Between Mars and Jupiter',
@@ -274,7 +274,7 @@ const ZONES = [
       { name: 'Ceres', img: '/ceres.png', size: 40, atG: 245 },
       { name: 'Vesta', img: '/vesta.png', size: 35, atG: 270 },
     ],
-    hazardRate: 0.035, hazardSpeed: [2, 4], hazardSize: [18, 45],
+    hazardRate: 0.028, hazardSpeed: [2, 4], hazardSize: [18, 45],
   },
   {
     id: 'jupiter', title: 'Jupiter', sub: '483.8 million miles from the Sun',
@@ -286,7 +286,7 @@ const ZONES = [
       { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 344 },
       { name: 'Callisto', img: '/callisto.png', size: 30, atG: 354 },
     ],
-    hazardRate: 0.022, hazardSpeed: [2.5, 4], hazardSize: [25, 42],
+    hazardRate: 0.018, hazardSpeed: [2.5, 4], hazardSize: [25, 42],
   },
   {
     id: 'saturn', title: 'Saturn', sub: '890.8 million miles from the Sun',
@@ -297,7 +297,7 @@ const ZONES = [
       { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 410 },
       { name: 'Mimas', img: '/mimas.png', size: 20, atG: 422 },
     ],
-    hazardRate: 0.025, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
+    hazardRate: 0.02, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
     id: 'uranus', title: 'Uranus', sub: '1.78 billion miles from the Sun',
@@ -331,51 +331,51 @@ const ZONES = [
   },
   {
     id: 'scattered', title: 'The Scattered Disk', sub: 'Home of Eris',
-    gStart: 660, gEnd: 740,
+    gStart: 660, gEnd: 750,
     landmarks: [
-      { name: 'Eris', img: '/eris.png', size: 35, atG: 695 },
+      { name: 'Eris', img: '/eris.png', size: 35, atG: 690 },
     ],
-    hazardRate: 0.022, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
+    hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
   },
   {
     id: 'termination-shock', title: 'Termination Shock', sub: 'Entering the boundary of the heliosphere',
-    gStart: 740, gEnd: 770,
+    gStart: 750, gEnd: 790,
     landmarks: [],
-    barrier: { atG: 755, color: '#4488dd', width: 8 },
-    hazardRate: 0.02, hazardSpeed: [3, 5], hazardSize: [22, 48],
+    barrier: { atG: 770, color: '#4488dd', width: 8 },
+    hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'heliosheath', title: 'The Heliosheath', sub: 'Inside the outer layer of the heliosphere',
-    gStart: 770, gEnd: 850,
+    gStart: 790, gEnd: 880,
     landmarks: [],
-    hazardRate: 0.025, hazardSpeed: [3.5, 5.5], hazardSize: [24, 50],
+    hazardRate: 0.02, hazardSpeed: [3.5, 5.5], hazardSize: [24, 50],
     tint: 'rgba(80, 90, 120, 0.15)',
   },
   {
     id: 'heliopause', title: 'The Heliopause', sub: 'Exiting the heliosphere',
-    gStart: 850, gEnd: 880,
+    gStart: 880, gEnd: 910,
     landmarks: [],
-    barrier: { atG: 860, color: '#888888', width: 14 },
-    hazardRate: 0.02, hazardSpeed: [3, 5], hazardSize: [22, 48],
+    barrier: { atG: 890, color: '#888888', width: 14 },
+    hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'interstellar', title: 'Interstellar Space', sub: 'Beyond the heliosphere',
-    gStart: 880, gEnd: 960,
+    gStart: 910, gEnd: 990,
     landmarks: [
-      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 910 },
+      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 940 },
     ],
-    hazardRate: 0.03, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
+    hazardRate: 0.025, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
     id: 'oort', title: 'The Oort Cloud', sub: '',
-    gStart: 960, gEnd: 1050,
+    gStart: 990, gEnd: 1080,
     landmarks: [],
-    hazardRate: 0.035, hazardSpeed: [4, 7], hazardSize: [18, 50],
+    hazardRate: 0.03, hazardSpeed: [4, 7], hazardSize: [18, 50],
     oortWall: true,
   },
 ];
 
-const TOTAL_DIST = 1060; // game distance units
+const TOTAL_DIST = 1090; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -534,14 +534,16 @@ function spawnHazard(zone, diffMult) {
   el.style.left = W() + 20 + 'px';
   el.style.top = y + 'px';
 
-  // Use SVG comet with red tail for kuiper/oort/scattered, rocks otherwise
-  if (zone.id === 'kuiper' || zone.id === 'oort' || zone.id === 'scattered' || zone.id === 'interstellar') {
-    el.innerHTML = `<svg viewBox="0 0 60 30" width="${size}" height="${size*0.5}">
-      <ellipse cx="18" cy="15" rx="8" ry="7" fill="#c8c0b8"/>
-      <ellipse cx="16" cy="13" rx="3" ry="2" fill="#ddd" opacity="0.6"/>
-      <path d="M26,12 Q40,8 58,4" stroke="#cc3333" stroke-width="3" fill="none" opacity="0.7"/>
-      <path d="M26,15 Q42,14 60,12" stroke="#dd5544" stroke-width="2" fill="none" opacity="0.5"/>
-      <path d="M26,18 Q40,20 56,24" stroke="#cc3333" stroke-width="2.5" fill="none" opacity="0.4"/>
+  const isComet = zone.id === 'kuiper' || zone.id === 'oort' || zone.id === 'scattered' || zone.id === 'interstellar';
+  if (isComet) {
+    el.innerHTML = `<svg viewBox="0 0 70 30" width="${size}" height="${size*0.43}" style="filter:drop-shadow(4px 0 8px rgba(220,60,40,0.6));">
+      <defs><radialGradient id="cg"><stop offset="0%" stop-color="#eee"/><stop offset="100%" stop-color="#999"/></radialGradient></defs>
+      <ellipse cx="16" cy="15" rx="9" ry="8" fill="url(#cg)"/>
+      <ellipse cx="14" cy="12" rx="3" ry="2" fill="#fff" opacity="0.5"/>
+      <path d="M25,11 Q42,6 68,3" stroke="#ee4422" stroke-width="3.5" fill="none" opacity="0.8"/>
+      <path d="M25,15 Q44,13 68,11" stroke="#ff6644" stroke-width="2.5" fill="none" opacity="0.6"/>
+      <path d="M25,19 Q42,22 66,26" stroke="#ee4422" stroke-width="3" fill="none" opacity="0.5"/>
+      <path d="M25,15 Q46,16 65,18" stroke="#ff8855" stroke-width="1.5" fill="none" opacity="0.3"/>
     </svg>`;
   } else {
     // SVG rock
@@ -554,7 +556,7 @@ function spawnHazard(zone, diffMult) {
   }
 
   gameArea.appendChild(el);
-  hazards.push({ el, x: W() + 20, y, size, speed: spd, rot: rotation, rotSpeed });
+  hazards.push({ el, x: W() + 20, y, size, speed: spd, rot: isComet ? 0 : rotation, rotSpeed: isComet ? 0 : rotSpeed, isComet });
 }
 
 // ═══════════════════════════════════════════
@@ -629,15 +631,15 @@ function spawnOortWall() {
     el.style.height = size + 'px';
     el.style.left = xOff + 'px';
     el.style.top = y + 'px';
-    el.innerHTML = `<svg viewBox="0 0 60 30" width="${size}" height="${size*0.5}">
-      <ellipse cx="18" cy="15" rx="8" ry="7" fill="#c8c0b8"/>
-      <ellipse cx="16" cy="13" rx="3" ry="2" fill="#ddd" opacity="0.6"/>
-      <path d="M26,12 Q40,8 58,4" stroke="#cc3333" stroke-width="3" fill="none" opacity="0.7"/>
-      <path d="M26,15 Q42,14 60,12" stroke="#dd5544" stroke-width="2" fill="none" opacity="0.5"/>
-      <path d="M26,18 Q40,20 56,24" stroke="#cc3333" stroke-width="2.5" fill="none" opacity="0.4"/>
+    el.innerHTML = `<svg viewBox="0 0 70 30" width="${size}" height="${size*0.43}" style="filter:drop-shadow(4px 0 8px rgba(220,60,40,0.6));">
+      <defs><radialGradient id="cg2"><stop offset="0%" stop-color="#eee"/><stop offset="100%" stop-color="#999"/></radialGradient></defs>
+      <ellipse cx="16" cy="15" rx="9" ry="8" fill="url(#cg2)"/>
+      <path d="M25,11 Q42,6 68,3" stroke="#ee4422" stroke-width="3.5" fill="none" opacity="0.8"/>
+      <path d="M25,15 Q44,13 68,11" stroke="#ff6644" stroke-width="2.5" fill="none" opacity="0.6"/>
+      <path d="M25,19 Q42,22 66,26" stroke="#ee4422" stroke-width="3" fill="none" opacity="0.5"/>
     </svg>`;
     gameArea.appendChild(el);
-    hazards.push({ el, x: xOff, y, size, speed: spd, rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 4 });
+    hazards.push({ el, x: xOff, y, size, speed: spd, rot: 0, rotSpeed: 0, isComet: true });
   }
 }
 
@@ -777,7 +779,7 @@ function loop() {
   // Clamp to screen
   const pad = C.SHIP_SIZE / 2;
   shipX = Math.max(pad, Math.min(W() - pad, shipX));
-  shipY = Math.max(pad + 60, Math.min(H() - pad, shipY));
+  shipY = Math.max(pad + 60, Math.min(H() - pad - 40, shipY));
 
   // Distance always advances
   distance += C.DIST_PER_FRAME * speedMult;
