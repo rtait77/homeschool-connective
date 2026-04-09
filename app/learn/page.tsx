@@ -954,10 +954,11 @@ export default function GamesPage() {
       {/* Results counter */}
       {filtered.length > 0 && (
         <p className="text-sm text-[#5c5c5c] mb-6">
-          {(search.trim() || activeCategory || activeGameType || activeDifficulty || topic !== 'all')
-            ? <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{filtered.length}</span> games</>
-            : <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{games.length}</span> games</>
-          }
+          {(() => {
+            const label = activeCategory === 'lessons' ? 'lesson' : activeCategory === 'printables' ? 'printable' : 'game';
+            const total = (search.trim() || activeCategory || activeGameType || activeDifficulty || topic !== 'all') ? filtered.length : games.length;
+            return <><span className="font-bold text-[#1c1c1c]">{paginated.length}</span> of <span className="font-bold text-[#1c1c1c]">{total}</span> {total === 1 ? label : label + 's'}</>;
+          })()}
         </p>
       )}
 
