@@ -648,17 +648,19 @@ function spawnLandmark(lm, zoneIdx) {
     yCenter = H() * 0.3 + Math.random() * H() * 0.35;
     planetYByZone[zoneIdx] = yCenter;
   } else {
-    // Moon — place near the planet, staggered above/below
+    // Moon — place near the planet, closer moons = closer to planet
+    // lmIndex 1 = closest moon, 2 = next, etc.
     const planetY = planetYByZone[zoneIdx] || H() * 0.5;
-    const offset = (lmIndex % 2 === 1 ? -1 : 1) * (40 + lmIndex * 20);
-    yCenter = planetY + offset + (Math.random() - 0.5) * 20;
+    // Alternate above/below, distance increases with index
+    const dir = lmIndex % 2 === 1 ? -1 : 1;
+    const dist = 30 + lmIndex * 18;
+    yCenter = planetY + dir * dist;
     yCenter = Math.max(60, Math.min(H() - 60, yCenter));
   }
   el.style.top = (yCenter - lm.size / 2) + 'px';
 
-  // Put label below with enough offset to not overlap the image
-  const labelOffset = lm.size / 2 + 14;
-  el.innerHTML = `<img src="${lm.img}" alt="${lm.name}"><div class="lm-label" style="bottom:-${labelOffset}px;">${lm.name}</div>`;
+  // Label right below the image
+  el.innerHTML = `<img src="${lm.img}" alt="${lm.name}"><div class="lm-label" style="bottom:-18px;">${lm.name}</div>`;
   gameArea.appendChild(el);
   // isFirst: true if this is the first landmark in its zone (triggers zone title)
   const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
