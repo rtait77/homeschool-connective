@@ -565,13 +565,13 @@ const games = [
   },
   // Gravity Dodge
   {
-    title: 'Gravity Dodge',
-    desc: 'Fly through the solar system dodging asteroid fields! Pass real planet milestones with actual distances and facts. How far can you go?',
+    title: 'Solar System Run',
+    desc: 'Journey from the Sun to the Oort Cloud! Dodge asteroids, fly past planets and moons, and navigate through the heliosphere. Can you make it to the edge of the solar system?',
     thumb: '/asteroid-thumbnail-planets.jpg',
-    url: '/gravity-dodge.html',
+    url: '/solar-system-run.html',
     topic: 'solar-system',
     types: ['arcade', 'medium'],
-    keywords: ['gravity', 'dodge', 'endless', 'arcade', 'planets', 'solar system', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'distances', 'facts'],
+    keywords: ['solar system', 'run', 'arcade', 'planets', 'moons', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'oort cloud', 'heliosphere', 'comets'],
     newTab: false,
   },
   // Asteroid Blast games

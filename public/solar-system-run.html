@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Gravity Dodge — Journey Through the Solar System</title>
+  <title>Solar System Run</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -227,7 +227,7 @@
 </div>
 
 <div class="overlay-screen" id="start-screen">
-  <h1>Gravity Dodge</h1>
+  <h1>Solar System Run</h1>
   <p>Journey from the Sun to the edge of the solar system.<br>Can you make it to the Oort Cloud?</p>
   <button class="btn" id="start-btn">Start</button>
   <p class="sub">Arrow keys or WASD to move &middot; Tap to steer on mobile &middot; Dodge everything in your path</p>
@@ -438,7 +438,7 @@ let zoneTitleTimer = 0;
 let spawnedLandmarks = new Set();
 let animId;
 let personalBest = null; // from server (logged-in) or localStorage
-let localBest = parseFloat(localStorage.getItem('gravityDodgeBest') || '0');
+let localBest = parseFloat(localStorage.getItem('solarSystemRunBest') || '0');
 
 const gameArea = document.getElementById('game-area');
 const shipEl = document.getElementById('ship');
@@ -1203,7 +1203,7 @@ function startGame() {
 
   window._playStart = Date.now();
   fetch('/api/track/play-start', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ gameTitle: 'Gravity Dodge' })
+    body: JSON.stringify({ gameTitle: 'Solar System Run' })
   }).then(r => r.json()).then(d => { window._playId = d.playId; }).catch(() => {});
 }
 
@@ -1229,12 +1229,12 @@ function saveScore(gameDist) {
   // Always save to localStorage (real miles)
   if (realDist > localBest) {
     localBest = realDist;
-    localStorage.setItem('gravityDodgeBest', String(realDist));
+    localStorage.setItem('solarSystemRunBest', String(realDist));
   }
   // Try to save to server (real miles)
   fetch('/api/track/high-score', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ game_title: 'Gravity Dodge', score: realDist })
+    body: JSON.stringify({ game_title: 'Solar System Run', score: realDist })
   }).then(r => r.json()).then(d => {
     if (d.highScore != null) personalBest = d.highScore;
   }).catch(() => {});
