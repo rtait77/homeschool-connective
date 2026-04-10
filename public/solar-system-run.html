@@ -619,16 +619,22 @@ function spawnHazard(zone, diffMult) {
       hue = Math.random() < coolMix ? 220 : (Math.random() < 0.5 ? 0 : 30);
       sat = hue === 220 ? 10 : (hue === 0 ? 0 : 20);
       lightness = 24 + Math.random() * 16;
-    } else if (zi <= 9) {
-      // Uranus → Neptune: neutral gray, slightly cooler/bluer-gray, hint of red starting
-      const redHint = (zi - 8) * 0.15; // 0 at Uranus, 0.15 at Neptune
-      hue = Math.random() < redHint ? 10 : 220;
-      sat = hue === 10 ? 15 : 8;
+    } else if (zi === 8) {
+      // Uranus: neutral gray, slightly bluer
+      hue = Math.random() < 0.3 ? 220 : 0;
+      sat = hue === 220 ? 8 : 0;
       lightness = 26 + Math.random() * 16;
+    } else if (zi === 9) {
+      // Neptune: gray with some red rocks starting to appear (~25%)
+      const r = Math.random();
+      if (r < 0.25) { hue = 10; sat = 20; }
+      else if (r < 0.4) { hue = 220; sat = 6; }
+      else { hue = 0; sat = 0; }
+      lightness = 24 + Math.random() * 14;
     } else if (zi === 10) {
-      // Kuiper Belt: reddish-gray peak
-      hue = 10;
-      sat = 30 + Math.random() * 10;
+      // Kuiper Belt: reddish-gray peak (~70% red)
+      if (Math.random() < 0.7) { hue = 10; sat = 28 + Math.random() * 12; }
+      else { hue = 0; sat = 0; }
       lightness = 18 + Math.random() * 14;
     } else if (zi === 11) {
       // Scattered Disk: red fading back to gray
@@ -1026,7 +1032,7 @@ function loop() {
   const inOort = ZONES[currentZoneIdx] && ZONES[currentZoneIdx].id === 'oort';
   if (inOort) {
     document.getElementById('zt-main').textContent = 'The Oort Cloud';
-    document.getElementById('zt-sub').textContent = '~186 billion miles';
+    document.getElementById('zt-sub').innerHTML = '~186 billion miles<br><span style="font-size:0.7em;opacity:0.6;font-weight:600;">Density greatly exaggerated for gameplay</span>';
     document.getElementById('zone-title').style.opacity = '1';
   } else if (zoneTitleTimer > 0) {
     zoneTitleTimer--;
