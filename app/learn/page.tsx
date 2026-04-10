@@ -567,7 +567,7 @@ const games = [
   {
     title: 'Solar System Run',
     desc: 'Journey from the Sun to the Oort Cloud! Dodge asteroids, fly past planets and moons, and navigate through the heliosphere. Can you make it to the edge of the solar system?',
-    thumb: '/asteroid-thumbnail-planets.jpg',
+    thumb: '/solar-system-run-thumbnail.png',
     url: '/solar-system-run.html',
     topic: 'solar-system',
     types: ['arcade', 'medium'],
