@@ -13,40 +13,40 @@
       color: white;
       overflow: hidden;
       width: 100vw; height: 100vh;
-    }
-    #stage {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100vw; height: 56.25vw;
-      max-height: 100vh; max-width: 177.78vh;
-    }
-    @media (max-aspect-ratio: 16/9) {
-      #stage { top: 0; transform: translateX(-50%); }
+      display: flex;
+      flex-direction: column;
     }
 
-    /* HUD */
-    #hud {
-      position: absolute;
-      top: 2.5%; left: 0; right: 0;
+    /* Header / HUD */
+    #header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 3%;
+      padding: 44px 16px 8px;
+      flex-shrink: 0;
+      background: rgba(0, 0, 0, 0.25);
     }
     #prompt {
       font-size: clamp(13px, 4vw, 32px);
       font-weight: 900;
       text-shadow: 0 0 12px #fff, 0 2px 8px rgba(0,0,0,0.8);
       letter-spacing: 0.03em;
+      text-align: center;
     }
     #prompt span { color: #f9d84a; }
+    #planet-counter {
+      font-size: clamp(12px, 3vw, 22px);
+      font-weight: 800;
+      color: #a8f0ff;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    }
     #lives-display {
       font-size: clamp(18px, 3.5vw, 28px);
       display: flex;
       gap: 4px;
       align-items: center;
     }
+    .life-icon { filter: drop-shadow(0 0 4px #ff6b6b); }
 
     /* Progress bar */
     #progress-bar {
@@ -62,18 +62,20 @@
       width: 0%;
     }
 
-    /* Game container */
+    /* Game container — fills remaining height */
     #game-container {
       flex: 1;
       position: relative;
       overflow: hidden;
     }
+
+    /* Game area — full size of game-container */
     #game-area {
       position: absolute;
       inset: 0;
     }
 
-        /* Asteroid */
+    /* Asteroid */
     .asteroid {
       position: absolute;
       cursor: pointer;
@@ -200,17 +202,17 @@
   </style>
 </head>
 <body>
-  <div id="header">
-    <div id="lives-display"></div>
-    <div id="prompt">BLAST THINGS WITH <span>RINGS</span>!</div>
-    <div id="planet-counter" style="font-size:clamp(12px,3vw,22px);font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">💍 0 / 4 ringed planets</div>
-  </div>
-  <div id="progress-bar"><div id="progress-fill"></div></div>
-  <div id="game-container">
+<div id="header">
+  <div id="lives-display"></div>
+  <div id="prompt">BLAST THINGS WITH <span>RINGS</span>!</div>
+  <div id="planet-counter" style="font-size:clamp(12px,3vw,22px);font-weight:800;color:#a8f0ff;text-shadow:0 2px 6px rgba(0,0,0,0.8)">💍 0 / 4 ringed planets</div>
+</div>
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<div id="game-container">
   <div id="game-area"></div>
   <div id="overlay">
     <h1>🚀 Asteroid Blast!</h1>
-    <p>Blast only the planets with <strong style="color:#f9d84a">RINGS</strong>!<br>Don't shoot the others — you'll lose a life!</p>
+    <p>Blast only the <strong style="color:#f9d84a">RINGS</strong>!<br>Don't shoot the others — you'll lose a life!</p>
     <button class="btn" id="start-btn">START MISSION</button>
   </div>
 </div>
@@ -221,11 +223,11 @@ const CONFIG = {
   easyMode: false,
   startLives: 3,
   spawnInterval: 1600,
-  asteroidSize: 10,
+  asteroidSize: 18,
 };
 
 const CORRECT = ['Jupiter','Saturn','Uranus','Neptune'];
-const WRONG   = ['Mercury','Venus','Earth','Mars','Pluto','Moon','Sun','Comet'];
+const WRONG   = ['Pluto','Eris','Makemake','Haumea','Ceres','Moon','Sun','Comet'];
 
 let audioCtx = null;
 const audioBuffers = {};
@@ -258,6 +260,7 @@ function playWrong()   { playSound('wrong'); }
 let lives, score, blasted, gameActive, spawnTimer, topUpTimer, asteroidId, spawnQueue, activeCount, blastedSet;
 
 function buildQueue() {
+  // Only queue planets not yet blasted, in random order, max 1 wrong between each
   const remaining = CORRECT.filter(p => !blastedSet.has(p));
   const shuffled = [...remaining].sort(() => Math.random() - 0.5);
   const queue = [];
@@ -293,7 +296,7 @@ function renderHUD() {
     ld.appendChild(icon);
   }
   document.getElementById('progress-fill').style.width = (blasted / CORRECT.length * 100) + '%';
-  document.getElementById('planet-counter').textContent = `💍 ${blasted} / ${CORRECT.length} ringed planets`;
+  document.getElementById('planet-counter').textContent = `🪐 ${blasted} / ${CORRECT.length} planets`;
 }
 
 // ─── ASTEROID SPAWNING ────────────────────────────────────────────────────
@@ -315,12 +318,12 @@ function spawnAsteroid(label, isCorrect) {
   // Speed distribution: 20% very fast, 35% fast, 30% medium, 15% slow stragglers
   const speedRoll = Math.random();
   const duration = speedRoll < 0.20
-    ? randomBetween(3, 5)
+    ? randomBetween(3, 5)    // very fast ~20%
     : speedRoll < 0.55
-    ? randomBetween(6, 10)
+    ? randomBetween(6, 10)   // fast ~35%
     : speedRoll < 0.85
-    ? randomBetween(11, 16)
-    : randomBetween(22, 30);
+    ? randomBetween(11, 16)  // medium ~30%
+    : randomBetween(22, 30); // slow stragglers ~15%
   const isFast = speedRoll < 0.55;
 
   const el = document.createElement('div');
@@ -339,6 +342,7 @@ function spawnAsteroid(label, isCorrect) {
   const sat = Math.floor(Math.random() * 20) + 5;
   const lum = Math.floor(Math.random() * 25) + 25;
 
+  // Fast asteroids get a subtle glow so kids notice them
   const glowStyle = isFast ? 'filter: drop-shadow(0 0 0.4vw #ff9944);' : '';
 
   el.innerHTML = `
@@ -350,7 +354,7 @@ function spawnAsteroid(label, isCorrect) {
         <circle cx="65" cy="60" r="5" fill="hsl(${hue},${sat}%,${lum-8}%)" opacity="0.6"/>
         <circle cx="55" cy="30" r="4" fill="hsl(${hue},${sat}%,${lum-5}%)" opacity="0.5"/>
       </svg>
-      <span class="asteroid-label" style="font-size:${size * 0.16}vmin">${label}</span>
+      <span class="asteroid-label" style="font-size:${size * 0.20}vmin">${label}</span>
     </div>
   `;
 
@@ -420,6 +424,7 @@ function checkEmpty() {
   if (!gameActive || spawnQueue.length > 0 || activeCount > 0) return;
   if (blasted >= CORRECT.length) { endGame(true); return; }
   if (lives <= 0) { endGame(false); return; }
+  // Still have lives and unblasted planets — respawn only the missed ones
   spawnQueue = buildQueue();
   clearInterval(spawnTimer);
   spawnNext();
@@ -493,13 +498,13 @@ function endGame(won) {
   const overlay = document.getElementById('overlay');
   overlay.innerHTML = won ? `
     <h1>Mission Complete!</h1>
-    <p>You found all 4 ringed planets!</p>
+    <p>You blasted all 8 planets!<br>Outstanding astronaut work!</p>
     <button class="btn" id="play-again-btn">Play Again</button>
     <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   ` : `
     <h1>🚀 Mission Failed</h1>
     <p>You blasted <strong style="color:#f9d84a">${blasted} of 4 ringed planets</strong>.<br>
-    Remember: only blast things with <strong>rings</strong>!</p>
+    Remember: only blast the <strong>ringed planets</strong>!</p>
     <button class="btn" id="play-again-btn">Try Again</button>
     <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   `;
