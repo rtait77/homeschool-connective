@@ -231,25 +231,25 @@
 // Real distances shown in subtitles. Game dist is just for pacing.
 const ZONES = [
   {
-    id: 'sun', title: 'Leaving the Sun', sub: 'Beginning your journey outward',
+    id: 'sun', title: 'Leaving the Sun', sub: '',
     gStart: 0, gEnd: 30,
     landmarks: [],
     hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
-    id: 'mercury', title: 'Mercury', sub: '36 million miles from the Sun',
+    id: 'mercury', title: 'Mercury', sub: '36 million miles',
     gStart: 30, gEnd: 70,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
     hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
-    id: 'venus', title: 'Venus', sub: '67.2 million miles from the Sun',
+    id: 'venus', title: 'Venus', sub: '67 million miles',
     gStart: 70, gEnd: 115,
     landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
     hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
-    id: 'earth', title: 'Earth', sub: '93 million miles from the Sun',
+    id: 'earth', title: 'Earth', sub: '93 million miles',
     gStart: 115, gEnd: 165,
     landmarks: [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
@@ -258,69 +258,69 @@ const ZONES = [
     hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
   },
   {
-    id: 'mars', title: 'Mars', sub: '141.6 million miles from the Sun',
+    id: 'mars', title: 'Mars', sub: '142 million miles',
     gStart: 165, gEnd: 220,
     landmarks: [
       { name: 'Mars', img: '/mars.png', size: 65, atG: 185 },
-      { name: 'Phobos', img: '/phobos.webp', size: 22, atG: 188 },
-      { name: 'Deimos', img: '/Deimos.jpg', size: 18, atG: 191 },
+      { name: 'Phobos', img: '/phobos.webp', size: 22, atG: 189 },
+      { name: 'Deimos', img: '/Deimos.jpg', size: 18, atG: 193 },
     ],
     hazardRate: 0.024, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
-    id: 'asteroid-belt', title: 'The Asteroid Belt', sub: 'Between Mars and Jupiter',
+    id: 'asteroid-belt', title: 'The Asteroid Belt', sub: '~250 million miles',
     gStart: 220, gEnd: 290,
     landmarks: [
-      { name: 'Ceres', img: '/ceres.png', size: 40, atG: 245 },
-      { name: 'Vesta', img: '/vesta.png', size: 35, atG: 270 },
+      { name: 'Vesta', img: '/vesta.png', size: 35, atG: 245 },
+      { name: 'Ceres', img: '/ceres.png', size: 40, atG: 270 },
     ],
     hazardRate: 0.028, hazardSpeed: [2, 4], hazardSize: [18, 45],
   },
   {
-    id: 'jupiter', title: 'Jupiter', sub: '483.8 million miles from the Sun',
+    id: 'jupiter', title: 'Jupiter', sub: '484 million miles',
     gStart: 290, gEnd: 360,
     landmarks: [
       { name: 'Jupiter', img: '/jupiter.png', size: 110, atG: 310 },
-      { name: 'Io', img: '/io.png', size: 28, atG: 314 },
-      { name: 'Europa', img: '/europa.png', size: 26, atG: 317 },
-      { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 320 },
-      { name: 'Callisto', img: '/callisto.png', size: 30, atG: 323 },
+      { name: 'Io', img: '/io.png', size: 28, atG: 315 },
+      { name: 'Europa', img: '/europa.png', size: 26, atG: 319 },
+      { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 323 },
+      { name: 'Callisto', img: '/callisto.png', size: 30, atG: 327 },
     ],
     hazardRate: 0.018, hazardSpeed: [2.5, 4], hazardSize: [25, 42],
   },
   {
-    id: 'saturn', title: 'Saturn', sub: '890.8 million miles from the Sun',
+    id: 'saturn', title: 'Saturn', sub: '891 million miles',
     gStart: 360, gEnd: 430,
     landmarks: [
       { name: 'Saturn', img: '/saturn.png', size: 120, atG: 380 },
-      { name: 'Mimas', img: '/mimas.png', size: 20, atG: 384 },
-      { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 387 },
-      { name: 'Titan', img: '/titan.png', size: 32, atG: 390 },
+      { name: 'Mimas', img: '/mimas.png', size: 20, atG: 385 },
+      { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 389 },
+      { name: 'Titan', img: '/titan.png', size: 32, atG: 393 },
     ],
     hazardRate: 0.02, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
   },
   {
-    id: 'uranus', title: 'Uranus', sub: '1.78 billion miles from the Sun',
+    id: 'uranus', title: 'Uranus', sub: '1.8 billion miles',
     gStart: 430, gEnd: 500,
     landmarks: [
       { name: 'Uranus', img: '/uranus.png', size: 85, atG: 452 },
-      { name: 'Miranda', img: '/miranda.png', size: 20, atG: 456 },
-      { name: 'Titania', img: '/titania.png', size: 26, atG: 459 },
-      { name: 'Oberon', img: '/oberon.png', size: 24, atG: 462 },
+      { name: 'Miranda', img: '/miranda.png', size: 20, atG: 457 },
+      { name: 'Titania', img: '/titania.png', size: 26, atG: 461 },
+      { name: 'Oberon', img: '/oberon.png', size: 24, atG: 465 },
     ],
     hazardRate: 0.02, hazardSpeed: [3, 5], hazardSize: [26, 46],
   },
   {
-    id: 'neptune', title: 'Neptune', sub: '2.79 billion miles from the Sun',
+    id: 'neptune', title: 'Neptune', sub: '2.8 billion miles',
     gStart: 500, gEnd: 565,
     landmarks: [
       { name: 'Neptune', img: '/neptune.png', size: 80, atG: 525 },
-      { name: 'Triton', img: '/triton.png', size: 28, atG: 529 },
+      { name: 'Triton', img: '/triton.png', size: 28, atG: 530 },
     ],
     hazardRate: 0.022, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
   },
   {
-    id: 'kuiper', title: 'The Kuiper Belt', sub: '3.67 billion miles from the Sun',
+    id: 'kuiper', title: 'The Kuiper Belt', sub: '3.7 billion miles',
     gStart: 565, gEnd: 660,
     landmarks: [
       { name: 'Pluto', img: '/pluto.png', size: 35, atG: 590 },
@@ -330,7 +330,7 @@ const ZONES = [
     hazardRate: 0.025, hazardSpeed: [3, 5.5], hazardSize: [20, 50],
   },
   {
-    id: 'scattered', title: 'The Scattered Disk', sub: 'Home of Eris',
+    id: 'scattered', title: 'The Scattered Disk', sub: '9 billion miles',
     gStart: 660, gEnd: 760,
     landmarks: [
       { name: 'Eris', img: '/eris.png', size: 35, atG: 690 },
@@ -338,44 +338,44 @@ const ZONES = [
     hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [22, 50],
   },
   {
-    id: 'termination-shock', title: 'Termination Shock', sub: 'Where the solar wind abruptly slows down',
+    id: 'termination-shock', title: 'Termination Shock', sub: '8.4 billion miles',
     gStart: 760, gEnd: 810,
     landmarks: [],
-    barrier: { atG: 785, color: '#4488dd', width: 8, arcWidth: 400 },
+    barrier: { atG: 785, color: '#4488dd', width: 8 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
-    id: 'heliosheath', title: 'The Heliosheath', sub: 'Inside the outer layer of the heliosphere',
+    id: 'heliosheath', title: 'The Heliosheath', sub: '',
     gStart: 810, gEnd: 900,
     landmarks: [],
     hazardRate: 0.02, hazardSpeed: [3.5, 5.5], hazardSize: [24, 50],
     tint: 'rgba(80, 90, 120, 0.15)',
   },
   {
-    id: 'heliopause', title: 'The Heliopause', sub: 'Exiting the heliosphere',
+    id: 'heliopause', title: 'The Heliopause', sub: '11 billion miles',
     gStart: 900, gEnd: 940,
     landmarks: [],
-    barrier: { atG: 920, color: '#888888', width: 14, arcWidth: 400 },
+    barrier: { atG: 920, color: '#555555', width: 14 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
-    id: 'interstellar', title: 'Interstellar Space', sub: 'Beyond the heliosphere',
-    gStart: 940, gEnd: 1020,
+    id: 'interstellar', title: 'Interstellar Space', sub: '',
+    gStart: 940, gEnd: 1040,
     landmarks: [
       { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 970 },
     ],
     hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
-    id: 'oort', title: 'The Oort Cloud', sub: '',
-    gStart: 1020, gEnd: 1110,
+    id: 'oort', title: 'The Oort Cloud', sub: '~186 billion miles',
+    gStart: 1040, gEnd: 1130,
     landmarks: [],
     hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [18, 45],
     oortWall: true,
   },
 ];
 
-const TOTAL_DIST = 1120; // game distance units
+const TOTAL_DIST = 1140; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -594,10 +594,22 @@ function spawnLandmark(lm, zoneIdx) {
   el.style.width = lm.size + 'px';
   el.style.height = lm.size + 'px';
   el.style.left = W() + 30 + 'px';
-  const yCenter = H() * 0.3 + Math.random() * H() * 0.4;
+  // Stagger moons vertically: first landmark gets center, subsequent ones spread out
+  const lmIndex = ZONES[zoneIdx].landmarks.indexOf(lm);
+  let yCenter;
+  if (lmIndex === 0) {
+    yCenter = H() * 0.35 + Math.random() * H() * 0.3;
+  } else {
+    // Spread moons above and below center, alternating
+    const offset = (lmIndex % 2 === 1 ? -1 : 1) * (60 + lmIndex * 30);
+    yCenter = H() * 0.5 + offset + (Math.random() - 0.5) * 40;
+    yCenter = Math.max(80, Math.min(H() - 80, yCenter));
+  }
   el.style.top = (yCenter - lm.size / 2) + 'px';
 
-  el.innerHTML = `<img src="${lm.img}" alt="${lm.name}"><div class="lm-label">${lm.name}</div>`;
+  // Put label below with enough offset to not overlap the image
+  const labelOffset = lm.size / 2 + 14;
+  el.innerHTML = `<img src="${lm.img}" alt="${lm.name}"><div class="lm-label" style="bottom:-${labelOffset}px;">${lm.name}</div>`;
   gameArea.appendChild(el);
   // isFirst: true if this is the first landmark in its zone (triggers zone title)
   const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
