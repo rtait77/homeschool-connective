@@ -261,19 +261,19 @@ const ZONES = [
     id: 'sun', title: 'Leaving the Sun', sub: '',
     gStart: 0, gEnd: 30,
     landmarks: [],
-    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
   },
   {
     id: 'mercury', title: 'Mercury', sub: '36 million miles',
     gStart: 30, gEnd: 70,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
-    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
   },
   {
     id: 'venus', title: 'Venus', sub: '67 million miles',
     gStart: 70, gEnd: 115,
     landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
-    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
   },
   {
     id: 'earth', title: 'Earth', sub: '93 million miles',
@@ -282,7 +282,7 @@ const ZONES = [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
       { name: 'Moon', img: '/full-moon.png', size: 45, atG: 139 },
     ],
-    hazardRate: 0.022, hazardSpeed: [2.5, 4.5], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
   },
   {
     id: 'mars', title: 'Mars', sub: '142 million miles',
@@ -292,7 +292,7 @@ const ZONES = [
       { name: 'Phobos', img: '/phobos.png', size: 22, atG: 189 },
       { name: 'Deimos', img: '/deimos.png', size: 18, atG: 193 },
     ],
-    hazardRate: 0.024, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [24, 44],
   },
   {
     id: 'asteroid-belt', title: 'The Asteroid Belt', sub: '~250 million miles',
@@ -301,7 +301,7 @@ const ZONES = [
       { name: 'Vesta', img: '/vesta.png', size: 35, atG: 245 },
       { name: 'Ceres', img: '/ceres.png', size: 40, atG: 270 },
     ],
-    hazardRate: 0.028, hazardSpeed: [2, 4], hazardSize: [18, 45],
+    hazardRate: 0.035, hazardSpeed: [3, 5], hazardSize: [18, 45],
   },
   {
     id: 'jupiter', title: 'Jupiter', sub: '484 million miles',
@@ -313,7 +313,7 @@ const ZONES = [
       { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 323 },
       { name: 'Callisto', img: '/callisto.png', size: 30, atG: 327 },
     ],
-    hazardRate: 0.018, hazardSpeed: [2.5, 4], hazardSize: [25, 42],
+    hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [25, 42],
   },
   {
     id: 'saturn', title: 'Saturn', sub: '891 million miles',
@@ -324,7 +324,7 @@ const ZONES = [
       { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 389 },
       { name: 'Titan', img: '/titan.png', size: 32, atG: 393 },
     ],
-    hazardRate: 0.02, hazardSpeed: [2.5, 4.5], hazardSize: [24, 44],
+    hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [24, 44],
   },
   {
     id: 'uranus', title: 'Uranus', sub: '1.8 billion miles',
@@ -335,7 +335,7 @@ const ZONES = [
       { name: 'Titania', img: '/titania.png', size: 26, atG: 461 },
       { name: 'Oberon', img: '/oberon.png', size: 24, atG: 465 },
     ],
-    hazardRate: 0.02, hazardSpeed: [3, 5], hazardSize: [26, 46],
+    hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [26, 46],
   },
   {
     id: 'neptune', title: 'Neptune', sub: '2.8 billion miles',
@@ -344,7 +344,7 @@ const ZONES = [
       { name: 'Neptune', img: '/neptune.png', size: 80, atG: 525 },
       { name: 'Triton', img: '/triton.png', size: 28, atG: 530 },
     ],
-    hazardRate: 0.022, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
+    hazardRate: 0.03, hazardSpeed: [3, 5.5], hazardSize: [28, 48],
   },
   {
     id: 'kuiper', title: 'The Kuiper Belt', sub: '3.7 billion miles',
@@ -579,12 +579,11 @@ function spawnHazard(zone, diffMult) {
   el.style.left = W() + 20 + 'px';
   el.style.top = y + 'px';
 
-  // Comets only appear through the asteroid belt — past that they're just rocks
+  // Comets only appear through the asteroid belt
   const innerZone = ['sun', 'mercury', 'venus', 'earth', 'mars', 'asteroid-belt'].includes(zone.id);
   const isComet = innerZone && Math.random() < 0.12;
 
   if (isComet) {
-    // Realistic SVG comet: bright nucleus with glowing coma and smooth gradient tail
     const uid = 'cm' + Math.random().toString(36).slice(2,6);
     el.innerHTML = `<svg viewBox="0 0 100 40" width="${size*1.5}" height="${size*0.6}" style="filter:drop-shadow(0 0 8px rgba(255,200,100,0.4)) drop-shadow(8px 0 16px rgba(255,140,60,0.3));">
       <defs>
@@ -598,40 +597,65 @@ function spawnHazard(zone, diffMult) {
       <ellipse cx="16" cy="19" rx="5" ry="4.5" fill="#ffffee"/>
       <ellipse cx="15" cy="18" rx="2.5" ry="2" fill="#fff" opacity="0.8"/>
     </svg>`;
-  } else if (zone.id === 'kuiper' || zone.id === 'scattered') {
-    // Reddish rocks with occasional white highlights (Kuiper/Scattered)
-    const l = 20 + Math.random() * 15;
-    const hasWhite = Math.random() < 0.2;
-    el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
-      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(10,35%,${l}%)" stroke="hsl(5,25%,${l-6}%)" stroke-width="1.5"/>
-      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(15,30%,${l+8}%)" opacity="0.5"/>
-      ${hasWhite ? '<polygon points="24,16 30,20 26,28 20,24" fill="hsl(0,0%,75%)" opacity="0.35"/>' : ''}
-    </svg>`;
-  } else if (zone.id === 'oort') {
-    // Dark near-black rocks with gray highlights (Oort Cloud)
-    const l = 8 + Math.random() * 10;
-    el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
-      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${l-4}%)" stroke-width="1.5"/>
-      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+12}%)" opacity="0.4"/>
-    </svg>`;
-  } else if (['saturn', 'uranus', 'neptune', 'termination-shock', 'heliosheath', 'heliopause', 'interstellar'].includes(zone.id)) {
-    // Gray rocks with occasional white/bright highlights (Saturn onward)
-    const l = 28 + Math.random() * 18;
-    const hasBright = Math.random() < 0.25;
-    el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
-      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${l-8}%)" stroke-width="1.5"/>
-      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+10}%)" opacity="0.5"/>
-      ${hasBright ? '<polygon points="22,18 30,24 24,32 16,28" fill="hsl(0,0%,80%)" opacity="0.3"/>' : ''}
-    </svg>`;
   } else {
-    // Brown/gray rocks (Sun through Asteroid Belt)
-    const isGray = Math.random() < 0.5;
-    const hue = isGray ? '0' : '30';
-    const sat = isGray ? '0%' : '25%';
-    const l = 22 + Math.random() * 16;
+    // Gradual rock color transitions across the solar system
+    // Zone order index for smooth transitions
+    const zoneOrder = ['sun','mercury','venus','earth','mars','asteroid-belt','jupiter','saturn','uranus','neptune','kuiper','scattered','termination-shock','heliosheath','heliopause','interstellar','oort'];
+    const zi = zoneOrder.indexOf(zone.id);
+    const t = zi / (zoneOrder.length - 1); // 0 to 1 across the journey
+
+    let hue, sat, lightness;
+    const hasHighlight = Math.random() < 0.2;
+
+    if (zi <= 5) {
+      // Sun → Asteroid Belt: brown/gray rocky
+      const isGray = Math.random() < 0.5;
+      hue = isGray ? 0 : 30;
+      sat = isGray ? 0 : 25;
+      lightness = 22 + Math.random() * 16;
+    } else if (zi <= 7) {
+      // Jupiter → Saturn: brown/gray with subtle cooler tones creeping in
+      const coolMix = (zi - 5) * 0.3; // 0.3 at Jupiter, 0.6 at Saturn
+      hue = Math.random() < coolMix ? 220 : (Math.random() < 0.5 ? 0 : 30);
+      sat = hue === 220 ? 10 : (hue === 0 ? 0 : 20);
+      lightness = 24 + Math.random() * 16;
+    } else if (zi <= 9) {
+      // Uranus → Neptune: neutral gray, slightly cooler/bluer-gray, hint of red starting
+      const redHint = (zi - 8) * 0.15; // 0 at Uranus, 0.15 at Neptune
+      hue = Math.random() < redHint ? 10 : 220;
+      sat = hue === 10 ? 15 : 8;
+      lightness = 26 + Math.random() * 16;
+    } else if (zi === 10) {
+      // Kuiper Belt: reddish-gray peak
+      hue = 10;
+      sat = 30 + Math.random() * 10;
+      lightness = 18 + Math.random() * 14;
+    } else if (zi === 11) {
+      // Scattered Disk: red fading back to gray
+      hue = Math.random() < 0.4 ? 10 : 0;
+      sat = hue === 10 ? 18 : 0;
+      lightness = 18 + Math.random() * 12;
+    } else if (zi <= 15) {
+      // Termination Shock → Interstellar: dark gray, getting darker
+      hue = 0;
+      sat = 0;
+      const darkening = (zi - 12) * 3;
+      lightness = 20 - darkening + Math.random() * 10;
+    } else {
+      // Oort Cloud: near-black with dim gray highlights
+      hue = 0;
+      sat = 0;
+      lightness = 12 + Math.random() * 12;
+    }
+
+    lightness = Math.max(4, lightness);
+    const strokeL = Math.max(2, lightness - 6);
+    const highlightL = Math.min(80, lightness + 12);
+
     el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
-      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(${hue},${sat},${l}%)" stroke="hsl(${hue},10%,${l-8}%)" stroke-width="1.5"/>
-      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(${hue},${sat},${l+8}%)" opacity="0.5"/>
+      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(${hue},${sat}%,${lightness}%)" stroke="hsl(${hue},${Math.max(0,sat-10)}%,${strokeL}%)" stroke-width="1.5"/>
+      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(${hue},${sat}%,${highlightL}%)" opacity="0.45"/>
+      ${hasHighlight ? `<polygon points="22,18 30,24 24,32 16,28" fill="hsl(0,0%,${70+Math.random()*15}%)" opacity="0.3"/>` : ''}
     </svg>`;
   }
 
@@ -754,7 +778,7 @@ function spawnOortMaze() {
       const x = startX + col * (rockSize + 10) + (Math.random() - 0.5) * 6;
       const y = 60 + row * (rockSize + 8) + (Math.random() - 0.5) * 4;
       const size = rockSize + (Math.random() - 0.5) * 12;
-      const l = 6 + Math.random() * 12; // dark near-black
+      const l = 12 + Math.random() * 14; // dark with some visibility
 
       const el = document.createElement('div');
       el.className = 'space-obj';
