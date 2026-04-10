@@ -351,7 +351,8 @@ const ZONES = [
     gStart: 565, gEnd: 660,
     landmarks: [
       { name: 'Pluto', img: '/pluto.png', size: 35, atG: 590 },
-      { name: 'Haumea', img: '/haumea.png', size: 30, atG: 620 },
+      { name: 'Arrokoth', img: '/arrokoth.png', size: 25, atG: 608 },
+      { name: 'Haumea', img: '/haumea.png', size: 30, atG: 625 },
       { name: 'Makemake', img: '/makemake.png', size: 30, atG: 645 },
     ],
     hazardRate: 0.025, hazardSpeed: [3, 5.5], hazardSize: [20, 50],
@@ -391,6 +392,7 @@ const ZONES = [
     gStart: 970, gEnd: 1100,
     landmarks: [
       { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 1020 },
+      { name: 'Sedna', img: '/sedna.png', size: 30, atG: 1070 },
     ],
     hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
@@ -577,39 +579,52 @@ function spawnHazard(zone, diffMult) {
   el.style.left = W() + 20 + 'px';
   el.style.top = y + 'px';
 
-  // Determine hazard type based on zone
-  const outerZone = ['kuiper', 'scattered', 'oort', 'interstellar', 'termination-shock', 'heliosheath', 'heliopause'].includes(zone.id);
-  const icyZone = ['saturn', 'uranus', 'neptune', 'kuiper', 'scattered', 'oort', 'termination-shock', 'heliosheath', 'heliopause', 'interstellar'].includes(zone.id);
-
-  // Comet chance: 50/50 in outer zones, ~10% in inner zones
-  const isComet = outerZone ? Math.random() < 0.5 : Math.random() < 0.1;
+  // Comets only appear through the asteroid belt — past that they're just rocks
+  const innerZone = ['sun', 'mercury', 'venus', 'earth', 'mars', 'asteroid-belt'].includes(zone.id);
+  const isComet = innerZone && Math.random() < 0.12;
 
   if (isComet) {
-    // Dark comet with glowing coma and glowing tail
-    const uid = 'cg' + Math.random().toString(36).slice(2,6);
-    el.innerHTML = `<svg viewBox="0 0 80 34" width="${size*1.2}" height="${size*0.5}" style="filter:drop-shadow(0 0 6px rgba(200,220,255,0.5)) drop-shadow(6px 0 10px rgba(220,80,40,0.5));">
-      <defs><radialGradient id="${uid}"><stop offset="0%" stop-color="rgba(200,220,255,0.6)"/><stop offset="60%" stop-color="rgba(150,180,220,0.2)"/><stop offset="100%" stop-color="rgba(100,140,200,0)"/></radialGradient></defs>
-      <ellipse cx="18" cy="17" rx="14" ry="13" fill="url(#${uid})"/>
-      <ellipse cx="18" cy="17" rx="7" ry="6" fill="#1a1a1a"/>
-      <ellipse cx="16" cy="15" rx="2.5" ry="1.5" fill="#333" opacity="0.6"/>
-      <path d="M26,8 Q50,10 78,6" stroke="#ee5533" stroke-width="2" fill="none" opacity="0.4"/>
-      <path d="M26,11 Q52,11 78,9" stroke="#ff6633" stroke-width="2.5" fill="none" opacity="0.6"/>
-      <path d="M26,14 Q52,14 78,12" stroke="#ff7744" stroke-width="3" fill="none" opacity="0.8"/>
-      <path d="M26,17 Q52,17 78,17" stroke="#ff8844" stroke-width="3.5" fill="none" opacity="0.9"/>
-      <path d="M26,20 Q52,20 78,22" stroke="#ff7744" stroke-width="3" fill="none" opacity="0.8"/>
-      <path d="M26,23 Q52,23 78,25" stroke="#ff6633" stroke-width="2.5" fill="none" opacity="0.6"/>
-      <path d="M26,26 Q50,24 78,28" stroke="#ee5533" stroke-width="2" fill="none" opacity="0.4"/>
+    // Realistic SVG comet: bright nucleus with glowing coma and smooth gradient tail
+    const uid = 'cm' + Math.random().toString(36).slice(2,6);
+    el.innerHTML = `<svg viewBox="0 0 100 40" width="${size*1.5}" height="${size*0.6}" style="filter:drop-shadow(0 0 8px rgba(255,200,100,0.4)) drop-shadow(8px 0 16px rgba(255,140,60,0.3));">
+      <defs>
+        <radialGradient id="${uid}c"><stop offset="0%" stop-color="rgba(255,255,220,0.9)"/><stop offset="40%" stop-color="rgba(200,255,200,0.4)"/><stop offset="100%" stop-color="rgba(100,200,180,0)"/></radialGradient>
+        <linearGradient id="${uid}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(255,200,80,0.8)"/><stop offset="30%" stop-color="rgba(255,140,60,0.5)"/><stop offset="70%" stop-color="rgba(200,100,60,0.2)"/><stop offset="100%" stop-color="rgba(150,80,40,0)"/></linearGradient>
+      </defs>
+      <ellipse cx="18" cy="20" rx="16" ry="14" fill="url(#${uid}c)"/>
+      <path d="M28,14 Q55,10 98,8 Q55,20 28,20 Z" fill="url(#${uid}t)" opacity="0.7"/>
+      <path d="M28,22 Q55,24 96,30 Q55,22 28,22 Z" fill="url(#${uid}t)" opacity="0.5"/>
+      <path d="M28,18 Q60,16 98,15 Q60,20 28,20 Z" fill="url(#${uid}t)" opacity="0.6"/>
+      <ellipse cx="16" cy="19" rx="5" ry="4.5" fill="#ffffee"/>
+      <ellipse cx="15" cy="18" rx="2.5" ry="2" fill="#fff" opacity="0.8"/>
     </svg>`;
-  } else if (icyZone) {
-    // Icy rock — blue-white tones
-    const l = 55 + Math.random() * 20;
+  } else if (zone.id === 'kuiper' || zone.id === 'scattered') {
+    // Reddish rocks with occasional white highlights (Kuiper/Scattered)
+    const l = 20 + Math.random() * 15;
+    const hasWhite = Math.random() < 0.2;
     el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
-      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(210,30%,${l}%)" stroke="hsl(210,20%,${l-15}%)" stroke-width="1.5"/>
-      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(200,40%,${l+10}%)" opacity="0.5"/>
-      <polygon points="22,18 30,24 24,32 16,28" fill="hsl(195,35%,${l+5}%)" opacity="0.3"/>
+      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(10,35%,${l}%)" stroke="hsl(5,25%,${l-6}%)" stroke-width="1.5"/>
+      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(15,30%,${l+8}%)" opacity="0.5"/>
+      ${hasWhite ? '<polygon points="24,16 30,20 26,28 20,24" fill="hsl(0,0%,75%)" opacity="0.35"/>' : ''}
+    </svg>`;
+  } else if (zone.id === 'oort') {
+    // Dark near-black rocks with gray highlights (Oort Cloud)
+    const l = 8 + Math.random() * 10;
+    el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
+      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${l-4}%)" stroke-width="1.5"/>
+      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+12}%)" opacity="0.4"/>
+    </svg>`;
+  } else if (['saturn', 'uranus', 'neptune', 'termination-shock', 'heliosheath', 'heliopause', 'interstellar'].includes(zone.id)) {
+    // Gray rocks with occasional white/bright highlights (Saturn onward)
+    const l = 28 + Math.random() * 18;
+    const hasBright = Math.random() < 0.25;
+    el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
+      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${l-8}%)" stroke-width="1.5"/>
+      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+10}%)" opacity="0.5"/>
+      ${hasBright ? '<polygon points="22,18 30,24 24,32 16,28" fill="hsl(0,0%,80%)" opacity="0.3"/>' : ''}
     </svg>`;
   } else {
-    // Gray/brown rock — mixed tones
+    // Brown/gray rocks (Sun through Asteroid Belt)
     const isGray = Math.random() < 0.5;
     const hue = isGray ? '0' : '30';
     const sat = isGray ? '0%' : '25%';
@@ -739,7 +754,7 @@ function spawnOortMaze() {
       const x = startX + col * (rockSize + 10) + (Math.random() - 0.5) * 6;
       const y = 60 + row * (rockSize + 8) + (Math.random() - 0.5) * 4;
       const size = rockSize + (Math.random() - 0.5) * 12;
-      const l = 55 + Math.random() * 20;
+      const l = 6 + Math.random() * 12; // dark near-black
 
       const el = document.createElement('div');
       el.className = 'space-obj';
@@ -748,8 +763,8 @@ function spawnOortMaze() {
       el.style.left = x + 'px';
       el.style.top = y + 'px';
       el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
-        <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(210,30%,${l}%)" stroke="hsl(210,20%,${l-15}%)" stroke-width="1.5"/>
-        <polygon points="18,8 28,12 26,22 14,20" fill="hsl(200,40%,${l+10}%)" opacity="0.5"/>
+        <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${Math.max(2,l-6)}%)" stroke-width="1.5"/>
+        <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+12}%)" opacity="0.4"/>
       </svg>`;
       gameArea.appendChild(el);
       oortMazeRocks.push({ el, x, y, size });
@@ -983,8 +998,13 @@ function loop() {
     helioTint.style.background = 'rgba(80,90,120,0)';
   }
 
-  // Zone title fade
-  if (zoneTitleTimer > 0) {
+  // Zone title fade — but keep it visible during the Oort Cloud
+  const inOort = ZONES[currentZoneIdx] && ZONES[currentZoneIdx].id === 'oort';
+  if (inOort) {
+    document.getElementById('zt-main').textContent = 'The Oort Cloud';
+    document.getElementById('zt-sub').textContent = '~186 billion miles';
+    document.getElementById('zone-title').style.opacity = '1';
+  } else if (zoneTitleTimer > 0) {
     zoneTitleTimer--;
     if (zoneTitleTimer <= 40) {
       document.getElementById('zone-title').style.opacity = String(zoneTitleTimer / 40);
