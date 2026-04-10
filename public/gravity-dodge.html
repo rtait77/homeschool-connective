@@ -619,19 +619,18 @@ function spawnBarrier(zone) {
 
   const el = document.createElement('div');
   el.className = 'barrier-line';
-  // Wide curved arc — takes up ~half the screen width so it's visible longer
-  const arcW = b.arcWidth || 400;
-  const arcH = H() * 2.5;
-  el.style.width = arcW + 'px';
-  el.style.height = arcH + 'px';
+  // Wide filled band — takes up half the screen width
+  const bandW = Math.floor(W() * 0.5);
+  el.style.width = bandW + 'px';
+  el.style.height = H() + 'px';
   el.style.left = W() + 50 + 'px';
-  el.style.top = (-arcH / 2 + H() / 2) + 'px';
-  el.style.border = `${b.width}px solid ${b.color}`;
-  el.style.borderLeft = 'none';
-  el.style.boxShadow = `0 0 ${b.width * 4}px ${b.color}60, inset 0 0 ${b.width * 3}px ${b.color}30`;
-  el.style.background = 'transparent';
+  el.style.top = '0';
+  el.style.borderRadius = '0';
+  el.style.background = `linear-gradient(90deg, transparent 0%, ${b.color}30 15%, ${b.color}50 50%, ${b.color}30 85%, transparent 100%)`;
+  el.style.boxShadow = `0 0 40px ${b.color}40`;
+  el.style.border = 'none';
   gameArea.appendChild(el);
-  barriers.push({ el, x: W() + 50, speed: 1.5, zoneIdx: ZONES.indexOf(zone) });
+  barriers.push({ el, x: W() + 50, speed: 1.5, zoneIdx: ZONES.indexOf(zone), width: bandW });
 }
 
 // Oort Cloud wall — dense burst of rocks
@@ -923,8 +922,8 @@ function loop() {
     b.x -= b.speed * speedMult;
     b.el.style.left = b.x + 'px';
 
-    // Trigger zone title when barrier passes ship
-    if (!b.titleTriggered && b.x < shipX) {
+    // Trigger zone title when ship enters the barrier band (front edge reaches ship)
+    if (!b.titleTriggered && b.x < shipX + 50) {
       b.titleTriggered = true;
       const zi = b.zoneIdx;
       if (!shownZones.has(zi)) {
