@@ -380,7 +380,7 @@ const ZONES = [
     waitForBarrierClear: true,
   },
   {
-    id: 'heliopause', title: 'The Heliopause', sub: 'Part of the heliosphere',
+    id: 'heliopause', title: 'The Heliopause', sub: 'Exiting the heliosphere',
     gStart: 930, gEnd: 970,
     landmarks: [],
     barrier: { atG: 950, color: '#555555', width: 14 },
@@ -395,17 +395,19 @@ const ZONES = [
     hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
-    id: 'oort', title: 'The Oort Cloud', sub: '~186 billion miles',
+    id: 'oort', title: '', sub: '',
     gStart: 1100, gEnd: 1350,
     landmarks: [],
     hazardRate: 0, hazardSpeed: [0, 0], hazardSize: [18, 45],
     oortMaze: true,
+    skipTitle: true,
   },
   {
-    id: 'solar-end', title: 'Solar System End', sub: '',
+    id: 'solar-end', title: '', sub: '',
     gStart: 1350, gEnd: 1400,
     landmarks: [],
     hazardRate: 0, hazardSpeed: [0, 0], hazardSize: [0, 0],
+    skipTitle: true,
   },
 ];
 
@@ -814,7 +816,7 @@ function checkZoneByLandmarks() {
     // No landmarks, no barrier — trigger by distance
     if (distance >= z.gStart) {
       shownZones.add(i);
-      showZoneTitle(z);
+      if (!z.skipTitle) showZoneTitle(z);
       currentZoneIdx = i;
     }
   }
@@ -974,6 +976,7 @@ function loop() {
   }
 
   // Spawn hazards — difficulty ramps after Earth (zone index 4)
+  // Difficulty ramps starting at asteroid belt (zone 5), 10% per zone
   const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.1;
   if (Math.random() < zone.hazardRate * speedMult * 0.6 * diffMult) {
     spawnHazard(zone, diffMult);
@@ -986,8 +989,9 @@ function loop() {
     }
   }
 
-  // Spawn Oort Cloud maze
-  if (zone.oortMaze && distance >= zone.gStart + 5 && !oortMazeSpawned) {
+  // Spawn Oort Cloud maze — check directly, don't rely on currentZoneIdx
+  const oortZone = ZONES.find(z => z.oortMaze);
+  if (oortZone && distance >= oortZone.gStart + 5 && !oortMazeSpawned) {
     spawnOortMaze();
     spawnDistantStars();
   }
