@@ -339,43 +339,44 @@ const ZONES = [
   },
   {
     id: 'termination-shock', title: 'Termination Shock', sub: '8.4 billion miles',
-    gStart: 760, gEnd: 810,
+    gStart: 760, gEnd: 830,
     landmarks: [],
     barrier: { atG: 785, color: '#4488dd', width: 8 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'heliosheath', title: 'The Heliosheath', sub: '',
-    gStart: 810, gEnd: 900,
+    gStart: 830, gEnd: 930,
     landmarks: [],
     hazardRate: 0.02, hazardSpeed: [3.5, 5.5], hazardSize: [24, 50],
     tint: 'rgba(80, 90, 120, 0.15)',
+    waitForBarrierClear: true,
   },
   {
     id: 'heliopause', title: 'The Heliopause', sub: '11 billion miles',
-    gStart: 900, gEnd: 940,
+    gStart: 930, gEnd: 970,
     landmarks: [],
-    barrier: { atG: 920, color: '#555555', width: 14 },
+    barrier: { atG: 950, color: '#555555', width: 14 },
     hazardRate: 0.015, hazardSpeed: [3, 5], hazardSize: [22, 48],
   },
   {
     id: 'interstellar', title: 'Interstellar Space', sub: '',
-    gStart: 940, gEnd: 1040,
+    gStart: 970, gEnd: 1100,
     landmarks: [
-      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 970 },
+      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 1020 },
     ],
     hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [26, 52],
   },
   {
     id: 'oort', title: 'The Oort Cloud', sub: '~186 billion miles',
-    gStart: 1040, gEnd: 1130,
+    gStart: 1100, gEnd: 1200,
     landmarks: [],
     hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [18, 45],
     oortWall: true,
   },
 ];
 
-const TOTAL_DIST = 1140; // game distance units
+const TOTAL_DIST = 1210; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -704,6 +705,11 @@ function checkZoneByLandmarks() {
     if (z.landmarks.length > 0) continue;
     // Zones right after a barrier zone — only trigger after the barrier zone has been shown
     if (i > 0 && ZONES[i-1].barrier && !shownZones.has(i-1)) continue;
+    // Zones that wait for the previous barrier to fully clear the screen
+    if (z.waitForBarrierClear) {
+      const prevBarrierStillOnScreen = barriers.some(b => b.zoneIdx === i - 1 && b.x > -100);
+      if (prevBarrierStillOnScreen) continue;
+    }
     // No landmarks, no barrier — trigger by distance
     if (distance >= z.gStart) {
       shownZones.add(i);
