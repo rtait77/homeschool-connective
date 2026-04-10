@@ -157,6 +157,32 @@
       border-radius: 50%;
     }
 
+    /* Lives reset flash */
+    #lives-reset {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(24px, 5vw, 40px); font-weight: 900;
+      color: #55b6ca; text-align: center; z-index: 16;
+      text-shadow: 0 0 20px rgba(85,182,202,0.8);
+      opacity: 0; pointer-events: none;
+      animation: none;
+    }
+    #lives-reset.show {
+      animation: flashPulse 2s ease-out forwards;
+    }
+    @keyframes flashPulse {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Distant stars for Solar System End */
+    .distant-star {
+      position: absolute; border-radius: 50%; pointer-events: none;
+      z-index: 1;
+    }
+
     /* Image credit */
     #credit {
       position: fixed; bottom: 6px; right: 10px;
@@ -175,6 +201,7 @@
   </div>
 </div>
 
+<div id="lives-reset">Lives Reset!</div>
 <div id="credit">Image Credit: NASA, Rebecca Tait (Moon)</div>
 
 <div id="ship">
@@ -201,7 +228,7 @@
 
 <div class="overlay-screen" id="start-screen">
   <h1>Gravity Dodge</h1>
-  <p>Journey from the Sun to the edge of the solar system.<br>Can you make it to interstellar space?</p>
+  <p>Journey from the Sun to the edge of the solar system.<br>Can you make it to the Oort Cloud?</p>
   <button class="btn" id="start-btn">Start</button>
   <p class="sub">Arrow keys or WASD to move &middot; Tap to steer on mobile &middot; Dodge everything in your path</p>
 </div>
@@ -217,7 +244,7 @@
 <div class="overlay-screen victory" id="victory-screen" style="display:none;">
   <div class="stars">&#11088;&#11088;&#11088;</div>
   <h1>You Made It!</h1>
-  <p>You traveled from the Sun to the Oort Cloud and beyond — across the entire solar system!</p>
+  <p>You traveled from the Sun, through the Oort Cloud, and beyond — you crossed the entire solar system!</p>
   <p id="vic-dist"></p>
   <button class="btn" id="replay-btn">Play Again</button>
   <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
@@ -369,14 +396,20 @@ const ZONES = [
   },
   {
     id: 'oort', title: 'The Oort Cloud', sub: '~186 billion miles',
-    gStart: 1100, gEnd: 1200,
+    gStart: 1100, gEnd: 1350,
     landmarks: [],
-    hazardRate: 0.018, hazardSpeed: [3.5, 6], hazardSize: [18, 45],
-    oortWall: true,
+    hazardRate: 0, hazardSpeed: [0, 0], hazardSize: [18, 45],
+    oortMaze: true,
+  },
+  {
+    id: 'solar-end', title: 'Solar System End', sub: '',
+    gStart: 1350, gEnd: 1400,
+    landmarks: [],
+    hazardRate: 0, hazardSpeed: [0, 0], hazardSize: [0, 0],
   },
 ];
 
-const TOTAL_DIST = 1210; // game distance units
+const TOTAL_DIST = 1400; // game distance units
 
 // ═══════════════════════════════════════════
 // CONFIG
@@ -478,7 +511,14 @@ function init() {
   barriers = [];
   spawnedLandmarks.clear();
   spawnedBarriers.clear();
-  oortWallSpawned = false;
+  oortMazeSpawned = false;
+  oortMazeRocks = [];
+  oortLabel = null;
+  endLabel = null;
+  livesResetDone = false;
+  distantStarsSpawned = false;
+  document.querySelectorAll('.distant-star').forEach(el => el.remove());
+  document.getElementById('lives-reset').classList.remove('show');
 
   shipX = W() * 0.35; // Start to the right of the sun
   shipY = H() / 2;
@@ -646,45 +686,106 @@ function spawnBarrier(zone) {
   barriers.push({ el, x: W() + 50, speed: 1.5, zoneIdx: ZONES.indexOf(zone), width: bandW });
 }
 
-// Oort Cloud wall — dense burst of rocks
-let oortWallSpawned = false;
+// Oort Cloud maze — a wide wall of icy rocks with navigable gaps
+let oortMazeSpawned = false;
+let oortMazeRocks = []; // separate from hazards — these move together as a wall
+let oortLabel = null;
+let endLabel = null;
+let livesResetDone = false;
+let distantStarsSpawned = false;
 
-function spawnOortWall() {
-  if (oortWallSpawned) return;
-  oortWallSpawned = true;
-  // Spawn a dense wave of rocks across the screen
-  for (let i = 0; i < 10; i++) {
-    const size = 18 + Math.random() * 30;
-    const y = Math.random() * (H() - 80) + 40;
-    const spd = 3 + Math.random() * 3;
-    const xOff = W() + 50 + i * 70 + Math.random() * 40;
+function spawnOortMaze() {
+  if (oortMazeSpawned) return;
+  oortMazeSpawned = true;
 
-    const el = document.createElement('div');
-    el.className = 'space-obj';
-    el.style.width = size + 'px';
-    el.style.height = size + 'px';
-    el.style.left = xOff + 'px';
-    el.style.top = y + 'px';
-    // 50/50 comet or icy rock in Oort wall
-    if (Math.random() < 0.5) {
-      const owid = 'ow' + i;
-      el.innerHTML = `<svg viewBox="0 0 80 34" width="${size*1.2}" height="${size*0.5}" style="filter:drop-shadow(0 0 6px rgba(200,220,255,0.5)) drop-shadow(6px 0 10px rgba(220,80,40,0.5));">
-        <defs><radialGradient id="${owid}"><stop offset="0%" stop-color="rgba(200,220,255,0.6)"/><stop offset="60%" stop-color="rgba(150,180,220,0.2)"/><stop offset="100%" stop-color="rgba(100,140,200,0)"/></radialGradient></defs>
-        <ellipse cx="18" cy="17" rx="14" ry="13" fill="url(#${owid})"/>
-        <ellipse cx="18" cy="17" rx="7" ry="6" fill="#1a1a1a"/>
-        <path d="M28,12 Q48,6 78,3" stroke="#ee5533" stroke-width="3" fill="none" opacity="0.8"/>
-        <path d="M28,17 Q50,15 78,13" stroke="#ff7744" stroke-width="2" fill="none" opacity="0.6"/>
-        <path d="M28,22 Q48,26 76,30" stroke="#ee5533" stroke-width="2.5" fill="none" opacity="0.5"/>
-      </svg>`;
-    } else {
+  // Reset lives
+  lives = C.MAX_LIVES;
+  updateLives();
+  livesResetDone = true;
+  const flashEl = document.getElementById('lives-reset');
+  flashEl.classList.remove('show');
+  void flashEl.offsetWidth; // force reflow
+  flashEl.classList.add('show');
+
+  const h = H();
+  const mazeWidth = W() * 4; // 4 screens wide
+  const startX = W() + 100;
+  const rockSize = 30;
+  const cols = Math.floor(mazeWidth / (rockSize + 10));
+  const rows = Math.floor((h - 120) / (rockSize + 8));
+  const gapProb = 0.35; // 35% chance of gap = navigable
+
+  // Generate maze grid
+  for (let col = 0; col < cols; col++) {
+    for (let row = 0; row < rows; row++) {
+      // Create guaranteed path: always leave a gap around row that matches a sine wave
+      const pathRow = Math.floor(rows * 0.5 + Math.sin(col * 0.15) * rows * 0.3);
+      const distFromPath = Math.abs(row - pathRow);
+      if (distFromPath <= 1) continue; // guaranteed path (2 rocks wide gap)
+
+      // Random additional gaps
+      if (Math.random() < gapProb) continue;
+
+      const x = startX + col * (rockSize + 10) + (Math.random() - 0.5) * 6;
+      const y = 60 + row * (rockSize + 8) + (Math.random() - 0.5) * 4;
+      const size = rockSize + (Math.random() - 0.5) * 12;
       const l = 55 + Math.random() * 20;
+
+      const el = document.createElement('div');
+      el.className = 'space-obj';
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
       el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
         <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(210,30%,${l}%)" stroke="hsl(210,20%,${l-15}%)" stroke-width="1.5"/>
         <polygon points="18,8 28,12 26,22 14,20" fill="hsl(200,40%,${l+10}%)" opacity="0.5"/>
       </svg>`;
+      gameArea.appendChild(el);
+      oortMazeRocks.push({ el, x, y, size });
+      hazards.push({ el, x, y, size, speed: 0, rot: 0, rotSpeed: 0, isComet: false });
     }
-    gameArea.appendChild(el);
-    hazards.push({ el, x: xOff, y, size, speed: spd, rot: 0, rotSpeed: 0, isComet: true });
+  }
+
+  // "The Oort Cloud" label on the wall
+  oortLabel = document.createElement('div');
+  oortLabel.className = 'landmark';
+  oortLabel.style.left = (startX + 50) + 'px';
+  oortLabel.style.top = '20px';
+  oortLabel.style.width = '300px';
+  oortLabel.style.height = '40px';
+  oortLabel.style.zIndex = '8';
+  oortLabel.innerHTML = '<div class="lm-label" style="position:static;transform:none;font-size:clamp(16px,4vw,28px);color:#a8f0ff;text-shadow:0 2px 12px rgba(85,182,202,0.6);">The Oort Cloud</div>';
+  gameArea.appendChild(oortLabel);
+
+  // "Solar System End" label after the wall
+  endLabel = document.createElement('div');
+  endLabel.className = 'landmark';
+  endLabel.style.left = (startX + mazeWidth + 100) + 'px';
+  endLabel.style.top = (h * 0.4) + 'px';
+  endLabel.style.width = '300px';
+  endLabel.style.height = '40px';
+  endLabel.style.zIndex = '8';
+  endLabel.innerHTML = '<div class="lm-label" style="position:static;transform:none;font-size:clamp(18px,4.5vw,32px);color:#fff;text-shadow:0 2px 16px rgba(255,255,255,0.6);">Solar System End</div>';
+  gameArea.appendChild(endLabel);
+}
+
+function spawnDistantStars() {
+  if (distantStarsSpawned) return;
+  distantStarsSpawned = true;
+  // Bright distant stars after the Oort Cloud
+  for (let i = 0; i < 30; i++) {
+    const star = document.createElement('div');
+    star.className = 'distant-star';
+    const size = 2 + Math.random() * 4;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    const hue = Math.random() < 0.3 ? '40' : Math.random() < 0.5 ? '220' : '0';
+    star.style.background = `hsl(${hue}, 60%, ${70 + Math.random() * 30}%)`;
+    star.style.boxShadow = `0 0 ${size * 3}px hsl(${hue}, 60%, 80%)`;
+    star.style.left = (W() * 4 + W() + Math.random() * W() * 2) + 'px';
+    star.style.top = (Math.random() * H()) + 'px';
+    gameArea.appendChild(star);
   }
 }
 
@@ -885,9 +986,32 @@ function loop() {
     }
   }
 
-  // Spawn Oort Cloud wall
-  if (zone.oortWall && distance >= zone.gStart + 10 && !oortWallSpawned) {
-    spawnOortWall();
+  // Spawn Oort Cloud maze
+  if (zone.oortMaze && distance >= zone.gStart + 5 && !oortMazeSpawned) {
+    spawnOortMaze();
+    spawnDistantStars();
+  }
+
+  // Move Oort maze rocks (they all scroll together as a wall)
+  if (oortMazeSpawned) {
+    const mazeSpeed = 2 * speedMult;
+    for (const r of oortMazeRocks) {
+      r.x -= mazeSpeed;
+      r.el.style.left = r.x + 'px';
+    }
+    if (oortLabel) {
+      const lx = parseFloat(oortLabel.style.left) - mazeSpeed;
+      oortLabel.style.left = lx + 'px';
+    }
+    if (endLabel) {
+      const ex = parseFloat(endLabel.style.left) - mazeSpeed;
+      endLabel.style.left = ex + 'px';
+      // Victory when Solar System End label reaches center of screen
+      if (ex < W() * 0.3) {
+        winGame();
+        return;
+      }
+    }
   }
 
   // Spawn landmarks — check all zones
@@ -969,11 +1093,7 @@ function loop() {
 
   // HUD (distance counter hidden for now)
 
-  // Victory check
-  if (distance >= TOTAL_DIST) {
-    winGame();
-    return;
-  }
+  // Victory is now triggered by Solar System End label reaching the ship
 
   animId = requestAnimationFrame(loop);
 }
