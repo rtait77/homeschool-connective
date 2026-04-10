@@ -464,13 +464,13 @@ function endGame(won) {
     <h1>Mission Complete!</h1>
     <p>You blasted all 5 dwarf planets!</p>
     <button class="btn" id="play-again-btn">Play Again</button>
-    <a href="/learn" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
+    <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   ` : `
     <h1>🚀 Mission Failed</h1>
     <p>You blasted <strong style="color:#f9d84a">${blasted} of 5 dwarf planets</strong>.<br>
     Remember: only blast the <strong>dwarf planets</strong>!</p>
     <button class="btn" id="play-again-btn">Try Again</button>
-    <a href="/learn" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
+    <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:4px">Back to Learn</a>
   `;
   overlay.style.display = 'flex';
   document.getElementById('play-again-btn').addEventListener('click', startGame);

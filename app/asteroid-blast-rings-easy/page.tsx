@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+
 import { useEffect } from 'react'
 
 export default function AsteroidBlastRingsEasyPage() {
@@ -23,8 +23,9 @@ export default function AsteroidBlastRingsEasyPage() {
         src="/asteroid-blast-rings-easy.html"
         style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', border: 'none', zIndex: 100 }}
       />
-      <Link
-        href="/learn"
+      <a
+        href="#"
+        onClick={(e) => { e.preventDefault(); window.history.back(); }}
         style={{
           position: 'fixed',
           top: 12,
@@ -41,7 +42,7 @@ export default function AsteroidBlastRingsEasyPage() {
         }}
       >
         ← Back to Games
-      </Link>
+      </a>
     </>
   )
 }
