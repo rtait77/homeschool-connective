@@ -966,11 +966,9 @@ function loop() {
 function endGame() {
   gameOver = true; running = false;
   shipEl.classList.remove('invincible');
-  saveScore(distance);
   const zone = ZONES[currentZoneIdx] || ZONES[0];
   document.getElementById('go-zone').textContent = 'You reached: ' + zone.title;
-  document.getElementById('go-dist').innerHTML = displayDist() + ' from the Sun' +
-    '<br><span style="font-size:0.8em;color:#888;">Personal best: ' + formatDist(getBest()) + '</span>';
+  document.getElementById('go-dist').textContent = '';
   document.getElementById('game-over-screen').style.display = 'flex';
   trackEnd(false);
 }
@@ -978,9 +976,7 @@ function endGame() {
 function winGame() {
   victory = true; running = false;
   shipEl.classList.remove('invincible');
-  saveScore(distance);
-  document.getElementById('vic-dist').innerHTML = 'Total distance: ' + displayDist() +
-    '<br><span style="font-size:0.8em;color:#a8f0ff;">Personal best: ' + formatDist(getBest()) + '</span>';
+  document.getElementById('vic-dist').textContent = '';
   document.getElementById('victory-screen').style.display = 'flex';
   sndVictory();
   trackEnd(true);
