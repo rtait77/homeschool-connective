@@ -751,7 +751,6 @@ function spawnOortMaze() {
       </svg>`;
       gameArea.appendChild(el);
       oortMazeRocks.push({ el, x, y, size });
-      hazards.push({ el, x, y, size, speed: 0, rot: 0, rotSpeed: 0, isComet: false });
     }
   }
 
@@ -861,6 +860,15 @@ function checkCollision() {
     const lr = l.size * 0.4;
     const dx = sx - lcx, dy = sy - lcy;
     if (dx * dx + dy * dy < (sr + lr) * (sr + lr)) return true;
+  }
+
+  // Check Oort Cloud maze rocks
+  for (const r of oortMazeRocks) {
+    const rcx = r.x + r.size / 2;
+    const rcy = r.y + r.size / 2;
+    const rr = r.size * 0.4;
+    const dx = sx - rcx, dy = sy - rcy;
+    if (dx * dx + dy * dy < (sr + rr) * (sr + rr)) return true;
   }
 
   return false;
@@ -981,10 +989,9 @@ function loop() {
     }
   }
 
-  // Spawn hazards — difficulty ramps after Earth (zone index 4)
-  // Difficulty ramps starting at asteroid belt (zone 5), 10% per zone
-  const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.1;
-  if (Math.random() < zone.hazardRate * speedMult * 0.6 * diffMult) {
+  // Difficulty ramps starting at asteroid belt (zone 5), 15% per zone
+  const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.15;
+  if (Math.random() < zone.hazardRate * speedMult * 0.8 * diffMult) {
     spawnHazard(zone, diffMult);
   }
 
