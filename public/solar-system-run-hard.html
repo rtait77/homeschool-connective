@@ -190,24 +190,6 @@
       z-index: 15; pointer-events: none;
       font-weight: 600;
     }
-    #progress-track {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: 8px; z-index: 25;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-top: none;
-    }
-    #progress-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #ed7c5a, #f5a623, #55b6ca);
-      transition: width 0.3s;
-      box-shadow: 0 0 10px rgba(237,124,90,0.6);
-    }
-    .progress-tick {
-      position: absolute; top: 0; bottom: 0; width: 1px;
-      background: rgba(255,255,255,0.4);
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
@@ -221,7 +203,6 @@
 
 <div id="lives-reset">Lives Reset!</div>
 <div id="credit">Image Credit: NASA, Rebecca Tait (Moon)</div>
-<div id="progress-track"><div id="progress-bar" style="width:0%"></div></div>
 
 <div id="ship">
   <svg viewBox="0 0 48 48" width="48" height="48">
@@ -559,20 +540,6 @@ function init() {
 
   updateLives();
   document.getElementById('zone-title').style.opacity = '0';
-  document.getElementById('progress-bar').style.width = '0%';
-
-  // Add milestone ticks to progress bar
-  const track = document.getElementById('progress-track');
-  track.querySelectorAll('.progress-tick').forEach(el => el.remove());
-  for (const z of ZONES) {
-    if (z.skipTitle || z.gStart === 0) continue;
-    const pct = (z.gStart / TOTAL_DIST) * 100;
-    const tick = document.createElement('div');
-    tick.className = 'progress-tick';
-    tick.style.left = pct + '%';
-    track.appendChild(tick);
-  }
-
   sunRef.style.transition = 'none';
   const sunH = H() * 1.2;
   sunRef.style.width = sunH + 'px';
@@ -1035,8 +1002,6 @@ function loop() {
   shipEl.style.left = (shipX - C.SHIP_SIZE / 2) + 'px';
   shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
-  document.getElementById('progress-bar').style.width = (Math.min(1, distance / TOTAL_DIST) * 100) + '%';
-
   // Sun disappears
   const sunProgress = Math.min(1, distance / 20);
   const baseH = H() * 1.2;
@@ -1201,7 +1166,6 @@ function endGame() {
 function winGame() {
   victory = true; running = false;
   shipEl.classList.remove('invincible');
-  document.getElementById('progress-bar').style.width = '100%';
   document.getElementById('vic-dist').textContent = '';
   document.getElementById('victory-screen').style.display = 'flex';
   sndVictory();
