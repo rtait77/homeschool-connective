@@ -190,6 +190,12 @@
       z-index: 15; pointer-events: none;
       font-weight: 600;
     }
+    #progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 4px; background: linear-gradient(90deg, #55b6ca, #a8f0ff);
+      z-index: 25; transition: width 0.3s;
+      box-shadow: 0 0 8px rgba(85,182,202,0.5);
+    }
   </style>
 </head>
 <body>
@@ -203,6 +209,7 @@
 
 <div id="lives-reset">Lives Reset!</div>
 <div id="credit">Image Credit: NASA, Rebecca Tait (Moon)</div>
+<div id="progress-bar" style="width:0%"></div>
 
 <div id="ship">
   <svg viewBox="0 0 48 48" width="48" height="48">
@@ -540,6 +547,7 @@ function init() {
 
   updateLives();
   document.getElementById('zone-title').style.opacity = '0';
+  document.getElementById('progress-bar').style.width = '0%';
 
   sunRef.style.transition = 'none';
   const sunH = H() * 1.2;
@@ -1003,6 +1011,7 @@ function loop() {
   shipEl.style.left = (shipX - C.SHIP_SIZE / 2) + 'px';
   shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
   shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
+  document.getElementById('progress-bar').style.width = (Math.min(1, distance / TOTAL_DIST) * 100) + '%';
 
   // Sun disappears
   const sunProgress = Math.min(1, distance / 20);
