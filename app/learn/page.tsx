@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 const games = [
@@ -769,18 +770,44 @@ const difficulties = [
 
 
 export default function GamesPage() {
-  const [topic, setTopic] = useState('all')
-  const [activeCategory, setActiveCategory] = useState('')
-  const [activeGameType, setActiveGameType] = useState('')
-  const [activeDifficulty, setActiveDifficulty] = useState('')
-  const [search, setSearch] = useState('')
+  return (
+    <Suspense fallback={null}>
+      <GamesPageInner />
+    </Suspense>
+  )
+}
+
+function GamesPageInner() {
+  const searchParams = useSearchParams()
+
+  const [topic, setTopic] = useState(() => searchParams.get('topic') || 'all')
+  const [activeCategory, setActiveCategory] = useState(() => searchParams.get('cat') || '')
+  const [activeGameType, setActiveGameType] = useState(() => searchParams.get('type') || '')
+  const [activeDifficulty, setActiveDifficulty] = useState(() => searchParams.get('diff') || '')
+  const [search, setSearch] = useState(() => searchParams.get('q') || '')
   const [hasAccess, setHasAccess] = useState(false)
   const [authChecked, setAuthChecked] = useState(false)
   const [trialExpired, setTrialExpired] = useState(false)
   const [favorites, setFavorites] = useState<string[]>([])
   const [userId, setUserId] = useState<string | null>(null)
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(() => parseInt(searchParams.get('p') || '1', 10))
   const ITEMS_PER_PAGE = 15
+
+  // Sync filter state to URL so "Back to Games" restores filters
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (topic && topic !== 'all') params.set('topic', topic)
+    if (activeCategory) params.set('cat', activeCategory)
+    if (activeGameType) params.set('type', activeGameType)
+    if (activeDifficulty) params.set('diff', activeDifficulty)
+    if (search.trim()) params.set('q', search.trim())
+    if (page > 1) params.set('p', String(page))
+    const qs = params.toString()
+    const newUrl = qs ? `/learn?${qs}` : '/learn'
+    if (newUrl !== window.location.pathname + window.location.search) {
+      window.history.replaceState(null, '', newUrl)
+    }
+  }, [topic, activeCategory, activeGameType, activeDifficulty, search, page])
 
   function goToPage(n: number) {
     setPage(n)
@@ -836,7 +863,11 @@ export default function GamesPage() {
     }
   }
 
-  useEffect(() => { setPage(1) }, [topic, activeCategory, activeGameType, activeDifficulty, search])
+  const initialRender = useRef(true)
+  useEffect(() => {
+    if (initialRender.current) { initialRender.current = false; return }
+    setPage(1)
+  }, [topic, activeCategory, activeGameType, activeDifficulty, search])
 
   function handleCategoryClick(cat: string) {
     if (activeCategory === cat) {
