@@ -1072,7 +1072,7 @@ function loop() {
       const ex = parseFloat(endLabel.style.left) - mazeSpeed;
       endLabel.style.left = ex + 'px';
       // Victory when Solar System End label reaches center of screen
-      if (ex < W() * 0.3) {
+      if (ex < shipX) {
         winGame();
         return;
       }

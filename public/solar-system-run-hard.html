@@ -1067,7 +1067,7 @@ function loop() {
     if (endLabel) {
       const ex = parseFloat(endLabel.style.left) - mazeSpeed;
       endLabel.style.left = ex + 'px';
-      if (ex < W() * 0.3) {
+      if (ex < shipX) {
         winGame();
         return;
       }

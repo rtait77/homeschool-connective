@@ -732,15 +732,6 @@ function spawnOortMaze() {
   if (oortMazeSpawned) return;
   oortMazeSpawned = true;
 
-  // Reset lives
-  lives = C.MAX_LIVES;
-  updateLives();
-  livesResetDone = true;
-  const flashEl = document.getElementById('lives-reset');
-  flashEl.classList.remove('show');
-  void flashEl.offsetWidth;
-  flashEl.classList.add('show');
-
   const h = H();
   const mazeWidth = W() * 1;
   const startX = W() + 100;
@@ -1021,8 +1012,8 @@ function loop() {
     }
   }
 
-  // EASY: no difficulty ramp, 70% fewer objects than medium
-  if (Math.random() < zone.hazardRate * 0.3) {
+  // EASY: no difficulty ramp, 70% fewer objects, max 5 on screen
+  if (hazards.length < 5 && Math.random() < zone.hazardRate * 0.3) {
     spawnHazard(zone);
   }
 
@@ -1054,7 +1045,7 @@ function loop() {
     if (endLabel) {
       const ex = parseFloat(endLabel.style.left) - mazeSpeed;
       endLabel.style.left = ex + 'px';
-      if (ex < W() * 0.3) {
+      if (ex < shipX) {
         winGame();
         return;
       }
