@@ -254,26 +254,26 @@
 // ═══════════════════════════════════════════
 // ZONE DEFINITIONS — HARD MODE
 // ═══════════════════════════════════════════
-// Hard: starts at asteroid belt difficulty (speed [4.5, 7], rate 0.028)
-// Speed and frequency increase throughout
+// Hard: starts at Uranus difficulty (speed [4.8, 7.5], rate 0.03)
+// Ramps up but never exceeds interstellar (speed [5.5, 8.5], rate 0.03)
 const ZONES = [
   {
     id: 'sun', title: 'Leaving the Sun', sub: '',
     gStart: 0, gEnd: 30,
     landmarks: [],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [4.8, 7.5], hazardSize: [22, 42],
   },
   {
     id: 'mercury', title: 'Mercury', sub: '36 million miles',
     gStart: 30, gEnd: 70,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [4.8, 7.5], hazardSize: [22, 42],
   },
   {
     id: 'venus', title: 'Venus', sub: '67 million miles',
     gStart: 70, gEnd: 115,
     landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [4.8, 7.5], hazardSize: [22, 42],
   },
   {
     id: 'earth', title: 'Earth', sub: '93 million miles',
@@ -282,7 +282,7 @@ const ZONES = [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
       { name: 'Moon', img: '/full-moon.png', size: 45, atG: 139 },
     ],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
+    hazardRate: 0.03, hazardSpeed: [4.8, 7.5], hazardSize: [22, 42],
   },
   {
     id: 'mars', title: 'Mars', sub: '142 million miles',
@@ -292,7 +292,7 @@ const ZONES = [
       { name: 'Phobos', img: '/phobos.png', size: 22, atG: 189 },
       { name: 'Deimos', img: '/deimos.png', size: 18, atG: 193 },
     ],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 44],
+    hazardRate: 0.03, hazardSpeed: [4.8, 7.5], hazardSize: [22, 44],
   },
   {
     id: 'asteroid-belt', title: 'The Asteroid Belt', sub: '~250 million miles',
@@ -301,7 +301,7 @@ const ZONES = [
       { name: 'Vesta', img: '/vesta.png', size: 35, atG: 245 },
       { name: 'Ceres', img: '/ceres.png', size: 40, atG: 270 },
     ],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [18, 45],
+    hazardRate: 0.03, hazardSpeed: [4.9, 7.6], hazardSize: [18, 45],
   },
   {
     id: 'jupiter', title: 'Jupiter', sub: '484 million miles',
@@ -313,7 +313,7 @@ const ZONES = [
       { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 323 },
       { name: 'Callisto', img: '/callisto.png', size: 30, atG: 327 },
     ],
-    hazardRate: 0.026, hazardSpeed: [4.5, 7], hazardSize: [25, 44],
+    hazardRate: 0.03, hazardSpeed: [4.9, 7.7], hazardSize: [25, 46],
   },
   {
     id: 'saturn', title: 'Saturn', sub: '891 million miles',
@@ -324,7 +324,7 @@ const ZONES = [
       { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 389 },
       { name: 'Titan', img: '/titan.png', size: 32, atG: 393 },
     ],
-    hazardRate: 0.028, hazardSpeed: [4.5, 7.2], hazardSize: [24, 46],
+    hazardRate: 0.03, hazardSpeed: [5, 7.8], hazardSize: [24, 48],
   },
   {
     id: 'uranus', title: 'Uranus', sub: '1.8 billion miles',
@@ -335,7 +335,7 @@ const ZONES = [
       { name: 'Titania', img: '/titania.png', size: 26, atG: 461 },
       { name: 'Oberon', img: '/oberon.png', size: 24, atG: 465 },
     ],
-    hazardRate: 0.03, hazardSpeed: [4.8, 7.5], hazardSize: [26, 48],
+    hazardRate: 0.03, hazardSpeed: [5, 7.9], hazardSize: [26, 50],
   },
   {
     id: 'neptune', title: 'Neptune', sub: '2.8 billion miles',
@@ -344,7 +344,7 @@ const ZONES = [
       { name: 'Neptune', img: '/neptune.png', size: 80, atG: 525 },
       { name: 'Triton', img: '/triton.png', size: 28, atG: 530 },
     ],
-    hazardRate: 0.032, hazardSpeed: [5, 7.5], hazardSize: [28, 50],
+    hazardRate: 0.03, hazardSpeed: [5.1, 8], hazardSize: [28, 50],
   },
   {
     id: 'kuiper', title: 'The Kuiper Belt', sub: '3.7 billion miles',
@@ -355,7 +355,7 @@ const ZONES = [
       { name: 'Haumea', img: '/haumea.png', size: 30, atG: 625 },
       { name: 'Makemake', img: '/makemake.png', size: 30, atG: 645 },
     ],
-    hazardRate: 0.03, hazardSpeed: [5, 7.8], hazardSize: [20, 52],
+    hazardRate: 0.03, hazardSpeed: [5.2, 8.1], hazardSize: [20, 52],
   },
   {
     id: 'scattered', title: 'The Scattered Disk', sub: '9 billion miles',
@@ -363,20 +363,20 @@ const ZONES = [
     landmarks: [
       { name: 'Eris', img: '/eris.png', size: 35, atG: 690 },
     ],
-    hazardRate: 0.025, hazardSpeed: [5.5, 8], hazardSize: [22, 52],
+    hazardRate: 0.03, hazardSpeed: [5.3, 8.2], hazardSize: [22, 52],
   },
   {
     id: 'termination-shock', title: 'Termination Shock', sub: 'Part of the heliosphere',
     gStart: 760, gEnd: 830,
     landmarks: [],
     barrier: { atG: 785, color: '#4488dd', width: 8 },
-    hazardRate: 0.022, hazardSpeed: [5, 7.5], hazardSize: [22, 50],
+    hazardRate: 0.03, hazardSpeed: [5.3, 8.3], hazardSize: [22, 52],
   },
   {
     id: 'heliosheath', title: 'The Heliosheath', sub: 'Part of the heliosphere',
     gStart: 830, gEnd: 930,
     landmarks: [],
-    hazardRate: 0.028, hazardSpeed: [5.5, 8], hazardSize: [24, 52],
+    hazardRate: 0.03, hazardSpeed: [5.4, 8.4], hazardSize: [24, 53],
     tint: 'rgba(80, 90, 120, 0.15)',
     waitForBarrierClear: true,
   },
@@ -385,7 +385,7 @@ const ZONES = [
     gStart: 930, gEnd: 970,
     landmarks: [],
     barrier: { atG: 950, color: '#555555', width: 14 },
-    hazardRate: 0.022, hazardSpeed: [5, 7.5], hazardSize: [22, 50],
+    hazardRate: 0.03, hazardSpeed: [5.4, 8.4], hazardSize: [24, 53],
   },
   {
     id: 'interstellar', title: 'Interstellar Space', sub: '',
