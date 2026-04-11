@@ -930,9 +930,11 @@ document.addEventListener('touchend', e => {
 function loop() {
   if (!running || gameOver || victory) return;
 
-  // HARD: speed ramps from 1.2x to 2.2x across the journey (playable but intense)
+  // HARD: speed ramps from 1.2x up to termination shock, then caps
   const progress = distance / TOTAL_DIST;
-  const speedMult = 1.2 + progress * 1.0;
+  const termShockProgress = 760 / TOTAL_DIST; // termination shock gStart
+  const cappedProgress = Math.min(progress, termShockProgress);
+  const speedMult = 1.2 + cappedProgress * 1.0;
 
   // Movement from keys
   if (keys.up) shipVY = -MOVE_SPEED;
