@@ -740,60 +740,57 @@ function spawnOortMaze() {
   flashEl.classList.add('show');
 
   const h = H();
-  const mazeWidth = W() * 2.5; // Half the previous length
+  const mazeWidth = W() * 3;
   const startX = W() + 100;
   const rockSize = 30;
   const cols = Math.floor(mazeWidth / (rockSize + 10));
-  const rows = Math.floor((h - 120) / (rockSize + 8));
+  const rows = Math.floor(h / (rockSize + 8)); // Fill full height — no gaps at top/bottom
   const gapProb = 0.2;
 
   // Pre-compute path with vertical, horizontal, and diagonal segments
   const pathRows = [];
   let currentRow = Math.floor(rows * 0.5);
-  let direction = 0; // -2 = sharp up, -1 = diagonal up, 0 = horizontal, 1 = diagonal down, 2 = sharp down
+  let direction = 0;
   let segLeft = 0;
   for (let col = 0; col < cols; col++) {
     if (segLeft <= 0) {
       segLeft = 6 + Math.floor(Math.random() * 10);
       const r = Math.random();
-      if (currentRow < rows * 0.2) {
-        // Near top — must go down
+      if (currentRow < rows * 0.15) {
         direction = Math.random() < 0.5 ? 2 : 1;
-      } else if (currentRow > rows * 0.8) {
-        // Near bottom — must go up
+      } else if (currentRow > rows * 0.85) {
         direction = Math.random() < 0.5 ? -2 : -1;
       } else if (r < 0.15) {
-        direction = -2; // sharp up (vertical-ish)
+        direction = -2;
       } else if (r < 0.3) {
-        direction = -1; // diagonal up
+        direction = -1;
       } else if (r < 0.55) {
-        direction = 0;  // horizontal
+        direction = 0;
       } else if (r < 0.7) {
-        direction = 1;  // diagonal down
+        direction = 1;
       } else if (r < 0.85) {
-        direction = 2;  // sharp down (vertical-ish)
+        direction = 2;
       } else {
-        direction = 0;  // horizontal
+        direction = 0;
       }
     }
     segLeft--;
-    // Sharp directions move 2 rows per column (more vertical feel)
     if (direction === -2) currentRow -= 2;
     else if (direction === 2) currentRow += 2;
     else if (direction !== 0) currentRow += direction;
-    currentRow = Math.max(2, Math.min(rows - 3, currentRow));
+    currentRow = Math.max(1, Math.min(rows - 2, currentRow));
     pathRows.push(currentRow);
   }
 
   for (let col = 0; col < cols; col++) {
     for (let row = 0; row < rows; row++) {
       const distFromPath = Math.abs(row - pathRows[col]);
-      if (distFromPath <= 2) continue; // Wide enough to navigate
+      if (distFromPath <= 1) continue; // Narrower path — 1 rock gap each side
 
       if (Math.random() < gapProb) continue;
 
       const x = startX + col * (rockSize + 8) + (Math.random() - 0.5) * 4;
-      const y = 60 + row * (rockSize + 6) + (Math.random() - 0.5) * 3;
+      const y = row * (rockSize + 8) + (Math.random() - 0.5) * 3;
       const size = rockSize + (Math.random() - 0.5) * 10;
       const l = 12 + Math.random() * 14;
 
