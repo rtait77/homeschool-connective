@@ -574,6 +574,26 @@ const games = [
     keywords: ['solar system', 'run', 'arcade', 'planets', 'moons', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'oort cloud', 'heliosphere', 'comets'],
     newTab: false,
   },
+  {
+    title: 'Solar System Run – Easy',
+    desc: 'The easy version! Same journey from the Sun to the Oort Cloud, but with steady speed, no difficulty ramp, and 5 lives. The Oort Cloud is a clear path through the center — perfect for younger explorers!',
+    thumb: '/solar-system-run-thumbnail.png',
+    url: '/solar-system-run-easy.html',
+    topic: 'solar-system',
+    types: ['arcade', 'easy'],
+    keywords: ['solar system', 'run', 'arcade', 'planets', 'moons', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'oort cloud', 'heliosphere', 'comets', 'easy'],
+    newTab: false,
+  },
+  {
+    title: 'Solar System Run – Hard',
+    desc: 'Think you can handle it? Faster rocks from the start, speed and frequency ramp up the whole way, and the Oort Cloud maze has tighter gaps and more twists. Only 3 lives!',
+    thumb: '/solar-system-run-thumbnail.png',
+    url: '/solar-system-run-hard.html',
+    topic: 'solar-system',
+    types: ['arcade', 'hard'],
+    keywords: ['solar system', 'run', 'arcade', 'planets', 'moons', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'oort cloud', 'heliosphere', 'comets', 'hard'],
+    newTab: false,
+  },
   // Asteroid Blast games
   {
     title: 'Blast the Planets',

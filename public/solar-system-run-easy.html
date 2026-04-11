@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Solar System Run – Easy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: url('/space-bg.png') center/cover no-repeat fixed;
+      font-family: 'Nunito', sans-serif;
+      color: white;
+      overflow: hidden;
+      width: 100vw; height: 100vh;
+    }
+
+    #game-area {
+      position: fixed; inset: 0; overflow: hidden;
+    }
+
+    /* Ship */
+    #ship {
+      position: absolute; z-index: 10;
+      width: 48px; height: 48px;
+      filter: drop-shadow(0 0 8px rgba(85,182,202,0.6));
+      transition: none;
+    }
+    #ship.invincible { animation: blink 0.15s infinite alternate; }
+    @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
+
+    /* HUD — no background, just floating elements */
+    #hud {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 14px 16px 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+    #hud a { pointer-events: all; }
+    #hud-left { display: flex; flex-direction: column; gap: 4px; }
+    #back-link {
+      color: rgba(255,255,255,0.6); text-decoration: none;
+      font-size: 0.82rem; font-weight: 700;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    }
+    #back-link:hover { color: #fff; }
+    #lives-display {
+      font-size: clamp(14px, 2.5vw, 20px);
+      filter: drop-shadow(0 0 4px #ff6b6b);
+    }
+
+    /* Zone title announcement — top of screen, below HUD */
+    #zone-title {
+      position: fixed; top: 90px; left: 50%;
+      transform: translateX(-50%);
+      text-align: center; z-index: 15;
+      opacity: 0; transition: opacity 0.6s;
+      pointer-events: none;
+    }
+    #zone-title .zt-main {
+      font-size: clamp(20px, 4.5vw, 36px); font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 16px rgba(85,182,202,0.6), 0 4px 20px rgba(0,0,0,0.8);
+    }
+    #zone-title .zt-sub {
+      font-size: clamp(11px, 2.2vw, 16px); font-weight: 700;
+      color: #a8f0ff; margin-top: 4px;
+    }
+
+    /* Floating objects (obstacles) */
+    .space-obj {
+      position: absolute; z-index: 5;
+      pointer-events: none;
+    }
+    .space-obj img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+    .space-obj .obj-label {
+      position: absolute; bottom: -18px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px; font-weight: 800;
+      color: #ccc; white-space: nowrap;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    }
+
+    /* Landmark objects (planets, stations) */
+    .landmark {
+      position: absolute; z-index: 6;
+      pointer-events: none;
+      filter: drop-shadow(0 0 16px rgba(255,255,255,0.2));
+    }
+    .landmark img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+    .landmark .lm-label {
+      position: absolute; bottom: -22px; left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(12px, 2.5vw, 16px); font-weight: 900;
+      color: #fff; white-space: nowrap;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+
+    /* Sun reference — starts huge, partially off-screen left */
+    #sun-ref {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      z-index: 2;
+      transition: width 3s, height 3s, left 3s, opacity 3s;
+    }
+
+    /* Overlays */
+    .overlay-screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(5, 10, 30, 0.88);
+      z-index: 200; text-align: center; padding: 24px;
+    }
+    .overlay-screen h1 {
+      font-size: clamp(26px, 6vw, 60px);
+      font-weight: 900; margin-bottom: 12px; line-height: 1.1;
+    }
+    .overlay-screen p {
+      font-size: clamp(14px, 3vw, 24px);
+      margin-bottom: 16px; color: #c8e6ff; line-height: 1.5;
+    }
+    .overlay-screen .sub {
+      font-size: clamp(11px, 2.2vw, 16px);
+      color: #777; margin-top: 12px;
+    }
+    .btn {
+      background: #ed7c5a; color: white; border: none;
+      border-radius: 100px; font-family: 'Nunito', sans-serif;
+      font-size: clamp(15px, 3vw, 24px); font-weight: 900;
+      padding: 12px 28px; cursor: pointer; margin: 4px;
+      transition: transform 0.1s, background 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn:hover { transform: scale(1.05); background: #d96a47; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+    /* Victory */
+    .victory h1 { color: #55b6ca; }
+    .victory .stars { font-size: 48px; margin-bottom: 16px; }
+
+    /* Barrier lines (heliosphere boundaries) */
+    .barrier-line {
+      position: absolute; z-index: 4;
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    /* Lives reset flash */
+    #lives-reset {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(24px, 5vw, 40px); font-weight: 900;
+      color: #55b6ca; text-align: center; z-index: 16;
+      text-shadow: 0 0 20px rgba(85,182,202,0.8);
+      opacity: 0; pointer-events: none;
+      animation: none;
+    }
+    #lives-reset.show {
+      animation: flashPulse 2s ease-out forwards;
+    }
+    @keyframes flashPulse {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      15% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+      70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* Distant stars for Solar System End */
+    .distant-star {
+      position: absolute; border-radius: 50%; pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Image credit */
+    #credit {
+      position: fixed; bottom: 6px; right: 10px;
+      font-size: 9px; color: rgba(255,255,255,0.3);
+      z-index: 15; pointer-events: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div id="game-area">
+  <div id="helio-tint" style="position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(80,90,120,0);transition:background 1.5s;"></div>
+  <div id="sun-ref">
+    <img src="/the-sun.png" alt="Sun" style="width:100%;height:100%;object-fit:contain;border-radius:50%;filter:brightness(1.1) drop-shadow(0 0 40px rgba(255,200,50,0.5));">
+  </div>
+</div>
+
+<div id="lives-reset">Lives Reset!</div>
+<div id="credit">Image Credit: NASA, Rebecca Tait (Moon)</div>
+
+<div id="ship">
+  <svg viewBox="0 0 48 48" width="48" height="48">
+    <polygon points="48,24 8,4 16,24 8,44" fill="#e8e8e8" stroke="#bbb" stroke-width="0.8"/>
+    <circle cx="34" cy="24" r="6" fill="#55b6ca"/>
+    <polygon points="16,19 2,24 16,29" fill="#ed7c5a" opacity="0.9">
+      <animate attributeName="opacity" values="0.9;0.4;0.9" dur="0.25s" repeatCount="indefinite"/>
+    </polygon>
+  </svg>
+</div>
+
+<div id="hud">
+  <div id="hud-left">
+    <a id="back-link" href="#" onclick="event.preventDefault(); history.back();">&larr; Back to Games</a>
+    <div id="lives-display"></div>
+  </div>
+</div>
+
+<div id="zone-title">
+  <div class="zt-main" id="zt-main"></div>
+  <div class="zt-sub" id="zt-sub"></div>
+</div>
+
+<div class="overlay-screen" id="start-screen">
+  <h1>Solar System Run – Easy</h1>
+  <p>Journey from the Sun to the edge of the solar system.<br>Can you make it to the Oort Cloud?</p>
+  <button class="btn" id="start-btn">Start</button>
+  <p class="sub">Arrow keys or WASD to move &middot; Tap to steer on mobile &middot; Dodge everything in your path</p>
+</div>
+
+<div class="overlay-screen" id="game-over-screen" style="display:none;">
+  <h1 style="color:#ed7c5a;">Game Over</h1>
+  <p id="go-zone"></p>
+  <p id="go-dist"></p>
+  <button class="btn" id="restart-btn">Play Again</button>
+  <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
+</div>
+
+<div class="overlay-screen victory" id="victory-screen" style="display:none;">
+  <div class="stars">&#11088;&#11088;&#11088;</div>
+  <h1>You Made It!</h1>
+  <p>You traveled from the Sun to the Oort Cloud!</p>
+  <p id="vic-dist"></p>
+  <button class="btn" id="replay-btn">Play Again</button>
+  <a href="#" onclick="event.preventDefault(); history.back();" class="btn btn-secondary" style="margin-top:8px;">Back to Games</a>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// ZONE DEFINITIONS — the full solar system journey
+// ═══════════════════════════════════════════
+// EASY MODE: same hazard rate as medium start throughout, no increases
+const ZONES = [
+  {
+    id: 'sun', title: 'Leaving the Sun', sub: '',
+    gStart: 0, gEnd: 30,
+    landmarks: [],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'mercury', title: 'Mercury', sub: '36 million miles',
+    gStart: 30, gEnd: 70,
+    landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'venus', title: 'Venus', sub: '67 million miles',
+    gStart: 70, gEnd: 115,
+    landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'earth', title: 'Earth', sub: '93 million miles',
+    gStart: 115, gEnd: 165,
+    landmarks: [
+      { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
+      { name: 'Moon', img: '/full-moon.png', size: 45, atG: 139 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'mars', title: 'Mars', sub: '142 million miles',
+    gStart: 165, gEnd: 220,
+    landmarks: [
+      { name: 'Mars', img: '/mars.png', size: 65, atG: 185 },
+      { name: 'Phobos', img: '/phobos.png', size: 22, atG: 189 },
+      { name: 'Deimos', img: '/deimos.png', size: 18, atG: 193 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'asteroid-belt', title: 'The Asteroid Belt', sub: '~250 million miles',
+    gStart: 220, gEnd: 290,
+    landmarks: [
+      { name: 'Vesta', img: '/vesta.png', size: 35, atG: 245 },
+      { name: 'Ceres', img: '/ceres.png', size: 40, atG: 270 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'jupiter', title: 'Jupiter', sub: '484 million miles',
+    gStart: 290, gEnd: 360,
+    landmarks: [
+      { name: 'Jupiter', img: '/jupiter.png', size: 110, atG: 310 },
+      { name: 'Io', img: '/io.png', size: 28, atG: 315 },
+      { name: 'Europa', img: '/europa.png', size: 26, atG: 319 },
+      { name: 'Ganymede', img: '/ganymede.png', size: 32, atG: 323 },
+      { name: 'Callisto', img: '/callisto.png', size: 30, atG: 327 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'saturn', title: 'Saturn', sub: '891 million miles',
+    gStart: 360, gEnd: 430,
+    landmarks: [
+      { name: 'Saturn', img: '/saturn.png', size: 120, atG: 380 },
+      { name: 'Mimas', img: '/mimas.png', size: 20, atG: 385 },
+      { name: 'Enceladus', img: '/enceladus.png', size: 22, atG: 389 },
+      { name: 'Titan', img: '/titan.png', size: 32, atG: 393 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'uranus', title: 'Uranus', sub: '1.8 billion miles',
+    gStart: 430, gEnd: 500,
+    landmarks: [
+      { name: 'Uranus', img: '/uranus.png', size: 85, atG: 452 },
+      { name: 'Miranda', img: '/miranda.png', size: 20, atG: 457 },
+      { name: 'Titania', img: '/titania.png', size: 26, atG: 461 },
+      { name: 'Oberon', img: '/oberon.png', size: 24, atG: 465 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'neptune', title: 'Neptune', sub: '2.8 billion miles',
+    gStart: 500, gEnd: 565,
+    landmarks: [
+      { name: 'Neptune', img: '/neptune.png', size: 80, atG: 525 },
+      { name: 'Triton', img: '/triton.png', size: 28, atG: 530 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'kuiper', title: 'The Kuiper Belt', sub: '3.7 billion miles',
+    gStart: 565, gEnd: 660,
+    landmarks: [
+      { name: 'Pluto', img: '/pluto.png', size: 35, atG: 590 },
+      { name: 'Arrokoth', img: '/arrokoth.png', size: 25, atG: 608 },
+      { name: 'Haumea', img: '/haumea.png', size: 30, atG: 625 },
+      { name: 'Makemake', img: '/makemake.png', size: 30, atG: 645 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'scattered', title: 'The Scattered Disk', sub: '9 billion miles',
+    gStart: 660, gEnd: 760,
+    landmarks: [
+      { name: 'Eris', img: '/eris.png', size: 35, atG: 690 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'termination-shock', title: 'Termination Shock', sub: 'Part of the heliosphere',
+    gStart: 760, gEnd: 830,
+    landmarks: [],
+    barrier: { atG: 785, color: '#4488dd', width: 8 },
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'heliosheath', title: 'The Heliosheath', sub: 'Part of the heliosphere',
+    gStart: 830, gEnd: 930,
+    landmarks: [],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+    tint: 'rgba(80, 90, 120, 0.15)',
+    waitForBarrierClear: true,
+  },
+  {
+    id: 'heliopause', title: 'The Heliopause', sub: 'Exiting the heliosphere',
+    gStart: 930, gEnd: 970,
+    landmarks: [],
+    barrier: { atG: 950, color: '#555555', width: 14 },
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'interstellar', title: 'Interstellar Space', sub: '',
+    gStart: 970, gEnd: 1100,
+    landmarks: [
+      { name: 'Voyager 1', img: '/voyager1.png', size: 45, atG: 1020 },
+      { name: 'Sedna', img: '/sedna.png', size: 30, atG: 1070 },
+    ],
+    hazardRate: 0.03, hazardSpeed: [3, 5], hazardSize: [22, 42],
+  },
+  {
+    id: 'oort', title: '', sub: '',
+    gStart: 1100, gEnd: 1350,
+    landmarks: [],
+    hazardRate: 0, hazardSpeed: [0, 0], hazardSize: [18, 45],
+    oortMaze: true,
+    skipTitle: true,
+  },
+  {
+    id: 'solar-end', title: '', sub: '',
+    gStart: 1350, gEnd: 1400,
+    landmarks: [],
+    hazardRate: 0, hazardSpeed: [0, 0], hazardSize: [0, 0],
+    skipTitle: true,
+  },
+];
+
+const TOTAL_DIST = 1400; // game distance units
+
+// ═══════════════════════════════════════════
+// CONFIG — EASY MODE
+// ═══════════════════════════════════════════
+const C = {
+  SHIP_SIZE: 48,
+  SHIP_X_PCT: 0.12,
+  MAX_LIVES: 5,          // Easy: 5 lives
+  INVINCIBLE_MS: 1500,
+  DIST_PER_FRAME: 0.09,
+};
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let shipX, shipY, shipVY, shipVX, distance, lives, invincibleUntil;
+let running = false, gameOver = false, victory = false;
+let currentZoneIdx = -1;
+let hazards = [];
+let landmarks = [];
+let zoneTitleTimer = 0;
+let spawnedLandmarks = new Set();
+let animId;
+let personalBest = null;
+let localBest = parseFloat(localStorage.getItem('solarSystemRunEasyBest') || '0');
+
+const gameArea = document.getElementById('game-area');
+const shipEl = document.getElementById('ship');
+const sunRef = document.getElementById('sun-ref');
+
+function W() { return window.innerWidth; }
+function H() { return window.innerHeight; }
+
+// Map game distance to real astronomical distance (million miles)
+const REAL_MAP = [
+  { g0: 0, g1: 50, r0: 0, r1: 36 },
+  { g0: 50, g1: 92, r0: 36, r1: 67.2 },
+  { g0: 92, g1: 135, r0: 67.2, r1: 93 },
+  { g0: 135, g1: 185, r0: 93, r1: 141.6 },
+  { g0: 185, g1: 245, r0: 141.6, r1: 257 },
+  { g0: 245, g1: 310, r0: 257, r1: 483.8 },
+  { g0: 310, g1: 380, r0: 483.8, r1: 890.8 },
+  { g0: 380, g1: 452, r0: 890.8, r1: 1784 },
+  { g0: 452, g1: 525, r0: 1784, r1: 2793 },
+  { g0: 525, g1: 590, r0: 2793, r1: 3670 },
+  { g0: 590, g1: 695, r0: 3670, r1: 6000 },
+  { g0: 695, g1: 785, r0: 6000, r1: 8700 },
+  { g0: 785, g1: 920, r0: 8700, r1: 11200 },
+  { g0: 920, g1: 970, r0: 11200, r1: 14000 },
+  { g0: 970, g1: 1120, r0: 14000, r1: 50000 },
+];
+
+function gameToReal(gd) {
+  for (const s of REAL_MAP) {
+    if (gd <= s.g1) {
+      const t = Math.max(0, (gd - s.g0) / (s.g1 - s.g0));
+      return s.r0 + t * (s.r1 - s.r0);
+    }
+  }
+  return 50000;
+}
+
+function formatDist(realMiles) {
+  if (realMiles >= 1000) return (realMiles / 1000).toFixed(1) + ' billion miles';
+  return realMiles.toFixed(1) + ' million miles';
+}
+
+function displayDist() {
+  return formatDist(gameToReal(distance));
+}
+
+// ═══════════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════════
+let audioCtx;
+function A() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+
+function sndBoost() {
+  try { const a=A(),o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.setValueAtTime(520,a.currentTime);o.frequency.exponentialRampToValueAtTime(940,a.currentTime+0.06);g.gain.setValueAtTime(0.08,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.08);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+0.08);} catch(e){}
+}
+function sndHit() {
+  try { const a=A(),o=a.createOscillator(),g=a.createGain();o.type='sawtooth';o.frequency.setValueAtTime(180,a.currentTime);o.frequency.exponentialRampToValueAtTime(50,a.currentTime+0.25);g.gain.setValueAtTime(0.14,a.currentTime);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+0.3);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+0.3);} catch(e){}
+}
+function sndZone() {
+  try { const a=A();[440,554,659].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,a.currentTime+i*0.1);g.gain.linearRampToValueAtTime(0.1,a.currentTime+i*0.1+0.05);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+i*0.1+0.35);o.connect(g).connect(a.destination);o.start(a.currentTime+i*0.1);o.stop(a.currentTime+i*0.1+0.35);});} catch(e){}
+}
+function sndVictory() {
+  try { const a=A();[523,659,784,1047].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,a.currentTime+i*0.15);g.gain.linearRampToValueAtTime(0.12,a.currentTime+i*0.15+0.06);g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+i*0.15+0.5);o.connect(g).connect(a.destination);o.start(a.currentTime+i*0.15);o.stop(a.currentTime+i*0.15+0.5);});} catch(e){}
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init() {
+  document.querySelectorAll('.space-obj, .landmark, .barrier-line').forEach(el => el.remove());
+  hazards = [];
+  landmarks = [];
+  barriers = [];
+  spawnedLandmarks.clear();
+  spawnedBarriers.clear();
+  oortMazeSpawned = false;
+  oortMazeRocks = [];
+  oortLabel = null;
+  endLabel = null;
+  livesResetDone = false;
+  distantStarsSpawned = false;
+  document.querySelectorAll('.distant-star').forEach(el => el.remove());
+  document.getElementById('lives-reset').classList.remove('show');
+
+  shipX = W() * 0.35;
+  shipY = H() / 2;
+  shipVX = 0;
+  shipVY = 0;
+  shownZones = new Set();
+
+  shipEl.style.left = (shipX - C.SHIP_SIZE / 2) + 'px';
+  shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
+  distance = 0;
+  lives = C.MAX_LIVES;
+  invincibleUntil = 0;
+  currentZoneIdx = -1;
+  zoneTitleTimer = 0;
+  gameOver = false;
+  victory = false;
+
+  updateLives();
+  document.getElementById('zone-title').style.opacity = '0';
+
+  sunRef.style.transition = 'none';
+  const sunH = H() * 1.2;
+  sunRef.style.width = sunH + 'px';
+  sunRef.style.height = sunH + 'px';
+  sunRef.style.left = (-sunH * 0.65) + 'px';
+  sunRef.style.opacity = '1';
+  requestAnimationFrame(() => { sunRef.style.transition = ''; });
+}
+
+function updateLives() {
+  let s = '';
+  for (let i = 0; i < C.MAX_LIVES; i++) s += i < lives ? '\u2764\ufe0f' : '\ud83d\udda4';
+  document.getElementById('lives-display').textContent = s;
+}
+
+// ═══════════════════════════════════════════
+// HAZARDS (floating rocks/ice)
+// ═══════════════════════════════════════════
+function spawnHazard(zone) {
+  // Easy: no diffMult, constant speed
+  const size = zone.hazardSize[0] + Math.random() * (zone.hazardSize[1] - zone.hazardSize[0]);
+  const spd = zone.hazardSpeed[0] + Math.random() * (zone.hazardSpeed[1] - zone.hazardSpeed[0]);
+  const y = Math.random() * (H() - size - 20) + 10;
+  const rotation = Math.random() * 360;
+  const rotSpeed = (Math.random() - 0.5) * 4;
+
+  const el = document.createElement('div');
+  el.className = 'space-obj';
+  el.style.width = size + 'px';
+  el.style.height = size + 'px';
+  el.style.left = W() + 20 + 'px';
+  el.style.top = y + 'px';
+
+  // Comets only appear through the asteroid belt
+  const innerZone = ['sun', 'mercury', 'venus', 'earth', 'mars', 'asteroid-belt'].includes(zone.id);
+  const isComet = innerZone && Math.random() < 0.12;
+
+  if (isComet) {
+    const uid = 'cm' + Math.random().toString(36).slice(2,6);
+    el.innerHTML = `<svg viewBox="0 0 100 40" width="${size*1.5}" height="${size*0.6}" style="filter:drop-shadow(0 0 8px rgba(255,200,100,0.4)) drop-shadow(8px 0 16px rgba(255,140,60,0.3));">
+      <defs>
+        <radialGradient id="${uid}c"><stop offset="0%" stop-color="rgba(255,255,220,0.9)"/><stop offset="40%" stop-color="rgba(200,255,200,0.4)"/><stop offset="100%" stop-color="rgba(100,200,180,0)"/></radialGradient>
+        <linearGradient id="${uid}t" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(255,200,80,0.8)"/><stop offset="30%" stop-color="rgba(255,140,60,0.5)"/><stop offset="70%" stop-color="rgba(200,100,60,0.2)"/><stop offset="100%" stop-color="rgba(150,80,40,0)"/></linearGradient>
+      </defs>
+      <ellipse cx="18" cy="20" rx="16" ry="14" fill="url(#${uid}c)"/>
+      <path d="M28,14 Q55,10 98,8 Q55,20 28,20 Z" fill="url(#${uid}t)" opacity="0.7"/>
+      <path d="M28,22 Q55,24 96,30 Q55,22 28,22 Z" fill="url(#${uid}t)" opacity="0.5"/>
+      <path d="M28,18 Q60,16 98,15 Q60,20 28,20 Z" fill="url(#${uid}t)" opacity="0.6"/>
+      <ellipse cx="16" cy="19" rx="5" ry="4.5" fill="#ffffee"/>
+      <ellipse cx="15" cy="18" rx="2.5" ry="2" fill="#fff" opacity="0.8"/>
+    </svg>`;
+  } else {
+    const zoneOrder = ['sun','mercury','venus','earth','mars','asteroid-belt','jupiter','saturn','uranus','neptune','kuiper','scattered','termination-shock','heliosheath','heliopause','interstellar','oort'];
+    const zi = zoneOrder.indexOf(zone.id);
+    const t = zi / (zoneOrder.length - 1);
+
+    let hue, sat, lightness;
+    const hasHighlight = Math.random() < 0.2;
+
+    if (zi <= 5) {
+      const isGray = Math.random() < 0.5;
+      hue = isGray ? 0 : 30;
+      sat = isGray ? 0 : 25;
+      lightness = 22 + Math.random() * 16;
+    } else if (zi <= 7) {
+      const coolMix = (zi - 5) * 0.3;
+      hue = Math.random() < coolMix ? 220 : (Math.random() < 0.5 ? 0 : 30);
+      sat = hue === 220 ? 10 : (hue === 0 ? 0 : 20);
+      lightness = 24 + Math.random() * 16;
+    } else if (zi === 8) {
+      hue = Math.random() < 0.3 ? 220 : 0;
+      sat = hue === 220 ? 8 : 0;
+      lightness = 26 + Math.random() * 16;
+    } else if (zi === 9) {
+      const r = Math.random();
+      if (r < 0.25) { hue = 10; sat = 20; }
+      else if (r < 0.4) { hue = 220; sat = 6; }
+      else { hue = 0; sat = 0; }
+      lightness = 24 + Math.random() * 14;
+    } else if (zi === 10) {
+      hue = 8 + Math.random() * 8;
+      sat = 25 + Math.random() * 15;
+      lightness = 18 + Math.random() * 14;
+    } else if (zi === 11) {
+      if (Math.random() < 0.5) { hue = 10; sat = 15 + Math.random() * 10; }
+      else { hue = 0; sat = 0; }
+      lightness = 18 + Math.random() * 12;
+    } else if (zi <= 15) {
+      hue = 0;
+      sat = 0;
+      const darkening = (zi - 12) * 3;
+      lightness = 20 - darkening + Math.random() * 10;
+    } else {
+      hue = 0;
+      sat = 0;
+      lightness = 12 + Math.random() * 12;
+    }
+
+    lightness = Math.max(4, lightness);
+    const strokeL = Math.max(2, lightness - 6);
+    const highlightL = Math.min(80, lightness + 12);
+
+    el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
+      <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(${hue},${sat}%,${lightness}%)" stroke="hsl(${hue},${Math.max(0,sat-10)}%,${strokeL}%)" stroke-width="1.5"/>
+      <polygon points="18,8 28,12 26,22 14,20" fill="hsl(${hue},${sat}%,${highlightL}%)" opacity="0.45"/>
+      ${hasHighlight ? `<polygon points="22,18 30,24 24,32 16,28" fill="hsl(0,0%,${70+Math.random()*15}%)" opacity="0.3"/>` : ''}
+    </svg>`;
+  }
+
+  gameArea.appendChild(el);
+  hazards.push({ el, x: W() + 20, y, size, speed: spd, rot: isComet ? 0 : rotation, rotSpeed: isComet ? 0 : rotSpeed, isComet });
+}
+
+// ═══════════════════════════════════════════
+// LANDMARKS (planets, moons)
+// ═══════════════════════════════════════════
+const planetYByZone = {};
+
+function spawnLandmark(lm, zoneIdx) {
+  const key = lm.name + lm.atG;
+  if (spawnedLandmarks.has(key)) return;
+  spawnedLandmarks.add(key);
+
+  const el = document.createElement('div');
+  el.className = 'landmark';
+  el.style.width = lm.size + 'px';
+  el.style.height = lm.size + 'px';
+  el.style.left = W() + 30 + 'px';
+
+  const lmIndex = ZONES[zoneIdx].landmarks.indexOf(lm);
+  let yCenter;
+  if (lmIndex === 0) {
+    yCenter = H() * 0.3 + Math.random() * H() * 0.35;
+    planetYByZone[zoneIdx] = yCenter;
+  } else {
+    const planetY = planetYByZone[zoneIdx] || H() * 0.5;
+    const dir = lmIndex % 2 === 1 ? -1 : 1;
+    const dist = 30 + lmIndex * 18;
+    yCenter = planetY + dir * dist;
+    yCenter = Math.max(60, Math.min(H() - 60, yCenter));
+  }
+  el.style.top = (yCenter - lm.size / 2) + 'px';
+
+  el.innerHTML = `<img src="${lm.img}" alt="${lm.name}"><div class="lm-label" style="bottom:-18px;">${lm.name}</div>`;
+  gameArea.appendChild(el);
+  const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
+  const lmY = yCenter;
+  landmarks.push({ el, x: W() + 30, y: lmY, size: lm.size, speed: 1.5, zoneIdx, isFirst, titleTriggered: false });
+}
+
+// ═══════════════════════════════════════════
+// BARRIER LINES (heliosphere boundaries)
+// ═══════════════════════════════════════════
+let barriers = [];
+let spawnedBarriers = new Set();
+
+function spawnBarrier(zone) {
+  const b = zone.barrier;
+  const key = zone.id;
+  if (!b || spawnedBarriers.has(key)) return;
+  spawnedBarriers.add(key);
+
+  const el = document.createElement('div');
+  el.className = 'barrier-line';
+  const bandW = Math.floor(W() * 0.5);
+  el.style.width = bandW + 'px';
+  el.style.height = H() + 'px';
+  el.style.left = W() + 50 + 'px';
+  el.style.top = '0';
+  el.style.borderRadius = '0';
+  el.style.background = `linear-gradient(90deg, transparent 0%, ${b.color}30 15%, ${b.color}50 50%, ${b.color}30 85%, transparent 100%)`;
+  el.style.boxShadow = `0 0 40px ${b.color}40`;
+  el.style.border = 'none';
+  gameArea.appendChild(el);
+  barriers.push({ el, x: W() + 50, speed: 1.5, zoneIdx: ZONES.indexOf(zone), width: bandW });
+}
+
+// ═══════════════════════════════════════════
+// OORT CLOUD — EASY: rocks lining top/bottom, wide clear center
+// ═══════════════════════════════════════════
+let oortMazeSpawned = false;
+let oortMazeRocks = [];
+let oortLabel = null;
+let endLabel = null;
+let livesResetDone = false;
+let distantStarsSpawned = false;
+
+function spawnOortMaze() {
+  if (oortMazeSpawned) return;
+  oortMazeSpawned = true;
+
+  // Reset lives
+  lives = C.MAX_LIVES;
+  updateLives();
+  livesResetDone = true;
+  const flashEl = document.getElementById('lives-reset');
+  flashEl.classList.remove('show');
+  void flashEl.offsetWidth;
+  flashEl.classList.add('show');
+
+  const h = H();
+  const mazeWidth = W() * 4;
+  const startX = W() + 100;
+  const rockSize = 30;
+
+  // Easy mode: rocks line the top and bottom with a very wide clear center path
+  const centerClearTop = Math.floor(h * 0.25);    // Top 25% has rocks
+  const centerClearBottom = Math.floor(h * 0.75);  // Bottom 25% has rocks
+  const cols = Math.floor(mazeWidth / (rockSize + 10));
+
+  // Top rows of rocks
+  const topRows = Math.floor((centerClearTop - 60) / (rockSize + 8));
+  for (let col = 0; col < cols; col++) {
+    for (let row = 0; row < topRows; row++) {
+      // Some random gaps for visual variety (but not navigable — all in the rock zone)
+      if (Math.random() < 0.15) continue;
+
+      const x = startX + col * (rockSize + 10) + (Math.random() - 0.5) * 6;
+      const y = 10 + row * (rockSize + 8) + (Math.random() - 0.5) * 4;
+      const size = rockSize + (Math.random() - 0.5) * 12;
+      const l = 12 + Math.random() * 14;
+
+      const el = document.createElement('div');
+      el.className = 'space-obj';
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
+        <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${Math.max(2,l-6)}%)" stroke-width="1.5"/>
+        <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+12}%)" opacity="0.4"/>
+      </svg>`;
+      gameArea.appendChild(el);
+      oortMazeRocks.push({ el, x, y, size });
+    }
+  }
+
+  // Bottom rows of rocks
+  const bottomRows = Math.floor((h - centerClearBottom - 40) / (rockSize + 8));
+  for (let col = 0; col < cols; col++) {
+    for (let row = 0; row < bottomRows; row++) {
+      if (Math.random() < 0.15) continue;
+
+      const x = startX + col * (rockSize + 10) + (Math.random() - 0.5) * 6;
+      const y = centerClearBottom + row * (rockSize + 8) + (Math.random() - 0.5) * 4;
+      const size = rockSize + (Math.random() - 0.5) * 12;
+      const l = 12 + Math.random() * 14;
+
+      const el = document.createElement('div');
+      el.className = 'space-obj';
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.innerHTML = `<svg viewBox="0 0 40 40" width="${size}" height="${size}">
+        <polygon points="20,2 35,8 38,22 30,38 12,36 2,24 6,10" fill="hsl(0,0%,${l}%)" stroke="hsl(0,0%,${Math.max(2,l-6)}%)" stroke-width="1.5"/>
+        <polygon points="18,8 28,12 26,22 14,20" fill="hsl(0,0%,${l+12}%)" opacity="0.4"/>
+      </svg>`;
+      gameArea.appendChild(el);
+      oortMazeRocks.push({ el, x, y, size });
+    }
+  }
+
+  // "The Oort Cloud" label
+  oortLabel = document.createElement('div');
+  oortLabel.className = 'landmark';
+  oortLabel.style.left = (startX + 50) + 'px';
+  oortLabel.style.top = '20px';
+  oortLabel.style.width = '300px';
+  oortLabel.style.height = '40px';
+  oortLabel.style.zIndex = '8';
+  oortLabel.style.width = '500px';
+  oortLabel.innerHTML = '<div class="lm-label" style="position:static;transform:none;font-size:clamp(16px,4vw,28px);color:#a8f0ff;text-shadow:0 2px 12px rgba(85,182,202,0.6);">The Oort Cloud <span style="font-size:0.55em;opacity:0.6;">(density greatly exaggerated for gameplay)</span></div>';
+  gameArea.appendChild(oortLabel);
+
+  // "Solar System End" label after the wall
+  endLabel = document.createElement('div');
+  endLabel.className = 'landmark';
+  endLabel.style.left = (startX + mazeWidth + 100) + 'px';
+  endLabel.style.top = (h * 0.4) + 'px';
+  endLabel.style.width = '300px';
+  endLabel.style.height = '40px';
+  endLabel.style.zIndex = '8';
+  endLabel.innerHTML = '<div class="lm-label" style="position:static;transform:none;font-size:clamp(18px,4.5vw,32px);color:#fff;text-shadow:0 2px 16px rgba(255,255,255,0.6);">Solar System End</div>';
+  gameArea.appendChild(endLabel);
+}
+
+function spawnDistantStars() {
+  if (distantStarsSpawned) return;
+  distantStarsSpawned = true;
+  for (let i = 0; i < 30; i++) {
+    const star = document.createElement('div');
+    star.className = 'distant-star';
+    const size = 2 + Math.random() * 4;
+    star.style.width = size + 'px';
+    star.style.height = size + 'px';
+    const hue = Math.random() < 0.3 ? '40' : Math.random() < 0.5 ? '220' : '0';
+    star.style.background = `hsl(${hue}, 60%, ${70 + Math.random() * 30}%)`;
+    star.style.boxShadow = `0 0 ${size * 3}px hsl(${hue}, 60%, 80%)`;
+    star.style.left = (W() * 4 + W() + Math.random() * W() * 2) + 'px';
+    star.style.top = (Math.random() * H()) + 'px';
+    gameArea.appendChild(star);
+  }
+}
+
+// ═══════════════════════════════════════════
+// ZONES
+// ═══════════════════════════════════════════
+let shownZones = new Set();
+
+function checkZoneByLandmarks() {
+  for (let i = 0; i < ZONES.length; i++) {
+    if (shownZones.has(i)) continue;
+    const z = ZONES[i];
+    if (z.barrier) continue;
+    if (z.landmarks.length > 0) continue;
+    if (i > 0 && ZONES[i-1].barrier && !shownZones.has(i-1)) continue;
+    if (z.waitForBarrierClear) {
+      const prevBarrierStillOnScreen = barriers.some(b => b.zoneIdx === i - 1 && b.x > -100);
+      if (prevBarrierStillOnScreen) continue;
+    }
+    if (distance >= z.gStart) {
+      shownZones.add(i);
+      if (!z.skipTitle) showZoneTitle(z);
+      currentZoneIdx = i;
+    }
+  }
+}
+
+function showZoneTitle(zone) {
+  document.getElementById('zt-main').textContent = zone.title;
+  document.getElementById('zt-sub').textContent = zone.sub;
+  document.getElementById('zone-title').style.opacity = '1';
+  zoneTitleTimer = 180;
+  sndZone();
+}
+
+// ═══════════════════════════════════════════
+// COLLISION
+// ═══════════════════════════════════════════
+function checkCollision() {
+  if (Date.now() < invincibleUntil) return false;
+  const sx = shipX;
+  const sy = shipY;
+  const sr = C.SHIP_SIZE * 0.4;
+
+  for (const h of hazards) {
+    const hcx = h.x + h.size / 2;
+    const hcy = h.y + h.size / 2;
+    const hr = h.size * 0.42;
+    const dx = sx - hcx, dy = sy - hcy;
+    if (dx * dx + dy * dy < (sr + hr) * (sr + hr)) return true;
+  }
+
+  for (const l of landmarks) {
+    const lcx = l.x + l.size / 2;
+    const lcy = l.y;
+    const lr = l.size * 0.4;
+    const dx = sx - lcx, dy = sy - lcy;
+    if (dx * dx + dy * dy < (sr + lr) * (sr + lr)) return true;
+  }
+
+  for (const r of oortMazeRocks) {
+    const rcx = r.x + r.size / 2;
+    const rcy = r.y + r.size / 2;
+    const rr = r.size * 0.4;
+    const dx = sx - rcx, dy = sy - rcy;
+    if (dx * dx + dy * dy < (sr + rr) * (sr + rr)) return true;
+  }
+
+  return false;
+}
+
+// ═══════════════════════════════════════════
+// INPUT
+// ═══════════════════════════════════════════
+const keys = { up: false, down: false, left: false, right: false };
+const MOVE_SPEED = 5;
+let boostCooldown = 0;
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'ArrowUp' || e.code === 'KeyW') { e.preventDefault(); keys.up = true; }
+  if (e.code === 'ArrowDown' || e.code === 'KeyS') { e.preventDefault(); keys.down = true; }
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') { e.preventDefault(); keys.left = true; }
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') { e.preventDefault(); keys.right = true; }
+  if (e.code === 'Space') { e.preventDefault(); keys.up = true; }
+});
+document.addEventListener('keyup', e => {
+  if (e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Space') keys.up = false;
+  if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.down = false;
+  if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
+  if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
+});
+
+let touchTarget = null;
+document.addEventListener('touchstart', e => {
+  if (!running) return;
+  e.preventDefault();
+  touchTarget = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: false });
+document.addEventListener('touchmove', e => {
+  if (!running) return;
+  e.preventDefault();
+  touchTarget = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: false });
+document.addEventListener('touchend', e => {
+  touchTarget = null;
+  keys.up = false; keys.down = false; keys.left = false; keys.right = false;
+});
+
+// ═══════════════════════════════════════════
+// GAME LOOP — EASY: no speed increase, no difficulty ramp
+// ═══════════════════════════════════════════
+function loop() {
+  if (!running || gameOver || victory) return;
+
+  // EASY: speed stays constant at 1.0 — no increase
+  const speedMult = 1.0;
+
+  // Movement from keys
+  if (keys.up) shipVY = -MOVE_SPEED;
+  else if (keys.down) shipVY = MOVE_SPEED;
+  else if (!touchTarget) shipVY *= 0.85;
+
+  if (keys.right) shipVX = MOVE_SPEED * 0.7;
+  else if (keys.left) shipVX = -MOVE_SPEED * 0.7;
+  else if (!touchTarget) shipVX *= 0.85;
+
+  if (touchTarget) {
+    const dx = touchTarget.x - shipX;
+    const dy = touchTarget.y - shipY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > 5) {
+      shipVX = (dx / dist) * MOVE_SPEED;
+      shipVY = (dy / dist) * MOVE_SPEED;
+    }
+  }
+
+  shipX += shipVX;
+  shipY += shipVY;
+
+  const pad = C.SHIP_SIZE / 2;
+  shipX = Math.max(pad, Math.min(W() - pad, shipX));
+  shipY = Math.max(pad + 60, Math.min(H() - pad - 40, shipY));
+
+  distance += C.DIST_PER_FRAME * speedMult;
+
+  shipEl.style.left = (shipX - C.SHIP_SIZE / 2) + 'px';
+  shipEl.style.top = (shipY - C.SHIP_SIZE / 2) + 'px';
+  shipEl.classList.toggle('invincible', Date.now() < invincibleUntil);
+
+  // Sun disappears
+  const sunProgress = Math.min(1, distance / 20);
+  const baseH = H() * 1.2;
+  const sunSize = Math.max(10, baseH * (1 - sunProgress));
+  const sunLeft = (-baseH * 0.65) - (sunProgress * baseH);
+  sunRef.style.width = sunSize + 'px';
+  sunRef.style.height = sunSize + 'px';
+  sunRef.style.left = sunLeft + 'px';
+  sunRef.style.opacity = String(Math.max(0, 1 - sunProgress * 2.5));
+
+  checkZoneByLandmarks();
+  const zone = ZONES[currentZoneIdx] || ZONES[0];
+
+  // Heliosheath tint
+  const helioTint = document.getElementById('helio-tint');
+  if (zone.tint) {
+    helioTint.style.background = zone.tint;
+  } else {
+    helioTint.style.background = 'rgba(80,90,120,0)';
+  }
+
+  // Zone title fade
+  if (zoneTitleTimer > 0) {
+    zoneTitleTimer--;
+    if (zoneTitleTimer <= 40) {
+      document.getElementById('zone-title').style.opacity = String(zoneTitleTimer / 40);
+    }
+  }
+
+  // EASY: no difficulty ramp — constant hazard rate, no diffMult
+  if (Math.random() < zone.hazardRate) {
+    spawnHazard(zone);
+  }
+
+  // Spawn barriers
+  for (const z of ZONES) {
+    if (z.barrier && distance >= z.barrier.atG - 3 && distance <= z.barrier.atG + 3) {
+      spawnBarrier(z);
+    }
+  }
+
+  // Spawn Oort Cloud
+  const oortZone = ZONES.find(z => z.oortMaze);
+  if (oortZone && distance >= oortZone.gStart + 5 && !oortMazeSpawned) {
+    spawnOortMaze();
+    spawnDistantStars();
+  }
+
+  // Move Oort maze rocks
+  if (oortMazeSpawned) {
+    const mazeSpeed = 2 * speedMult;
+    for (const r of oortMazeRocks) {
+      r.x -= mazeSpeed;
+      r.el.style.left = r.x + 'px';
+    }
+    if (oortLabel) {
+      const lx = parseFloat(oortLabel.style.left) - mazeSpeed;
+      oortLabel.style.left = lx + 'px';
+    }
+    if (endLabel) {
+      const ex = parseFloat(endLabel.style.left) - mazeSpeed;
+      endLabel.style.left = ex + 'px';
+      if (ex < W() * 0.3) {
+        winGame();
+        return;
+      }
+    }
+  }
+
+  // Spawn landmarks
+  for (let zi = 0; zi < ZONES.length; zi++) {
+    for (const lm of ZONES[zi].landmarks) {
+      if (distance >= lm.atG - 3 && distance <= lm.atG + 3) {
+        spawnLandmark(lm, zi);
+      }
+    }
+  }
+
+  // Move hazards — constant speed, no speedMult applied
+  for (let i = hazards.length - 1; i >= 0; i--) {
+    const h = hazards[i];
+    h.x -= h.speed;
+    h.rot += h.rotSpeed;
+    h.el.style.left = h.x + 'px';
+    h.el.style.transform = `rotate(${h.rot}deg)`;
+    if (h.x + h.size < -20) {
+      h.el.remove();
+      hazards.splice(i, 1);
+    }
+  }
+
+  // Move landmarks
+  for (let i = landmarks.length - 1; i >= 0; i--) {
+    const l = landmarks[i];
+    l.x -= l.speed;
+    l.el.style.left = l.x + 'px';
+
+    if (l.isFirst && !l.titleTriggered && l.x < shipX) {
+      l.titleTriggered = true;
+      if (!shownZones.has(l.zoneIdx)) {
+        shownZones.add(l.zoneIdx);
+        showZoneTitle(ZONES[l.zoneIdx]);
+        currentZoneIdx = l.zoneIdx;
+      }
+    }
+
+    if (l.x < -200) {
+      l.el.remove();
+      landmarks.splice(i, 1);
+    }
+  }
+
+  // Move barriers
+  for (let i = barriers.length - 1; i >= 0; i--) {
+    const b = barriers[i];
+    b.x -= b.speed;
+    b.el.style.left = b.x + 'px';
+
+    if (!b.titleTriggered && b.x < shipX + 50) {
+      b.titleTriggered = true;
+      const zi = b.zoneIdx;
+      if (!shownZones.has(zi)) {
+        shownZones.add(zi);
+        showZoneTitle(ZONES[zi]);
+        currentZoneIdx = zi;
+      }
+    }
+
+    if (b.x < -300) {
+      b.el.remove();
+      barriers.splice(i, 1);
+    }
+  }
+
+  // Collision
+  if (checkCollision()) {
+    lives--;
+    updateLives();
+    sndHit();
+    if (lives <= 0) { endGame(); return; }
+    invincibleUntil = Date.now() + C.INVINCIBLE_MS;
+    sndBoost();
+  }
+
+  animId = requestAnimationFrame(loop);
+}
+
+// ═══════════════════════════════════════════
+// END STATES
+// ═══════════════════════════════════════════
+function endGame() {
+  gameOver = true; running = false;
+  shipEl.classList.remove('invincible');
+  const zone = ZONES[currentZoneIdx] || ZONES[0];
+  document.getElementById('go-zone').textContent = 'You reached: ' + zone.title;
+  document.getElementById('go-dist').textContent = '';
+  document.getElementById('game-over-screen').style.display = 'flex';
+  trackEnd(false);
+}
+
+function winGame() {
+  victory = true; running = false;
+  shipEl.classList.remove('invincible');
+  document.getElementById('vic-dist').textContent = '';
+  document.getElementById('victory-screen').style.display = 'flex';
+  sndVictory();
+  trackEnd(true);
+}
+
+function trackEnd(completed) {
+  if (window._playId) {
+    const dur = Math.floor((Date.now() - window._playStart) / 1000);
+    fetch('/api/track/play-end', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ playId: window._playId, completed, durationSeconds: dur })
+    }).catch(() => {});
+  }
+}
+
+function startGame() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('game-over-screen').style.display = 'none';
+  document.getElementById('victory-screen').style.display = 'none';
+  init();
+  running = true;
+  cancelAnimationFrame(animId);
+  loop();
+
+  window._playStart = Date.now();
+  fetch('/api/track/play-start', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ gameTitle: 'Solar System Run \u2013 Easy' })
+  }).then(r => r.json()).then(d => { window._playId = d.playId; }).catch(() => {});
+}
+
+function loadHighScore() {
+  fetch('/api/track/high-score?game=Solar%20System%20Run%20%E2%80%93%20Easy')
+    .then(r => r.json())
+    .then(d => {
+      if (d.highScore != null) personalBest = d.highScore;
+    })
+    .catch(() => {});
+}
+loadHighScore();
+
+function getBest() {
+  const scores = [localBest];
+  if (personalBest != null) scores.push(personalBest);
+  return Math.max(...scores, 0);
+}
+
+function saveScore(gameDist) {
+  const realDist = gameToReal(gameDist);
+  if (realDist > localBest) {
+    localBest = realDist;
+    localStorage.setItem('solarSystemRunEasyBest', String(realDist));
+  }
+  fetch('/api/track/high-score', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ game_title: 'Solar System Run \u2013 Easy', score: realDist })
+  }).then(r => r.json()).then(d => {
+    if (d.highScore != null) personalBest = d.highScore;
+  }).catch(() => {});
+}
+
+document.getElementById('start-btn').addEventListener('click', startGame);
+document.getElementById('restart-btn').addEventListener('click', startGame);
+document.getElementById('replay-btn').addEventListener('click', startGame);
+</script>
+</body>
+</html>
