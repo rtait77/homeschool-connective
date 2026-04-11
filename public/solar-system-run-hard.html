@@ -254,26 +254,26 @@
 // ═══════════════════════════════════════════
 // ZONE DEFINITIONS — HARD MODE
 // ═══════════════════════════════════════════
-// Hard: starts at medium's interstellar space level (speed [4, 6.5], rate 0.02)
+// Hard: starts at asteroid belt difficulty (speed [4.5, 7], rate 0.028)
 // Speed and frequency increase throughout
 const ZONES = [
   {
     id: 'sun', title: 'Leaving the Sun', sub: '',
     gStart: 0, gEnd: 30,
     landmarks: [],
-    hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [22, 42],
+    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
   },
   {
     id: 'mercury', title: 'Mercury', sub: '36 million miles',
     gStart: 30, gEnd: 70,
     landmarks: [{ name: 'Mercury', img: '/mercury.png', size: 60, atG: 50 }],
-    hazardRate: 0.02, hazardSpeed: [4, 6.5], hazardSize: [22, 42],
+    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
   },
   {
     id: 'venus', title: 'Venus', sub: '67 million miles',
     gStart: 70, gEnd: 115,
     landmarks: [{ name: 'Venus', img: '/venus.png', size: 70, atG: 92 }],
-    hazardRate: 0.022, hazardSpeed: [4, 6.5], hazardSize: [22, 42],
+    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
   },
   {
     id: 'earth', title: 'Earth', sub: '93 million miles',
@@ -282,7 +282,7 @@ const ZONES = [
       { name: 'Earth', img: '/earth.png', size: 75, atG: 135 },
       { name: 'Moon', img: '/full-moon.png', size: 45, atG: 139 },
     ],
-    hazardRate: 0.022, hazardSpeed: [4, 6.5], hazardSize: [22, 42],
+    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 42],
   },
   {
     id: 'mars', title: 'Mars', sub: '142 million miles',
@@ -292,7 +292,7 @@ const ZONES = [
       { name: 'Phobos', img: '/phobos.png', size: 22, atG: 189 },
       { name: 'Deimos', img: '/deimos.png', size: 18, atG: 193 },
     ],
-    hazardRate: 0.024, hazardSpeed: [4.2, 6.8], hazardSize: [22, 44],
+    hazardRate: 0.028, hazardSpeed: [4.5, 7], hazardSize: [22, 44],
   },
   {
     id: 'asteroid-belt', title: 'The Asteroid Belt', sub: '~250 million miles',
