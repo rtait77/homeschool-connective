@@ -190,6 +190,33 @@
       z-index: 15; pointer-events: none;
       font-weight: 600;
     }
+    /* Virtual joystick — touch devices only */
+    #joystick-zone {
+      display: none;
+      position: fixed; bottom: 30px; right: 30px;
+      width: 130px; height: 130px;
+      z-index: 30;
+      touch-action: none;
+    }
+    #joystick-base {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    #joystick-knob {
+      position: absolute;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      border: 2px solid rgba(255,255,255,0.4);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      transition: none;
+    }
+    @media (pointer: coarse) {
+      #joystick-zone { display: block; }
+    }
   </style>
 </head>
 <body>
@@ -203,6 +230,10 @@
 
 <div id="lives-reset">Lives Reset!</div>
 <div id="credit">Image Credit: NASA, Rebecca Tait (Moon)</div>
+<div id="joystick-zone">
+  <div id="joystick-base"></div>
+  <div id="joystick-knob"></div>
+</div>
 
 <div id="ship">
   <svg viewBox="0 0 48 48" width="48" height="48">
@@ -942,19 +973,59 @@ document.addEventListener('keyup', e => {
   if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
 });
 
-// Touch: move ship toward touch point
+// Virtual joystick for mobile
 let touchTarget = null;
+const joystickZone = document.getElementById('joystick-zone');
+const joystickKnob = document.getElementById('joystick-knob');
+const JOY_RADIUS = 40; // max knob travel from center
+
+function handleJoystick(touchX, touchY) {
+  const rect = joystickZone.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  let dx = touchX - cx;
+  let dy = touchY - cy;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist > JOY_RADIUS) { dx = dx / dist * JOY_RADIUS; dy = dy / dist * JOY_RADIUS; }
+  joystickKnob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+  if (dist > 8) {
+    touchTarget = { dx: dx / JOY_RADIUS, dy: dy / JOY_RADIUS };
+  } else {
+    touchTarget = null;
+  }
+}
+
+joystickZone.addEventListener('touchstart', e => {
+  if (!running) return;
+  e.preventDefault(); e.stopPropagation();
+  handleJoystick(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: false });
+joystickZone.addEventListener('touchmove', e => {
+  if (!running) return;
+  e.preventDefault(); e.stopPropagation();
+  handleJoystick(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: false });
+joystickZone.addEventListener('touchend', e => {
+  e.stopPropagation();
+  touchTarget = null;
+  joystickKnob.style.transform = 'translate(-50%, -50%)';
+});
+
+// Fallback: tapping elsewhere on screen still moves ship toward touch point
 document.addEventListener('touchstart', e => {
   if (!running) return;
+  if (e.target.closest('#joystick-zone')) return;
   e.preventDefault();
-  touchTarget = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  touchTarget = { screenX: e.touches[0].clientX, screenY: e.touches[0].clientY };
 }, { passive: false });
 document.addEventListener('touchmove', e => {
   if (!running) return;
+  if (e.target.closest('#joystick-zone')) return;
   e.preventDefault();
-  touchTarget = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  touchTarget = { screenX: e.touches[0].clientX, screenY: e.touches[0].clientY };
 }, { passive: false });
 document.addEventListener('touchend', e => {
+  if (e.target.closest('#joystick-zone')) return;
   touchTarget = null;
   keys.up = false; keys.down = false; keys.left = false; keys.right = false;
 });
@@ -979,14 +1050,21 @@ function loop() {
   else if (keys.left) shipVX = -MOVE_SPEED * 0.7;
   else if (!touchTarget) shipVX *= 0.85;
 
-  // Touch: move toward touch point
+  // Touch: joystick or screen tap
   if (touchTarget) {
-    const dx = touchTarget.x - shipX;
-    const dy = touchTarget.y - shipY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist > 5) {
-      shipVX = (dx / dist) * MOVE_SPEED;
-      shipVY = (dy / dist) * MOVE_SPEED;
+    if (touchTarget.dx != null) {
+      // Joystick — dx/dy are -1 to 1
+      shipVX = touchTarget.dx * MOVE_SPEED;
+      shipVY = touchTarget.dy * MOVE_SPEED;
+    } else if (touchTarget.screenX != null) {
+      // Screen tap fallback — move toward point
+      const dx = touchTarget.screenX - shipX;
+      const dy = touchTarget.screenY - shipY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist > 5) {
+        shipVX = (dx / dist) * MOVE_SPEED;
+        shipVY = (dy / dist) * MOVE_SPEED;
+      }
     }
   }
 
