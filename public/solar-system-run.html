@@ -978,7 +978,7 @@ function loop() {
   if (keys.up) shipVY = -MOVE_SPEED;
   else if (keys.down) shipVY = MOVE_SPEED;
   else if (touchDown) shipVY = -MOVE_SPEED;
-  else shipVY += 0.5;
+  else { shipVY += 0.25; if (shipVY > MOVE_SPEED * 0.6) shipVY = MOVE_SPEED * 0.6; }
 
   if (keys.right) shipVX = MOVE_SPEED * 0.7;
   else if (keys.left) shipVX = -MOVE_SPEED * 0.7;
