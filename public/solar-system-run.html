@@ -948,9 +948,14 @@ document.addEventListener('keyup', e => {
 });
 
 // Mobile touch: tap = go up, release = fall
+// Ignore taps on HUD/links so Back to Games still works
 let touchDown = false;
+function isUITarget(el) {
+  return el && (el.closest('#hud') || el.closest('a') || el.closest('button') || el.closest('.overlay-screen'));
+}
 document.addEventListener('touchstart', e => {
   if (!running) return;
+  if (isUITarget(e.target)) return;
   e.preventDefault();
   touchDown = true;
 }, { passive: false });
