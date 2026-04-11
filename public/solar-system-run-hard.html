@@ -449,12 +449,16 @@ const TOTAL_DIST = 1400;
 // ═══════════════════════════════════════════
 // CONFIG — HARD MODE
 // ═══════════════════════════════════════════
+const IS_MOBILE = 'ontouchstart' in window && window.innerWidth < 900;
 const C = {
   SHIP_SIZE: 48,
   SHIP_X_PCT: 0.12,
   MAX_LIVES: 5,
   INVINCIBLE_MS: 1500,
   DIST_PER_FRAME: 0.09,
+  MAX_HAZARDS: IS_MOBILE ? 5 : 999,
+  ROCK_SCALE: IS_MOBILE ? 0.7 : 1,
+  LANDMARK_SCALE: IS_MOBILE ? 0.65 : 1,
 };
 
 // ═══════════════════════════════════════════
@@ -591,7 +595,7 @@ function updateLives() {
 // ═══════════════════════════════════════════
 function spawnHazard(zone, diffMult) {
   diffMult = diffMult || 1;
-  const size = zone.hazardSize[0] + Math.random() * (zone.hazardSize[1] - zone.hazardSize[0]);
+  const size = (zone.hazardSize[0] + Math.random() * (zone.hazardSize[1] - zone.hazardSize[0])) * C.ROCK_SCALE;
   const spd = (zone.hazardSpeed[0] + Math.random() * (zone.hazardSpeed[1] - zone.hazardSpeed[0])) * (1 + (diffMult - 1) * 0.5);
   const y = Math.random() * (H() - size - 20) + 10;
   const rotation = Math.random() * 360;
@@ -693,10 +697,11 @@ function spawnLandmark(lm, zoneIdx) {
   if (spawnedLandmarks.has(key)) return;
   spawnedLandmarks.add(key);
 
+  const lmSz = Math.round(lm.size * C.LANDMARK_SCALE);
   const el = document.createElement('div');
   el.className = 'landmark';
-  el.style.width = lm.size + 'px';
-  el.style.height = lm.size + 'px';
+  el.style.width = lmSz + 'px';
+  el.style.height = lmSz + 'px';
   el.style.left = W() + 30 + 'px';
 
   const lmIndex = ZONES[zoneIdx].landmarks.indexOf(lm);
@@ -717,7 +722,7 @@ function spawnLandmark(lm, zoneIdx) {
   gameArea.appendChild(el);
   const isFirst = ZONES[zoneIdx].landmarks[0] === lm;
   const lmY = yCenter;
-  landmarks.push({ el, x: W() + 30, y: lmY, size: lm.size, speed: 2.5, zoneIdx, isFirst, titleTriggered: false });
+  landmarks.push({ el, x: W() + 30, y: lmY, size: lmSz, speed: 2.5, zoneIdx, isFirst, titleTriggered: false });
 }
 
 // ═══════════════════════════════════════════
@@ -950,7 +955,7 @@ function checkCollision() {
 // INPUT
 // ═══════════════════════════════════════════
 const keys = { up: false, down: false, left: false, right: false };
-const MOVE_SPEED = 5;
+const MOVE_SPEED = IS_MOBILE ? 6.5 : 5;
 let boostCooldown = 0;
 
 document.addEventListener('keydown', e => {
@@ -1106,7 +1111,7 @@ function loop() {
 
   // HARD: difficulty ramp starts from zone 3 (Mars), 10% per zone on top of already-high base
   const diffMult = currentZoneIdx <= 3 ? 1 : 1 + (currentZoneIdx - 3) * 0.1;
-  if (Math.random() < zone.hazardRate * speedMult * diffMult) {
+  if (hazards.length < C.MAX_HAZARDS && Math.random() < zone.hazardRate * speedMult * diffMult) {
     spawnHazard(zone, diffMult);
   }
 
