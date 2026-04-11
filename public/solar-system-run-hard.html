@@ -741,31 +741,47 @@ function spawnOortMaze() {
   flashEl.classList.add('show');
 
   const h = H();
-  const mazeWidth = W() * 5;
+  const mazeWidth = W() * 2.5; // Half the previous length
   const startX = W() + 100;
   const rockSize = 30;
   const cols = Math.floor(mazeWidth / (rockSize + 10));
   const rows = Math.floor((h - 120) / (rockSize + 8));
-  const gapProb = 0.25;
+  const gapProb = 0.2;
 
-  // Pre-compute path — mix of flat, up, down segments (not all diagonal)
+  // Pre-compute path with vertical, horizontal, and diagonal segments
   const pathRows = [];
   let currentRow = Math.floor(rows * 0.5);
-  let direction = 0; // -1 = up, 0 = flat/right, 1 = down
+  let direction = 0; // -2 = sharp up, -1 = diagonal up, 0 = horizontal, 1 = diagonal down, 2 = sharp down
   let segLeft = 0;
   for (let col = 0; col < cols; col++) {
     if (segLeft <= 0) {
-      segLeft = 10 + Math.floor(Math.random() * 16);
+      segLeft = 6 + Math.floor(Math.random() * 10);
       const r = Math.random();
-      // Bias toward flat segments so not everything is diagonal
-      if (currentRow < rows * 0.2) direction = Math.random() < 0.6 ? 1 : 0;
-      else if (currentRow > rows * 0.8) direction = Math.random() < 0.6 ? -1 : 0;
-      else if (r < 0.2) direction = -1;  // up
-      else if (r < 0.4) direction = 1;   // down
-      else direction = 0;                 // flat/right (60% of the time)
+      if (currentRow < rows * 0.2) {
+        // Near top — must go down
+        direction = Math.random() < 0.5 ? 2 : 1;
+      } else if (currentRow > rows * 0.8) {
+        // Near bottom — must go up
+        direction = Math.random() < 0.5 ? -2 : -1;
+      } else if (r < 0.15) {
+        direction = -2; // sharp up (vertical-ish)
+      } else if (r < 0.3) {
+        direction = -1; // diagonal up
+      } else if (r < 0.55) {
+        direction = 0;  // horizontal
+      } else if (r < 0.7) {
+        direction = 1;  // diagonal down
+      } else if (r < 0.85) {
+        direction = 2;  // sharp down (vertical-ish)
+      } else {
+        direction = 0;  // horizontal
+      }
     }
     segLeft--;
-    if (direction !== 0) currentRow += direction;
+    // Sharp directions move 2 rows per column (more vertical feel)
+    if (direction === -2) currentRow -= 2;
+    else if (direction === 2) currentRow += 2;
+    else if (direction !== 0) currentRow += direction;
     currentRow = Math.max(2, Math.min(rows - 3, currentRow));
     pathRows.push(currentRow);
   }
@@ -773,7 +789,7 @@ function spawnOortMaze() {
   for (let col = 0; col < cols; col++) {
     for (let row = 0; row < rows; row++) {
       const distFromPath = Math.abs(row - pathRows[col]);
-      if (distFromPath <= 2) continue; // Wider path — 2 rocks gap on each side
+      if (distFromPath <= 2) continue; // Wide enough to navigate
 
       if (Math.random() < gapProb) continue;
 
