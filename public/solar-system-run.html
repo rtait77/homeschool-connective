@@ -763,7 +763,7 @@ function spawnOortMaze() {
   flashEl.classList.add('show');
 
   const h = H();
-  const mazeWidth = W() * 4; // 4 screens wide
+  const mazeWidth = W() * 2;
   const startX = W() + 100;
   const rockSize = 30;
   const cols = Math.floor(mazeWidth / (rockSize + 10));
@@ -968,7 +968,8 @@ function loop() {
 
   // Progress scales: speed caps at heliosheath level (~1.8x), frequency increases after
   const progress = distance / TOTAL_DIST;
-  const speedMult = Math.min(1.8, 1 + progress * 1.2);
+  const neptuneProgress = 500 / TOTAL_DIST; // cap speed at Neptune level
+  const speedMult = Math.min(1 + neptuneProgress * 1.2, 1 + progress * 1.2);
 
   // Movement from keys
   if (keys.up) shipVY = -MOVE_SPEED;
@@ -1039,7 +1040,7 @@ function loop() {
 
   // Difficulty ramps starting at asteroid belt (zone 5), 15% per zone
   const diffMult = currentZoneIdx <= 4 ? 1 : 1 + (currentZoneIdx - 4) * 0.15;
-  if (Math.random() < zone.hazardRate * speedMult * 0.8 * diffMult) {
+  if (hazards.length < 10 && Math.random() < zone.hazardRate * speedMult * 0.8 * diffMult) {
     spawnHazard(zone, diffMult);
   }
 
