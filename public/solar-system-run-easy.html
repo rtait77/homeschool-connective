@@ -1021,8 +1021,8 @@ function loop() {
     }
   }
 
-  // EASY: no difficulty ramp — constant hazard rate, no diffMult
-  if (Math.random() < zone.hazardRate) {
+  // EASY: no difficulty ramp, 50% fewer objects
+  if (Math.random() < zone.hazardRate * 0.5) {
     spawnHazard(zone);
   }
 
